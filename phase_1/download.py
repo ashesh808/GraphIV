@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""
-PDF Downloader for arXiv Knowledge Graph
+"""PDF Downloader for arXiv Knowledge Graph
 
 Downloads and manages PDF files from GCS storage based on database metadata.
 Supports version checking, incremental updates, and cleanup of incorrect files.
 
 Usage:
-    python download.py                    # Check and download missing PDFs
+    python -m phase_1.download                    # Check and download missing PDFs
 """
 
 # reference /home/kuroma/Documents/projects/nlp/arxiv_kg/data_processing/scripts/download_pdf.py
@@ -18,8 +17,9 @@ import sqlite3
 import subprocess
 import tempfile
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from pathlib import Path
+from typing import Any
 
 
 class Downloader:
@@ -28,7 +28,23 @@ class Downloader:
     Manages PDF downloads from GCS storage based on database metadata.
     """
 
-    def __init__(self, base_path=None, num_threads=8, connections_per_batch=10):
+    base_path: Path
+    num_threads: int
+    connections_per_batch: int
+    pdf_dir: Path
+    db_path: Path
+    json_path: Path
+    gcs_base: str
+    legacy_gcs_base: str
+    papers: dict[str, str]
+    conn: sqlite3.Connection | None
+
+    def __init__(
+        self,
+        base_path: Path | None = None,
+        num_threads: int = 8,
+        connections_per_batch: int = 10,
+    ):
         if base_path is None:
             base_path = Path(__file__).parent.parent / "data"
 
@@ -40,75 +56,69 @@ class Downloader:
         self.json_path = self.base_path / "arxiv.json"
         self.gcs_base = "https://storage.googleapis.com/arxiv-dataset/arxiv/arxiv/pdf"
         self.legacy_gcs_base = "https://storage.googleapis.com/arxiv-dataset/arxiv"
+        self.papers = {}
+        self.conn = None
 
-        self.internal_db = None  # sqlite db - loaded manually when needed
-
-    def update_database(self):
+    def update_database(self) -> None:
         """Update database from arxiv.json with version checking.
 
         Loads JSON, compares with existing database, updates only when
         version changes, setting downloaded=0 for updated papers.
         """
-        # Check if JSON file exists
         if not self.json_path.exists():
             print(f"JSON file not found: {self.json_path}")
             return
 
-        # Load schema first (CRITICAL: load before any DB operations)
         schema_path = self.base_path / "metadata" / "schemas.sql"
         if not schema_path.exists():
             print(f"Schema file not found: {schema_path}")
             return
 
-        # Connect to database
         conn = sqlite3.connect(self.db_path)
 
-        # Apply schema
         with open(schema_path) as f:
-            conn.executescript(f.read())
+            _ = conn.executescript(f.read())
 
-        # Load existing papers for comparison
-        existing = {}
-        cursor = conn.execute("SELECT id, latest_version_date FROM publication")
-        for row in cursor:
+        existing: dict[str, str | None] = {}
+        rows: list[tuple[str, str | None]] = conn.execute(
+            "SELECT id, latest_version_date FROM publication"
+        ).fetchall()
+        for row in rows:
             existing[row[0]] = row[1]
 
-        # Read JSONL file
-        papers = []
+        papers: list[Any] = []  # pyright: ignore[reportExplicitAny]
         with open(self.json_path) as f:
             for line in f:
                 if line.strip():
                     papers.append(json.loads(line))
 
-        # Process papers
         stats = {"inserted": 0, "updated": 0, "unchanged": 0}
-        for paper in papers:
-            paper_id = paper["id"]
-            versions = paper.get("versions", [])
+        for paper in papers:  # pyright: ignore[reportAny]
+            paper_id: str = paper["id"]  # pyright: ignore[reportAny]
+            versions: list[Any] = paper.get("versions", [])  # pyright: ignore[reportExplicitAny, reportAny]
             if not versions:
                 continue
 
-            latest = versions[-1]
-            latest_version = latest.get("version")
-            latest_version_date = latest.get("created")
+            latest: dict[str, Any] = versions[-1]  # pyright: ignore[reportExplicitAny, reportAny]
+            latest_version: str | None = latest.get("version")
+            latest_version_date: str | None = latest.get("created")
 
-            title = paper.get("title", "").strip()
-            submitter = paper.get("submitter")
-            abstract = paper.get("abstract", "").strip() or None
-            doi = paper.get("doi")
-            journal_ref = paper.get("journal-ref")
-            license_ = paper.get("license")
-            update_date = paper.get("update_date")
+            title: str = (paper.get("title", "") or "").strip()  # pyright: ignore[reportAny]
+            submitter: str | None = paper.get("submitter")  # pyright: ignore[reportAny]
+            abstract_raw: str = (paper.get("abstract", "") or "").strip()  # pyright: ignore[reportAny]
+            abstract: str | None = abstract_raw or None
+            doi: str | None = paper.get("doi")  # pyright: ignore[reportAny]
+            journal_ref: str | None = paper.get("journal-ref")  # pyright: ignore[reportAny]
+            license_: str | None = paper.get("license")  # pyright: ignore[reportAny]
+            update_date: str | None = paper.get("update_date")  # pyright: ignore[reportAny]
 
-            # Check if paper exists and if version changed
             if paper_id in existing:
                 old_version_date = existing[paper_id]
                 if old_version_date == latest_version_date:
                     stats["unchanged"] += 1
                     continue
 
-                # Version changed - update and mark as not downloaded
-                conn.execute(
+                _ = conn.execute(
                     """
                     UPDATE publication SET
                         submitter = ?,
@@ -128,8 +138,7 @@ class Downloader:
                 )
                 stats["updated"] += 1
             else:
-                # New paper - insert
-                conn.execute(
+                _ = conn.execute(
                     """
                     INSERT INTO publication
                     (id, submitter, title, abstract, doi, journal_ref, license,
@@ -142,32 +151,28 @@ class Downloader:
                 stats["inserted"] += 1
                 existing[paper_id] = latest_version_date
 
-            # Commit periodically
             if (stats["inserted"] + stats["updated"]) % 10000 == 0:
                 conn.commit()
 
-        # Final commit
         conn.commit()
         conn.close()
 
         print(
-            f"Database update complete: {stats['inserted']} inserted, "
-            f"{stats['updated']} updated, {stats['unchanged']} unchanged"
+            f"Database update complete: {stats['inserted']} inserted, {stats['updated']} updated, {stats['unchanged']} unchanged"
         )
 
-    def load_database(self):
+    def load_database(self) -> sqlite3.Connection | None:
         """Load database contents into memory.
 
         Calls update_database() first to ensure data is fresh, then loads
         papers into self.papers dict and stores connection in self.conn.
         """
-        # Ensure database exists
         if not self.db_path.exists() or self.db_path.stat().st_size == 0:
             schema_path = self.base_path / "metadata" / "schemas.sql"
             if schema_path.exists():
                 conn = sqlite3.connect(self.db_path)
                 with open(schema_path) as f:
-                    conn.executescript(f.read())
+                    _ = conn.executescript(f.read())
                 conn.close()
             else:
                 print(f"Schema file not found: {schema_path}")
@@ -178,23 +183,27 @@ class Downloader:
         conn = sqlite3.connect(self.db_path)
 
         self.papers = {}
-        cursor = conn.execute("SELECT id, latest_version FROM publication")
-        for row in cursor:
+        rows: list[tuple[str, str]] = conn.execute(
+            "SELECT id, latest_version FROM publication"
+        ).fetchall()
+        for row in rows:
             paper_id, latest_version = row
             self.papers[paper_id] = latest_version
 
         self.conn = conn
-
         return conn
 
     def _pdf_path(self, paper_id: str, version: str) -> Path:
         """Return the expected path for a paper's PDF: pdf/<YYMM>/<flatname><version>.pdf"""
         yymm = self._get_yymm(paper_id)
+        if yymm is None:
+            raise ValueError(f"Cannot determine YYMM for paper_id: {paper_id}")
         flatname = paper_id.replace("/", "")
         return self.pdf_dir / yymm / f"{flatname}{version}.pdf"
 
-    def sync_downloaded_flags(self):
+    def sync_downloaded_flags(self) -> None:
         """Scan existing PDFs on disk and mark correct ones as downloaded=1 in DB."""
+        assert self.conn is not None
         if not self.pdf_dir.exists():
             return
 
@@ -205,7 +214,7 @@ class Downloader:
                 continue
             paper_id, file_version = parsed
             if paper_id in self.papers and file_version == self.papers[paper_id]:
-                self.conn.execute(
+                _ = self.conn.execute(
                     "UPDATE publication SET downloaded = 1 WHERE id = ? AND downloaded = 0",
                     (paper_id,),
                 )
@@ -214,22 +223,23 @@ class Downloader:
             self.conn.commit()
             print(f"Marked {marked} existing PDFs as already downloaded")
 
-    def download(self):
+    def download(self) -> None:
         """Download PDFs from GCS storage with YYMM-based batching.
 
         Downloads missing and wrong-version papers one YYMM batch at a time
         using aria2c.
         """
-        self.load_database()
+        _ = self.load_database()
+        if self.conn is None:
+            return
         self.pdf_dir.mkdir(parents=True, exist_ok=True)
         self.sync_downloaded_flags()
 
-        # Build download list: all papers with downloaded=0
-        papers_to_download = []
-        cursor = self.conn.execute(
+        papers_to_download: list[tuple[str, str, str]] = []
+        rows: list[tuple[str, str]] = self.conn.execute(
             "SELECT id, latest_version FROM publication WHERE downloaded = 0"
-        )
-        for paper_id, version in cursor:
+        ).fetchall()
+        for paper_id, version in rows:
             yymm = self._get_yymm(paper_id)
             if yymm:
                 papers_to_download.append((paper_id, version, yymm))
@@ -240,34 +250,35 @@ class Downloader:
             print("Nothing to download")
             return
 
-        yymm_groups = defaultdict(list)
+        yymm_groups: defaultdict[str, list[tuple[str, str]]] = defaultdict(list)
         for paper_id, version, yymm in papers_to_download:
             yymm_groups[yymm].append((paper_id, version))
 
         print(f"Batches: {len(yymm_groups)} YYMM groups, {self.num_threads} concurrent")
 
         with ThreadPoolExecutor(max_workers=self.num_threads) as executor:
-            futures = {}
-            for yymm, papers in sorted(yymm_groups.items()):
-                future = executor.submit(self._download_batch, yymm, papers)
-                futures[future] = (yymm, papers)
+            futures: dict[Future[None], tuple[str, list[tuple[str, str]]]] = {}
+            for yymm, batch in sorted(yymm_groups.items()):
+                future = executor.submit(self._download_batch, yymm, batch)
+                futures[future] = (yymm, batch)
 
             for future in as_completed(futures):
-                yymm, papers = futures[future]
+                yymm, batch = futures[future]
                 try:
                     future.result()
                 except Exception as e:
                     print(f"Batch {yymm} failed: {e}")
 
-        # After all batches, sync what actually landed on disk
         print("\nSyncing download state...")
         self.sync_downloaded_flags()
-        downloaded = self.conn.execute(
+        count_row = self.conn.execute(  # pyright: ignore[reportAny]
             "SELECT count(*) FROM publication WHERE downloaded = 1"
-        ).fetchone()[0]
+        ).fetchone()
+        assert count_row is not None
+        downloaded: int = count_row[0]  # pyright: ignore[reportAny]
         print(f"Total downloaded: {downloaded}")
 
-    def _download_batch(self, yymm, papers):
+    def _download_batch(self, yymm: str, papers: list[tuple[str, str]]) -> None:
         """Download a single YYMM batch using aria2c."""
         yymm_dir = self.pdf_dir / yymm
         yymm_dir.mkdir(parents=True, exist_ok=True)
@@ -280,12 +291,12 @@ class Downloader:
                 gcs_url = self._gcs_url(paper_id, version)
                 if gcs_url is None:
                     continue
-                temp_file.write(f"{gcs_url}\n")
+                _ = temp_file.write(f"{gcs_url}\n")
                 if "/" in paper_id:
                     # Force archive-prefixed local filename to avoid
                     # collisions across archives sharing the same YYMM/seq.
                     local_name = paper_id.replace("/", "") + f"{version}.pdf"
-                    temp_file.write(f"  out={local_name}\n")
+                    _ = temp_file.write(f"  out={local_name}\n")
 
         aria2c_cmd = [
             "aria2c",
@@ -301,7 +312,7 @@ class Downloader:
         ]
 
         try:
-            subprocess.run(aria2c_cmd, check=True)
+            _ = subprocess.run(aria2c_cmd, check=True)
             print(f"Batch {yymm} complete ({len(papers)} papers)")
         except subprocess.CalledProcessError as e:
             print(f"Batch {yymm} had errors: {e}")
@@ -309,7 +320,7 @@ class Downloader:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    def clean(self, delete=False):
+    def clean(self, delete: bool = False) -> dict[str, list[str] | list[tuple[str, str]]]:
         """Check PDF directory against database and report mismatched files.
 
         Only inspects .pdf files. Never deletes non-PDF files or directories.
@@ -322,10 +333,11 @@ class Downloader:
                 - report["not_in_db"]: list of paper_ids not in database
                 - report["wrong_version"]: list of (paper_id, file_version) tuples
         """
-        report = {"not_in_db": [], "wrong_version": []}
+        not_in_db: list[str] = []
+        wrong_version: list[tuple[str, str]] = []
 
         if not self.pdf_dir.exists():
-            return report
+            return {"not_in_db": not_in_db, "wrong_version": wrong_version}
 
         for pdf_file in self.pdf_dir.rglob("*.pdf"):
             if not pdf_file.is_file():
@@ -338,23 +350,25 @@ class Downloader:
             paper_id, file_version = parsed
 
             if paper_id not in self.papers:
-                report["not_in_db"].append(paper_id)
+                not_in_db.append(paper_id)
                 continue
 
             expected_version = self.papers[paper_id]
             if file_version != expected_version:
-                report["wrong_version"].append((paper_id, file_version))
+                wrong_version.append((paper_id, file_version))
                 if delete:
+                    assert self.conn is not None
                     pdf_file.unlink()
-                    self.conn.execute(
+                    _ = self.conn.execute(
                         "UPDATE publication SET downloaded = 0 WHERE id = ?",
                         (paper_id,),
                     )
 
         if delete:
+            assert self.conn is not None
             self.conn.commit()
 
-        return report
+        return {"not_in_db": not_in_db, "wrong_version": wrong_version}
 
     # helper functions go here, start name with an undercore
 
@@ -403,16 +417,18 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="arXiv PDF downloader")
-    parser.add_argument(
+    parser.add_argument(  # pyright: ignore[reportUnusedCallResult]
         "-t", "--threads", type=int, default=8,
         help="number of concurrent YYMM batches (default: 8)",
     )
-    parser.add_argument(
+    parser.add_argument(  # pyright: ignore[reportUnusedCallResult]
         "-j", "--connections", type=int, default=10,
         help="aria2c connections per batch (default: 10)",
     )
     args = parser.parse_args()
+    threads: int = args.threads  # pyright: ignore[reportAny]
+    connections: int = args.connections  # pyright: ignore[reportAny]
 
-    downloader = Downloader(num_threads=args.threads, connections_per_batch=args.connections)
+    downloader = Downloader(num_threads=threads, connections_per_batch=connections)
     downloader.download()
     print("done")

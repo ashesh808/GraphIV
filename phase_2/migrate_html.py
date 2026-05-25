@@ -14,11 +14,9 @@ status duplicates at the source are deleted.
 
 import os
 import sqlite3
-import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
-from _common import (  # noqa: E402
+from ._common import (
     DB_PATH,
     HTML_DIR,
     STATUS_ERROR,
@@ -79,8 +77,7 @@ def main() -> None:
                 moved[status] += 1
 
     print(
-        f"Moved: ok={moved[1]} warn={moved[2]} err={moved[3]} "
-        f"skipped={skipped} unparsed_filenames={unparsed}"
+        f"Moved: ok={moved[1]} warn={moved[2]} err={moved[3]} skipped={skipped} unparsed_filenames={unparsed}"
     )
 
     print("Updating DB ...")
@@ -90,7 +87,7 @@ def main() -> None:
     updated = 0
     for i in range(0, len(rows), BATCH):
         chunk = rows[i : i + BATCH]
-        cursor.executemany(
+        _ = cursor.executemany(
             "UPDATE publication SET html_status = ? WHERE id = ?",
             [(status, pid) for pid, status in chunk],
         )
