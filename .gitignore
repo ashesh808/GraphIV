@@ -7,11 +7,24 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
 
 # data
 data
 
 # ai stuff
-.claude
+.claude/
 CLAUDE.md
+
+# superseded pre-rewrite code (old phase_1/2/3 + scratchpad/kg_rag*); kept on disk, untracked
+.legacy/
+
+# phase output / caches
+phases/**/output/
+
+# LaTeX build intermediates (keep .tex/.pdf/.md; drop the rest)
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
