@@ -1,0 +1,15 @@
+{
+  "exclude": ["scratchpad", "**/__pycache__", "**/.venv"],
+  "executionEnvironments": [
+    { "root": "phases/phase-1", "extraPaths": ["phases", "phases/phase-1/components"] },
+    { "root": "phases/phase-2", "extraPaths": ["phases", "phases/phase-2/components"] },
+    {
+      "root": "phases/phase-3",
+      "extraPaths": ["phases", "phases/phase-3/components"],
+      "reportPrivateImportUsage": "none"
+    },
+    { "root": "phases/phase-4", "extraPaths": ["phases", "phases/phase-4/components"] },
+    { "root": "phases/phase-5", "extraPaths": ["phases", "phases/phase-5/components"] },
+    { "root": "phases/phase-6", "extraPaths": ["phases", "phases/phase-6/components"] }
+  ]
+}

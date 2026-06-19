@@ -1,0 +1,340 @@
+"""Steps 2-4 of the narrative layer: turn a query vector into a bounded,
+on-topic citation subgraph with landmarks, eras, a main path, and tensions.
+
+The hub-explosion trap (ResNet/Adam have 100k citers) is avoided by inducing the
+subgraph *within* a similarity-ranked topical pool rather than expanding outward
+from seeds: the citation structure inside the on-topic cloud is automatically
+relevant and bounded.
+
+No LLM and no embedding model here — callers pass a pre-computed query vector
+(so VRAM can be sequenced: embed -> free_model -> load narrator).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, LiteralString, cast
+
+from neo4j import Session
+
+from _common import VECTOR_INDEX  # noqa: E402
+
+# Strongest-signal-first; used to collapse parallel edges to one intent and to
+# pick the "tension" edges. extends/uses = builds-on; compares/critiques/motivates
+# = limitation/problem-framing; background = weakest.
+INTENT_PRIORITY: list[str] = [
+    "extends",
+    "uses",
+    "compares",
+    "critiques",
+    "motivates",
+    "background",
+]
+_INTENT_RANK: dict[str, int] = {name: i for i, name in enumerate(INTENT_PRIORITY)}
+TENSION_INTENTS: frozenset[str] = frozenset({"compares", "critiques", "motivates"})
+
+
+@dataclass
+class PoolNode:
+    arxiv_id: str
+    title: str
+    year: int | None
+    category: str | None
+    score: float  # cosine sim to the query
+
+
+@dataclass
+class Edge:
+    src: str  # citing (newer) -> dst cited (older)
+    dst: str
+    intent: str | None
+    polarity: str | None
+
+
+@dataclass
+class Landmark:
+    arxiv_id: str
+    title: str
+    year: int | None
+    category: str | None
+    score: float
+    in_degree: int  # # of distinct pool papers citing this one
+    era: int = -1  # filled by assign_eras
+
+
+@dataclass
+class Era:
+    index: int
+    label: str
+    year_lo: int
+    year_hi: int
+
+
+# ---------------------------------------------------------------------------
+# Step 2 — topical pool (vector)
+
+
+def topical_pool(
+    session: Session, qvec: list[float], n_pool: int
+) -> dict[str, PoolNode]:
+    """Top-`n_pool` papers by cosine sim to the query, keyed by arxiv_id."""
+    cypher = (
+        f"CALL db.index.vector.queryNodes('{VECTOR_INDEX}', $n, $qvec) YIELD node, score "
+        "RETURN node.arxiv_id AS arxiv_id, node.title AS title, node.year AS year, "
+        "node.primary_category AS category, score ORDER BY score DESC"
+    )
+    pool: dict[str, PoolNode] = {}
+    # cast: query is an f-string over internal constants, not user input
+    rows = session.run(cast(LiteralString, cypher), n=n_pool, qvec=qvec)
+    for rec in rows:
+        row: dict[str, Any] = dict(rec)
+        axid = str(row["arxiv_id"])  # pyright: ignore[reportAny]
+        year_raw: Any = row["year"]  # pyright: ignore[reportAny]
+        pool[axid] = PoolNode(
+            arxiv_id=axid,
+            title=str(row["title"] or ""),  # pyright: ignore[reportAny]
+            year=int(year_raw) if year_raw is not None else None,
+            category=(
+                str(row["category"]) if row["category"] is not None else None
+            ),  # pyright: ignore[reportAny]
+            score=float(row["score"]),  # pyright: ignore[reportAny]
+        )
+    return pool
+
+
+# ---------------------------------------------------------------------------
+# Step 2b — backward-ancestor augmentation (graph)
+#
+# The similarity pool is dominated by recent application/survey papers; the
+# FOUNDATIONAL lineage (e.g. DDPM, LDM, score-SDE for diffusion) is cited by
+# nearly the whole pool yet is rarely a top-N embedding neighbour of the query.
+# We pull those most-cited ancestors in — bounded (one hop back, ranked by # of
+# distinct pool citers) — so "Origins" and the main-path spine actually exist.
+
+
+def augment_with_ancestors(
+    session: Session,
+    pool: dict[str, PoolNode],
+    qvec: list[float],
+    max_add: int = 150,
+    min_citers: int = 3,
+    category_prefix: str | None = None,
+) -> int:
+    """Add the pool's most-cited ancestors to `pool` (mutates). Returns # added.
+
+    Ranked by how many distinct pool papers cite each ancestor; scored by true
+    cosine sim to the query (both vectors are L2-normalized, so dot == cosine).
+    If `category_prefix` is given, only ancestors in that arXiv category group are
+    added (prevents famous cross-field papers — string theory, entropic gravity —
+    from hijacking a polysemous query's pool).
+    """
+    if not pool:
+        return 0
+    cat_clause = " AND b.primary_category STARTS WITH $cat" if category_prefix else ""
+    cypher = (
+        "MATCH (a:Paper)-[:CITES]->(b:Paper) "
+        f"WHERE a.arxiv_id IN $pool{cat_clause} "
+        "WITH b, count(DISTINCT a) AS pc "
+        "WHERE pc >= $min_citers "
+        "RETURN b.arxiv_id AS id, b.title AS title, b.year AS year, "
+        "b.primary_category AS category, b.embedding AS emb, pc "
+        "ORDER BY pc DESC LIMIT $max_add"
+    )
+    params: dict[str, Any] = {
+        "pool": list(pool),
+        "min_citers": min_citers,
+        "max_add": max_add,
+    }
+    if category_prefix:
+        params["cat"] = category_prefix
+    added = 0
+    for rec in session.run(cypher, **params):  # pyright: ignore[reportArgumentType]
+        row: dict[str, Any] = dict(rec)
+        axid = str(row["id"])  # pyright: ignore[reportAny]
+        if axid in pool:
+            continue
+        emb: Any = row["emb"]  # pyright: ignore[reportAny]
+        sim = (
+            sum(a * b for a, b in zip(qvec, emb))  # pyright: ignore[reportAny]
+            if emb is not None
+            else 0.0
+        )
+        year_raw: Any = row["year"]  # pyright: ignore[reportAny]
+        pool[axid] = PoolNode(
+            arxiv_id=axid,
+            title=str(row["title"] or ""),  # pyright: ignore[reportAny]
+            year=int(year_raw) if year_raw is not None else None,
+            category=(
+                str(row["category"]) if row["category"] is not None else None
+            ),  # pyright: ignore[reportAny]
+            score=float(sim),
+        )
+        added += 1
+    return added
+
+
+# ---------------------------------------------------------------------------
+# Step 3 — induce the citation subgraph (graph)
+
+
+def induce_subgraph(session: Session, pool_ids: list[str]) -> list[Edge]:
+    """All CITES edges with both endpoints in the pool, parallel edges collapsed.
+
+    Multiple (src,dst) citation occurrences collapse to one edge carrying the
+    strongest-signal intent (INTENT_PRIORITY) and that edge's polarity.
+    """
+    cypher = (
+        "MATCH (a:Paper)-[c:CITES]->(b:Paper) "
+        "WHERE a.arxiv_id IN $pool AND b.arxiv_id IN $pool "
+        "RETURN a.arxiv_id AS src, b.arxiv_id AS dst, "
+        "c.intent AS intent, c.polarity AS polarity"
+    )
+    best: dict[tuple[str, str], Edge] = {}
+    for rec in session.run(cypher, pool=pool_ids):
+        row: dict[str, Any] = dict(rec)
+        src = str(row["src"])  # pyright: ignore[reportAny]
+        dst = str(row["dst"])  # pyright: ignore[reportAny]
+        if src == dst:
+            continue
+        intent = (
+            str(row["intent"]) if row["intent"] is not None else None
+        )  # pyright: ignore[reportAny]
+        polarity = (
+            str(row["polarity"]) if row["polarity"] is not None else None
+        )  # pyright: ignore[reportAny]
+        key = (src, dst)
+        prev = best.get(key)
+        if prev is None or _intent_rank(intent) < _intent_rank(prev.intent):
+            best[key] = Edge(src=src, dst=dst, intent=intent, polarity=polarity)
+    return list(best.values())
+
+
+def _intent_rank(intent: str | None) -> int:
+    """Lower = stronger signal; unknown intents sort last."""
+    if intent is None:
+        return len(INTENT_PRIORITY)
+    return _INTENT_RANK.get(intent, len(INTENT_PRIORITY))
+
+
+# ---------------------------------------------------------------------------
+# Step 4 — rank + structure (Python, no GDS)
+
+
+def rank_landmarks(
+    pool: dict[str, PoolNode], edges: list[Edge], m: int
+) -> list[Landmark]:
+    """Top-`m` by within-pool in-degree (primary), sim-to-query (tiebreak)."""
+    in_degree: dict[str, int] = {}
+    for e in edges:
+        in_degree[e.dst] = in_degree.get(e.dst, 0) + 1
+    landmarks = [
+        Landmark(
+            arxiv_id=n.arxiv_id,
+            title=n.title,
+            year=n.year,
+            category=n.category,
+            score=n.score,
+            in_degree=in_degree.get(n.arxiv_id, 0),
+        )
+        for n in pool.values()
+    ]
+    landmarks.sort(key=lambda lm: (lm.in_degree, lm.score), reverse=True)
+    return landmarks[:m]
+
+
+def assign_eras(landmarks: list[Landmark], n_eras: int = 3) -> list[Era]:
+    """Bucket landmarks into year tertiles; sets `era` on each, returns Era meta.
+
+    Mutates `landmarks` in place (fills `.era`). Landmarks with no year go to the
+    first era so they still appear at the origins end.
+    """
+    labels = ["Origins", "Key Advances", "Current Frontier"]
+    years = [lm.year for lm in landmarks if lm.year is not None]
+    if not years:
+        for lm in landmarks:
+            lm.era = 0
+        return [Era(index=0, label=labels[0], year_lo=0, year_hi=0)]
+    lo, hi = min(years), max(years)
+    span = max(1, hi - lo)
+    bounds = [lo + round(span * i / n_eras) for i in range(n_eras + 1)]
+    for lm in landmarks:
+        y = lm.year if lm.year is not None else lo
+        idx = n_eras - 1
+        for i in range(n_eras):
+            if y <= bounds[i + 1]:
+                idx = i
+                break
+        lm.era = idx
+    return [
+        Era(
+            index=i,
+            label=labels[i] if i < len(labels) else f"Era {i}",
+            year_lo=bounds[i],
+            year_hi=bounds[i + 1],
+        )
+        for i in range(n_eras)
+    ]
+
+
+def main_path(landmarks: list[Landmark], edges: list[Edge]) -> list[str]:
+    """Longest chronological citation chain among landmarks (oldest -> newest).
+
+    Citation edges run newer(src) -> older(dst); reverse them to older -> newer
+    and DP a longest path over the resulting year-ordered DAG. Edges between
+    same-year or year-unknown papers are dropped (ambiguous direction).
+    """
+    lm_year: dict[str, int] = {
+        lm.arxiv_id: lm.year for lm in landmarks if lm.year is not None
+    }
+    lm_ids = set(lm_year)
+    # older -> newer adjacency
+    succ: dict[str, list[str]] = {i: [] for i in lm_ids}
+    for e in edges:
+        if e.src not in lm_ids or e.dst not in lm_ids:
+            continue
+        ys, yd = lm_year[e.src], lm_year[e.dst]
+        if yd < ys:  # dst older than src: chronological step dst -> src
+            succ[e.dst].append(e.src)
+    order = sorted(lm_ids, key=lambda i: lm_year[i])
+    best_len: dict[str, int] = {i: 1 for i in lm_ids}
+    best_next: dict[str, str | None] = {i: None for i in lm_ids}
+    # process newest-first so successors are already solved
+    for node in reversed(order):
+        for nxt in succ[node]:
+            if best_len[nxt] + 1 > best_len[node]:
+                best_len[node] = best_len[nxt] + 1
+                best_next[node] = nxt
+    if not best_len:
+        return []
+    start = max(order, key=lambda i: best_len[i])
+    chain: list[str] = []
+    cur: str | None = start
+    while cur is not None:
+        chain.append(cur)
+        cur = best_next[cur]
+    return chain
+
+
+def tensions(
+    landmarks: list[Landmark], edges: list[Edge], sim_floor_frac: float = 0.5
+) -> list[Edge]:
+    """Edges among landmarks whose intent signals a comparison/critique/limitation.
+
+    Both endpoints must be reasonably on-topic (sim >= `sim_floor_frac` * the best
+    landmark sim) — otherwise an off-topic cluster pulled in via citation adjacency
+    (e.g. a string-theory critique edge under a condensed-matter query) can hijack
+    the section. Negative-polarity ones first (the sharpest open problems).
+    """
+    score = {lm.arxiv_id: lm.score for lm in landmarks}
+    if not score:
+        return []
+    floor = sim_floor_frac * max(score.values())
+    out = [
+        e
+        for e in edges
+        if e.intent in TENSION_INTENTS
+        and score.get(e.src, -1.0) >= floor
+        and score.get(e.dst, -1.0) >= floor
+    ]
+    out.sort(key=lambda e: (e.polarity != "negative", _intent_rank(e.intent)))
+    return out

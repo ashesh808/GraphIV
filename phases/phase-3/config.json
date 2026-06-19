@@ -1,0 +1,15 @@
+{
+  "stage": "parse",
+  "step": "",
+  "limit": 0,
+  "workers": 10,
+  "checkpoint_every": 100000,
+  "no_write": false,
+  "sample_target": 100000,
+  "parallelism": 4,
+  "batch_size": 50,
+  "epochs": 4,
+  "train_batch_size": 64,
+  "infer_batch_size": 512,
+  "suffix": "v1"
+}

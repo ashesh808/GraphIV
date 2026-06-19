@@ -1,0 +1,50 @@
+{
+  "_doc": "Data locations + endpoint APIs shared by all phases. Repo-relative paths (no leading /) resolve against the repo root; absolute paths are used as-is. Neo4j password is committed intentionally (single-machine research box; will be rotated + flake-provisioned).",
+  "sqlite": {
+    "db": "data/metadata/arxiv.db",
+    "schemas": "data/metadata/schemas.sql"
+  },
+  "postgres": {
+    "dsn": "dbname=arxiv-citations",
+    "citation_schema": "data/metadata/citation_schema.sql"
+  },
+  "neo4j": {
+    "uri": "bolt://localhost:7687",
+    "user": "neo4j",
+    "password": "jdwXKK5eLlDqO/74TCe2Iw5ICCSazqbH",
+    "db": "neo4j",
+    "home": "/Vault/neo4j",
+    "vector_index": "paper_emb"
+  },
+  "llm": {
+    "base_url": "http://localhost:11434/v1",
+    "router": "http://localhost:11434",
+    "map_model": "Gemma-4-26B",
+    "narrator_model": "Gemma-4-26B-Code",
+    "vision_model": "Gemma-4-26B-Vision"
+  },
+  "paths": {
+    "html_dir": "data/html",
+    "pdf_dir": "data/pdf",
+    "topic_tree_db": "data/metadata/topic_tree_nomic.db",
+    "fulltext_cache_db": "data/metadata/fulltext_cache.db",
+    "community_summary_db": "data/metadata/community_summaries.db",
+    "citation_stats": "data/citation_stats",
+    "citation_labels": "data/citation_labels",
+    "models": "data/models",
+    "hf_cache": "data/models/hf_cache"
+  },
+  "embeddings": {
+    "nomic_npy": "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy",
+    "nomic_umap50_npy": "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic_umap50.npy",
+    "nomic_model": "/mnt/Vault-Academics/the-great-arxiv-db/embedding-models/nomic-ai/nomic-embed-text-v2-moe",
+    "old_sqlite": "/mnt/Vault-Academics/the-great-arxiv-db/data/arxiv_latest.db",
+    "prompt": "Instruct: classifying the research topic of a paper's abstract.\nQuery:",
+    "dim": 768,
+    "rows": 2918448,
+    "max_seq": 2048
+  },
+  "viz": {
+    "haruhana": "/home/kuroma/System/nixos-configs/config/noctalia/palettes/Haruhana.json"
+  }
+}

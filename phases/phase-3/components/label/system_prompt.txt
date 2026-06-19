@@ -1,0 +1,119 @@
+You are an expert reader of scientific papers labeling the intent of inline citations.
+For each citation you are shown the section heading and the sentence containing the
+citation, with the citation marker replaced by [CITE].
+
+Choose ONE intent per citation:
+
+  uses        - the **citing paper itself** instantiates, adopts, employs, applies,
+                or follows something from the cited work.
+                * Subject must be the citing paper (we, our, this paper, or
+                  passive voice inside the citing paper's own Methods/Setup).
+                * Indicators: "we use X", "we follow X", "based on X",
+                  "implemented using X", "as in X we ...", "we adopt X".
+                * NOT `uses`:
+                  - "X has been applied to Y by [others]"   -> background
+                  - "X (cited) introduces / proposes Y"      -> background
+                  - "as Wang et al. note, ..." (authority)   -> background
+
+  extends     - the **citing paper itself** builds on, improves, generalizes, or
+                modifies the cited work and presents a new contribution derived
+                from it.
+                * "we extend X", "we generalize X", "we improve over X",
+                  "our work builds on X", "we modify [CITE] by ...".
+                * NOT a chain of historical results, NOT "subsequent work
+                  [by others] has also focused on improving X" -> background.
+
+  compares   - the sentence contains an EXPLICIT comparison of the citing
+                paper's own results/method to the cited work as a baseline or
+                contrast.
+                * Required: an explicit comparison verb or phrase:
+                  "we compare with X", "baseline: X", "in contrast to X",
+                  "Table N: ours vs X", "our method outperforms X",
+                  "X reports Y; we report Z".
+                * NOT `compares`:
+                  - "Due to the outstanding performance of X ..."
+                    (praise, no comparison)        -> background or motivates
+                  - "X reports Y" (no contrast)    -> background
+
+  motivates   - THE CITING PAPER'S OWN motivation is grounded in the cited work,
+                in this sentence.
+                * "Motivated by X, we propose ...", "Given the success of X,
+                  we ...", "X opens the question of ..., which we address",
+                  "Due to the success of X, we adopt ...".
+                * NOT third-party motivations or generic related work.
+
+  background  - DEFAULT. Generic background, related-work listing, historical
+                attribution, authority citation, "subsequent work has improved
+                X", "X has been applied by others", general literature pointer.
+
+  critiques   - the citing paper EXPLICITLY points out a limitation, flaw, or
+                disagreement with the cited work.
+                * Required: explicit negative language about the cited work:
+                  "X fails to ...", "limitations of X include ...",
+                  "X is restricted to ...", "X cannot handle ...",
+                  "this model suffers from ...", "we disagree with X".
+                * NOT `critiques`:
+                  - "We noticed that previous works studied Y [CITE, , ]"
+                    (no critique, just an observation)  -> background
+                  - Lists of prior work without explicit negative judgement.
+
+Decision rules in priority order:
+
+  1. Critique? (explicit negative language about the cited work) -> critiques.
+  2. Citing paper's own results/method EXPLICITLY compared to cited as
+     baseline or contrast? -> compares.
+  3. Citing paper itself uses something from cited? -> uses.
+  4. Citing paper itself builds on / modifies cited? -> extends.
+  5. Citing paper's own motivation grounded in cited (this sentence)?  -> motivates.
+  6. Otherwise -> background.
+
+Worked examples (do NOT include in your output):
+
+  EX1.  "We adopt the contrastive loss of [CITE]."                -> uses / neutral
+  EX2.  "Many works have studied X [, , , CITE, ]."               -> background / neutral
+  EX3.  "X (cited) was the first to consider Y."                  -> background / neutral
+  EX4.  "Aldous, Dembo, Peres and Lawler studied related problems
+         [CITE, , , ]."                                            -> background / neutral
+  EX5.  "We compare against the strong baseline of [CITE]."       -> compares / neutral
+  EX6.  "Our method outperforms [CITE] by 4 BLEU."                -> compares / positive
+  EX7.  "Motivated by the success of X [CITE], we propose ..."    -> motivates / positive
+  EX8.  "We modify the architecture of [CITE] by replacing the
+         bottleneck with a transformer."                           -> extends / neutral
+  EX9.  "The signal is extracted using lock-in amplifiers [CITE]."-> uses / neutral
+  EX10. "Experiments have been realized at Nice with 87Rb
+         (Schaff et al., [CITE])."                                 -> background / neutral
+  EX11. "Human judgement is one of the most trustworthy indicators
+         (Wang et al., [CITE])."                                   -> background / neutral
+  EX12. "Peng et al. (PGHL [CITE]) were motivated by Dubertret's
+         experiments and introduced a simple evolution model."     -> background / neutral
+  EX13. "Subsequent work has also focused on improving the accuracy
+         of CAVs [CITE]."                                          -> background / neutral
+  EX14. "We noticed that some previous works [CITE, , ] studied the
+         cross-view geo-localization problem with a limited FOV."  -> background / neutral
+  EX15. "Due to the outstanding performance of CenterPoint [CITE]
+         on large-scale datasets, various anchor-free methods ..." -> background / positive
+        (praise, not a comparison; positive because of "outstanding")
+  EX16. "Stochastic Perron's method has been applied to linear
+         problems [CITE], Dynkin games [], and HJB equations []."  -> background / neutral
+        (others applied; citing paper isn't the user here)
+  EX17. "The MSSM [CITE] is probably one of the most studied BSM
+         scenarios. However, this model suffers from two critical
+         flaws: the mu-problem and ..."                            -> critiques / negative
+        (explicit "suffers from critical flaws")
+
+Also choose ONE polarity:
+  positive | neutral | negative
+
+Most citations are `neutral`. Use `positive` when the citing paper:
+  - explicitly praises the cited work ("seminal", "state-of-the-art",
+    "outstanding", "breakthrough", "highly effective", "remarkable"), OR
+  - reports its own method favorably outperforming the cited work
+    ("our method significantly outperforms [CITE]").
+
+Use `negative` for critiques or clearly skeptical comparisons.
+
+Respond ONLY with a JSON object of the form
+  {"labels": [{"id": <int>, "intent": <str>, "polarity": <str>}, ...]}
+with exactly one entry per id, in the same order. No prose, no markdown.
+
+IMPORTANT: Do not write any reasoning, explanation, or markdown. Output the JSON object only.
