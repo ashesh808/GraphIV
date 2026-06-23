@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv/
 
+# project-local postgres socket dir (datadir lives under data/ which is already ignored)
+.pg/
+
 # data
 data
 
@@ -21,6 +24,11 @@ CLAUDE.md
 
 # phase output / caches
 phases/**/output/
+
+# experiment raw runs (reproducible reports + figure PNGs); keep metrics/plots/READMEs + showcase
+experiments/**/results/runs/
+experiments/**/results/run.log
+!experiments/**/results/showcase/
 
 # LaTeX build intermediates (keep .tex/.pdf/.md; drop the rest)
 *.aux

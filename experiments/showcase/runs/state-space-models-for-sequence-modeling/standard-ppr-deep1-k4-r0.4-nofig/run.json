@@ -1,0 +1,835 @@
+{
+ "question": "state space models for sequence modeling",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 1,
+ "rounds_run": 1,
+ "critique_k": 4,
+ "n_critiques": 3,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep1-k4-r0.4-nofig",
+ "schema": [
+  [
+   "model_architecture",
+   "Type of SSM architecture used (e.g., convolutional, selective)."
+  ],
+  [
+   "mathematical_formalism",
+   "Key mathematical principles or formalisms described."
+  ],
+  [
+   "primary_application",
+   "Specific sequence modeling tasks or domains addressed."
+  ],
+  [
+   "efficiency_tradeoffs",
+   "Analysis of computational complexity and memory usage."
+  ],
+  [
+   "sequence_length_capability",
+   "Effectiveness in handling long-range dependencies."
+  ],
+  [
+   "key_innovation",
+   "The main novel contribution or advancement presented."
+  ]
+ ],
+ "n_pool": 422,
+ "n_landmarks": 80,
+ "n_edges": 6789,
+ "frontier_year": 2023,
+ "frontier_count": 35,
+ "grounded": [
+  "1211.5063",
+  "1406.1078",
+  "1412.3555",
+  "1412.6980",
+  "1611.01576",
+  "1612.08083",
+  "1706.03762",
+  "1810.04805",
+  "1901.02860",
+  "1904.10509",
+  "2001.04451",
+  "2004.05150",
+  "2005.14165",
+  "2006.04768",
+  "2006.16236",
+  "2008.07669",
+  "2009.14794",
+  "2102.02611",
+  "2110.13985",
+  "2111.00396",
+  "2203.14343",
+  "2205.14135",
+  "2206.11893",
+  "2208.04933",
+  "2212.14052",
+  "2302.06646",
+  "2303.03982",
+  "2303.09489",
+  "2305.13048",
+  "2306.09539",
+  "2310.19694",
+  "2311.14495",
+  "2312.00752",
+  "2312.06211",
+  "2312.06837",
+  "2403.16899",
+  "2404.16112",
+  "2405.19036",
+  "2405.21060",
+  "2406.00943",
+  "2406.09062",
+  "2406.12272",
+  "2410.03158",
+  "2410.03464",
+  "2412.11211",
+  "2501.11729",
+  "2503.18970",
+  "2505.18728",
+  "2506.05678",
+  "2507.21394",
+  "2510.09389",
+  "2511.05926",
+  "2511.13912",
+  "2512.18965",
+  "2512.23824"
+ ],
+ "off_digest": [],
+ "report_chars": 26802,
+ "judge_scores_final": {
+  "grounding": 5,
+  "coverage": 5,
+  "lineage": 5,
+  "coherence": 5,
+  "frontier": 5
+ },
+ "landmarks": [
+  {
+   "arxiv_id": "2605.15311",
+   "title": "Time-Varying Deep State Space Models for Sequences with Switching Dynamics",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7562097149688862,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.23824",
+   "title": "MS-SSM: A Multi-Scale State Space Model for Efficient Sequence Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.832287891774732,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.09062",
+   "title": "State-Space Modeling in Long Sequence Processing: A Survey on Recurrence in the Transformer Era",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8088833881952694,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.19694",
+   "title": "Convolutional State Space Models for Long-Range Spatiotemporal Modeling",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8168688687897018,
+   "in_degree": 7,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.18970",
+   "title": "Advancing Intelligent Sequence Modeling: Evolution, Trade-offs, and Applications of State- Space Architectures from S4 to Mamba",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.804192297221149,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2410.03158",
+   "title": "Mathematical Formalism for Memory Compression in Selective State Space\n  Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8030982984186403,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.06837",
+   "title": "Spectral State Space Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8093972283874309,
+   "in_degree": 6,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.17932",
+   "title": "Geometric SSM: LTI State Space Models for Selective Tasks",
+   "year": 2025,
+   "category": "eess",
+   "score": 0.7691161201452661,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.16899",
+   "title": "State Space Models as Foundation Models: A Control Theoretic Overview",
+   "year": 2024,
+   "category": "eess",
+   "score": 0.8029040152438953,
+   "in_degree": 8,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.06646",
+   "title": "Simple Hardware-Efficient Long Convolutions for Sequence Modeling",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7911899102559734,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.18728",
+   "title": "Message-Passing State-Space Models: Improving Graph Learning with Modern Sequence Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7638487278915215,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.00955",
+   "title": "Learning Long Sequences in Spiking Neural Networks",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7994088452465764,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.09539",
+   "title": "Block-State Transformers",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7907635605091156,
+   "in_degree": 6,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.05678",
+   "title": "Numerical Investigation of Sequence Modeling Theory using Controllable Memory Functions",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7609282745599552,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.11211",
+   "title": "Deep Learning-based Approaches for State Space Models: A Selective\n  Review",
+   "year": 2024,
+   "category": "stat",
+   "score": 0.7846742378338348,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.09489",
+   "title": "Effectively Modeling Time Series with Simple Discrete State Spaces",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7854110301627613,
+   "in_degree": 11,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.09389",
+   "title": "Design Principles for Sequence Models via Coefficient Dynamics",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7562025037340313,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2410.03464",
+   "title": "S7: Selective and Simplified State Space Layers for Sequence Modeling",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7797876977286949,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.00752",
+   "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7779722760009306,
+   "in_degree": 203,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2511.13912",
+   "title": "Compute-in-Memory Implementation of State Space Models for Event Sequence Processing",
+   "year": 2025,
+   "category": "eess",
+   "score": 0.7546566559597752,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.00943",
+   "title": "State Space Models on Temporal Graphs: A First-Principles Study",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7688516323154904,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.03982",
+   "title": "Structured State Space Models for In-Context Reinforcement Learning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7768344234422715,
+   "in_degree": 9,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.21394",
+   "title": "Systolic Array-based Accelerator for Structured State-Space Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7532400103824272,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.12272",
+   "title": "Slot State Space Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.766634802695286,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.14495",
+   "title": "StableSSM: Alleviating the Curse of Memory in State-space Models through\n  Stable Reparameterization",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7627695330525495,
+   "in_degree": 9,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.11729",
+   "title": "SeRpEnt: Selective Resampling for Expressive State Space Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7469437648968515,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2404.16112",
+   "title": "Mamba-360: Survey of State Space Models as Transformer Alternative for\n  Long Sequence Modelling: Methods, Applications, and Challenges",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7647362683241453,
+   "in_degree": 13,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.06211",
+   "title": "Structured state-space models are deep Wiener models",
+   "year": 2023,
+   "category": "eess",
+   "score": 0.7578810430116517,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2511.05926",
+   "title": "L2T-Hyena: Enhancing State-Space Models with an Adaptive Learn-to-Teach Framework",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.745077025251835,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.19036",
+   "title": "State Space Models are Provably Comparable to Transformers in Dynamic\n  Token Selection",
+   "year": 2024,
+   "category": "stat",
+   "score": 0.762870259552637,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.17184",
+   "title": "State space models can express n-gram languages",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7569310940246836,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.18965",
+   "title": "Lag Operator SSMs: A Geometric Framework for Structured State Space Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7441997164813124,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.630450802320776,
+   "in_degree": 277,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1406.1078",
+   "title": "Learning Phrase Representations using RNN Encoder-Decoder for\n  Statistical Machine Translation",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6108613000921386,
+   "in_degree": 42,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.5218093249507328,
+   "in_degree": 45,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1211.5063",
+   "title": "On the difficulty of training Recurrent Neural Networks",
+   "year": 2012,
+   "category": "cs",
+   "score": 0.5311985352305979,
+   "in_degree": 33,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1409.0473",
+   "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.55885977115608,
+   "in_degree": 43,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.04805",
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5702203247628351,
+   "in_degree": 115,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1607.06450",
+   "title": "Layer Normalization",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.5868454899654126,
+   "in_degree": 47,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1606.08415",
+   "title": "Gaussian Error Linear Units (GELUs)",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.4965291380888258,
+   "in_degree": 32,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1904.10509",
+   "title": "Generating Long Sequences with Sparse Transformers",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7296314447686368,
+   "in_degree": 81,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1512.03385",
+   "title": "Deep Residual Learning for Image Recognition",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.537416050760203,
+   "in_degree": 47,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2111.00396",
+   "title": "Efficiently Modeling Long Sequences with Structured State Spaces",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.028160919540229885,
+   "in_degree": 229,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1804.07461",
+   "title": "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5501733845585107,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1412.3555",
+   "title": "Empirical Evaluation of Gated Recurrent Neural Networks on Sequence\n  Modeling",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6190671725719874,
+   "in_degree": 27,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2008.07669",
+   "title": "HiPPO: Recurrent Memory with Optimal Polynomial Projections",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6332688620389297,
+   "in_degree": 116,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1901.02860",
+   "title": "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6554199292048432,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.16236",
+   "title": "Transformers are RNNs: Fast Autoregressive Transformers with Linear\n  Attention",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6509038437654457,
+   "in_degree": 155,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1609.07843",
+   "title": "Pointer Sentinel Mixture Models",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6148302149523425,
+   "in_degree": 59,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5589698831181221,
+   "in_degree": 113,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2011.04006",
+   "title": "Long Range Arena: A Benchmark for Efficient Transformers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6523611899886541,
+   "in_degree": 117,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2001.04451",
+   "title": "Reformer: The Efficient Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6141038937435719,
+   "in_degree": 85,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2004.05150",
+   "title": "Longformer: The Long-Document Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6253127776811617,
+   "in_degree": 106,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.14794",
+   "title": "Rethinking Attention with Performers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5759166101869297,
+   "in_degree": 110,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1910.10683",
+   "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text\n  Transformer",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.563843368999793,
+   "in_degree": 53,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.11692",
+   "title": "RoBERTa: A Robustly Optimized BERT Pretraining Approach",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5489154894876249,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.11893",
+   "title": "On the Parameterization and Initialization of Diagonal State Space\n  Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7457779714382338,
+   "in_degree": 105,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1612.08083",
+   "title": "Language Modeling with Gated Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6868530350764904,
+   "in_degree": 36,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2006.04768",
+   "title": "Linformer: Self-Attention with Linear Complexity",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6325347351953181,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.11929",
+   "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at\n  Scale",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5403006826491424,
+   "in_degree": 77,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.13985",
+   "title": "Combining Recurrent, Convolutional, and Continuous-time Models with\n  Linear State-Space Layers",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.014492753623188406,
+   "in_degree": 76,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.05507",
+   "title": "Compressive Transformers for Long-Range Sequence Modelling",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6963027424893209,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.14343",
+   "title": "Diagonal State Spaces are as Effective as Structured State Spaces",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6871478285054897,
+   "in_degree": 88,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2212.14052",
+   "title": "Hungry Hungry Hippos: Towards Language Modeling with State Space Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7414960389907311,
+   "in_degree": 105,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.04933",
+   "title": "Simplified State Space Layers for Sequence Modeling",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.02538152610441767,
+   "in_degree": 126,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1711.05101",
+   "title": "Decoupled Weight Decay Regularization",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5374614284173717,
+   "in_degree": 56,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2405.21060",
+   "title": "Transformers are SSMs: Generalized Models and Efficient Algorithms\n  Through Structured State Space Duality",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7295604710290975,
+   "in_degree": 100,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2205.14135",
+   "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with\n  IO-Awareness",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5810339627134998,
+   "in_degree": 77,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2202.09729",
+   "title": "It's Raw! Audio Generation with State-Space Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6358523019559278,
+   "in_degree": 49,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2007.14062",
+   "title": "Big Bird: Transformers for Longer Sequences",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6310001991998632,
+   "in_degree": 70,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.06349",
+   "title": "Resurrecting Recurrent Neural Networks for Long Sequences",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7532364296539724,
+   "in_degree": 83,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1803.05457",
+   "title": "Think you have Solved Question Answering? Try ARC, the AI2 Reasoning\n  Challenge",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5037673859975376,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1511.06464",
+   "title": "Unitary Evolution Recurrent Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6223727802790906,
+   "in_degree": 23,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1909.08053",
+   "title": "Megatron-LM: Training Multi-Billion Parameter Language Models Using\n  Model Parallelism",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6264505631080377,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.12037",
+   "title": "How to Train Your HiPPO: State Space Models with Generalized Orthogonal\n  Basis Projections",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7273254895923454,
+   "in_degree": 34,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1606.06031",
+   "title": "The LAMBADA dataset: Word prediction requiring a broad discourse context",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.5022090849133315,
+   "in_degree": 30,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2102.02611",
+   "title": "CKConv: Continuous Kernel Convolution For Sequential Data",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7190120707984483,
+   "in_degree": 26,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.13048",
+   "title": "RWKV: Reinventing RNNs for the Transformer Era",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.655384460245027,
+   "in_degree": 83,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1611.01576",
+   "title": "Quasi-Recurrent Neural Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6964271064356617,
+   "in_degree": 19,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2009.06732",
+   "title": "Efficient Transformers: A Survey",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6131235242355316,
+   "in_degree": 46,
+   "era": 1
+  }
+ ]
+}

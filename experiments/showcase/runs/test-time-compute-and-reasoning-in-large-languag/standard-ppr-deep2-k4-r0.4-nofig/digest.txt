@@ -1,0 +1,879 @@
+QUESTION: test-time compute and reasoning in large language models
+
+SCHEMA FIELDS: ['scaling_mechanism', 'reasoning_benchmark', 'performance_improvement', 'scaling_behavior', 'resource_overhead', 'algorithmic_approach']
+
+ERAS:
+  [0] Origins: 2017-2020
+  [1] Key Advances: 2020-2023
+  [2] Current Frontier: 2023-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1707.06347 (2017) "Proximal Policy Optimization Algorithms" [cs] (cited-by 70 in-topic, era 0)
+    reasoning_benchmark: simulated robotic locomotion and Atari game playing
+    performance_improvement: outperforms other online policy gradient methods
+    resource_overhead: favorable balance between sample complexity, simplicity, and wall-time
+    algorithmic_approach: proximal policy optimization (PPO) using a surrogate objective function for multiple epochs of minibatch updates
+    relations: used-by arXiv:2305.18290; cited-by arXiv:2309.12284; used-by arXiv:2309.17179; used-by arXiv:2402.03300; cited-by arXiv:2403.09629; cited-by arXiv:2404.12253
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 52 in-topic, era 0)
+    reasoning_benchmark: WMT 2014 English-to-German translation, WMT 2014 English-to-French translation, English constituency parsing
+    performance_improvement: 28.4 BLEU on English-to-German (improving over existing best results by over 2 BLEU); 41.8 BLEU on English-to-French
+    resource_overhead: 3.5 days on eight GPUs for English-to-French task; described as a small fraction of the training costs of best models in literature
+    algorithmic_approach: Transformer architecture based solely on attention mechanisms, dispensing with recurrence and convolutions
+    relations: used-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2309.06180; compared-by arXiv:2310.06825; cited-by arXiv:2407.10671; used-by arXiv:2501.12599
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 103 in-topic, era 0)
+    reasoning_benchmark: unscrambling words, using a novel word in a sentence, 3-digit arithmetic
+    performance_improvement: reaches competitiveness with prior state-of-the-art fine-tuning approaches
+    scaling_behavior: scaling up language models greatly improves task-agnostic, few-shot performance
+    algorithmic_approach: autoregressive language model with 175 billion parameters used in a few-shot setting without gradient updates
+    relations: uses arXiv:2001.08361; cites arXiv:1706.03762; used-by arXiv:2302.13971; critiqued-by arXiv:2303.08774; cited-by arXiv:2303.17651; cited-by arXiv:2305.00633; cited-by arXiv:2305.10601; cited-by arXiv:2305.14992
+arXiv:2001.08361 (2020) "Scaling Laws for Neural Language Models" [cs] (cited-by 71 in-topic, era 0)
+    scaling_behavior: Loss scales as a power-law with model size, dataset size, and training compute over seven orders of magnitude; larger models are more sample-efficient.
+    relations: uses arXiv:1706.03762; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2307.09288; cited-by arXiv:2407.21787; used-by arXiv:2408.00724; critiqued-by arXiv:2501.12599
+arXiv:2009.03300 (2020) "Measuring Massive Multitask Language Understanding" [cs] (cited-by 52 in-topic, era 0)
+    reasoning_benchmark: 57 tasks including elementary mathematics, US history, computer science, law, morality, and more (Massive Multitask Language Understanding)
+    performance_improvement: GPT-3 improves over random chance by almost 20 percentage points on average
+    relations: uses arXiv:2005.14165; cites arXiv:2001.08361; cited-by arXiv:2302.13971; used-by arXiv:2303.08774; used-by arXiv:2305.14325; used-by arXiv:2306.05685; cited-by arXiv:2307.09288; cited-by arXiv:2310.06825
+arXiv:2009.01325 (2020) "Learning to summarize from human feedback" [cs] (cited-by 31 in-topic, era 0)
+    reasoning_benchmark: TL;DR dataset of Reddit posts, CNN/DM news articles
+    performance_improvement: Significantly outperform human reference summaries and much larger models fine-tuned with supervised learning alone; summaries nearly as good as human reference on CNN/DM.
+    algorithmic_approach: Reinforcement learning using a reward model trained on human preference comparisons.
+    relations: uses arXiv:1706.03762; uses arXiv:1707.06347; uses arXiv:2005.14165; compared-by arXiv:2303.17651; cited-by arXiv:2305.20050; used-by arXiv:2307.09288; cited-by arXiv:2402.06457; cited-by arXiv:2408.15240; cited-by arXiv:2501.02497
+arXiv:2110.14168 (2021) "Training Verifiers to Solve Math Word Problems" [cs] (cited-by 216 in-topic, era 1)
+    scaling_mechanism: Generating many candidate solutions and selecting the one ranked highest by a trained verifier at test time.
+    reasoning_benchmark: GSM8K (8.5K high quality linguistically diverse grade school math word problems).
+    performance_improvement: Verification significantly improves performance on GSM8K compared to a finetuning baseline.
+    scaling_behavior: Verification scales more effectively with increased data than a finetuning baseline.
+    algorithmic_approach: Training verifiers to judge the correctness of model completions.
+    relations: compares-with arXiv:2005.14165; cites arXiv:2001.08361; cites arXiv:2103.03874; uses arXiv:1706.03762; compared-by arXiv:2302.13971; used-by arXiv:2303.17651; cited-by arXiv:2305.00633; used-by arXiv:2305.14325; compared-by arXiv:2305.14992; used-by arXiv:2305.20050
+arXiv:2103.03874 (2021) "Measuring Mathematical Problem Solving With the MATH Dataset" [cs] (cited-by 188 in-topic, era 1)
+    reasoning_benchmark: MATH dataset (12,500 challenging competition mathematics problems)
+    scaling_behavior: Increasing budgets and model parameter counts is impractical; scaling Transformers solves most text-based tasks but is not currently solving MATH.
+    relations: cites arXiv:1706.03762; cites arXiv:2001.08361; cites arXiv:2107.03374; cites arXiv:2108.07732; cites arXiv:2009.03300; uses arXiv:2005.14165; compared-by arXiv:2302.13971; compared-by arXiv:2305.20050; compared-by arXiv:2307.09288; used-by arXiv:2309.12284; cited-by arXiv:2310.06825; used-by arXiv:2312.08935
+arXiv:2107.03374 (2021) "Evaluating Large Language Models Trained on Code" [cs] (cited-by 84 in-topic, era 1)
+    scaling_mechanism: repeated sampling (100 samples per problem)
+    reasoning_benchmark: HumanEval
+    performance_improvement: increased from 28.8% (single sample) to 70.2% (100 samples)
+    algorithmic_approach: repeated sampling from the model
+    relations: cites arXiv:1706.03762; compares-with arXiv:2005.14165; compares-with arXiv:2001.08361; cites arXiv:2009.01325; compared-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; compared-by arXiv:2303.17651; used-by arXiv:2305.00633; cited-by arXiv:2306.05685
+arXiv:2112.00114 (2021) "Show Your Work: Scratchpads for Intermediate Computation with Language
+  Models" [cs] (cited-by 38 in-topic, era 1)
+    scaling_mechanism: emitting intermediate computation steps into a 'scratchpad'
+    reasoning_benchmark: long addition and execution of arbitrary programs
+    performance_improvement: dramatically improve the ability of language models to perform multi-step computations
+    algorithmic_approach: asking models to perform operations 'step by step' by showing results of intermediate computations
+    relations: uses arXiv:2108.07732; motivated-by arXiv:2005.14165; cites arXiv:2107.03374; cited-by arXiv:2305.00633; cited-by arXiv:2305.14325; cited-by arXiv:2305.20050; cited-by arXiv:2308.09687; cited-by arXiv:2310.04406; compared-by arXiv:2403.07974
+arXiv:2108.07732 (2021) "Program Synthesis with Large Language Models" [cs] (cited-by 37 in-topic, era 1)
+    reasoning_benchmark: MBPP (974 tasks) and MathQA-Python (23,914 problems)
+    performance_improvement: Largest few-shot model achieves 59.6% on MBPP; fine-tuning improves performance by ~10 percentage points; largest fine-tuned model achieves 83.8% on MathQA-Python; human feedback halves the error rate
+    scaling_behavior: Synthesis performance scales log-linearly with model size
+    algorithmic_approach: Few-shot learning, fine-tuning, and incorporating human feedback via natural language dialog
+    relations: uses arXiv:2005.14165; compares-with arXiv:2107.03374; uses arXiv:1706.03762; compared-by arXiv:2302.13971; used-by arXiv:2303.11366; cited-by arXiv:2307.09288; compared-by arXiv:2310.04406; used-by arXiv:2402.03300; used-by arXiv:2402.06457
+arXiv:2106.09685 (2021) "LoRA: Low-Rank Adaptation of Large Language Models" [cs] (cited-by 30 in-topic, era 1)
+    performance_improvement: Performs on-par or better than full fine-tuning in model quality on RoBERTa, DeBERTa, GPT-2, and GPT-3
+    resource_overhead: Reduces trainable parameters by 10,000 times and GPU memory requirement by 3 times compared to GPT-3 175B fine-tuning; no additional inference latency
+    algorithmic_approach: Freezes pre-trained model weights and injects trainable rank decomposition matrices into each layer of the Transformer architecture
+    relations: uses arXiv:2005.14165; uses arXiv:1706.03762; used-by arXiv:2402.06457; cited-by arXiv:2501.12570; cited-by arXiv:2507.02076; cited-by arXiv:2206.02336
+arXiv:2201.11903 (2022) "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" [cs] (cited-by 256 in-topic, era 1)
+    scaling_mechanism: chain of thought prompting (providing a few chain of thought demonstrations as exemplars)
+    reasoning_benchmark: arithmetic, commonsense, and symbolic reasoning tasks; GSM8K benchmark
+    performance_improvement: achieves state of the art accuracy on GSM8K, surpassing finetuned GPT-3 with a verifier
+    scaling_behavior: reasoning abilities emerge naturally in sufficiently large language models
+    algorithmic_approach: generating a series of intermediate reasoning steps
+    relations: compares-with arXiv:2110.14168; uses arXiv:2107.03374; cites arXiv:2108.07732; cites arXiv:2112.00114; uses arXiv:2005.14165; cites arXiv:2001.08361; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; compared-by arXiv:2305.00633; cited-by arXiv:2305.10601; cited-by arXiv:2305.14325; compared-by arXiv:2305.14992
+arXiv:2203.11171 (2022) "Self-Consistency Improves Chain of Thought Reasoning in Language Models" [cs] (cited-by 211 in-topic, era 1)
+    scaling_mechanism: Sampling a diverse set of reasoning paths and selecting the most consistent answer by marginalizing out the sampled paths.
+    reasoning_benchmark: GSM8K, SVAMP, AQuA, StrategyQA, and ARC-challenge.
+    performance_improvement: GSM8K (+17.9%), SVAMP (+11.0%), AQuA (+12.2%), StrategyQA (+6.4%), and ARC-challenge (+3.9%).
+    algorithmic_approach: Self-consistency decoding strategy that replaces greedy decoding by marginalizing over multiple sampled reasoning paths.
+    relations: extends arXiv:2201.11903; uses arXiv:2110.14168; cites arXiv:2205.11916; uses arXiv:2005.14165; uses arXiv:2107.03374; compared-by arXiv:2302.13971; used-by arXiv:2305.00633; compared-by arXiv:2305.10601; cited-by arXiv:2305.14325; compared-by arXiv:2305.14992; compared-by arXiv:2305.20050
+arXiv:2203.02155 (2022) "Training language models to follow instructions with human feedback" [cs] (cited-by 90 in-topic, era 1)
+    reasoning_benchmark: human evaluations on prompt distribution, public NLP datasets
+    performance_improvement: 1.3B parameter InstructGPT preferred over 175B GPT-3; improvements in truthfulness and reductions in toxic output
+    algorithmic_approach: Supervised fine-tuning on labeler demonstrations followed by reinforcement learning from human feedback (RLHF)
+    relations: uses arXiv:2005.14165; extends arXiv:2009.01325; uses arXiv:1707.06347; cites arXiv:2107.03374; used-by arXiv:2303.08774; compared-by arXiv:2303.17651; cited-by arXiv:2305.14325; cited-by arXiv:2305.18290; cited-by arXiv:2305.20050; cited-by arXiv:2306.05685
+arXiv:2205.11916 (2022) "Large Language Models are Zero-Shot Reasoners" [cs] (cited-by 80 in-topic, era 1)
+    scaling_mechanism: Zero-shot-CoT prompting (adding 'Let's think step by step' before the answer)
+    reasoning_benchmark: MultiArith, GSM8K, AQUA-RAT, SVAMP, Last Letter, Coin Flip, Date Understanding, Tracking Shuffled Objects
+    performance_improvement: MultiArith: 17.7% to 78.7%; GSM8K: 10.4% to 40.7% (using text-davinci-002)
+    algorithmic_approach: Zero-shot Chain of Thought (CoT) prompting
+    relations: uses arXiv:2201.11903; compares-with arXiv:2203.11171; uses arXiv:2005.14165; cites arXiv:2110.14168; cites arXiv:2203.14465; cites arXiv:2112.00114; cited-by arXiv:2303.08774; cited-by arXiv:2305.00633; compared-by arXiv:2305.14325; cited-by arXiv:2305.14992; cited-by arXiv:2305.20050; cited-by arXiv:2309.17179
+arXiv:2211.14275 (2022) "Solving math word problems with process- and outcome-based feedback" [cs] (cited-by 70 in-topic, era 1)
+    reasoning_benchmark: GSM8K
+    performance_improvement: final-answer error: 16.8% $\to$ 12.7%; reasoning error among final-answer-correct solutions: 14.0% $\to$ 3.4%
+    algorithmic_approach: Comparison of process-based supervision (supervising reasoning steps) versus outcome-based supervision (supervising final results) and learned reward models.
+    relations: compares-with arXiv:2203.11171; compares-with arXiv:2201.11903; uses arXiv:2206.14858; uses arXiv:2206.02336; cites arXiv:2205.11916; uses arXiv:2110.14168; compared-by arXiv:2305.20050; used-by arXiv:2309.17179; compared-by arXiv:2312.08935; cited-by arXiv:2402.06457; cited-by arXiv:2403.09629; cited-by arXiv:2406.06592
+arXiv:2203.14465 (2022) "STaR: Bootstrapping Reasoning With Reasoning" [cs] (cited-by 59 in-topic, era 1)
+    reasoning_benchmark: mathematics, commonsense question-answering, CommensenseQA
+    performance_improvement: significantly improves performance compared to models fine-tuned to directly predict final answers; performs comparably to fine-tuning a 30x larger state-of-the-art language model on CommensenseQA
+    algorithmic_approach: Self-Taught Reasoner (STaR): an iterative loop that generates rationales, re-generates rationales using correct answers if initial attempts fail, and fine-tunes on rationales that yielded correct answers.
+    relations: uses arXiv:2201.11903; uses arXiv:2112.00114; uses arXiv:2110.14168; cites arXiv:2005.14165; cites arXiv:1707.06347; cites arXiv:2203.11171; cited-by arXiv:2305.14325; cited-by arXiv:2305.20050; cited-by arXiv:2308.09687; cited-by arXiv:2309.17179; motivates arXiv:2402.06457; cited-by arXiv:2403.09629
+arXiv:2206.14858 (2022) "Solving Quantitative Reasoning Problems with Language Models" [cs] (cited-by 56 in-topic, era 1)
+    reasoning_benchmark: over two hundred undergraduate-level problems in physics, biology, chemistry, economics, and other sciences
+    performance_improvement: correctly answer nearly a third of [the problems]
+    algorithmic_approach: pretrained on general natural language data and further trained on technical content
+    relations: uses arXiv:2201.11903; compares-with arXiv:2203.11171; uses arXiv:2103.03874; cites arXiv:2203.15556; cites arXiv:2005.14165; uses arXiv:2110.14168; used-by arXiv:2302.13971; cited-by arXiv:2305.14325; used-by arXiv:2305.20050; cited-by arXiv:2309.17179; compared-by arXiv:2402.03300; cited-by arXiv:2402.14008
+arXiv:2205.10625 (2022) "Least-to-Most Prompting Enables Complex Reasoning in Large Language
+  Models" [cs] (cited-by 51 in-topic, era 1)
+    scaling_mechanism: Least-to-most prompting (breaking complex problems into a series of simpler subproblems solved in sequence)
+    reasoning_benchmark: Symbolic manipulation, compositional generalization, math reasoning, and SCAN
+    performance_improvement: SCAN benchmark accuracy increased from 16% (chain-of-thought) to at least 99% (least-to-most) using 14 exemplars
+    algorithmic_approach: Decomposing a complex problem into simpler subproblems and solving them sequentially, using answers from previous subproblems to facilitate subsequent ones
+    relations: uses arXiv:2201.11903; uses arXiv:2110.14168; cites arXiv:2005.14165; cites arXiv:2203.11171; cited-by arXiv:2305.00633; cited-by arXiv:2305.10601; compared-by arXiv:2305.14992; cited-by arXiv:2309.12284; cited-by arXiv:2309.17179; cited-by arXiv:2310.01798
+arXiv:2206.02336 (2022) "Making Large Language Models Better Reasoners with Step-Aware Verifier" [cs] (cited-by 43 in-topic, era 1)
+    scaling_mechanism: Generating diverse prompts to explore different reasoning paths and using a step-aware verifier with a weighted voting scheme.
+    reasoning_benchmark: GSM8K and six other reasoning benchmarks.
+    performance_improvement: GSM8K accuracy increased from 74.4% to 83.2% using code-davinci-002; previous prompt-based methods improved GSM8K from 17.9% to 58.1%.
+    algorithmic_approach: DIVERSE (Diverse Verifier on Reasoning Step) which involves generating diverse prompts, individual step-by-step verification, and a weighted voting scheme.
+    relations: uses arXiv:2110.14168; uses arXiv:2203.11171; uses arXiv:2201.11903; cites arXiv:2106.09685; cites arXiv:2005.14165; cites arXiv:2205.10625; cited-by arXiv:2305.00633; compared-by arXiv:2305.20050; used-by arXiv:2312.08935; cited-by arXiv:2402.06457; cited-by arXiv:2406.06592; used-by arXiv:2408.03314
+arXiv:2203.15556 (2022) "Training Compute-Optimal Large Language Models" [cs] (cited-by 40 in-topic, era 1)
+    reasoning_benchmark: MMLU benchmark
+    performance_improvement: 67.5% average accuracy on MMLU (greater than a 7% improvement over Gopher)
+    scaling_behavior: For compute-optimal training, model size and number of training tokens should be scaled equally (for every doubling of model size, the number of training tokens should also be doubled)
+    relations: uses arXiv:2001.08361; cites arXiv:2005.14165; compares-with arXiv:2009.03300; cites arXiv:1706.03762; used-by arXiv:2302.13971; used-by arXiv:2303.08774; cited-by arXiv:2307.09288; cited-by arXiv:2407.21787; cited-by arXiv:2408.00724; used-by arXiv:2408.03314
+arXiv:2210.03629 (2022) "ReAct: Synergizing Reasoning and Acting in Language Models" [cs] (cited-by 31 in-topic, era 1)
+    reasoning_benchmark: HotpotQA, Fever, ALFWorld, WebShop
+    performance_improvement: 34% absolute success rate increase over imitation methods on ALFWorld; 10% absolute success rate increase over reinforcement learning methods on WebShop
+    algorithmic_approach: Interleaving reasoning traces and task-specific actions to allow the model to induce, track, and update action plans while interfacing with external sources.
+    relations: cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2005.14165; uses arXiv:2203.14465; cites arXiv:2205.10625; cites arXiv:2205.11916; used-by arXiv:2303.11366; cited-by arXiv:2305.10601; cited-by arXiv:2308.09687; extended-by arXiv:2310.04406; cited-by arXiv:2403.09629; cited-by arXiv:2407.21787
+arXiv:2211.10435 (2022) "PAL: Program-aided Language Models" [cs] (cited-by 28 in-topic, era 1)
+    scaling_mechanism: Offloading the solution step to a symbolic runtime (Python interpreter) while using the LLM for problem decomposition.
+    reasoning_benchmark: 13 mathematical, symbolic, and algorithmic reasoning tasks from BIG-Bench Hard and GSM8K.
+    performance_improvement: Surpasses PaLM-540B using chain-of-thought by absolute 15% top-1 on the GSM8K benchmark.
+    algorithmic_approach: Program-Aided Language models (PAL): using LLMs to generate programs as intermediate reasoning steps and executing them via a Python interpreter.
+    relations: uses arXiv:2201.11903; uses arXiv:2203.11171; uses arXiv:2206.14858; cites arXiv:2110.14168; cites arXiv:2210.03629; uses arXiv:2005.14165; used-by arXiv:2303.17651; cited-by arXiv:2305.10601; cited-by arXiv:2310.04406; compared-by arXiv:2404.12253; cited-by arXiv:2408.03314; cited-by arXiv:2502.06703
+arXiv:2203.07814 (2022) "Competition-Level Code Generation with AlphaCode" [cs] (cited-by 28 in-topic, era 1)
+    scaling_mechanism: large-scale model sampling to explore the search space, followed by filtering based on program behavior
+    reasoning_benchmark: Codeforces platform programming competitions
+    performance_improvement: achieved on average a ranking of top 54.3% in competitions with more than 5,000 participants
+    algorithmic_approach: large and efficient-to-sample transformer-based architectures combined with large-scale model sampling and behavior-based filtering
+    relations: uses arXiv:2107.03374; cites arXiv:1706.03762; cites arXiv:2005.14165; compares-with arXiv:2108.07732; uses arXiv:2001.08361; compares-with arXiv:2110.14168; cited-by arXiv:2303.11366; compared-by arXiv:2305.14325; cited-by arXiv:2403.07974; used-by arXiv:2407.21787; cited-by arXiv:2501.02497; cited-by arXiv:2502.03387
+arXiv:2210.10760 (2022) "Scaling Laws for Reward Model Overoptimization" [cs] (cited-by 28 in-topic, era 1)
+    scaling_mechanism: reinforcement learning or best-of-n sampling
+    scaling_behavior: coefficients scale smoothly with the number of reward model parameters; relationship follows a different functional form depending on the method of optimization
+    algorithmic_approach: optimizing against a proxy reward model to predict a gold-standard reward model
+    relations: uses arXiv:2009.01325; uses arXiv:2203.02155; cites arXiv:2204.05862; uses arXiv:2005.14165; uses arXiv:1707.06347; cites arXiv:2001.08361; used-by arXiv:2305.20050; cited-by arXiv:2408.00724; cited-by arXiv:2501.02497; cited-by arXiv:2501.12948; cited-by arXiv:2502.04463; critiqued-by arXiv:2503.19877
+arXiv:2212.08073 (2022) "Constitutional AI: Harmlessness from AI Feedback" [cs] (cited-by 27 in-topic, era 1)
+    algorithmic_approach: Constitutional AI involving a supervised learning phase (self-critique and revision) and a reinforcement learning phase (RLAIF) using a preference model trained on AI feedback.
+    relations: extends arXiv:2204.05862; uses arXiv:2205.11916; extends arXiv:2210.10760; uses arXiv:2112.00114; uses arXiv:2201.11903; extends arXiv:2009.01325; cited-by arXiv:2303.17651; used-by arXiv:2307.09288; cited-by arXiv:2309.17179; cited-by arXiv:2310.01798; cited-by arXiv:2402.06457; cited-by arXiv:2404.12253
+arXiv:2211.17192 (2022) "Fast Inference from Transformers via Speculative Decoding" [cs] (cited-by 25 in-topic, era 1)
+    scaling_mechanism: speculative decoding (computing several tokens in parallel using an approximation model and speculative execution)
+    performance_improvement: 2X-3X acceleration compared to the standard T5X implementation
+    algorithmic_approach: using an efficient approximation model to generate candidate tokens and running the large model in parallel to verify them via a novel sampling method
+    relations: cites arXiv:1706.03762; cites arXiv:2005.14165; cited-by arXiv:2309.17179; cited-by arXiv:2312.08935; cited-by arXiv:2402.03300; cited-by arXiv:2502.04463; cited-by arXiv:2502.05171; extended-by arXiv:2505.18404
+arXiv:2204.05862 (2022) "Training a Helpful and Harmless Assistant with Reinforcement Learning
+  from Human Feedback" [cs] (cited-by 24 in-topic, era 1)
+    performance_improvement: improves performance on almost all NLP evaluations
+    scaling_behavior: roughly linear relation between the RL reward and the square root of the KL divergence
+    algorithmic_approach: preference modeling and reinforcement learning from human feedback (RLHF)
+    relations: uses arXiv:2009.01325; compares-with arXiv:2203.02155; compares-with arXiv:2005.14165; uses arXiv:2009.03300; uses arXiv:2107.03374; motivated-by arXiv:2001.08361; cited-by arXiv:2303.17651; cited-by arXiv:2306.05685; cited-by arXiv:2307.09288; cited-by arXiv:2503.19877; extended-by arXiv:2212.08073; cited-by arXiv:2303.08774
+arXiv:2210.03493 (2022) "Automatic Chain of Thought Prompting in Large Language Models" [cs] (cited-by 21 in-topic, era 1)
+    reasoning_benchmark: ten public benchmark reasoning tasks
+    performance_improvement: consistently matches or exceeds the performance of the manual CoT paradigm
+    algorithmic_approach: Auto-CoT: sampling questions with diversity and generating reasoning chains to construct demonstrations
+    relations: uses arXiv:2205.11916; uses arXiv:2201.11903; uses arXiv:2005.14165; compares-with arXiv:2110.14168; motivated-by arXiv:2203.14465; cites arXiv:2205.10625; cited-by arXiv:2403.09629; cited-by arXiv:2501.02497; cited-by arXiv:2502.18080
+arXiv:2210.11610 (2022) "Large Language Models Can Self-Improve" [cs] (cited-by 13 in-topic, era 1)
+    scaling_mechanism: Fine-tuning on self-generated 'high-confidence' rationale-augmented answers using Chain-of-Thought prompting and self-consistency.
+    reasoning_benchmark: GSM8K, DROP, OpenBookQA, and ANLI-A3.
+    performance_improvement: GSM8K (74.4%->82.1%), DROP (78.2%->83.0%), OpenBookQA (90.0%->94.4%), and ANLI-A3 (63.4%->67.9%).
+    algorithmic_approach: Self-improvement via generating rationale-augmented answers from unlabeled datasets using Chain-of-Thought and self-consistency, followed by fine-tuning on these self-generated solutions.
+    relations: uses arXiv:2201.11903; uses arXiv:2203.11171; uses arXiv:2206.02336; uses arXiv:2205.11916; uses arXiv:2205.10625; cites arXiv:2005.14165; cited-by arXiv:2303.08774; cited-by arXiv:2309.12284; cited-by arXiv:2403.09629; cited-by arXiv:2406.06592; cited-by arXiv:2305.00633; compared-by arXiv:2212.08073
+arXiv:2305.10601 (2023) "Tree of Thoughts: Deliberate Problem Solving with Large Language Models" [cs] (cited-by 142 in-topic, era 1)
+    scaling_mechanism: Exploration over coherent units of text (thoughts) via considering multiple reasoning paths, self-evaluating choices, looking ahead, and backtracking.
+    reasoning_benchmark: Game of 24, Creative Writing, and Mini Crosswords.
+    performance_improvement: In Game of 24, success rate increased from 4% (GPT-4 with chain-of-thought) to 74% using ToT.
+    algorithmic_approach: Tree of Thoughts (ToT) framework that generalizes Chain of Thought by enabling deliberate decision-making through search and self-evaluation.
+    relations: uses arXiv:2303.08774; cites arXiv:2005.14165; cites arXiv:2201.11903; compares-with arXiv:2203.11171; cites arXiv:2210.03629; cites arXiv:2305.14992; cited-by arXiv:2305.00633; cited-by arXiv:2305.14992; used-by arXiv:2308.09687; used-by arXiv:2309.17179; cited-by arXiv:2310.01798; extended-by arXiv:2310.04406
+arXiv:2303.17651 (2023) "Self-Refine: Iterative Refinement with Self-Feedback" [cs] (cited-by 101 in-topic, era 1)
+    scaling_mechanism: Iterative feedback and refinement using the same LLM as generator, refiner, and feedback provider.
+    reasoning_benchmark: 7 diverse tasks ranging from dialog response generation to mathematical reasoning.
+    performance_improvement: ~20% absolute average improvement in task performance.
+    algorithmic_approach: Self-Refine: iterative refinement through self-generated feedback without additional training or supervised data.
+    relations: compares-with arXiv:2203.02155; cites arXiv:2005.14165; compares-with arXiv:2303.08774; compares-with arXiv:2107.03374; uses arXiv:2110.14168; cites arXiv:2204.05862; cited-by arXiv:2303.11366; motivates arXiv:2305.00633; cited-by arXiv:2305.10601; compared-by arXiv:2305.14325; cited-by arXiv:2307.09288; cited-by arXiv:2308.09687
+arXiv:2303.08774 (2023) "GPT-4 Technical Report" [cs] (cited-by 91 in-topic, era 1)
+    reasoning_benchmark: simulated bar exam
+    performance_improvement: top 10% of test takers on simulated bar exam
+    scaling_behavior: predictable performance based on models trained with up to 1/1,000th the compute of GPT-4
+    algorithmic_approach: Transformer-based model pre-trained to predict the next token
+    relations: uses arXiv:2203.15556; cites arXiv:2001.08361; critiques arXiv:2005.14165; cites arXiv:2201.11903; cites arXiv:2210.11610; cites arXiv:2205.11916; compared-by arXiv:2303.11366; compared-by arXiv:2303.17651; cited-by arXiv:2305.00633; used-by arXiv:2305.10601; compared-by arXiv:2305.14992; used-by arXiv:2305.20050
+arXiv:2312.08935 (2023) "Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human
+  Annotations" [cs] (cited-by 89 in-topic, era 1)
+    scaling_mechanism: Verification (reranking multiple outputs) and Reinforcement Learning (step-by-step PPO)
+    reasoning_benchmark: GSM8K and MATH
+    performance_improvement: Mistral-7B accuracy: 77.9% to 84.1% on GSM8K and 28.6% to 33.0% on MATH via PPO; further enhanced to 89.1% on GSM8K and 43.5% on MATH via verification
+    algorithmic_approach: Process-oriented reward modeling using automatically constructed process-wise supervision data for reranking and PPO
+    relations: uses arXiv:2206.02336; cites arXiv:2306.05685; uses arXiv:2305.20050; cites arXiv:2310.01798; uses arXiv:2309.12284; cites arXiv:2201.11903; used-by arXiv:2402.03300; cited-by arXiv:2402.06457; used-by arXiv:2404.12253; used-by arXiv:2406.06592; used-by arXiv:2408.00724; used-by arXiv:2408.03314
+arXiv:2311.12022 (2023) "GPQA: A Graduate-Level Google-Proof Q&A Benchmark" [cs] (cited-by 83 in-topic, era 1)
+    reasoning_benchmark: GPQA (448 multiple-choice questions in biology, physics, and chemistry)
+    relations: compares-with arXiv:2307.09288; compares-with arXiv:2205.11916; cites arXiv:2009.03300; compared-by arXiv:2407.10671; cited-by arXiv:2412.21187; used-by arXiv:2501.12948; cited-by arXiv:2502.03373; used-by arXiv:2502.03387; cited-by arXiv:2502.18080
+arXiv:2305.20050 (2023) "Let's Verify Step by Step" [cs] (cited-by 82 in-topic, era 1)
+    reasoning_benchmark: MATH dataset
+    performance_improvement: Process-supervised model solves 78% of problems from a representative subset of the MATH test set, significantly outperforming outcome supervision.
+    algorithmic_approach: Process supervision (providing feedback for each intermediate reasoning step) and active learning.
+    relations: cites arXiv:2112.00114; cites arXiv:2201.11903; cites arXiv:2205.11916; cites arXiv:2009.01325; cites arXiv:2203.02155; uses arXiv:2110.14168; cited-by arXiv:2309.12284; cited-by arXiv:2309.17179; cited-by arXiv:2310.01798; used-by arXiv:2312.08935; cited-by arXiv:2402.03300; used-by arXiv:2404.12253
+arXiv:2309.06180 (2023) "Efficient Memory Management for Large Language Model Serving with
+  PagedAttention" [cs] (cited-by 67 in-topic, era 1)
+    performance_improvement: 2-4$	imes$ improvement in throughput compared to FasterTransformer and Orca
+    scaling_behavior: Improvement is more pronounced with longer sequences, larger models, and more complex decoding algorithms
+    resource_overhead: near-zero waste in KV cache memory
+    algorithmic_approach: PagedAttention (inspired by virtual memory and paging techniques)
+    relations: extends arXiv:2005.14165; cites arXiv:2107.03374; cites arXiv:1706.03762; cites arXiv:2303.08774; extends arXiv:2302.13971; cited-by arXiv:2310.06825; cited-by arXiv:2312.08935; cited-by arXiv:2402.03300; used-by arXiv:2403.07974; used-by arXiv:2501.12570; used-by arXiv:2501.12599
+arXiv:2309.17179 (2023) "Alphazero-like Tree-Search can Guide Large Language Model Decoding and
+  Training" [cs] (cited-by 61 in-topic, era 1)
+    scaling_mechanism: AlphaZero-like tree-search with a learned value function used during both inference and training.
+    reasoning_benchmark: reasoning, planning, alignment, and decision-making tasks
+    performance_improvement: outperforms existing approaches (ToT and RAP) and can handle trees with a depth of 64
+    algorithmic_approach: TS-LLM (AlphaZero-like tree-search learning framework) using a learned value function to guide decoding and training.
+    relations: cites arXiv:2303.08774; cites arXiv:2302.13971; cites arXiv:2201.11903; cites arXiv:2205.10625; cites arXiv:2206.14858; cites arXiv:2305.18290; cited-by arXiv:2404.12253; cited-by arXiv:2406.06592; used-by arXiv:2408.03314; cited-by arXiv:2412.18547; cited-by arXiv:2412.21187; cited-by arXiv:2501.02497
+arXiv:2308.09687 (2023) "Graph of Thoughts: Solving Elaborate Problems with Large Language Models" [cs] (cited-by 53 in-topic, era 1)
+    scaling_mechanism: Modeling LLM information as an arbitrary graph where vertices are 'LLM thoughts' and edges represent dependencies, allowing for combining thoughts, distilling networks, or using feedback loops.
+    performance_improvement: 62% increase in sorting quality over Tree of Thoughts (ToT).
+    resource_overhead: >31% reduction in costs compared to ToT.
+    algorithmic_approach: Graph of Thoughts (GoT) framework using arbitrary graph structures to enable synergistic combinations, distillation, and feedback loops.
+    relations: cites arXiv:2005.14165; cites arXiv:2302.13971; cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2305.10601; cites arXiv:2305.00633; cited-by arXiv:2310.04406; cited-by arXiv:2404.12253; cited-by arXiv:2407.21787; cited-by arXiv:2412.21187; cited-by arXiv:2501.12570; cited-by arXiv:2502.04463
+arXiv:2305.14992 (2023) "Reasoning with Language Model is Planning with World Model" [cs] (cited-by 51 in-topic, era 1)
+    scaling_mechanism: Strategic exploration in the reasoning space using a principled planning algorithm (Monte Carlo Tree Search) to build a reasoning tree.
+    reasoning_benchmark: Plan generation, math reasoning, and logical inference tasks.
+    performance_improvement: RAP on LLAMA-33B surpasses CoT on GPT-4 with a 33% relative improvement in a plan generation setting.
+    algorithmic_approach: Reasoning via Planning (RAP), which repurposes the LLM as both a world model and a reasoning agent using Monte Carlo Tree Search (MCTS) to balance exploration vs. exploitation.
+    relations: compares-with arXiv:2303.08774; cites arXiv:2005.14165; compares-with arXiv:2201.11903; compares-with arXiv:2205.10625; compares-with arXiv:2110.14168; cites arXiv:2205.11916; cited-by arXiv:2305.10601; used-by arXiv:2309.17179; used-by arXiv:2310.04406; cited-by arXiv:2404.12253; cited-by arXiv:2406.06592; cited-by arXiv:2412.06769
+arXiv:2305.18290 (2023) "Direct Preference Optimization: Your Language Model is Secretly a Reward
+  Model" [cs] (cited-by 51 in-topic, era 1)
+    reasoning_benchmark: sentiment control, summarization, and single-turn dialogue
+    performance_improvement: matches or improves response quality in summarization and single-turn dialogue; exceeds PPO-based RLHF in sentiment control
+    resource_overhead: computationally lightweight; eliminates the need for sampling from the LM during fine-tuning
+    algorithmic_approach: Direct Preference Optimization (DPO): a new parameterization of the reward model that enables extraction of the optimal policy in closed form using a simple classification loss
+    relations: cites arXiv:2005.14165; cites arXiv:2302.13971; cites arXiv:2203.02155; uses arXiv:1707.06347; cited-by arXiv:2309.17179; used-by arXiv:2402.03300; used-by arXiv:2402.06457; cited-by arXiv:2404.12253; used-by arXiv:2407.10671; cited-by arXiv:2408.15240
+arXiv:2303.11366 (2023) "Reflexion: Language Agents with Verbal Reinforcement Learning" [cs] (cited-by 47 in-topic, era 1)
+    scaling_mechanism: Verbal reinforcement through linguistic feedback and maintenance of reflective text in an episodic memory buffer.
+    reasoning_benchmark: HumanEval (coding), sequential decision-making, and language reasoning tasks.
+    performance_improvement: 91% pass@1 accuracy on HumanEval, surpassing GPT-4's 80%.
+    algorithmic_approach: Reflexion framework: agents verbally reflect on task feedback signals and store reflections in an episodic memory buffer to improve subsequent trials without weight updates.
+    relations: uses arXiv:2210.03629; uses arXiv:2107.03374; cites arXiv:2303.17651; cites arXiv:2305.00633; cites arXiv:2203.07814; cites arXiv:2304.05128; compared-by arXiv:2303.17651; motivates arXiv:2305.00633; compared-by arXiv:2305.14325; cited-by arXiv:2305.14992; cited-by arXiv:2308.09687; cited-by arXiv:2309.17179
+arXiv:2305.00633 (2023) "Self-Evaluation Guided Beam Search for Reasoning" [cs] (cited-by 46 in-topic, era 1)
+    scaling_mechanism: Stepwise self-evaluation guidance integrated via stochastic beam search.
+    reasoning_benchmark: GSM8K, AQuA, StrategyQA, and arithmetic reasoning tasks.
+    performance_improvement: 6.34% on GSM8K, 9.56% on AQuA, and 5.46% on StrategyQA (compared to Codex-backboned baselines).
+    resource_overhead: Comparable computational budgets to baseline methods.
+    algorithmic_approach: Stochastic beam search balancing exploitation and exploration with temperature-controlled randomness, guided by a stepwise self-evaluation mechanism.
+    relations: cites arXiv:2005.14165; cites arXiv:2302.13971; cites arXiv:2303.08774; cites arXiv:2110.14168; cites arXiv:2112.00114; compares-with arXiv:2201.11903; cited-by arXiv:2303.11366; cited-by arXiv:2308.09687; cited-by arXiv:2309.17179; cited-by arXiv:2310.04406; cited-by arXiv:2404.12253; compared-by arXiv:2408.00724
+arXiv:2307.09288 (2023) "Llama 2: Open Foundation and Fine-Tuned Chat Models" [cs] (cited-by 44 in-topic, era 1)
+    performance_improvement: Outperforms open-source chat models on most benchmarks tested
+    algorithmic_approach: Fine-tuning for dialogue use cases and safety improvements
+    relations: compares-with arXiv:2110.14168; compares-with arXiv:2103.03874; extends arXiv:2302.13971; cites arXiv:2005.14165; cites arXiv:2203.15556; cites arXiv:2009.03300; used-by arXiv:2305.00633; cited-by arXiv:2305.14992; cited-by arXiv:2308.09687; used-by arXiv:2309.12284; used-by arXiv:2309.17179; cited-by arXiv:2310.04406
+arXiv:2302.13971 (2023) "LLaMA: Open and Efficient Foundation Language Models" [cs] (cited-by 43 in-topic, era 1)
+    performance_improvement: LLaMA-13B outperforms GPT-3 (175B) on most benchmarks; LLaMA-65B is competitive with Chinchilla-70B and PaLM-540B
+    relations: uses arXiv:2005.14165; compares-with arXiv:2103.03874; compares-with arXiv:2110.14168; cites arXiv:2001.08361; uses arXiv:2203.15556; uses arXiv:2206.14858; cited-by arXiv:2303.08774; used-by arXiv:2303.17651; cited-by arXiv:2305.00633; cited-by arXiv:2305.10601; compared-by arXiv:2305.14992; cited-by arXiv:2305.18290
+arXiv:2306.05685 (2023) "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena" [cs] (cited-by 42 in-topic, era 1)
+    reasoning_benchmark: MT-bench (multi-turn question set) and Chatbot Arena (crowdsourced battle platform)
+    performance_improvement: GPT-4 achieves over 80% agreement with human preferences
+    algorithmic_approach: Using strong LLMs as judges to evaluate models on open-ended questions
+    relations: critiques arXiv:2110.14168; cites arXiv:2107.03374; cites arXiv:2203.02155; cites arXiv:2204.05862; uses arXiv:2009.03300; uses arXiv:2302.13971; cited-by arXiv:2312.08935; compared-by arXiv:2407.10671; used-by arXiv:2408.15240; cited-by arXiv:2501.02497; compared-by arXiv:2502.06703; cited-by arXiv:2503.19877
+arXiv:2310.01798 (2023) "Large Language Models Cannot Self-Correct Reasoning Yet" [cs] (cited-by 38 in-topic, era 1)
+    algorithmic_approach: intrinsic self-correction (attempting to correct initial responses based solely on inherent capabilities without external feedback)
+    relations: uses arXiv:2303.11366; cites arXiv:2110.14168; cites arXiv:2205.10625; cites arXiv:2303.17651; cites arXiv:2212.08073; cites arXiv:2304.05128; compared-by arXiv:2309.17179; cited-by arXiv:2310.04406; cited-by arXiv:2312.08935; cited-by arXiv:2402.06457; cited-by arXiv:2404.12253; used-by arXiv:2408.03314
+arXiv:2309.12284 (2023) "MetaMath: Bootstrap Your Own Mathematical Questions for Large Language
+  Models" [cs] (cited-by 32 in-topic, era 1)
+    reasoning_benchmark: GSM8K and MATH
+    performance_improvement: MetaMath-7B achieves 66.4% on GSM8K and 19.4% on MATH, exceeding state-of-the-art models of the same size by 11.5% and 8.7% respectively; MetaMath-70B achieves 82.3% on GSM8K.
+    algorithmic_approach: Bootstrapping mathematical questions by rewriting questions from multiple perspectives to create the MetaMathQA dataset, followed by fine-tuning LLaMA-2 models.
+    relations: cites arXiv:2005.14165; cites arXiv:2203.02155; cites arXiv:2107.03374; uses arXiv:2307.09288; compares-with arXiv:2302.13971; compares-with arXiv:2201.11903; used-by arXiv:2312.08935; cited-by arXiv:2402.03300; cited-by arXiv:2404.12253; cited-by arXiv:2406.06592; used-by arXiv:2408.00724; cited-by arXiv:2412.06769
+arXiv:2310.06825 (2023) "Mistral 7B" [cs] (cited-by 28 in-topic, era 1)
+    reasoning_benchmark: reasoning, mathematics, and code generation
+    performance_improvement: outperforms Llama 2 13B across all evaluated benchmarks, and Llama 1 34B in reasoning, mathematics, and code generation
+    resource_overhead: reduced inference cost (via sliding window attention)
+    algorithmic_approach: grouped-query attention (GQA) and sliding window attention (SWA)
+    relations: cites arXiv:2103.03874; cites arXiv:2107.03374; cites arXiv:2009.03300; cites arXiv:2307.09288; cites arXiv:2302.13971; cites arXiv:2309.06180; used-by arXiv:2312.08935; compared-by arXiv:2402.03300; used-by arXiv:2403.09629; cited-by arXiv:2406.01574; compared-by arXiv:2407.10671; used-by arXiv:2408.00724
+arXiv:2310.04406 (2023) "Language Agent Tree Search Unifies Reasoning Acting and Planning in
+  Language Models" [cs] (cited-by 27 in-topic, era 1)
+    scaling_mechanism: Integration of Monte Carlo Tree Search (MCTS) with LM-powered value functions and self-reflections for exploration.
+    reasoning_benchmark: HumanEval (programming), interactive question-answering (QA), web navigation (WebShop), and math.
+    performance_improvement: 92.7% pass@1 accuracy on HumanEval with GPT-4; average score of 75.9 on WebShop with GPT-3.5.
+    algorithmic_approach: Language Agent Tree Search (LATS) framework synergizing reasoning, acting, and planning via MCTS and in-context learning.
+    relations: cites arXiv:2307.09288; cites arXiv:2303.08774; cites arXiv:2211.10435; cites arXiv:2110.14168; extends arXiv:2210.03629; uses arXiv:2303.11366; cited-by arXiv:2408.00724; cited-by arXiv:2502.12521; cited-by arXiv:2507.05557; cited-by arXiv:2511.14772; cited-by arXiv:2603.07159
+arXiv:2304.05128 (2023) "Teaching Large Language Models to Self-Debug" [cs] (cited-by 26 in-topic, era 1)
+    scaling_mechanism: Self-Debugging via few-shot demonstrations (rubber duck debugging) using execution results and natural language explanations.
+    reasoning_benchmark: Spider (text-to-SQL), TransCoder (C++-to-Python), and MBPP (text-to-Python).
+    performance_improvement: Spider: 2-3% improvement overall, 9% on hardest level; TransCoder and MBPP: up to 12% improvement.
+    scaling_behavior: Improves sample efficiency, matching or outperforming baselines that generate >10x candidate programs.
+    algorithmic_approach: Teaching the model to identify mistakes by investigating execution results and explaining generated code in natural language without human feedback.
+    relations: cited-by arXiv:2303.11366; cited-by arXiv:2305.10601; cited-by arXiv:2308.09687; cited-by arXiv:2310.01798; used-by arXiv:2403.07974; cited-by arXiv:2501.02497
+arXiv:2305.14325 (2023) "Improving Factuality and Reasoning in Language Models through Multiagent
+  Debate" [cs] (cited-by 22 in-topic, era 1)
+    scaling_mechanism: multiple language model instances propose and debate their individual responses and reasoning processes over multiple rounds
+    reasoning_benchmark: mathematical and strategic reasoning tasks
+    performance_improvement: significantly enhances mathematical and strategic reasoning; improves factual validity and reduces fallacious answers/hallucinations
+    algorithmic_approach: Multiagent debate (multiple instances proposing and debating responses over multiple rounds to arrive at a common final answer)
+    relations: compares-with arXiv:2205.11916; compares-with arXiv:2303.11366; compares-with arXiv:2303.17651; cites arXiv:2203.02155; uses arXiv:2110.14168; compares-with arXiv:2203.07814; compared-by arXiv:2310.01798; cited-by arXiv:2408.03314; cited-by arXiv:2412.21187; cited-by arXiv:2501.02497
+arXiv:2408.03314 (2024) "Scaling LLM Test-Time Compute Optimally can be More Effective than
+  Scaling Model Parameters" [cs] (cited-by 217 in-topic, era 2)
+    scaling_mechanism: Searching against dense, process-based verifier reward models; updating the model's distribution over a response adaptively; compute-optimal scaling strategy.
+    performance_improvement: Improves efficiency of test-time compute scaling by more than 4x compared to a best-of-N baseline; can outperform a 14x larger model in FLOPs-matched evaluation.
+    scaling_behavior: Effectiveness of approaches critically varies depending on the difficulty of the prompt; compute-optimal strategy allocates compute adaptively per prompt.
+    algorithmic_approach: Searching against dense, process-based verifier reward models and adaptive updating of the model's distribution over a response.
+    relations: uses arXiv:2312.08935; uses arXiv:2206.02336; cites arXiv:2201.11903; cites arXiv:2303.17651; cites arXiv:2305.14325; uses arXiv:2305.10601; cited-by arXiv:2501.02497; cited-by arXiv:2501.12570; cited-by arXiv:2501.12599; cited-by arXiv:2501.12948; cited-by arXiv:2502.03373; cited-by arXiv:2502.03387
+arXiv:2407.21787 (2024) "Large Language Monkeys: Scaling Inference Compute with Repeated Sampling" [cs] (cited-by 122 in-topic, era 2)
+    scaling_mechanism: repeatedly sampling candidate solutions from a model
+    reasoning_benchmark: SWE-bench Lite, coding, and formal proofs
+    performance_improvement: DeepSeek-Coder-V2-Instruct on SWE-bench Lite increased from 15.9% (1 sample) to 56% (250 samples), outperforming the single-sample SOTA of 43%
+    scaling_behavior: coverage scales with the number of samples over four orders of magnitude; relationship is often log-linear and can be modelled with an exponentiated power law; majority voting and reward models plateau beyond several hundred samples
+    algorithmic_approach: repeated sampling combined with selection methods like majority voting and reward models
+    relations: cites arXiv:2005.14165; cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2203.07814; cites arXiv:2103.03874; compares-with arXiv:2405.03553; cited-by arXiv:2408.15240; cited-by arXiv:2501.02497; cited-by arXiv:2502.03387; critiqued-by arXiv:2502.06703; cited-by arXiv:2502.07154; cited-by arXiv:2502.18080
+arXiv:2407.21783 (2024) "The Llama 3 Herd of Models" [cs] (cited-by 111 in-topic, era 2)
+    performance_improvement: comparable quality to leading language models such as GPT-4
+    algorithmic_approach: compositional approach (for integrating image, video, and speech capabilities)
+    relations: cited-by arXiv:2412.06769; cited-by arXiv:2501.12599; compared-by arXiv:2501.12948; cited-by arXiv:2502.03387; used-by arXiv:2502.06703; used-by arXiv:2502.07154
+arXiv:2402.03300 (2024) "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open
+  Language Models" [cs] (cited-by 105 in-topic, era 2)
+    scaling_mechanism: Self-consistency over 64 samples
+    reasoning_benchmark: MATH benchmark
+    performance_improvement: 51.7% on MATH (base model) and 60.9% on MATH (self-consistency over 64 samples)
+    algorithmic_approach: Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO)
+    relations: uses arXiv:2103.03874; cites arXiv:2303.08774; uses arXiv:2009.03300; uses arXiv:2110.14168; compares-with arXiv:2206.14858; uses arXiv:2201.11903; compared-by arXiv:2402.14008; cited-by arXiv:2408.03314; used-by arXiv:2409.12122; cited-by arXiv:2412.06769; used-by arXiv:2501.12570; used-by arXiv:2501.12948
+arXiv:2412.16720 (2024) "OpenAI o1 System Card" [cs] (cited-by 102 in-topic, era 2)
+    scaling_mechanism: large-scale reinforcement learning to reason using chain of thought
+    performance_improvement: state-of-the-art performance on certain benchmarks for risks such as generating illicit advice, choosing stereotyped responses, and succumbing to known jailbreaks
+    algorithmic_approach: reinforcement learning to reason using chain of thought
+    relations: compares-with arXiv:2009.03300; cited-by arXiv:2501.12599; cited-by arXiv:2502.03387; cited-by arXiv:2503.04697; cited-by arXiv:2503.19877; compared-by arXiv:2504.00294; used-by arXiv:2504.00869
+arXiv:2412.15115 (2024) "Qwen2.5 Technical Report" [cs] (cited-by 87 in-topic, era 2)
+    performance_improvement: Qwen2.5-72B-Instruct outperforms several open and proprietary models and is competitive with Llama-3-405B-Instruct (which is ~5x larger).
+    algorithmic_approach: Intricate supervised finetuning with over 1 million samples and multistage reinforcement learning.
+    relations: cited-by arXiv:2502.03387; used-by arXiv:2502.06703; used-by arXiv:2503.04697; used-by arXiv:2504.00869; cited-by arXiv:2504.10449; used-by arXiv:2505.05408
+arXiv:2408.00724 (2024) "Inference Scaling Laws: An Empirical Analysis of Compute-Optimal
+  Inference for Problem-Solving with Language Models" [cs] (cited-by 81 in-topic, era 2)
+    scaling_mechanism: Generating additional tokens using inference strategies: greedy search, majority voting, best-of-n, weighted voting, and two tree search algorithms.
+    reasoning_benchmark: MATH benchmark.
+    performance_improvement: Llemma-7B with a novel tree search algorithm consistently outperforms Llemma-34B across all tested inference strategies on the MATH benchmark.
+    scaling_behavior: Scaling inference compute with inference strategies can be more computationally efficient than scaling model parameters; smaller models with advanced inference algorithms offer Pareto-optimal trade-offs.
+    algorithmic_approach: Inference strategies including greedy search, majority voting, best-of-n, weighted voting, and tree search algorithms.
+    relations: uses arXiv:2001.08361; cites arXiv:2203.15556; cites arXiv:2210.10760; cites arXiv:2112.00114; cites arXiv:2201.11903; cites arXiv:2305.10601; cited-by arXiv:2501.02497; cited-by arXiv:2501.12599; cited-by arXiv:2502.06703; cited-by arXiv:2503.04697; cited-by arXiv:2504.00294; cited-by arXiv:2504.10449
+arXiv:2412.21187 (2024) "Do NOT Think That Much for 2+3=? On the Overthinking of o1-Like LLMs" [cs] (cited-by 78 in-topic, era 2)
+    scaling_mechanism: extended chain-of-thought (CoT) processes exploring multiple strategies
+    reasoning_benchmark: GSM8K, MATH500, GPQA, and AIME
+    performance_improvement: preserves model performance while reducing computational overhead
+    algorithmic_approach: self-training paradigm to mitigate overthinking and streamline reasoning processes
+    relations: cites arXiv:2110.14168; cites arXiv:2103.03874; uses arXiv:2203.14465; cites arXiv:2305.18290; cites arXiv:2311.12022; cites arXiv:2203.11171; cited-by arXiv:2501.12570; compared-by arXiv:2501.12599; critiqued-by arXiv:2502.04463; used-by arXiv:2502.18080; cited-by arXiv:2504.14047; cited-by arXiv:2505.05408
+arXiv:2412.06769 (2024) "Training Large Language Models to Reason in a Continuous Latent Space" [cs] (cited-by 49 in-topic, era 2)
+    reasoning_benchmark: logical reasoning tasks that require substantial search during planning
+    performance_improvement: outperforms CoT on logical reasoning tasks and achieves a better trade-off between accuracy and efficiency
+    algorithmic_approach: Coconut (Chain of Continuous Thought): feeding the last hidden state back to the model as the next input embedding directly in the continuous space to enable breadth-first search (BFS).
+    relations: cites arXiv:2407.21783; cites arXiv:2303.08774; cites arXiv:2201.11903; cites arXiv:2403.09629; cites arXiv:2305.10601; cites arXiv:2305.14992; cited-by arXiv:2412.18547; cited-by arXiv:2412.21187; cited-by arXiv:2501.12570; cited-by arXiv:2502.05171; cited-by arXiv:2505.05408; cited-by arXiv:2507.02076
+arXiv:2402.14008 (2024) "OlympiadBench: A Challenging Benchmark for Promoting AGI with
+  Olympiad-Level Bilingual Multimodal Scientific Problems" [cs] (cited-by 48 in-topic, era 2)
+    reasoning_benchmark: OlympiadBench (8,476 problems from Olympiad-level mathematics and physics competitions, including the Chinese college entrance exam)
+    relations: cites arXiv:2303.08774; cites arXiv:2009.03300; cites arXiv:2110.14168; compares-with arXiv:2103.03874; cites arXiv:2206.14858; compares-with arXiv:2402.03300; used-by arXiv:2409.12122; cited-by arXiv:2502.03387; used-by arXiv:2503.04697; used-by arXiv:2503.19877; used-by arXiv:2504.10449; compared-by arXiv:2507.05557
+arXiv:2409.12122 (2024) "Qwen2.5-Math Technical Report: Toward Mathematical Expert Model via
+  Self-Improvement" [cs] (cited-by 46 in-topic, era 2)
+    scaling_mechanism: Using a reward model (RM) to guide sampling during the inference stage.
+    reasoning_benchmark: 10 mathematics datasets in English and Chinese, including GSM8K, MATH, GaoKao, AMC23, and AIME24.
+    algorithmic_approach: Self-improvement pipeline integrating pre-training (data generation via Qwen2-Math-Instruct), post-training (iterative SFT and RM evolution, reinforcement learning), and inference-time RM-guided sampling.
+    relations: uses arXiv:2407.10671; uses arXiv:2402.03300; uses arXiv:2110.14168; uses arXiv:2103.03874; uses arXiv:2206.14858; uses arXiv:2201.11903; used-by arXiv:2502.03387; used-by arXiv:2502.06703; used-by arXiv:2502.07154; cited-by arXiv:2502.18080; used-by arXiv:2503.19877; compared-by arXiv:2509.25420
+arXiv:2408.15240 (2024) "Generative Verifiers: Reward Modeling as Next-Token Prediction" [cs] (cited-by 41 in-topic, era 2)
+    scaling_mechanism: Best-of-N sampling and majority voting for verification.
+    reasoning_benchmark: GSM8K, MATH, and MMLU abstract algebra.
+    performance_improvement: Algorithmic tasks: 5% to 45.3%; GSM8K: 73% to 93.4%; MATH: 28% to 44.6%; MMLU abstract algebra: 37.9% to 53.5%.
+    scaling_behavior: Scales favorably with model size and test-time compute.
+    algorithmic_approach: Training verifiers using the next-token prediction objective jointly on verification and solution generation (GenRM).
+    relations: uses arXiv:2110.14168; cites arXiv:2203.11171; uses arXiv:2306.05685; uses arXiv:2305.20050; cites arXiv:2312.08935; compares-with arXiv:2201.11903; cited-by arXiv:2501.02497; cited-by arXiv:2501.12599; cited-by arXiv:2503.19877
+arXiv:2409.12917 (2024) "Training Language Models to Self-Correct via Reinforcement Learning" [cs] (cited-by 39 in-topic, era 2)
+    reasoning_benchmark: MATH and HumanEval
+    performance_improvement: 15.6% improvement for Gemini 1.0 Pro and 9.1% improvement for Gemini 1.5 Flash
+    algorithmic_approach: Multi-turn online reinforcement learning (SCoRe) using self-generated correction traces and regularization (initial multi-turn RL phase followed by a reward bonus)
+    relations: cited-by arXiv:2412.21187; cited-by arXiv:2501.02497; cited-by arXiv:2501.12948; cited-by arXiv:2502.04463; cited-by arXiv:2502.06703; cited-by arXiv:2502.12521
+arXiv:2406.06592 (2024) "Improve Mathematical Reasoning in Language Models by Automated Process
+  Supervision" [cs] (cited-by 38 in-topic, era 2)
+    scaling_mechanism: Automated process supervision via OmegaPRM (divide-and-conquer MCTS) combined with a weighted self-consistency algorithm.
+    reasoning_benchmark: MATH500 and GSM8K.
+    performance_improvement: Gemini Pro: MATH500 (51% to 69.4%), GSM8K (86.4% to 93.6%); Gemma2 27B: MATH500 (42.3% to 58.2%), GSM8K (74.0% to 92.2%).
+    algorithmic_approach: OmegaPRM (divide-and-conquer style Monte Carlo Tree Search) using binary search to identify the first error in Chain of Thought (CoT).
+    relations: cites arXiv:2201.11903; cites arXiv:2203.11171; cites arXiv:2110.14168; cites arXiv:2203.02155; cites arXiv:2210.11610; cites arXiv:2206.02336; cited-by arXiv:2408.15240; cited-by arXiv:2412.21187; cited-by arXiv:2501.02497; cited-by arXiv:2502.06703; cited-by arXiv:2504.10449; cited-by arXiv:2507.05557
+arXiv:2412.18547 (2024) "Token-Budget-Aware LLM Reasoning" [cs] (cited-by 35 in-topic, era 2)
+    scaling_mechanism: Dynamic adjustment of the number of reasoning tokens based on problem complexity via a token-budget-aware framework.
+    performance_improvement: Reduces token costs in CoT reasoning with only a slight performance reduction.
+    resource_overhead: Reduces token usage/costs compared to standard Chain-of-Thought (CoT) reasoning.
+    algorithmic_approach: Token-budget-aware LLM reasoning framework that compresses reasoning processes by including a reasonable token budget in the prompt.
+    relations: cites arXiv:2305.10601; cites arXiv:2205.10625; cites arXiv:2305.14992; cites arXiv:2309.17179; cites arXiv:2201.11903; cites arXiv:2206.02336; cited-by arXiv:2412.21187; cited-by arXiv:2501.12570; cited-by arXiv:2502.04463; cited-by arXiv:2505.18404; cited-by arXiv:2507.02076
+arXiv:2405.03553 (2024) "AlphaMath Almost Zero: Process Supervision without Process" [cs] (cited-by 34 in-topic, era 2)
+    scaling_mechanism: Monte Carlo Tree Search (MCTS) and step-level beam search
+    performance_improvement: achieves comparable or superior results to previous state-of-the-art methods
+    algorithmic_approach: Integrating a value model with an LLM to generate process supervision and step-level evaluation signals via MCTS and step-level beam search
+    relations: compared-by arXiv:2407.21787; compared-by arXiv:2408.00724; cited-by arXiv:2408.03314; cited-by arXiv:2501.02497; cited-by arXiv:2502.03387; compared-by arXiv:2502.06703
+arXiv:2403.07974 (2024) "LiveCodeBench: Holistic and Contamination Free Evaluation of Large
+  Language Models for Code" [cs] (cited-by 33 in-topic, era 2)
+    reasoning_benchmark: LiveCodeBench (comprising 400 problems from LeetCode, AtCoder, and CodeForces; includes code generation, self-repair, code execution, and test output prediction)
+    relations: uses arXiv:2107.03374; critiques arXiv:2108.07732; cites arXiv:2203.07814; uses arXiv:2303.11366; uses arXiv:2304.05128; cites arXiv:2303.08774; compared-by arXiv:2407.10671; cited-by arXiv:2501.12599; cited-by arXiv:2501.12948; used-by arXiv:2504.14047; cited-by arXiv:2509.06861; used-by arXiv:2510.02611
+arXiv:2402.06457 (2024) "V-STaR: Training Verifiers for Self-Taught Reasoners" [cs] (cited-by 31 in-topic, era 2)
+    scaling_mechanism: Using a verifier trained via DPO to select the best solution among multiple candidate solutions at inference time.
+    reasoning_benchmark: Common code generation and math reasoning benchmarks.
+    performance_improvement: 4% to 17% test accuracy improvement over existing self-improvement and verification approaches.
+    scaling_behavior: Running V-STaR for multiple iterations results in progressively better reasoners and verifiers.
+    algorithmic_approach: Training a verifier using Direct Preference Optimization (DPO) on both correct and incorrect solutions to judge correctness.
+    relations: uses arXiv:2110.14168; motivated-by arXiv:2203.14465; cites arXiv:2312.08935; uses arXiv:2305.18290; uses arXiv:2103.03874; uses arXiv:2108.07732; cited-by arXiv:2403.09629; cited-by arXiv:2407.21787; compared-by arXiv:2408.15240; cited-by arXiv:2501.02497; cited-by arXiv:2502.06703; compared-by arXiv:2503.19877
+arXiv:2406.01574 (2024) "MMLU-Pro: A More Robust and Challenging Multi-Task Language
+  Understanding Benchmark" [cs] (cited-by 26 in-topic, era 2)
+    reasoning_benchmark: MMLU-Pro (enhanced version of MMLU with 10-option choices and reasoning-focused questions)
+    performance_improvement: Accuracy drop of 16% to 33% compared to MMLU; prompt sensitivity decreased from 4-5% to 2%
+    algorithmic_approach: Chain of Thought (CoT) reasoning
+    relations: uses arXiv:2201.11903; cites arXiv:2212.08073; cites arXiv:2307.09288; cites arXiv:2303.08774; cites arXiv:2009.03300; cites arXiv:2103.03874; cited-by arXiv:2407.10671; used-by arXiv:2501.12948; used-by arXiv:2502.03373; used-by arXiv:2504.00869; used-by arXiv:2505.05408
+arXiv:2406.16838 (2024) "From Decoding to Meta-Generation: Inference-time Algorithms for Large
+  Language Models" [cs] (cited-by 25 in-topic, era 2)
+    scaling_mechanism: Scaling compute during inference via token-level generation algorithms (decoding algorithms) and meta-generation algorithms.
+    algorithmic_approach: Token-level generation (sampling or search space construction) and meta-generation (operating on partial/full sequences, backtracking, and integrating external information).
+    relations: cited-by arXiv:2502.12521; cited-by arXiv:2503.04697; cited-by arXiv:2503.19877; cited-by arXiv:2504.00294
+arXiv:2403.09629 (2024) "Quiet-STaR: Language Models Can Teach Themselves to Think Before
+  Speaking" [cs] (cited-by 24 in-topic, era 2)
+    scaling_mechanism: Generating rationales at each token to explain future text via a tokenwise parallel sampling algorithm using learnable start/end tokens.
+    reasoning_benchmark: GSM8K and CommonsenseQA.
+    performance_improvement: GSM8K (5.9% $\rightarrow$ 10.9%) and CommonsenseQA (36.3% $\rightarrow$ 47.2%); improved perplexity of difficult tokens.
+    algorithmic_approach: A generalization of STaR where LMs learn to generate rationales at each token using tokenwise parallel sampling and an extended teacher-forcing technique.
+    relations: cites arXiv:2201.11903; cites arXiv:2112.00114; cites arXiv:2203.14465; cites arXiv:2205.11916; uses arXiv:2310.06825; cites arXiv:2206.14858; cited-by arXiv:2407.21787; cited-by arXiv:2408.03314; cited-by arXiv:2412.06769; cited-by arXiv:2502.05171; cited-by arXiv:2502.06703
+arXiv:2407.10671 (2024) "Qwen2 Technical Report" [cs] (cited-by 24 in-topic, era 2)
+    reasoning_benchmark: MMLU, GPQA, HumanEval, GSM8K, BBH, MT-Bench, Arena-Hard, LiveCodeBench
+    performance_improvement: Qwen2-72B (base): 84.2 MMLU, 37.9 GPQA, 64.6 HumanEval, 89.5 GSM8K, 82.4 BBH; Qwen2-72B-Instruct: 9.1 MT-Bench, 48.1 Arena-Hard, 35.7 LiveCodeBench
+    relations: compares-with arXiv:2009.03300; compares-with arXiv:2107.03374; cites arXiv:2302.13971; compares-with arXiv:2310.06825; compares-with arXiv:2311.12022; cites arXiv:1706.03762; used-by arXiv:2409.12122; used-by arXiv:2502.06703; used-by arXiv:2509.19645
+arXiv:2404.12253 (2024) "Toward Self-Improvement of LLMs via Imagination, Searching, and
+  Criticizing" [cs] (cited-by 20 in-topic, era 2)
+    scaling_mechanism: Integration of Monte Carlo Tree Search (MCTS) with LLMs to establish a self-improving loop.
+    reasoning_benchmark: mathematical reasoning tasks
+    performance_improvement: significantly enhances the performance of LLMs without additional annotations
+    algorithmic_approach: AlphaLLM: a self-improving loop integrating prompt synthesis, an efficient MCTS approach tailored for language tasks, and a trio of critic models for feedback.
+    relations: compares-with arXiv:2307.09288; cites arXiv:2303.08774; cites arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2308.09687; cites arXiv:2112.00114; cited-by arXiv:2407.21787; cited-by arXiv:2408.00724; cited-by arXiv:2408.03314; cited-by arXiv:2412.21187
+arXiv:2501.12948 (2025) "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" [cs] (cited-by 218 in-topic, era 2)
+    reasoning_benchmark: mathematics, coding competitions, and STEM fields
+    performance_improvement: surpassing its counterparts trained via conventional supervised learning on human demonstrations
+    algorithmic_approach: pure reinforcement learning (RL) to facilitate emergent reasoning patterns (self-reflection, verification, and dynamic strategy adaptation)
+    relations: cites arXiv:2211.14275; cites arXiv:2305.20050; cites arXiv:2312.08935; cites arXiv:2409.12917; cites arXiv:2309.17179; uses arXiv:2402.03300; used-by arXiv:2502.03373; used-by arXiv:2502.03387; compared-by arXiv:2502.04463; compared-by arXiv:2502.05171; used-by arXiv:2502.06703; cited-by arXiv:2502.07154
+arXiv:2501.19393 (2025) "s1: Simple test-time scaling" [cs] (cited-by 129 in-topic, era 2)
+    scaling_mechanism: budget forcing (forcefully terminating the thinking process or appending 'Wait' to lengthen generation)
+    reasoning_benchmark: MATH and AIME24
+    performance_improvement: exceeds o1-preview on competition math questions by up to 27%; scaling from 50% to 57% on AIME24
+    scaling_behavior: allows extrapolating beyond performance without test-time intervention
+    algorithmic_approach: supervised finetuning on s1K (1,000 questions with reasoning traces) combined with budget forcing
+    relations: used-by arXiv:2503.04697; cited-by arXiv:2503.19877; cited-by arXiv:2504.00294; used-by arXiv:2504.00869; cited-by arXiv:2504.10449; extended-by arXiv:2505.05408
+arXiv:2501.12599 (2025) "Kimi k1.5: Scaling Reinforcement Learning with LLMs" [cs] (cited-by 64 in-topic, era 2)
+    scaling_mechanism: Scaling reinforcement learning (RL) to allow models to explore with rewards; long-CoT techniques used via long2short methods to improve short-CoT models.
+    reasoning_benchmark: AIME, MATH 500, Codeforces, MathVista, and LiveCodeBench.
+    performance_improvement: 77.5 on AIME, 96.2 on MATH 500, 94-th percentile on Codeforces, 74.9 on MathVista; short-CoT results: 60.8 on AIME, 94.6 on MATH500, 47.3 on LiveCodeBench (outperforming GPT-4o and Claude Sonnet 3.5 by up to +550%).
+    algorithmic_approach: Simplistic RL framework without Monte Carlo tree search, value functions, or process reward models; utilizes long context scaling and improved policy optimization methods.
+    relations: uses arXiv:2309.06180; cites arXiv:2403.07974; cites arXiv:2305.20050; critiques arXiv:2001.08361; critiques arXiv:2203.15556; cites arXiv:2201.11903; cited-by arXiv:2501.12570; critiqued-by arXiv:2502.04463; cited-by arXiv:2502.06703; cited-by arXiv:2507.02076; cited-by arXiv:2511.14772
+arXiv:2505.09388 (2025) "Qwen3 Technical Report" [cs] (cited-by 51 in-topic, era 2)
+    scaling_mechanism: thinking budget mechanism (allowing adaptive allocation of computational resources during inference)
+    reasoning_benchmark: code generation, mathematical reasoning, and agent tasks
+    performance_improvement: achieves state-of-the-art results; competitive against larger MoE models and proprietary models
+    algorithmic_approach: integration of thinking mode (multi-step reasoning) and non-thinking mode into a unified framework with dynamic mode switching
+    relations: extended-by arXiv:2509.06861; cited-by arXiv:2509.19645; used-by arXiv:2510.06471; used-by arXiv:2510.09599
+arXiv:2503.04697 (2025) "L1: Controlling How Long A Reasoning Model Thinks With Reinforcement Learning" [cs] (cited-by 45 in-topic, era 2)
+    scaling_mechanism: Generating longer chain-of-thought sequences to use more test-time compute.
+    performance_improvement: 1.5B L1 model surpasses GPT-4o at equal reasoning lengths; outperforms S1 method for length control.
+    scaling_behavior: Smoothly trading off computational cost and accuracy via length control; enables fine-grained allocation of test-time compute.
+    algorithmic_approach: Length Controlled Policy Optimization (LCPO), a reinforcement learning method optimizing for accuracy and adherence to user-specified length constraints.
+    relations: cites arXiv:2412.16720; uses arXiv:2501.12948; cites arXiv:2201.11903; uses arXiv:2501.19393; uses arXiv:2412.15115; uses arXiv:2009.03300; cited-by arXiv:2503.19877; cited-by arXiv:2504.00869; cited-by arXiv:2504.10449; cited-by arXiv:2505.20522; compared-by arXiv:2507.02076
+arXiv:2501.07301 (2025) "The Lessons of Developing Process Reward Models in Mathematical Reasoning" [cs] (cited-by 40 in-topic, era 2)
+    scaling_mechanism: Best-of-N (BoN) sampling
+    performance_improvement: Significantly improved model performance and data efficiency in BoN evaluation and step-wise error identification tasks
+    algorithmic_approach: Consensus filtering mechanism integrating Monte Carlo (MC) estimation with LLM-as-a-judge
+    relations: used-by arXiv:2502.06703; used-by arXiv:2503.19877
+arXiv:2502.03387 (2025) "LIMO: Less is More for Reasoning" [cs] (cited-by 38 in-topic, era 2)
+    reasoning_benchmark: AIME24, MATH500
+    performance_improvement: 63.3% accuracy on AIME24 (vs 6.5% previously); 95.6% on MATH500 (vs 59.2% previously); 45.8% absolute improvement in out-of-distribution generalization
+    scaling_behavior: Sophisticated reasoning emerges with only 1% of the training data required by prior approaches
+    algorithmic_approach: Simple supervised fine-tuning using strategically designed demonstrations as cognitive templates
+    relations: cites arXiv:2103.03874; cites arXiv:2402.14008; cites arXiv:2307.09288; cites arXiv:2407.21783; cites arXiv:2309.12284; cites arXiv:2412.16720; cited-by arXiv:2505.05408; cited-by arXiv:2505.20522; compared-by arXiv:2510.09599
+arXiv:2501.12570 (2025) "O1-Pruner: Length-Harmonizing Fine-Tuning for O1-Like Reasoning Pruning" [cs] (cited-by 37 in-topic, era 2)
+    reasoning_benchmark: various mathematical reasoning benchmarks
+    performance_improvement: achieves higher accuracy while significantly reducing inference overhead
+    resource_overhead: significantly reduces inference overhead (latency/token count)
+    algorithmic_approach: Length-Harmonizing Fine-Tuning (O1-Pruner) using pre-sampling to estimate baseline performance followed by RL-style fine-tuning to minimize reasoning length under accuracy constraints
+    relations: uses arXiv:2103.03874; compares-with arXiv:2305.18290; cites arXiv:2408.03314; cites arXiv:2203.02155; cites arXiv:2201.11903; cites arXiv:2305.10601; critiqued-by arXiv:2502.04463; critiqued-by arXiv:2502.18080; cited-by arXiv:2507.02076
+arXiv:2502.04463 (2025) "Training Language Models to Reason Efficiently" [cs] (cited-by 35 in-topic, era 2)
+    scaling_mechanism: Dynamic allocation of inference-time compute based on task complexity via reinforcement learning (RL).
+    performance_improvement: Significant reductions in inference cost while preserving most of the accuracy.
+    scaling_behavior: Derivation of a family of reasoning models with varying efficiency levels controlled via a single hyperparameter.
+    algorithmic_approach: Reinforcement learning (RL) to incentivize minimizing unnecessary computational overhead while maintaining accuracy.
+    relations: cites arXiv:2409.12917; cites arXiv:2001.08361; compares-with arXiv:2501.12948; cites arXiv:2201.11903; cites arXiv:1706.03762; cites arXiv:2103.03874; critiqued-by arXiv:2503.04697; cited-by arXiv:2505.18404; cited-by arXiv:2507.02076
+arXiv:2503.24235 (2025) "A Survey on Test-Time Scaling in Large Language Models: What, How,
+  Where, and How Well?" [cs] (cited-by 33 in-topic, era 2)
+    reasoning_benchmark: mathematics, coding, and open-ended Q&A
+    relations: cited-by arXiv:2505.20522; cited-by arXiv:2507.02076; cited-by arXiv:2509.06861; cited-by arXiv:2603.07159
+arXiv:2502.06703 (2025) "Can 1B LLM Surpass 405B LLM? Rethinking Compute-Optimal Test-Time
+  Scaling" [cs] (cited-by 33 in-topic, era 2)
+    scaling_mechanism: Test-Time Scaling (TTS) using additional computation during the inference phase.
+    reasoning_benchmark: MATH-500 and AIME24.
+    performance_improvement: 1B LLM can exceed a 405B LLM on MATH-500; 0.5B LLM outperforms GPT-4o; 3B LLM surpasses 405B LLM; 7B LLM beats o1 and DeepSeek-R1.
+    scaling_behavior: The compute-optimal TTS strategy is highly dependent on the choice of policy model, PRM, and problem difficulty.
+    algorithmic_approach: Adapting TTS strategies to specific characteristics of policy models, Process Reward Models (PRMs), and problem difficulty levels.
+    relations: cites arXiv:2303.08774; uses arXiv:2501.12948; cites arXiv:2501.12599; cites arXiv:2408.00724; uses arXiv:2408.03314; compares-with arXiv:2405.03553; cited-by arXiv:2504.14047; cited-by arXiv:2506.12928; cited-by arXiv:2507.02076; cited-by arXiv:2510.02611
+arXiv:2502.03373 (2025) "Demystifying Long Chain-of-Thought Reasoning in LLMs" [cs] (cited-by 31 in-topic, era 2)
+    scaling_mechanism: Long chains-of-thought (CoTs) enabling strategies like backtracking and error correction; scaling verifiable reward signals.
+    reasoning_benchmark: STEM reasoning; out-of-distribution (OOD) tasks.
+    scaling_behavior: Reasoning capabilities tend to emerge with increased training compute, but development is not guaranteed; CoT length growth requires reward shaping for stability.
+    algorithmic_approach: Reinforcement learning (RL) with verifiable reward signals and supervised fine-tuning (SFT).
+    relations: cites arXiv:2302.13971; cites arXiv:2005.14165; cites arXiv:2303.08774; cites arXiv:2110.14168; cites arXiv:2311.12022; uses arXiv:2501.12948; cited-by arXiv:2503.19877; cited-by arXiv:2507.02076
+arXiv:2502.18080 (2025) "Towards Thinking-Optimal Scaling of Test-Time Compute for LLM Reasoning" [cs] (cited-by 26 in-topic, era 2)
+    scaling_mechanism: Extending Chain of Thought (CoT) lengths and implementing a Thinking-Optimal Scaling strategy using seed data with varying response length distributions.
+    reasoning_benchmark: Mathematical reasoning tasks and various math benchmarks.
+    performance_improvement: Self-improved models based on Qwen2.5-32B-Instruct outperform other distillation-based 32B o1-like models and achieve performance on par with the teacher model QwQ-32B-Preview.
+    scaling_behavior: Scaling with longer CoTs can impair reasoning performance in certain domains; there exists an optimal scaled length distribution that differs across domains.
+    algorithmic_approach: Thinking-Optimal Scaling strategy: teaching models different reasoning efforts via seed data with varying length distributions, followed by selecting the shortest correct response for self-improvement.
+    relations: uses arXiv:2412.21187; cites arXiv:2409.12122; cites arXiv:2402.03300; cites arXiv:2201.11903; uses arXiv:2103.03874; cites arXiv:2311.12022; cited-by arXiv:2504.00869; cited-by arXiv:2506.13102; cited-by arXiv:2507.02076
+arXiv:2502.05171 (2025) "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth
+  Approach" [cs] (cited-by 18 in-topic, era 2)
+    scaling_mechanism: Iterating a recurrent block to unroll to arbitrary depth in latent space.
+    performance_improvement: Improves performance on reasoning benchmarks up to a computation load equivalent to 50 billion parameters.
+    scaling_behavior: Performance improves as the model unrolls to greater depth, reaching an effective compute load of 50B parameters from a 3.5B parameter model.
+    algorithmic_approach: Implicit reasoning in latent space via a recurrent block architecture.
+    relations: uses arXiv:2110.14168; cites arXiv:2203.02155; cites arXiv:2211.17192; cites arXiv:2402.03300; cites arXiv:2001.08361; compares-with arXiv:2501.12948
+arXiv:2501.02497 (2025) "A Survey of Test-Time Compute: From Intuitive Inference to Deliberate Reasoning" [cs] (cited-by 15 in-topic, era 2)
+    scaling_mechanism: System-1: parameter updating, input modification, representation editing, and output calibration; System-2: repeated sampling, self-correction, and tree search.
+    scaling_behavior: Transition from System-1 models to weak System-2 models, and then to strong System-2 models.
+    algorithmic_approach: Transitioning from intuitive (System-1) to deliberate (System-2) reasoning via sampling, self-correction, and tree search.
+    relations: cites arXiv:2110.14168; cites arXiv:2406.06592; cites arXiv:2210.03493; cites arXiv:2408.15240; cites arXiv:2005.14165; cites arXiv:2203.02155; cited-by arXiv:2509.19645
+arXiv:2502.12521 (2025) "Inference-Time Computations for LLM Reasoning and Planning: A Benchmark
+  and Insights" [cs] (cited-by 6 in-topic, era 2)
+    scaling_mechanism: scaling inference-time techniques (exploring intermediate steps during inference)
+    reasoning_benchmark: Sys2Bench (eleven diverse tasks across five categories: arithmetic reasoning, logical reasoning, common sense reasoning, algorithmic reasoning, and planning)
+    scaling_behavior: scaling inference-time computation has limitations; no single technique consistently performs well across all tasks
+    resource_overhead: tradeoff between computational cost and performance
+    algorithmic_approach: multi-step reasoning and verification
+    relations: cites arXiv:2005.14165; cites arXiv:1706.03762; compares-with arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2110.14168; cites arXiv:2406.16838
+arXiv:2502.07154 (2025) "Rethinking Fine-Tuning when Scaling Test-Time Compute: Limiting Confidence Improves Mathematical Reasoning" [cs] (cited-by 5 in-topic, era 2)
+    scaling_mechanism: pass@N (searching for a correct answer in N independent samples)
+    reasoning_benchmark: MATH and MiniF2F
+    performance_improvement: Improved mathematical reasoning on MATH and MiniF2F benchmarks using a modified training loss that limits model confidence
+    scaling_behavior: pass@N accuracy decreases with longer training when using standard cross-entropy (CE) loss due to model overconfidence
+    algorithmic_approach: A modified training loss designed to limit model confidence to better align with pass@N scaling
+    relations: cites arXiv:2408.03314; cites arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2203.11171; cites arXiv:2303.11366; cites arXiv:2501.12948
+arXiv:2504.00294 (2025) "Inference-Time Scaling for Complex Tasks: Where We Stand and What Lies
+  Ahead" [cs] (cited-by 4 in-topic, era 2)
+    scaling_mechanism: Repeated model calls, either independently or sequentially with feedback; lengthening generated scratchpads.
+    reasoning_benchmark: Eight challenging tasks including math and STEM reasoning, calendar planning, NP-hard problems, navigation, and spatial reasoning.
+    performance_improvement: Significant gains observed when scaling with perfect verifiers or strong feedback; some conventional models with perfect verifiers achieve performance close to advanced reasoning models.
+    scaling_behavior: Advantages vary across tasks and diminish as problem complexity increases; more tokens do not necessarily translate to higher accuracy in challenging regimes.
+    algorithmic_approach: Inference-time scaling via repeated model calls (independent or sequential with feedback) and scratchpad lengthening.
+    relations: cites arXiv:2203.14465; compares-with arXiv:2412.16720; cites arXiv:2501.12948; cites arXiv:2312.08935; cites arXiv:2402.06457; cites arXiv:2203.11171; cited-by arXiv:2506.13102
+arXiv:2505.20522 (2025) "Scaling over Scaling: Exploring Test-Time Scaling Plateau in Large Reasoning Models" [cs] (cited-by 3 in-topic, era 2)
+    scaling_mechanism: parallel scaling and sequential scaling
+    reasoning_benchmark: AIME, MATH-500, and GPQA
+    scaling_behavior: existence of a scaling plateau and saturation points beyond which additional computation yields diminishing returns
+    algorithmic_approach: Test-Time Scaling Performance Model (TTSPM) based on probabilistic modeling
+    relations: cites arXiv:2501.12948; cites arXiv:2203.11171; cites arXiv:2503.24235; cites arXiv:2311.12022; cites arXiv:2408.00724; cites arXiv:2407.21787
+arXiv:2504.00869 (2025) "m1: Unleash the Potential of Test-Time Scaling for Medical Reasoning with Large Language Models" [cs] (cited-by 3 in-topic, era 2)
+    scaling_mechanism: Test-time scaling (increasing reasoning token budget) and budget forcing (iterative prompts)
+    performance_improvement: Lightweight models (<10B) established new state-of-the-art; 32B model rivals 70B-scale medical LLMs
+    scaling_behavior: Optimal reasoning token budget is approximately 4K; performance may degrade beyond this due to overthinking; performance gains are limited by insufficient medical knowledge
+    algorithmic_approach: m1 (a simple approach to increase medical reasoning capability at inference)
+    relations: cites arXiv:2303.08774; cites arXiv:2502.18080; uses arXiv:2412.16720; uses arXiv:2501.19393; cites arXiv:2201.11903; cites arXiv:2503.04697; extended-by arXiv:2506.13102
+arXiv:2504.14047 (2025) "Think Deep, Think Fast: Investigating Efficiency of Verifier-free
+  Inference-time-scaling Methods" [cs] (cited-by 3 in-topic, era 2)
+    scaling_mechanism: verifier-free inference time-scaling methods (e.g., repeated sampling, refinements, majority voting, best-of-N, and sequential revisions)
+    scaling_behavior: For reasoning models, additional inference compute offers minimal improvements; non-reasoning models fall substantially behind reasoning models even with extremely high inference budgets.
+    algorithmic_approach: Verifier-free inference-time scaling (majority voting, best-of-N, and sequential revisions)
+    relations: cites arXiv:2407.21787; cites arXiv:2201.11903; cites arXiv:2407.21783; cites arXiv:2305.10601; cites arXiv:2203.11171; uses arXiv:2408.03314
+arXiv:2506.12928 (2025) "Scaling Test-time Compute for LLM Agents" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: parallel sampling algorithms, sequential revision strategies, verifiers and merging methods, and strategies for diversifying rollouts
+    performance_improvement: Scaling test time compute could improve the performance of agents
+    scaling_behavior: Increasing diversified rollouts exerts a positive effect on the agent's task performance
+    algorithmic_approach: Applying test-time scaling methods (parallel sampling, sequential revision, verification/merging, and rollout diversification) to language agents
+    relations: cites arXiv:2408.00724; cites arXiv:2409.12917; cites arXiv:2502.06703; cites arXiv:2412.16720; cites arXiv:2501.12948; cites arXiv:2408.03314
+arXiv:2509.09864 (2025) "Latency and Token-Aware Test-Time Compute" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Dynamic allocation of compute via method selection (e.g., best-of-N, beam search) and per-query compute allocation.
+    performance_improvement: Consistently outperforms static strategies in accuracy-cost trade-offs.
+    resource_overhead: Token cost and wall-clock latency.
+    algorithmic_approach: Dynamic compute allocation and method selection framework incorporating token cost and latency.
+    relations: cites arXiv:2408.03314; cites arXiv:2305.10601; cites arXiv:2303.11366; cites arXiv:2412.16720; cites arXiv:2407.21787; cites arXiv:2501.12948
+arXiv:2503.19877 (2025) "Scaling Evaluation-time Compute with Reasoning Models as Evaluators" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Increasing test-time compute by (1) using reasoning models that generate long chain-of-thought and (2) prompting for process evaluation (step-by-step assessment) versus outcome evaluation.
+    performance_improvement: Evaluator performance improves monotonically with more reasoning tokens; spending more compute at evaluation time can be as effective as more compute at generation time for improving problem-solving capability.
+    scaling_behavior: Evaluator performance improves monotonically when generating more reasoning tokens, similar to trends in LM-based generation.
+    algorithmic_approach: Employing reasoning models as evaluators using both outcome evaluation and process evaluation (assessing each step separately) to rerank multiple generations.
+    relations: cites arXiv:2501.12948; uses arXiv:2501.07301; cites arXiv:2306.05685; uses arXiv:2407.21783; compares-with arXiv:2110.14168; cites arXiv:2211.14275
+arXiv:2505.05408 (2025) "Crosslingual Reasoning through Test-Time Scaling" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: scaling up inference compute (test-time scaling) via long chain-of-thoughts (CoTs)
+    reasoning_benchmark: multilingual mathematical reasoning
+    performance_improvement: outperform models twice their size
+    scaling_behavior: improves multilingual mathematical reasoning across many languages including low-resource languages; poor out-of-domain reasoning generalization (STEM to cultural commonsense)
+    algorithmic_approach: English-centric reasoning language models (RLMs) using long chain-of-thoughts (CoTs) and a quote-and-think pattern
+    relations: uses arXiv:2408.03314; cites arXiv:2407.21787; cites arXiv:2408.00724; uses arXiv:2501.12948; cites arXiv:2412.16720; extends arXiv:2501.19393; cited-by arXiv:2510.06471
+arXiv:2504.10449 (2025) "M1: Towards Scalable Test-Time Compute with Mamba Reasoning Models" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Scaling test-time computation through long chain-of-thought reasoning and self-consistency voting.
+    reasoning_benchmark: AIME and MATH benchmarks.
+    performance_improvement: Matches performance of state-of-the-art Deepseek R1 distilled reasoning models at a similar scale; achieves higher accuracy than DeepSeek R1 distilled transformer models under a fixed generation time budget.
+    resource_overhead: More than a 3x speedup in generation speed compared to a same size transformer when compared to vLLM.
+    algorithmic_approach: Hybrid linear RNN reasoning model built on the Mamba architecture, utilizing a distillation process from existing reasoning models and enhanced through RL training.
+    relations: cites arXiv:2408.03314; uses arXiv:2203.11171; cites arXiv:2110.14168; uses arXiv:2103.03874; uses arXiv:2402.14008; compares-with arXiv:2309.06180
+arXiv:2507.14417 (2025) "Inverse Scaling in Test-Time Compute" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: extending the reasoning length of Large Reasoning Models (LRMs)
+    reasoning_benchmark: simple counting tasks with distractors, regression tasks with spurious features, deduction tasks with constraint tracking, and advanced AI risks
+    scaling_behavior: inverse scaling relationship between test-time compute and accuracy; performance deteriorates as reasoning length increases
+    relations: used-by arXiv:2509.06861; cited-by arXiv:2510.02611
+arXiv:2509.06861 (2025) "Test-Time Scaling in Reasoning Models Is Not Effective for Knowledge-Intensive Tasks Yet" [cs] (cited-by 1 in-topic, era 2)
+    scaling_mechanism: allowing models to generate long reasoning chains
+    reasoning_benchmark: two knowledge-intensive benchmarks
+    performance_improvement: does not consistently improve accuracy
+    scaling_behavior: increasing test-time computation does not consistently improve accuracy and often increases hallucinations; cannot increase information about the ground-truth answer beyond what is already encoded
+    algorithmic_approach: compute-only test-time scaling (post-processing of a fixed trained model)
+    relations: uses arXiv:2507.14417; extends arXiv:2505.09388; cites arXiv:2311.12022; cites arXiv:2403.07974; extends arXiv:2501.12948; extends arXiv:2501.19393
+arXiv:2507.02076 (2025) "Reasoning on a Budget: A Survey of Adaptive and Controllable Test-Time Compute in LLMs" [cs] (cited-by 1 in-topic, era 2)
+    scaling_mechanism: L1-controllability (fixed compute budgets) and L2-adaptiveness (dynamic scaling based on input difficulty or model confidence)
+    scaling_behavior: trade-offs between reasoning performance and token usage
+    resource_overhead: token usage
+    algorithmic_approach: test-time compute (TTC) strategies categorized into L1-controllability and L2-adaptiveness
+    relations: cites arXiv:2407.21787; cites arXiv:2408.03314; cites arXiv:2305.10601; cites arXiv:2501.19393; compares-with arXiv:2503.04697; cites arXiv:2409.12917
+arXiv:2507.05557 (2025) "Enhancing Test-Time Scaling of Large Language Models with Hierarchical Retrieval-Augmented MCTS" [cs] (cited-by 1 in-topic, era 2)
+    scaling_mechanism: Hierarchical retrieval-augmented reasoning (R2-LLMs) combining coarse-level abstract template retrieval with fine-level Monte Carlo Tree Search (MCTS) and intermediate step retrieval.
+    reasoning_benchmark: MATH500, GSM8K, and OlympiadBench-TO.
+    performance_improvement: Up to 16% relative improvement using LLaMA-3.1-8B compared to baselines.
+    algorithmic_approach: Dual-level retrieval-based in-context learning (abstract templates and analogous intermediate steps) integrated with MCTS and a Process Reward Model (PRM).
+    relations: uses arXiv:2501.12948; compares-with arXiv:2205.11916; compares-with arXiv:2201.11903; compares-with arXiv:2203.11171; compares-with arXiv:2305.10601; compares-with arXiv:2305.14992
+arXiv:2512.02008 (2025) "The Art of Scaling Test-Time Compute for Large Language Models" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Test-time scaling (TTS) / dynamic allocation of compute during inference
+    reasoning_benchmark: four reasoning datasets (specific names not listed in abstract)
+    scaling_behavior: optimal TTS performance scales monotonically with compute budget for a given model type
+    algorithmic_approach: Test-time scaling (TTS) strategies
+    relations: (none in-topic)
+arXiv:2505.14733 (2025) "The Energy Cost of Reasoning: Analyzing Energy Usage in LLMs with Test-time Compute" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: test-time compute (TTC) / allocating additional computational resources at inference time
+    performance_improvement: surpasses traditional model scaling in accuracy/energy efficiency, particularly in tasks demanding complex reasoning
+    scaling_behavior: TTC can achieve superior accuracy-energy trade-offs compared to increasing model size; performance interacts with output sequence length
+    algorithmic_approach: strategically adjusting compute resources at inference time according to query complexity
+    relations: (none in-topic)
+arXiv:2505.18404 (2025) "Thought calibration: Efficient and confident test-time scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Dynamic termination of thinking based on a decision rule to identify when novel reasoning plateaus.
+    performance_improvement: Preserves model performance while reducing thinking tokens by up to 60% (in-distribution) and up to 20% (out-of-distribution).
+    scaling_behavior: Identifies the point at which novel reasoning plateaus within a nested sequence of reasoning trees.
+    resource_overhead: Up to 60% reduction in thinking tokens on in-distribution data and up to 20% on out-of-distribution data.
+    algorithmic_approach: Thought calibration using lightweight probes operating on the language model's hidden representations to monitor reasoning structure and consistency.
+    relations: uses arXiv:2501.19393; uses arXiv:2309.06180; cites arXiv:2001.08361; cites arXiv:2201.11903; uses arXiv:2501.12948; cites arXiv:2412.21187
+arXiv:2510.06471 (2025) "Test-Time Scaling of Reasoning Models for Machine Translation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Increased inference-time computation via three scenarios: direct translation, forced-reasoning extrapolation, and post-editing.
+    reasoning_benchmark: A diverse suite of MT benchmarks spanning multiple domains.
+    performance_improvement: Limited/inconsistent for general-purpose direct translation; consistent improvements for domain-specific fine-tuned models; highly effective in post-editing contexts.
+    scaling_behavior: Performance quickly plateaus for general-purpose RMs in direct translation; performance degrades when forcing reasoning beyond natural stopping points; reaches an optimal, self-determined reasoning depth with domain-specific fine-tuning.
+    algorithmic_approach: Test-time scaling (TTS) applied through direct translation, forced-reasoning extrapolation, and post-editing (self-correction) workflows.
+    relations: cites arXiv:2501.19393; uses arXiv:2505.09388; cites arXiv:2408.03314; cites arXiv:2501.12948; cites arXiv:2412.16720; uses arXiv:2407.21783
+arXiv:2509.25420 (2025) "Adaptive Test-Time Reasoning via Reward-Guided Dual-Phase Search" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Dual-phase test-time scaling framework that separates reasoning into planning and execution phases, combined with a dynamic budget allocation mechanism for adaptive sampling effort redistribution.
+    reasoning_benchmark: Mathematical reasoning and code generation benchmarks.
+    performance_improvement: Consistently improves accuracy while reducing redundant computation (specific numerical values not provided in text).
+    scaling_behavior: Adaptive redistribution of sampling effort based on reward feedback, allowing early stopping on confident steps and reallocation to challenging parts.
+    resource_overhead: Reduces redundant computation compared to simple decomposition methods.
+    algorithmic_approach: Reward-guided dual-phase search that decomposes reasoning trajectories into planning and execution phases with separate reward models.
+    relations: cites arXiv:2210.03629; cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2312.08935; uses arXiv:2107.03374; cites arXiv:2408.03314
+arXiv:2509.19645 (2025) "Are We Scaling the Right Thing? A System Perspective on Test-Time Scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Test-time scaling (TTS) including tensor parallelism and speculative decoding
+    scaling_behavior: Analyzes scaling against practical metrics like latency and cost-per-token; notes that compute-optimal is not always system-optimal
+    resource_overhead: Latency and cost-per-token
+    algorithmic_approach: System-driven perspective on TTS
+    relations: uses arXiv:2407.10671; cites arXiv:2201.11903; cites arXiv:2305.10601; uses arXiv:2501.12948; cites arXiv:1706.03762; cites arXiv:2307.09288
+arXiv:2506.13102 (2025) "Rethinking Test-Time Scaling for Medical AI: Model and Task-Aware Strategies for LLMs and VLMs" [cs] (cited-by 0 in-topic, era 2)
+    relations: cites arXiv:2005.14165; cites arXiv:2303.08774; cites arXiv:2307.09288; cites arXiv:2412.16720; uses arXiv:2407.21783; uses arXiv:2501.12948
+arXiv:2510.02611 (2025) "On the Role of Temperature Sampling in Test-Time Scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Temperature scaling (scaling along the temperature dimension) and multi-temperature voting.
+    reasoning_benchmark: AIME 2024/2025, MATH500, LiveCodeBench, and Hi-ToM.
+    performance_improvement: Temperature scaling yields an additional 7.3 points over single-temperature TTS; enables base models to reach performance comparable to RL-trained counterparts.
+    scaling_behavior: At large K (number of samples), further scaling yields no gains; certain hard questions remain unsolved regardless of the number of traces.
+    algorithmic_approach: Scaling along the temperature dimension to explore different subsets of problems and a multi-temperature voting method to reduce overhead.
+    relations: critiques arXiv:2407.21787; uses arXiv:2309.06180; cites arXiv:2201.11903; cites arXiv:2501.12948; uses arXiv:2403.07974; cites arXiv:2408.03314
+arXiv:2511.14772 (2025) "Test-time Scaling of LLMs: A Survey from A Subproblem Structure Perspective" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Allocating additional compute at inference time through problem decomposition (sequential, parallel, or tree-structured subproblems).
+    algorithmic_approach: Decomposition of problems into subproblems organized topologically (sequential, parallel, or tree-structured), unifying methods like Chain-of-Thought, Branch-Solve-Merge, and Tree-of-Thought.
+    relations: cites arXiv:2305.10601; cites arXiv:2205.10625; cites arXiv:2407.21787; cites arXiv:2408.00724; cites arXiv:2501.12948; cites arXiv:2201.11903
+arXiv:2510.09599 (2025) "Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Prompting Test-Time Scaling (P-TTS): varying exemplar augmentation through principled instruction prompting intensities at test time to synthesize diverse reasoning trajectory contexts for finetuning.
+    reasoning_benchmark: AIME2024, AIME2025, MATH500, GPQA-Diamond, Gaokao, Kaoyan, OlympiadBench, AMC23, GradeSchoolMath, and Minerva.
+    performance_improvement: P-TTS-7B: +26.66% and +30.00% on AIME'24; +13.34% and +6.67% on AIME'25 (vs. S1 and S1.1). P-TTS-32B: +23.33% and +16.63% on AIME'24; +26.63% and +3.33% on AIME'25 (vs. S1 and S1.1).
+    scaling_behavior: Test-time scaling effectively explores the latent space of reasoning patterns to amplify problem-solving.
+    resource_overhead: Minimal annotation overhead; leverages a small pool of only 90 manually selected reasoning instances.
+    algorithmic_approach: Inference-time data augmentation via systematic variation of exemplar augmentation through instruction prompting intensities.
+    relations: uses arXiv:2501.19393; cites arXiv:2412.15115; uses arXiv:2501.12948; uses arXiv:2303.08774; uses arXiv:2505.09388; cites arXiv:2203.11171
+arXiv:2512.11109 (2025) "Limits and Gains of Test-Time Scaling in Vision-Language Reasoning" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Structured reasoning, iterative Self-Refinement, and external verification.
+    reasoning_benchmark: Multi-step reasoning tasks and perception-focused benchmarks.
+    performance_improvement: Consistent benefits for closed-source models; reliable gains via external verification for open-source VLMs; limited gains on perception-focused benchmarks.
+    scaling_behavior: Effectiveness is dataset-dependent; iterative refinement can degrade performance in open-source VLMs.
+    algorithmic_approach: Test-time scaling (TTS) via structured reasoning, iterative Self-Refinement, and external verification.
+    relations: (none in-topic)
+arXiv:2605.10344 (2026) "TMAS: Scaling Test-Time Compute via Multi-Agent Synergy" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Multi-agent synergy involving structured information flow across specialized agents, trajectories, and refinement iterations using hierarchical memories (experience bank and guideline bank).
+    performance_improvement: Achieves stronger iterative scaling than existing test-time scaling baselines; hybrid reward training improves scaling effectiveness and stability.
+    scaling_behavior: Stronger iterative scaling compared to existing baselines; improved stability across iterations via hybrid reward training.
+    algorithmic_approach: Collaborative multi-agent framework with hierarchical memories (experience bank for low-level feedback and guideline bank for high-level strategies) and a hybrid reward reinforcement learning scheme.
+    relations: (none in-topic)
+arXiv:2603.07159 (2026) "Improving reasoning at inference time via uncertainty minimisation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Thought-level self-certainty maximization (selecting continuations that maximize the model's internal predictive certainty at each reasoning step).
+    reasoning_benchmark: MATH500, GSM8K, and cross-linguistic evaluations.
+    performance_improvement: Consistently outperforms greedy decoding and matches or exceeds self-consistency under comparable token budgets.
+    scaling_behavior: Correct reasoning trajectories converge early to stable paths; applying self-certainty maximization to early steps explains most performance gain.
+    algorithmic_approach: Framing reasoning as uncertainty minimization by selecting continuations that maximize the model's self-certainty based on its internal predictive distribution.
+    relations: uses arXiv:2305.20050; uses arXiv:2110.14168; uses arXiv:2203.11171; cites arXiv:2412.15115; cites arXiv:2407.21783; cites arXiv:2402.03300
+arXiv:2603.21301 (2026) "Enhancing reasoning accuracy in large language models during inference time" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: inference-time strategies including self-consistency (stochastic decoding), dual-model reasoning agreement, and self-reflection
+    reasoning_benchmark: multi-step reasoning tasks using Chain-of-Thought (CoT) prompting
+    performance_improvement: self-consistency with nucleus sampling and controlled temperature achieved a 9% to 15% absolute improvement in accuracy over greedy single-pass decoding
+    scaling_behavior: self-consistency yields substantial gains; dual-model approach provides additional confirmation for higher reliability; self-reflection offers only marginal improvements
+    resource_overhead: minimal overhead for self-consistency; higher compute required for dual-model approach
+    algorithmic_approach: self-consistency via stochastic decoding (sampling multiple times and selecting the most frequent answer), dual-model reasoning agreement (comparing outputs from two independent models), and self-reflection (model critiques and revises its own reasoning)
+    relations: (none in-topic)
+
+MAIN PATH (oldest -> newest):
+  arXiv:1706.03762 (2017) -> arXiv:2001.08361 (2020) -> arXiv:2103.03874 (2021) -> arXiv:2206.14858 (2022) -> arXiv:2305.14325 (2023) -> arXiv:2408.03314 (2024) -> arXiv:2501.12948 (2025) -> arXiv:2603.07159 (2026)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2503.19877 compares [negative] arXiv:2402.03300
+  arXiv:2204.05862 compares [negative] arXiv:2203.02155
+  arXiv:2205.11916 compares [negative] arXiv:2203.11171
+  arXiv:2108.07732 compares [negative] arXiv:2107.03374
+  arXiv:2303.08774 critiques [negative] arXiv:2005.14165
+  arXiv:2306.05685 critiques [negative] arXiv:2110.14168
+  arXiv:2403.07974 critiques [negative] arXiv:2108.07732
+  arXiv:2501.12599 critiques [negative] arXiv:2001.08361
+  arXiv:2501.12599 critiques [negative] arXiv:2203.15556
+  arXiv:2502.04463 critiques [negative] arXiv:2412.21187
+  arXiv:2502.04463 critiques [negative] arXiv:2501.12599
+  arXiv:2502.04463 critiques [negative] arXiv:2501.12570
+  arXiv:2502.06703 critiques [negative] arXiv:2407.21787
+  arXiv:2502.18080 critiques [negative] arXiv:2501.12570
+  arXiv:2503.04697 critiques [negative] arXiv:2502.04463
+  arXiv:2503.19877 critiques [negative] arXiv:2210.10760
+  arXiv:2510.02611 critiques [negative] arXiv:2407.21787
+  arXiv:2302.13971 compares [neutral] arXiv:2103.03874
+  arXiv:2302.13971 compares [neutral] arXiv:2110.14168
+  arXiv:2302.13971 compares [neutral] arXiv:2203.11171
+  arXiv:2302.13971 compares [neutral] arXiv:2107.03374
+  arXiv:2302.13971 compares [neutral] arXiv:2108.07732
+  arXiv:2303.11366 compares [neutral] arXiv:2303.08774
+  arXiv:2303.17651 compares [positive] arXiv:2203.02155
+  arXiv:2303.17651 compares [positive] arXiv:2303.08774
+  arXiv:2303.17651 compares [positive] arXiv:2107.03374
+  arXiv:2303.17651 compares [neutral] arXiv:2009.01325
+  arXiv:2303.17651 compares [positive] arXiv:2303.11366
+  arXiv:2305.00633 compares [neutral] arXiv:2201.11903
+  arXiv:2305.10601 compares [positive] arXiv:2203.11171
+  arXiv:2305.14325 compares [positive] arXiv:2205.11916
+  arXiv:2305.14325 compares [positive] arXiv:2303.11366
+  arXiv:2305.14325 compares [positive] arXiv:2303.17651
+  arXiv:2305.14325 compares [neutral] arXiv:2203.07814
+  arXiv:2305.14992 compares [neutral] arXiv:2303.08774
+  arXiv:2305.14992 compares [neutral] arXiv:2201.11903
+  arXiv:2305.14992 compares [neutral] arXiv:2205.10625
+  arXiv:2305.14992 compares [positive] arXiv:2110.14168
+  arXiv:2305.14992 compares [neutral] arXiv:2203.11171
+  arXiv:2305.14992 compares [neutral] arXiv:2302.13971
+  arXiv:2305.20050 compares [neutral] arXiv:2203.11171
+  arXiv:2305.20050 compares [neutral] arXiv:2211.14275
+  arXiv:2305.20050 compares [neutral] arXiv:2103.03874
+  arXiv:2305.20050 compares [neutral] arXiv:2206.02336
+  arXiv:2307.09288 compares [neutral] arXiv:2110.14168
+  arXiv:2307.09288 compares [neutral] arXiv:2103.03874
+  arXiv:2307.09288 compares [positive] arXiv:2303.08774
+  arXiv:2309.12284 compares [neutral] arXiv:2302.13971
+  arXiv:2309.12284 compares [neutral] arXiv:2201.11903
+  arXiv:2309.17179 compares [neutral] arXiv:2203.11171
+  arXiv:2309.17179 compares [positive] arXiv:2310.01798
+  arXiv:2310.01798 compares [positive] arXiv:2305.14325
+  arXiv:2310.04406 compares [neutral] arXiv:2108.07732
+  arXiv:2310.06825 compares [neutral] arXiv:1706.03762
+  arXiv:2310.06825 compares [neutral] arXiv:2110.14168
+  arXiv:2311.12022 compares [neutral] arXiv:2307.09288
+  arXiv:2311.12022 compares [neutral] arXiv:2205.11916
+  arXiv:2312.08935 compares [positive] arXiv:2211.14275
+  arXiv:2402.03300 compares [positive] arXiv:2206.14858
+  arXiv:2402.03300 compares [positive] arXiv:2310.06825
+  arXiv:2402.06457 compares [neutral] arXiv:2203.11171
+  arXiv:2402.14008 compares [neutral] arXiv:2103.03874
+  arXiv:2402.14008 compares [neutral] arXiv:2402.03300
+  arXiv:2403.07974 compares [neutral] arXiv:2112.00114
+  arXiv:2403.09629 compares [positive] arXiv:2110.14168
+  arXiv:2404.12253 compares [neutral] arXiv:2307.09288
+  arXiv:2404.12253 compares [neutral] arXiv:2211.10435
+  arXiv:2407.10671 compares [positive] arXiv:2009.03300
+  arXiv:2407.10671 compares [positive] arXiv:2107.03374
+  arXiv:2407.10671 compares [positive] arXiv:2310.06825
+  arXiv:2407.10671 compares [positive] arXiv:2311.12022
+  arXiv:2407.10671 compares [positive] arXiv:2306.05685
+  arXiv:2407.10671 compares [positive] arXiv:2403.07974
+  arXiv:2407.10671 compares [positive] arXiv:2110.14168
+  arXiv:2407.21787 compares [neutral] arXiv:2405.03553
+  arXiv:2408.15240 compares [positive] arXiv:2201.11903
+  arXiv:2408.15240 compares [neutral] arXiv:2402.06457
+  arXiv:2412.16720 compares [neutral] arXiv:2009.03300
+  arXiv:2501.12570 compares [positive] arXiv:2305.18290
+  arXiv:2501.12570 compares [positive] arXiv:1707.06347
+  arXiv:2501.12599 compares [neutral] arXiv:2412.21187
+  arXiv:2501.12948 compares [positive] arXiv:2407.21783
+  arXiv:2502.03387 compares [neutral] arXiv:2309.06180
+  arXiv:2502.04463 compares [positive] arXiv:2501.12948
+  arXiv:2502.05171 compares [neutral] arXiv:2501.12948
+  arXiv:2502.06703 compares [positive] arXiv:2405.03553
+  arXiv:2502.06703 compares [positive] arXiv:2306.05685
+  arXiv:2502.12521 compares [positive] arXiv:2201.11903
+  arXiv:2502.12521 compares [positive] arXiv:2310.01798
+  arXiv:2502.18080 compares [neutral] arXiv:2110.14168
+  arXiv:2503.19877 compares [neutral] arXiv:2110.14168
+  arXiv:2503.19877 compares [neutral] arXiv:2402.06457
+  arXiv:2504.00294 compares [neutral] arXiv:2412.16720
+  arXiv:2504.10449 compares [positive] arXiv:2309.06180
+  arXiv:2504.10449 compares [neutral] arXiv:2501.12948
+  arXiv:2504.10449 compares [neutral] arXiv:2407.21783
+  arXiv:2505.05408 compares [positive] arXiv:2309.12284
+  arXiv:2507.02076 compares [neutral] arXiv:2503.04697
+  arXiv:2507.02076 compares [neutral] arXiv:2103.03874
+  arXiv:2507.05557 compares [neutral] arXiv:2205.11916
+  arXiv:2507.05557 compares [neutral] arXiv:2201.11903
+  arXiv:2507.05557 compares [neutral] arXiv:2203.11171
+  arXiv:2507.05557 compares [neutral] arXiv:2305.10601
+  arXiv:2507.05557 compares [neutral] arXiv:2305.14992
+  arXiv:2507.05557 compares [neutral] arXiv:2103.03874
+  arXiv:2507.05557 compares [neutral] arXiv:2110.14168
+  arXiv:2507.05557 compares [neutral] arXiv:2402.14008
+  arXiv:2201.11903 compares [neutral] arXiv:2110.14168
+  arXiv:2203.15556 compares [positive] arXiv:2009.03300
+  arXiv:2204.05862 compares [neutral] arXiv:2005.14165
+  arXiv:2206.14858 compares [positive] arXiv:2203.11171
+  arXiv:2211.14275 compares [positive] arXiv:2203.11171
+  arXiv:2211.14275 compares [positive] arXiv:2201.11903
+  arXiv:2509.25420 compares [neutral] arXiv:2407.21783
+  arXiv:2509.25420 compares [neutral] arXiv:2409.12122
+  arXiv:2509.25420 compares [neutral] arXiv:2402.03300
+  arXiv:2510.09599 compares [neutral] arXiv:2502.03387
+  arXiv:2107.03374 compares [positive] arXiv:2005.14165
+  arXiv:2107.03374 compares [neutral] arXiv:2001.08361
+  arXiv:2110.14168 compares [neutral] arXiv:2005.14165
+  arXiv:2203.07814 compares [neutral] arXiv:2108.07732
+  arXiv:2203.07814 compares [neutral] arXiv:2110.14168
+  arXiv:2206.14858 compares [positive] arXiv:2203.07814
+  arXiv:2210.03493 compares [positive] arXiv:2110.14168
+  arXiv:2211.10435 compares [positive] arXiv:2107.03374
+  arXiv:2212.08073 compares [neutral] arXiv:2210.11610
+  arXiv:2305.00633 motivates [neutral] arXiv:2303.17651
+  arXiv:2305.00633 motivates [neutral] arXiv:2303.11366
+  arXiv:2402.06457 motivates [neutral] arXiv:2203.14465
+  arXiv:2501.12599 motivates [neutral] arXiv:2203.02155
+  arXiv:2112.00114 motivates [neutral] arXiv:2005.14165
+  arXiv:2204.05862 motivates [neutral] arXiv:2001.08361
+  arXiv:2206.02336 motivates [neutral] arXiv:2203.14465
+  arXiv:2210.03493 motivates [positive] arXiv:2203.14465
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2201.11903:
+NOVELTY: Introduces "chain-of-thought prompting," a method to elicit multi-step reasoning by providing ⟨input, reasoning step, output⟩ triples in few-shot exemplars, rather than just input-output pairs.
+
+STRENGTHS: Demonstrates that CoT is an emergent ability of scale, showing that PaLM 540B achieves new state-of-the-art performance on the GSM8K benchmark, surpassing fine-tuned models.
+
+WEAKNESSES: The method's efficacy is strictly tied to large model scales (~100B+ parameters), as smaller models produce fluent but illogical reasoning paths that fail to improve performance.
+
+RELEVANCE: Establishes that increasing test-time compute (via intermediate token generation) can unlock reasoning capabilities that are otherwise inaccessible through standard prompting.
+arXiv:2501.12948:
+NOVELTY: Proposes a pure RL framework (DeepSeek-R1-Zero) that bypasses supervised fine-tuning to allow the emergence of non-human-like reasoning patterns (self-reflection, verification) via rule-based rewards.
+STRENGTHS: Demonstrates massive performance jumps in verifiable domains, specifically increasing AIME 2024 accuracy from 15.6% to 77.9% through autonomous self-evolution.
+WEAKNESSES: Exhibits token inefficiency ("overthinking") on simple tasks and faces scalability limits in non-verifiable domains (e.g., writing) where reliable rule-based rewards are difficult to construct.
+RELEVANCE: Directly advances the study of test-time compute by demonstrating how RL can incentivize models to dynamically allocate more reasoning tokens and "thinking time" to complex problems.
+arXiv:2603.07159:
+NOVELTY: Shifts uncertainty-driven selection from token-level or full-trajectory sampling to the granularity of "thoughts" (intermediate reasoning steps).
+STRENGTHS: Demonstrates that self-certainty maximization matches or exceeds self-consistency under equivalent token budgets and that optimizing only the first 1–5 steps yields peak accuracy.
+WEAKNESSES: The method's reliance on predefined reasoning delimiters (e.g., double line breaks) to segment thoughts may not generalize to models without structured CoT formatting.
+RELEVANCE: Advances test-time compute research by identifying an efficient, model-internal scaling strategy that prioritizes early-stage reasoning decisions.
+arXiv:2605.10344:
+NOVELTY: Introduction of hierarchical memory (Experience vs. Guideline banks) and a hybrid reward RL scheme that explicitly incentivizes experience utilization and strategy novelty.
+STRENGTHS: Significant performance gains on IMO-AnswerBench, specifically increasing Qwen3-4B-Thinking-2507 Pass@1 from 53.5% to 73.5%.
+WEAKNESSES: Heavy reliance on a "cold-start" dataset distilled from a teacher model (DeepSeek-V3.2) and high computational overhead from running multiple specialized agents and verification passes across many iterations.
+RELEVANCE: Advances the review by demonstrating how structured multi-agent coordination and memory management can optimize the efficiency of test-time compute scaling.

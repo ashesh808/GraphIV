@@ -54,15 +54,21 @@ def populate_paper_table(
     conn: psycopg.Connection[tuple[object, ...]],
     arxiv_ids: Iterable[str],
 ) -> dict[str, int]:
-    """Bulk-insert arxiv_ids into paper, return arxiv_id -> id mapping."""
+    """Idempotently insert any new arxiv_ids into paper, return arxiv_id -> id mapping.
+
+    Incremental: COPYs only arxiv_ids not already present, so a delta run (new papers added
+    to the corpus) interns them too — otherwise new papers get no citing_id and their
+    citations are silently dropped.
+    """
     cur = conn.cursor()
-    _ = cur.execute(sql.SQL("SELECT COUNT(*) FROM paper"))
-    row = cur.fetchone()
-    existing: int = cast(int, row[0]) if row is not None else 0
-    if existing == 0:
-        ids = list(arxiv_ids)
+    _ = cur.execute(sql.SQL("SELECT arxiv_id FROM paper"))
+    existing_ids: set[str] = {
+        cast(str, r[0]) for r in cur.fetchall()  # pyright: ignore[reportAny]
+    }
+    new_ids = [aid for aid in arxiv_ids if aid not in existing_ids]
+    if new_ids:
         with cur.copy(sql.SQL("COPY paper (arxiv_id) FROM STDIN")) as cp:
-            for aid in ids:
+            for aid in new_ids:
                 cp.write_row((aid,))
         conn.commit()
 

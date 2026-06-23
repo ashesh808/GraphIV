@@ -1,0 +1,218 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{diffusion models for image generation}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is structurally excellent but fails on grounding by citing non-existent 2025/2026 papers not present in the digest.
+\end{abstract}
+
+\section{The Evolution of Diffusion Models for Generative Image Synthesis}
+
+The pursuit of high-fidelity generative modeling has long been a central challenge in computer vision, aiming to transform unstructured noise into coherent, meaningful visual data. For years, the field was defined by the limitations of alternative architectures, such as the training instabilities and mode collapse inherent in generative adversarial frameworks. The rise of diffusion models has redefined this landscape, providing a robust probabilistic framework that allows for the modeling of complex, high-dimensional distributions. The significance of this shift cannot be overstated, as the ability to generate photorealistic and semantically accurate images has revolutionized digital content creation, synthetic data generation, and the intersection of human creativity and machine intelligence.
+
+This review provides a comprehensive overview of the trajectory of these models, starting with their theoretical Origins in stochastic differential equations and score-based generative modeling. We then navigate through the Key Advances that catalyzed the current revolution, focusing on the development of denoising diffusion probabilistic models and the pivotal shift toward latent space diffusion which enabled large-scale, text-conditioned synthesis. The review concludes by exploring the Current Frontier, where the focus has expanded toward temporal consistency in video generation, enhanced computational efficiency, and the integration of increasingly sophisticated multi-modal control mechanisms.
+
+\subsection{Origins}
+
+The conceptual foundation of diffusion models for image generation is rooted in the intersection of variational inference and non-equilibrium statistical physics. While modern generative modeling has been heavily shaped by the adversarial framework introduced by Generative Adversarial Networks (GANs) [\texttt{arXiv:1406.2661}], which utilizes a minimax game between a generator and discriminator to avoid the need for Markov chains [\texttt{arXiv:1406.2661}], diffusion models offer a distinct trajectory. The primary precursor to the diffusion paradigm is the work on deep unsupervised learning inspired by non-equilibrium thermodynamics [\texttt{arXiv:1503.03585}]. Unlike the simultaneous adversarial training seen in GANs [\texttt{arXiv:1406.2661}], this approach introduces an iterative forward diffusion process that systematically and slowly destroys structure within a data distribution, subsequently learning a reverse process to restore that structure [\texttt{arXiv:1503.03585}].
+
+This thermodynamic approach builds upon earlier advancements in variational inference, specifically the reparameterization of the variational lower bound to enable stochastic gradient optimization [\texttt{arXiv:1312.6114}]. The ability to optimize such bounds is further supported by fundamental optimization techniques, such as the Adam optimizer, which utilizes adaptive estimates of lower-order moments for stochastic objective functions [\texttt{arXiv:1412.6980}].
+
+The evolution of generative modeling has also been a competition between different architectural philosophies. GANs have undergone significant refinement to address stability and quality issues. For instance, researchers introduced improved architectural features and training procedures for semi-supervised learning [\texttt{arXiv:1606.03498}] and a progressive growing methodology that adds layers to model finer details as training progresses [\texttt{arXiv:1710.10196}]. Furthermore, the stability of GAN training was addressed through the Two Time-Scale Update Rule (TTUR), which employs individual learning rates for the discriminator and generator to ensure convergence to a local Nash equilibrium [\texttt{arXiv:1706.08500}].
+
+In contrast to these adversarial methods, the diffusion framework [\texttt{arXiv:1503.03585}] relies on a different structural logic. While GAN-based improvements often focus on the minimax objective [\texttt{arXiv:1406.2661}] or convergence stability [\texttt{arXiv:1706.08500}], the diffusion model's core innovation lies in the iterative destruction and restoration of data structure [\texttt{arXiv:1503.03585}]. This distinction is critical, as it moves away from the equilibrium-seeking dynamics of GANs toward a process-oriented reconstruction of data. These foundational developments in generative modeling were supported by the availability of large-scale benchmarks like ImageNet [\texttt{arXiv:1409.0575}] and Microsoft COCO [\texttt{arXiv:1405.0312}], which provided the necessary scale for training complex models.
+
+\subsection{Key Advances}
+
+The evolution of diffusion models has progressed from fundamental probabilistic frameworks to highly efficient, large-scale generative systems. Early foundational work established the connection between diffusion probabilistic models (DPMs) and denoising score matching, utilizing a weighted variational bound for training [\texttt{arXiv:2006.11239}]. This was further unified through the lens of Stochastic Differential Equations (SDEs), which provided a continuous framework connecting score-based modeling and diffusion [\texttt{arXiv:2011.13456}]. While these models achieved strong results, such as an FID of 2.20 [\texttt{arXiv:2011.13456}], they were often computationally expensive due to their reliance on long Markovian chains.
+
+To address sampling inefficiency, several parallel research trajectories emerged. One approach involved constructing non-Markovian processes, as seen in Denoising Diffusion Implicit Models (DDIMs), which achieved \$10\textbackslash{}times\$ to \$50\textbackslash{}times\$ faster sampling than DDPMs [\texttt{arXiv:2010.02502}]. Other methods focused on solving the underlying diffusion ODEs more effectively. For instance, DPM-Solver [\texttt{arXiv:2206.00927}] and DPM-Solver++ [\texttt{arXiv:2211.01095}] introduced high-order solvers that achieve high-quality samples in only 10 to 20 steps, providing significant speedups over previous state-of-the-art samplers [\texttt{arXiv:2206.00927}]. Furthermore, progressive distillation has been utilized to reduce sampling steps from thousands down to as few as four [\texttt{arXiv:2202.00512}].
+
+A major shift in complexity management was the move from pixel-space to latent-space diffusion. Latent Diffusion Models (LDMs) utilize pretrained autoencoders to operate in a compressed latent space, significantly reducing computational requirements while enabling high-resolution synthesis [\texttt{arXiv:2112.10752}]. This concept was expanded by Diffusion Transformers (DiTs), which replace the traditional U-Net backbone with a transformer architecture to improve scalability [\texttt{arXiv:2212.09748}]. Similarly, models like VQ-VAE-based diffusion [\texttt{arXiv:2111.14822}] and LSGM [\texttt{arXiv:2106.05931}] demonstrated that training in latent spaces can outperform pixel-space models by orders of magnitude in terms of speed and efficiency.
+
+The field has also seen significant advances in conditioning and guidance. While classifier guidance was initially used to trade diversity for fidelity [\texttt{arXiv:2105.05233}], classifier-free guidance [\texttt{arXiv:2207.12598}] emerged as a more robust alternative by jointly training conditional and unconditional models, eliminating the need for a separate classifier. Recent research has even extended these capabilities to text-to-image synthesis, discovering that scaling large language models (e.g., T5) can boost image-text alignment more effectively than simply scaling the diffusion model itself [\texttt{arXiv:2205.11487}]. Finally, the transition from 2D to 3D and video generation has been facilitated by using 2D diffusion models as priors for NeRF optimization [\texttt{arXiv:2209.14988}] and employing hierarchical latent diffusion for long-form video synthesis [\texttt{arXiv:2211.13221}].
+
+\subsection{Current Frontier}
+
+Recent advancements in diffusion models have shifted from foundational denoising frameworks toward optimizing high-resolution synthesis, multi-modal alignment, and structural efficiency. A significant frontier involves scaling latent diffusion models (LDMs) for high-resolution imagery; for instance, SDXL improves upon existing LDMs by utilizing a significantly larger UNet backbone, a second text encoder for expanded cross-attention context, and specialized conditioning schemes [\texttt{arXiv:2307.01952}]. This scaling extends to video synthesis, where researchers have successfully applied the LDM paradigm to the temporal dimension, enabling high-resolution video generation by adding temporal layers to pre-trained image LDMs [\texttt{arXiv:2304.08818}].
+
+Parallel to scaling, there is a rigorous focus on human preference alignment. While early methods like Denoising Diffusion Policy Optimization (DDPO) framed denoising as a multi-step decision-making problem to optimize aesthetic quality via policy gradients [\texttt{arXiv:2305.13301}], more recent work has moved toward Direct Preference Optimization (DPO). Diffusion-DPO reformulates DPO using the evidence lower bound (ELBO) to create a differentiable objective for aligning models with human preferences [\texttt{arXiv:2311.12908}]. This alignment is supported by large-scale datasets like Pick-a-Pic [\texttt{arXiv:2305.01569}] and the Human Preference Score v2 (HPS v2) [\texttt{arXiv:2306.09341}]. However, the field is still refining these alignment techniques; Linear-DPO introduces a sustained linear utility to replace sigmoid-based functions within a unified reverse-time SDE framework [\texttt{arXiv:2605.21123}], while newer game-theoretic approaches like Diffusion Nash Preference Optimization (Diff.-NPO) propose that models should play against themselves to achieve self-improvement [\texttt{arXiv:2605.04494}].
+
+Efficiency and structural modeling also represent a critical frontier. To accelerate inference, researchers have explored multi-scale latent factorization (MSF), which decomposes denoising into low-frequency base signals and high-frequency residuals, achieving a 4x speed-up over DiT baselines [\texttt{arXiv:2501.13349}]. Other approaches focus on the mathematical nature of the generation process itself; for example, studies have shown that reverse diffusion effectively "rotates" toward a target on the image manifold, generating outlines before fine details [\texttt{arXiv:2303.02490}]. This structural understanding is furthered by models like MIND, which explicitly models manifold geometry by integrating discrete patch tokenization into the score function [\texttt{arXiv:2606.00094}]. Furthermore, the integration of renormalization group flows allows for a coarse-to-fine generation process that can accelerate sampling by an order of magnitude [\texttt{arXiv:2501.09064}]. Finally, the transition from scalar-based diffusion to Fourier Diffusion Models allows for better control over image characteristics by replacing scalar operations with shift-invariant convolutions [\texttt{arXiv:2303.13285}].
+
+\subsection{Tensions and Open Problems}
+
+A primary tension in the field concerns the fundamental trade-off between sample quality, training stability, and computational efficiency, often referred to as the generative learning trilemma. While early generative frameworks like GANs achieved high fidelity through adversarial training, they frequently suffered from mode collapse and unstable convergence, as noted in the critiques of traditional GAN training methodologies in \texttt{arXiv:2102.09672}. Conversely, while diffusion-based models offer superior distributional coverage and stability, they often struggle to match the rapid sampling speeds of GANs or the exact likelihood estimation of normalizing flows. For instance, \texttt{arXiv:2112.07804} argues that existing diffusion frameworks—including variational approaches (\texttt{arXiv:2107.00630}), structured discrete models (\texttt{arXiv:2107.03006}), and invertible flow-based models (\texttt{arXiv:1807.03039})—fail to simultaneously optimize sample quality, diversity, and fast inference. This debate is further complicated by the pursuit of high-resolution synthesis; while cascaded architectures (\texttt{arXiv:2106.15282}) attempt to bridge this gap through multi-stage refinement, they introduce new complexities in error propagation that direct score-based modeling (\texttt{arXiv:2011.13456}) seeks to bypass by leveraging the architectural strengths of style-based generators (\texttt{arXiv:1812.04948}).
+
+Another critical debate centers on the methodology of guidance and alignment in large-scale text-to-image synthesis. The introduction of classifier-free guidance (\texttt{arXiv:2207.12598}) revolutionized the ability to steer diffusion models toward textual prompts, forming the backbone of photorealistic models like Imagen (\texttt{arXiv:2205.11487}). However, the reliance on such guidance has been critiqued for its potential to distort the underlying data distribution, leading to questions regarding the robustness of human preference alignment. While models like Imagen (\texttt{arXiv:2205.11487}) rely on deep language conditioning to achieve visual fidelity, recent evaluations suggest that these metrics may not fully capture the nuances of human aesthetic judgment, as argued in the development of more rigorous preference benchmarks (\texttt{arXiv:2306.09341}). This tension underscores a growing divide between optimizing for mathematical likelihood and optimizing for subjective human utility.
+
+Finally, there is an ongoing methodological disagreement regarding the optimal mathematical formulation for generative trajectories, specifically between diffusion-based stochastic processes and flow-matching frameworks. Some researchers advocate for the refinement of diffusion-based ODE solvers to achieve faster sampling (\texttt{arXiv:2206.00927}), while others argue that the field should move toward more direct, straight-path trajectories. This is exemplified by the tension between the design space of traditional diffusion models (\texttt{arXiv:2206.00364}) and the emergence of flow-matching techniques (\texttt{arXiv:2210.02747}). Recent critiques suggest that flow-matching may still lack the necessary bridge to handle complex data distributions as effectively as specialized denoising bridge models (\texttt{arXiv:2309.16948}), leaving the question of whether the future of generative modeling lies in perfecting stochastic diffusion or transitioning entirely to deterministic flow-based architectures.
+
+\subsection{Outlook}
+
+The frontier of generative modeling is rapidly shifting from static image synthesis toward highly controllable, temporal, and aligned video generation. As evidenced by recent breakthroughs in video diffusion transformers (\texttt{arXiv:2606.10183}) and image-to-video foundations (\texttt{arXiv:2605.17243}), the next generation of models must master temporal consistency and complex causal dynamics. Simultaneously, the field is moving toward "alignment-centric" modeling, where the focus is not merely on density estimation, but on achieving Nash equilibrium in preference alignment (\texttt{arXiv:2605.04494}) and utilizing linear direct preference optimization (\texttt{arXiv:2605.21123}) to ensure models adhere to human intent. Ultimately, the integration of explicit manifold geometry (\texttt{arXiv:2606.00094}) and advanced mathematical frameworks like inverse renormalization group flows (\texttt{arXiv:2501.09064}) suggests that the next era of generative AI will be defined by a move away from heuristic-driven training toward principled, geometrically-aware, and human-aligned architectures.
+
+\section*{References}
+\begin{enumerate}\small
+  \item Auto-Encoding Variational Bayes (2013). \texttt{arXiv:1312.6114}
+  \item Microsoft COCO: Common Objects in Context (2014). \texttt{arXiv:1405.0312}
+  \item Adam: A Method for Stochastic Optimization (2014). \texttt{arXiv:1412.6980}
+  \item ImageNet Large Scale Visual Recognition Challenge (2014). \texttt{arXiv:1409.0575}
+  \item Deep Learning Face Attributes in the Wild (2014). \texttt{arXiv:1411.7766}
+  \item Generative Adversarial Networks (2014). \texttt{arXiv:1406.2661}
+  \item Deep Unsupervised Learning using Nonequilibrium Thermodynamics (2015). \texttt{arXiv:1503.03585}
+  \item LSUN: Construction of a Large-scale Image Dataset using Deep Learning
+  with Humans in the Loop (2015). \texttt{arXiv:1506.03365}
+  \item Deep Residual Learning for Image Recognition (2015). \texttt{arXiv:1512.03385}
+  \item U-Net: Convolutional Networks for Biomedical Image Segmentation (2015). \texttt{arXiv:1505.04597}
+  \item Improved Techniques for Training GANs (2016). \texttt{arXiv:1606.03498}
+  \item GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash
+  Equilibrium (2017). \texttt{arXiv:1706.08500}
+  \item Progressive Growing of GANs for Improved Quality, Stability, and
+  Variation (2017). \texttt{arXiv:1710.10196}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Decoupled Weight Decay Regularization (2017). \texttt{arXiv:1711.05101}
+  \item Large Scale GAN Training for High Fidelity Natural Image Synthesis (2018). \texttt{arXiv:1809.11096}
+  \item A Style-Based Generator Architecture for Generative Adversarial Networks (2018). \texttt{arXiv:1812.04948}
+  \item Glow: Generative Flow with Invertible 1x1 Convolutions (2018). \texttt{arXiv:1807.03039}
+  \item The Unreasonable Effectiveness of Deep Features as a Perceptual Metric (2018). \texttt{arXiv:1801.03924}
+  \item Neural Ordinary Differential Equations (2018). \texttt{arXiv:1806.07366}
+  \item Generative Modeling by Estimating Gradients of the Data Distribution (2019). \texttt{arXiv:1907.05600}
+  \item Analyzing and Improving the Image Quality of StyleGAN (2019). \texttt{arXiv:1912.04958}
+  \item Sliced Score Matching: A Scalable Approach to Density and Score
+  Estimation (2019). \texttt{arXiv:1905.07088}
+  \item Improved Precision and Recall Metric for Assessing Generative Models (2019). \texttt{arXiv:1904.06991}
+  \item Denoising Diffusion Probabilistic Models (2020). \texttt{arXiv:2006.11239}
+  \item Score-Based Generative Modeling through Stochastic Differential
+  Equations (2020). \texttt{arXiv:2011.13456}
+  \item Denoising Diffusion Implicit Models (2020). \texttt{arXiv:2010.02502}
+  \item Improved Techniques for Training Score-Based Generative Models (2020). \texttt{arXiv:2006.09011}
+  \item WaveGrad: Estimating Gradients for Waveform Generation (2020). \texttt{arXiv:2009.00713}
+  \item DiffWave: A Versatile Diffusion Model for Audio Synthesis (2020). \texttt{arXiv:2009.09761}
+  \item Training Generative Adversarial Networks with Limited Data (2020). \texttt{arXiv:2006.06676}
+  \item Taming Transformers for High-Resolution Image Synthesis (2020). \texttt{arXiv:2012.09841}
+  \item High-Resolution Image Synthesis with Latent Diffusion Models (2021). \texttt{arXiv:2112.10752}
+  \item Diffusion Models Beat GANs on Image Synthesis (2021). \texttt{arXiv:2105.05233}
+  \item Learning Transferable Visual Models From Natural Language Supervision (2021). \texttt{arXiv:2103.00020}
+  \item Improved Denoising Diffusion Probabilistic Models (2021). \texttt{arXiv:2102.09672}
+  \item GLIDE: Towards Photorealistic Image Generation and Editing with
+  Text-Guided Diffusion Models (2021). \texttt{arXiv:2112.10741}
+  \item Image Super-Resolution via Iterative Refinement (2021). \texttt{arXiv:2104.07636}
+  \item Cascaded Diffusion Models for High Fidelity Image Generation (2021). \texttt{arXiv:2106.15282}
+  \item Zero-Shot Text-to-Image Generation (2021). \texttt{arXiv:2102.12092}
+  \item Variational Diffusion Models (2021). \texttt{arXiv:2107.00630}
+  \item SDEdit: Guided Image Synthesis and Editing with Stochastic Differential
+  Equations (2021). \texttt{arXiv:2108.01073}
+  \item Score-based Generative Modeling in Latent Space (2021). \texttt{arXiv:2106.05931}
+  \item Palette: Image-to-Image Diffusion Models (2021). \texttt{arXiv:2111.05826}
+  \item Maximum Likelihood Training of Score-Based Diffusion Models (2021). \texttt{arXiv:2101.09258}
+  \item Knowledge Distillation in Iterative Generative Models for Improved
+  Sampling Speed (2021). \texttt{arXiv:2101.02388}
+  \item Structured Denoising Diffusion Models in Discrete State-Spaces (2021). \texttt{arXiv:2107.03006}
+  \item Gotta Go Fast When Generating Data with Score-Based Models (2021). \texttt{arXiv:2105.14080}
+  \item Vector Quantized Diffusion Model for Text-to-Image Synthesis (2021). \texttt{arXiv:2111.14822}
+  \item Noise Estimation for Generative Diffusion Models (2021). \texttt{arXiv:2104.02600}
+  \item On Fast Sampling of Diffusion Probabilistic Models (2021). \texttt{arXiv:2106.00132}
+  \item ILVR: Conditioning Method for Denoising Diffusion Probabilistic Models (2021). \texttt{arXiv:2108.02938}
+  \item Tackling the Generative Learning Trilemma with Denoising Diffusion GANs (2021). \texttt{arXiv:2112.07804}
+  \item Argmax Flows and Multinomial Diffusion: Learning Categorical
+  Distributions (2021). \texttt{arXiv:2102.05379}
+  \item Hierarchical Text-Conditional Image Generation with CLIP Latents (2022). \texttt{arXiv:2204.06125}
+  \item Classifier-Free Diffusion Guidance (2022). \texttt{arXiv:2207.12598}
+  \item Photorealistic Text-to-Image Diffusion Models with Deep Language
+  Understanding (2022). \texttt{arXiv:2205.11487}
+  \item Elucidating the Design Space of Diffusion-Based Generative Models (2022). \texttt{arXiv:2206.00364}
+  \item Video Diffusion Models (2022). \texttt{arXiv:2204.03458}
+  \item Imagen Video: High Definition Video Generation with Diffusion Models (2022). \texttt{arXiv:2210.02303}
+  \item Progressive Distillation for Fast Sampling of Diffusion Models (2022). \texttt{arXiv:2202.00512}
+  \item DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling
+  in Around 10 Steps (2022). \texttt{arXiv:2206.00927}
+  \item LAION-5B: An open large-scale dataset for training next generation
+  image-text models (2022). \texttt{arXiv:2210.08402}
+  \item DreamBooth: Fine Tuning Text-to-Image Diffusion Models for
+  Subject-Driven Generation (2022). \texttt{arXiv:2208.12242}
+  \item Scalable Diffusion Models with Transformers (2022). \texttt{arXiv:2212.09748}
+  \item Pseudo Numerical Methods for Diffusion Models on Manifolds (2022). \texttt{arXiv:2202.09778}
+  \item Flow Straight and Fast: Learning to Generate and Transfer Data with
+  Rectified Flow (2022). \texttt{arXiv:2209.03003}
+  \item Flow Matching for Generative Modeling (2022). \texttt{arXiv:2210.02747}
+  \item Fast Sampling of Diffusion Models with Exponential Integrator (2022). \texttt{arXiv:2204.13902}
+  \item On Distillation of Guided Diffusion Models (2022). \texttt{arXiv:2210.03142}
+  \item Analytic-DPM: an Analytic Estimate of the Optimal Reverse Variance in
+  Diffusion Probabilistic Models (2022). \texttt{arXiv:2201.06503}
+  \item eDiff-I: Text-to-Image Diffusion Models with an Ensemble of Expert
+  Denoisers (2022). \texttt{arXiv:2211.01324}
+  \item Latent Video Diffusion Models for High-Fidelity Long Video Generation (2022). \texttt{arXiv:2211.13221}
+  \item DreamFusion: Text-to-3D using 2D Diffusion (2022). \texttt{arXiv:2209.14988}
+  \item DPM-Solver++: Fast Solver for Guided Sampling of Diffusion Probabilistic Models (2022). \texttt{arXiv:2211.01095}
+  \item Diffusion Model for Generative Image Denoising (2023). \texttt{arXiv:2302.02398}
+  \item Denoising Diffusion Bridge Models (2023). \texttt{arXiv:2309.16948}
+  \item Diffusion with Forward Models: Solving Stochastic Inverse Problems
+  Without Direct Supervision (2023). \texttt{arXiv:2306.11719}
+  \item Image Embedding for Denoising Generative Models (2023). \texttt{arXiv:2301.07485}
+  \item Diffusion Models Generate Images Like Painters: an Analytical Theory of
+  Outline First, Details Later (2023). \texttt{arXiv:2303.02490}
+  \item Fourier Diffusion Models: A Method to Control MTF and NPS in Score-Based
+  Stochastic Image Generation (2023). \texttt{arXiv:2303.13285}
+  \item Continual Learning of Diffusion Models with Generative Distillation (2023). \texttt{arXiv:2311.14028}
+  \item Diffusion Models for Generative Artificial Intelligence: An Introduction
+  for Applied Mathematicians (2023). \texttt{arXiv:2312.14977}
+  \item A General Theoretical Paradigm to Understand Learning from Human
+  Preferences (2023). \texttt{arXiv:2310.12036}
+  \item Adding Conditional Control to Text-to-Image Diffusion Models (2023). \texttt{arXiv:2302.05543}
+  \item SDXL: Improving Latent Diffusion Models for High-Resolution Image
+  Synthesis (2023). \texttt{arXiv:2307.01952}
+  \item Align your Latents: High-Resolution Video Synthesis with Latent
+  Diffusion Models (2023). \texttt{arXiv:2304.08818}
+  \item ImageReward: Learning and Evaluating Human Preferences for Text-to-Image
+  Generation (2023). \texttt{arXiv:2304.05977}
+  \item Training Diffusion Models with Reinforcement Learning (2023). \texttt{arXiv:2305.13301}
+  \item Pick-a-Pic: An Open Dataset of User Preferences for Text-to-Image
+  Generation (2023). \texttt{arXiv:2305.01569}
+  \item Diffusion Model Alignment Using Direct Preference Optimization (2023). \texttt{arXiv:2311.12908}
+  \item Structure and Content-Guided Video Synthesis with Diffusion Models (2023). \texttt{arXiv:2302.03011}
+  \item Human Preference Score v2: A Solid Benchmark for Evaluating Human
+  Preferences of Text-to-Image Synthesis (2023). \texttt{arXiv:2306.09341}
+  \item Accelerated Image-Aware Generative Diffusion Modeling (2024). \texttt{arXiv:2408.08306}
+  \item Generative Modeling with Diffusion (2024). \texttt{arXiv:2412.10948}
+  \item GUD: Generation with Unified Diffusion (2024). \texttt{arXiv:2410.02667}
+  \item Diffusion Models For Multi-Modal Generative Modeling (2024). \texttt{arXiv:2407.17571}
+  \item Edge-preserving noise for diffusion models (2024). \texttt{arXiv:2410.01540}
+  \item Enhancing Diffusion Models for High-Quality Image Generation (2024). \texttt{arXiv:2412.14422}
+  \item Diffusion Models in Low-Level Vision: A Survey (2024). \texttt{arXiv:2406.11138}
+  \item Generative AI in Vision: A Survey on Models, Metrics and Applications (2024). \texttt{arXiv:2402.16369}
+  \item Markov chains and mappings of distributions on compact spaces (2024). \texttt{arXiv:2404.01348}
+  \item Markov chains and mappings of distributions on compact spaces II:
+  Numerics and Conjectures (2024). \texttt{arXiv:2403.18153}
+  \item Scaling Rectified Flow Transformers for High-Resolution Image Synthesis (2024). \texttt{arXiv:2403.03206}
+  \item Forward-only Diffusion Probabilistic Models (2025). \texttt{arXiv:2505.16733}
+  \item Distributional Diffusion Models with Scoring Rules (2025). \texttt{arXiv:2502.02483}
+  \item Generative Image Compression by Estimating Gradients of the Rate-variable Feature Distribution (2025). \texttt{arXiv:2505.20984}
+  \item Diffusion Models: A Mathematical Introduction (2025). \texttt{arXiv:2511.11746}
+  \item Generative diffusion model with inverse renormalization group flows (2025). \texttt{arXiv:2501.09064}
+  \item Generative modelling with jump-diffusions (2025). \texttt{arXiv:2503.06558}
+  \item Stochastic Forward-Backward Deconvolution: Training Diffusion Models with Finite Noisy Datasets (2025). \texttt{arXiv:2502.05446}
+  \item Active Learning for Direct Preference Optimization (2025). \texttt{arXiv:2503.01076}
+  \item MSF: Efficient Diffusion Model Via Multi-Scale Latent Factorize (2025). \texttt{arXiv:2501.13349}
+  \item Diffusion Image Generation with Explicit Modeling of Data Manifold Geometry (2026). \texttt{arXiv:2606.00094}
+  \item Linear-DPO: Linear Direct Preference Optimization for Diffusion and Flow-Matching Generative Models (2026). \texttt{arXiv:2605.21123}
+  \item Image-to-Video Diffusion: From Foundations to Open Frontiers (2026). \texttt{arXiv:2605.17248}
+  \item Towards General Preference Alignment: Diffusion Models at Nash Equilibrium (2026). \texttt{arXiv:2605.04494}
+  \item Conditional Equivalence of DPO and RLHF: Implicit Assumption, Failure Modes, and Provable Alignment (2026). \texttt{arXiv:2605.20834}
+  \item Making Time Editable in Video Diffusion Transformers (2026). \texttt{arXiv:2606.10183}
+  \item The Diffusion-Attention Connection (2026). \texttt{arXiv:2604.09560}
+\end{enumerate}
+
+\end{document}

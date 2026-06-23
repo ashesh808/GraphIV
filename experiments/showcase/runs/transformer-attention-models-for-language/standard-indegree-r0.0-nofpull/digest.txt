@@ -1,0 +1,481 @@
+QUESTION: transformer attention models for language
+
+SCHEMA FIELDS: ['model_name', 'attention_mechanism', 'key_innovation', 'context_handling', 'training_paradigm', 'complexity_scaling']
+
+ERAS:
+  [0] Origins: 2014-2017
+  [1] Key Advances: 2017-2021
+  [2] Current Frontier: 2021-2024
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1409.0473 (2014) "Neural Machine Translation by Jointly Learning to Align and Translate" [cs] (cited-by 90 in-topic, era 0)
+    attention_mechanism: soft-alignment (attention mechanism)
+    key_innovation: extending the encoder-decoder architecture by allowing the model to automatically (soft-)search for relevant parts of a source sentence instead of using a fixed-length vector bottleneck
+    training_paradigm: jointly tuned to maximize translation performance
+    relations: uses arXiv:1409.3215; uses arXiv:1406.1078; used-by arXiv:1409.3215; cited-by arXiv:1609.07843; cited-by arXiv:1701.06538; compared-by arXiv:1706.03762; cited-by arXiv:1803.02155; cited-by arXiv:1806.00187
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 84 in-topic, era 0)
+    key_innovation: Adaptive estimates of lower-order moments for first-order gradient-based optimization
+    training_paradigm: Stochastic optimization of objective functions
+    relations: used-by arXiv:1806.00187; used-by arXiv:1607.06450; used-by arXiv:1701.06538; compared-by arXiv:1704.05426; used-by arXiv:1706.03762; cited-by arXiv:1711.05101
+arXiv:1409.3215 (2014) "Sequence to Sequence Learning with Neural Networks" [cs] (cited-by 32 in-topic, era 0)
+    model_name: multilayered Long Short-Term Memory (LSTM)
+    key_innovation: A general end-to-end approach using a multilayered LSTM to map an input sequence to a fixed-dimensionality vector, which is then decoded by another deep LSTM.
+    context_handling: Uses a fixed-dimensionality vector to bridge input and output sequences; noted to have no difficulty on long sentences.
+    training_paradigm: End-to-end sequence-to-sequence learning.
+    relations: uses arXiv:1409.0473; uses arXiv:1406.1078; used-by arXiv:1409.0473; cited-by arXiv:1607.06450; cited-by arXiv:1701.06538; cited-by arXiv:1706.03762; cited-by arXiv:1803.02155; used-by arXiv:1807.03819
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 29 in-topic, era 0)
+    model_name: RNN Encoder-Decoder
+    key_innovation: Using an RNN encoder-decoder architecture to learn phrase representations for use as features in a statistical machine translation log-linear model
+    context_handling: Encodes a sequence of symbols into a fixed-length vector representation
+    training_paradigm: Jointly trained to maximize the conditional probability of a target sequence given a source sequence
+    relations: used-by arXiv:1409.3215; used-by arXiv:1409.0473; used-by arXiv:1607.06450; cited-by arXiv:1706.03762; cited-by arXiv:1803.02155; used-by arXiv:1807.03819
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 57 in-topic, era 0)
+    model_name: Residual nets (ResNet)
+    key_innovation: Residual learning framework (learning residual functions with reference to layer inputs)
+    relations: extended-by arXiv:1701.06538; used-by arXiv:1706.03762; used-by arXiv:1806.00187; used-by arXiv:1809.10853; cited-by arXiv:1901.10430; used-by arXiv:1910.10683
+arXiv:1508.07909 (2015) "Neural Machine Translation of Rare Words with Subword Units" [cs] (cited-by 55 in-topic, era 0)
+    key_innovation: encoding rare and unknown words as sequences of subword units to enable open-vocabulary translation
+    relations: used-by arXiv:2307.09288; used-by arXiv:2302.13971; cited-by arXiv:1706.03762; used-by arXiv:1806.00187; used-by arXiv:1809.10853; used-by arXiv:1901.10430
+arXiv:1508.04025 (2015) "Effective Approaches to Attention-based Neural Machine Translation" [cs] (cited-by 38 in-topic, era 0)
+    attention_mechanism: global approach (attends to all source words) and local approach (attends to a subset of source words)
+    key_innovation: comparison and implementation of global vs. local attentional mechanisms for NMT
+    context_handling: local attention looks at a subset of source words at a time
+    relations: used-by arXiv:1701.06538; cited-by arXiv:1706.03762; cited-by arXiv:1803.02155; cited-by arXiv:1901.10430; used-by arXiv:1904.01038; extended-by arXiv:1905.07799
+arXiv:1506.06724 (2015) "Aligning Books and Movies: Towards Story-like Visual Explanations by
+  Watching Movies and Reading Books" [cs] (cited-by 38 in-topic, era 0)
+    key_innovation: Aligning movies and books using an unsupervised neural sentence embedding from books and a video-text neural embedding to compute similarities between movie clips and book sentences.
+    context_handling: Context-aware CNN to combine information from multiple sources.
+    training_paradigm: Unsupervised training of neural sentence embeddings from a large corpus of books.
+    relations: used-by arXiv:2108.12409; used-by arXiv:1607.06450; used-by arXiv:1810.04805; cited-by arXiv:1905.07830; used-by arXiv:1906.08237; cited-by arXiv:1907.11692
+arXiv:1609.07843 (2016) "Pointer Sentinel Mixture Models" [cs] (cited-by 65 in-topic, era 0)
+    model_name: pointer sentinel-LSTM
+    attention_mechanism: pointer sentinel mixture
+    key_innovation: ability to either reproduce a word from the recent context or produce a word from a standard softmax classifier
+    context_handling: reproduces words from the recent context
+    relations: cites arXiv:1409.0473; used-by arXiv:2108.12409; cited-by arXiv:1809.10853; used-by arXiv:1901.02860; cited-by arXiv:1911.05507; cited-by arXiv:2003.05997; used-by arXiv:2006.04768
+arXiv:1607.06450 (2016) "Layer Normalization" [stat] (cited-by 59 in-topic, era 0)
+    key_innovation: Layer Normalization (transposing batch normalization to compute mean and variance from all summed inputs to neurons in a layer on a single training case)
+    context_handling: Computing normalization statistics separately at each time step for recurrent networks
+    relations: cites arXiv:1409.3215; uses arXiv:1406.1078; uses arXiv:1412.6980; uses arXiv:1506.06724; cited-by arXiv:2303.08774; used-by arXiv:1706.03762; cited-by arXiv:1802.05365; cited-by arXiv:1803.02155; used-by arXiv:1806.00187; used-by arXiv:1807.03819
+arXiv:1606.05250 (2016) "SQuAD: 100,000+ Questions for Machine Comprehension of Text" [cs] (cited-by 38 in-topic, era 0)
+    key_innovation: Introduction of the Stanford Question Answering Dataset (SQuAD) consisting of 100,000+ questions
+    relations: compared-by arXiv:1802.05365; used-by arXiv:1803.05457; extended-by arXiv:1810.04805; used-by arXiv:1906.08237; used-by arXiv:1907.11692; used-by arXiv:1908.08593
+arXiv:1606.06031 (2016) "The LAMBADA dataset: Word prediction requiring a broad discourse context" [cs] (cited-by 23 in-topic, era 0)
+    key_innovation: Introduction of the LAMBADA dataset for evaluating broad discourse context in word prediction tasks
+    relations: cited-by arXiv:1807.03819; cited-by arXiv:1911.05507; cited-by arXiv:2005.14165; cited-by arXiv:2011.04006; cited-by arXiv:2204.02311
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 341 in-topic, era 0)
+    model_name: Transformer
+    attention_mechanism: Self-attention (solely based on attention mechanisms)
+    key_innovation: Dispensing with recurrence and convolutions entirely in favor of a network architecture based solely on attention mechanisms
+    relations: uses arXiv:1705.03122; cites arXiv:1701.06538; cites arXiv:1409.3215; compares-with arXiv:1409.0473; cites arXiv:1406.1078; cites arXiv:1508.04025; used-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2307.08691; compared-by arXiv:1910.01108; cited-by arXiv:1711.05101; used-by arXiv:1806.00187
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 38 in-topic, era 0)
+    model_name: AdamW / SGDW
+    key_innovation: Decoupling weight decay from the optimization steps taken with respect to the loss function
+    training_paradigm: Adaptive gradient algorithms (Adam) and standard SGD
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; used-by arXiv:2302.13971; used-by arXiv:2307.09288; used-by arXiv:2005.14165; used-by arXiv:2104.09864
+arXiv:1705.03122 (2017) "Convolutional Sequence to Sequence Learning" [cs] (cited-by 29 in-topic, era 0)
+    attention_mechanism: separate attention module per decoder layer
+    key_innovation: architecture based entirely on convolutional neural networks using gated linear units
+    training_paradigm: parallelized computations over all elements during training
+    relations: used-by arXiv:1706.03762; used-by arXiv:1806.00187; used-by arXiv:1901.10430; used-by arXiv:1904.01038; cited-by arXiv:1803.02155; cited-by arXiv:1807.03819
+arXiv:1701.06538 (2017) "Outrageously Large Neural Networks: The Sparsely-Gated
+  Mixture-of-Experts Layer" [cs] (cited-by 28 in-topic, era 0)
+    key_innovation: Sparsely-Gated Mixture-of-Experts (MoE) layer consisting of up to thousands of feed-forward sub-networks controlled by a trainable gating network
+    training_paradigm: Conditional computation (parts of the network are active on a per-example basis)
+    relations: cites arXiv:1409.3215; cites arXiv:1409.0473; uses arXiv:1508.04025; extends arXiv:1512.03385; uses arXiv:1412.6980; cited-by arXiv:2303.08774; cited-by arXiv:1706.03762; cited-by arXiv:1809.10853; cited-by arXiv:1901.02860; cited-by arXiv:1901.10430; cited-by arXiv:1904.01038
+arXiv:1704.05426 (2017) "A Broad-Coverage Challenge Corpus for Sentence Understanding through
+  Inference" [cs] (cited-by 27 in-topic, era 0)
+    key_innovation: Introduction of the MultiNLI corpus, a large-scale (433k examples) dataset covering ten distinct genres for NLI and cross-genre domain adaptation evaluation.
+    relations: compares-with arXiv:1412.6980; cited-by arXiv:1810.04805; used-by arXiv:1905.10650; cited-by arXiv:1907.11692; cited-by arXiv:1908.08593; cited-by arXiv:1909.11942; cited-by arXiv:1910.10683
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 207 in-topic, era 1)
+    model_name: BERT (Bidirectional Encoder Representations from Transformers)
+    key_innovation: Pre-training deep bidirectional representations by jointly conditioning on both left and right context in all layers.
+    training_paradigm: Pre-training on unlabeled text followed by fine-tuning with a single additional output layer.
+    relations: extends arXiv:1802.05365; cites arXiv:1804.07461; cites arXiv:1704.05426; extends arXiv:1606.05250; uses arXiv:1706.03762; uses arXiv:1506.06724; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; extended-by arXiv:1907.11692; used-by arXiv:1906.08237; cited-by arXiv:1910.03771; used-by arXiv:1910.10683
+arXiv:1804.07461 (2018) "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language
+  Understanding" [cs] (cited-by 69 in-topic, era 1)
+    key_innovation: Introduction of the General Language Understanding Evaluation (GLUE) benchmark and a hand-crafted diagnostic test suite for NLU analysis.
+    training_paradigm: Multi-task and transfer learning
+    relations: cited-by arXiv:1810.04805; cited-by arXiv:1906.08237; cited-by arXiv:1907.11692; used-by arXiv:1908.08593; used-by arXiv:1909.11942; used-by arXiv:1910.01108
+arXiv:1803.02155 (2018) "Self-Attention with Relative Position Representations" [cs] (cited-by 48 in-topic, era 1)
+    attention_mechanism: relation-aware self-attention with relative position representations
+    key_innovation: extending the self-attention mechanism to efficiently consider representations of the relative positions (distances between sequence elements)
+    relations: uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1705.03122; cites arXiv:1409.0473; cites arXiv:1406.1078; cites arXiv:1508.04025; compared-by arXiv:1806.00187; compared-by arXiv:1901.02860; cited-by arXiv:1901.10430; cited-by arXiv:1904.01038; cited-by arXiv:2003.05997; cited-by arXiv:2108.12409
+arXiv:1809.10853 (2018) "Adaptive Input Representations for Neural Language Modeling" [cs] (cited-by 35 in-topic, era 1)
+    attention_mechanism: self-attentional architecture
+    key_innovation: adaptive input representations of variable capacity (extending adaptive softmax to input layers)
+    relations: cites arXiv:1701.06538; compares-with arXiv:1808.04444; uses arXiv:1706.03762; uses arXiv:1512.03385; cites arXiv:1609.07843; uses arXiv:1508.07909; used-by arXiv:2108.12409; compared-by arXiv:1901.02860; cited-by arXiv:1911.05507; cited-by arXiv:2003.05997; used-by arXiv:2103.02143; used-by arXiv:1904.01038
+arXiv:1802.05365 (2018) "Deep contextualized word representations" [cs] (cited-by 32 in-topic, era 1)
+    model_name: biLM (bidirectional language model)
+    key_innovation: deep contextualized word representations learned from the internal states of a deep bidirectional language model
+    context_handling: models how word uses vary across linguistic contexts to model polysemy
+    training_paradigm: pre-trained on a large text corpus
+    relations: cites arXiv:1607.06450; compares-with arXiv:1606.05250; uses arXiv:1412.6980; extended-by arXiv:1810.04805; used-by arXiv:1901.02860; used-by arXiv:1905.05950; cited-by arXiv:1905.07830; cited-by arXiv:1906.04341; compared-by arXiv:1906.08237
+arXiv:1803.05457 (2018) "Think you have Solved Question Answering? Try ARC, the AI2 Reasoning
+  Challenge" [cs] (cited-by 32 in-topic, era 1)
+    key_innovation: Introduction of the AI2 Reasoning Challenge (ARC) consisting of a new question set (7,787 questions) and a 14M sentence corpus to encourage advanced reasoning research.
+    relations: uses arXiv:1606.05250; cited-by arXiv:2302.13971; cited-by arXiv:2307.09288; cited-by arXiv:2303.08774; cited-by arXiv:2005.14165; cited-by arXiv:2204.02311
+arXiv:1806.00187 (2018) "Scaling Neural Machine Translation" [cs] (cited-by 29 in-topic, era 1)
+    key_innovation: Reduced precision and large batch training to speed up training
+    training_paradigm: Large batch training using reduced precision
+    relations: uses arXiv:1706.03762; uses arXiv:1705.03122; compares-with arXiv:1803.02155; uses arXiv:1412.6980; cites arXiv:1409.0473; uses arXiv:1508.07909; used-by arXiv:1901.10430; cited-by arXiv:2001.04451; cited-by arXiv:2108.12409; cited-by arXiv:1809.10853; used-by arXiv:1904.01038; used-by arXiv:1905.10650
+arXiv:1808.04444 (2018) "Character-Level Language Modeling with Deeper Self-Attention" [cs] (cited-by 26 in-topic, era 1)
+    model_name: 64-layer transformer
+    attention_mechanism: self-attention
+    key_innovation: adding auxiliary losses at intermediate network layers and intermediate sequence positions to enable training at extreme depth
+    context_handling: fixed context
+    relations: used-by arXiv:1901.02860; used-by arXiv:1904.10509; used-by arXiv:1905.07799; cited-by arXiv:1911.05507; cited-by arXiv:2003.05997; compared-by arXiv:1809.10853
+arXiv:1807.03819 (2018) "Universal Transformers" [cs] (cited-by 26 in-topic, era 1)
+    model_name: Universal Transformer (UT)
+    attention_mechanism: parallel-in-time self-attention
+    key_innovation: combining the parallelizability of Transformers with the recurrent inductive bias of RNNs via a parallel-in-time self-attentive recurrent sequence model
+    context_handling: dynamic per-position halting mechanism
+    relations: uses arXiv:1706.03762; cites arXiv:1705.03122; uses arXiv:1607.06450; uses arXiv:1409.3215; uses arXiv:1406.1078; cites arXiv:1409.0473; used-by arXiv:2001.08361; compared-by arXiv:1909.11942; cited-by arXiv:1912.10077; compared-by arXiv:2005.00743; cited-by arXiv:2006.16236; cited-by arXiv:2208.01066
+arXiv:1901.02860 (2019) "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context" [cs] (cited-by 105 in-topic, era 1)
+    model_name: Transformer-XL
+    key_innovation: segment-level recurrence mechanism and a novel positional encoding scheme
+    context_handling: segment-level recurrence mechanism to enable learning dependency beyond a fixed length
+    relations: compares-with arXiv:1809.10853; uses arXiv:1808.04444; cites arXiv:1701.06538; compares-with arXiv:1803.02155; compares-with arXiv:1706.03762; uses arXiv:1802.05365; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2108.12409; compared-by arXiv:1905.07799; extended-by arXiv:1906.08237; cited-by arXiv:1910.03771
+arXiv:1904.10509 (2019) "Generating Long Sequences with Sparse Transformers" [cs] (cited-by 87 in-topic, era 1)
+    abstract: Transformers are powerful sequence models, but require time and memory that
+grows quadratically with the sequence length. In this paper we introduce sparse
+factorizations of the attention matrix which reduce this to $O(n \sqrt{n})$. We
+also introduce a) a variation on architecture and initialization
+    relations: uses arXiv:1808.04444; cites arXiv:1705.03122; extends arXiv:1706.03762; uses arXiv:1607.06450; cited-by arXiv:2303.08774; cited-by arXiv:1911.05507; used-by arXiv:2003.05997; cited-by arXiv:2006.04768; cited-by arXiv:2009.06732; cited-by arXiv:2009.14794
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 85 in-topic, era 1)
+    key_innovation: unified framework that converts all text-based language problems into a text-to-text format
+    training_paradigm: transfer learning (pre-training on a data-rich task followed by fine-tuning on downstream tasks)
+    relations: uses arXiv:1810.04805; compares-with arXiv:1909.11942; extends arXiv:1907.11692; uses arXiv:1906.08237; cites arXiv:1701.06538; compares-with arXiv:1804.07461; used-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2005.14165; cited-by arXiv:1910.03771; compared-by arXiv:2005.00743; compared-by arXiv:2204.02311
+arXiv:1907.11692 (2019) "RoBERTa: A Robustly Optimized BERT Pretraining Approach" [cs] (cited-by 80 in-topic, era 1)
+    model_name: RoBERTa
+    key_innovation: Robustly optimized BERT pretraining approach through careful hyperparameter tuning and increased training data size
+    training_paradigm: Replication study of BERT pretraining with optimized hyperparameters and larger datasets
+    relations: extends arXiv:1810.04805; uses arXiv:1906.08237; cites arXiv:1506.06724; cites arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1412.6980; cited-by arXiv:2303.08774; used-by arXiv:2307.09288; cited-by arXiv:1906.08237; cited-by arXiv:1910.03771; extended-by arXiv:1910.10683; used-by arXiv:2006.04768
+arXiv:1911.05507 (2019) "Compressive Transformers for Long-Range Sequence Modelling" [cs] (cited-by 53 in-topic, era 1)
+    model_name: Compressive Transformer
+    key_innovation: Compresses past memories for long-range sequence learning
+    context_handling: Compresses past memories
+    relations: cites arXiv:1808.04444; uses arXiv:1901.02860; cites arXiv:1904.10509; compares-with arXiv:1905.07799; cites arXiv:1809.10853; uses arXiv:1706.03762; cited-by arXiv:2108.12409; cited-by arXiv:2003.05997; extended-by arXiv:2009.06732; cited-by arXiv:2101.00027; cited-by arXiv:2004.08483; cited-by arXiv:2007.14062
+arXiv:1906.08237 (2019) "XLNet: Generalized Autoregressive Pretraining for Language Understanding" [cs] (cited-by 49 in-topic, era 1)
+    model_name: XLNet
+    key_innovation: Generalized autoregressive pretraining that maximizes the expected likelihood over all permutations of the factorization order
+    context_handling: Integrates ideas from Transformer-XL
+    training_paradigm: Generalized autoregressive pretraining
+    relations: extends arXiv:1901.02860; cites arXiv:1907.11692; uses arXiv:1810.04805; compares-with arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1606.05250; used-by arXiv:1907.11692; cited-by arXiv:1910.03771; used-by arXiv:1909.11942; used-by arXiv:1910.10683; cited-by arXiv:1911.05507; cited-by arXiv:1912.10077
+arXiv:1905.09418 (2019) "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy
+  Lifting, the Rest Can Be Pruned" [cs] (cited-by 48 in-topic, era 1)
+    model_name: Transformer
+    attention_mechanism: Multi-head self-attention
+    key_innovation: Pruning method based on stochastic gates and a differentiable relaxation of the L0 penalty
+    relations: uses arXiv:1706.03762; uses arXiv:1508.07909; uses arXiv:1412.6980; cited-by arXiv:1905.10650; cited-by arXiv:1906.04341; cited-by arXiv:1906.06755; cited-by arXiv:1908.08593; cited-by arXiv:2009.06732
+arXiv:1906.04341 (2019) "What Does BERT Look At? An Analysis of BERT's Attention" [cs] (cited-by 48 in-topic, era 1)
+    model_name: BERT
+    key_innovation: Methods for analyzing attention mechanisms of pre-trained models and an attention-based probing classifier
+    training_paradigm: Pre-trained on unlabeled data
+    relations: cites arXiv:1802.05365; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1706.03762; uses arXiv:1508.07909; cites arXiv:1905.05950; cited-by arXiv:1906.06755; used-by arXiv:1912.10077
+arXiv:1910.03771 (2019) "HuggingFace's Transformers: State-of-the-art Natural Language Processing" [cs] (cited-by 47 in-topic, era 1)
+    relations: cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1901.02860; cites arXiv:1906.08237; cites arXiv:1910.10683; cites arXiv:2001.04451; used-by arXiv:1910.01108; compared-by arXiv:2205.14135; extended-by arXiv:2108.12409; cited-by arXiv:2101.00027; used-by arXiv:2104.09864; used-by arXiv:2208.01066
+arXiv:1905.10650 (2019) "Are Sixteen Heads Really Better than One?" [cs] (cited-by 44 in-topic, era 1)
+    attention_mechanism: multi-headed attention
+    key_innovation: observation that a large percentage of attention heads can be removed at test time without significant performance impact
+    relations: uses arXiv:1706.03762; uses arXiv:1806.00187; uses arXiv:1810.04805; cites arXiv:1409.0473; cites arXiv:1406.1078; uses arXiv:1508.04025; cited-by arXiv:1906.04341; cited-by arXiv:1908.08593; cited-by arXiv:1910.01108; cited-by arXiv:2006.16236; cited-by arXiv:2009.06732
+arXiv:1909.11942 (2019) "ALBERT: A Lite BERT for Self-supervised Learning of Language
+  Representations" [cs] (cited-by 44 in-topic, era 1)
+    model_name: ALBERT
+    key_innovation: Two parameter-reduction techniques (cross-layer parameter sharing and factorized embedding parameterization)
+    training_paradigm: Self-supervised learning using a loss that focuses on modeling inter-sentence coherence
+    relations: uses arXiv:1906.08237; uses arXiv:1810.04805; uses arXiv:1907.11692; cites arXiv:1802.05365; uses arXiv:1706.03762; cites arXiv:1910.10683; cited-by arXiv:1910.03771; compared-by arXiv:1910.10683; cited-by arXiv:1906.08237; cited-by arXiv:2001.08361; cited-by arXiv:2004.08483; cited-by arXiv:2005.14165
+arXiv:1905.07799 (2019) "Adaptive Attention Span in Transformers" [cs] (cited-by 36 in-topic, era 1)
+    attention_mechanism: Adaptive Attention Span
+    key_innovation: A self-attention mechanism that learns its optimal attention span
+    context_handling: Extends maximum context size (up to 8k characters for character-level language modeling) while controlling memory and computation
+    relations: uses arXiv:1808.04444; compares-with arXiv:1901.02860; compares-with arXiv:1706.03762; cites arXiv:1803.02155; uses arXiv:1409.0473; extends arXiv:1508.04025; compared-by arXiv:1911.05507; cited-by arXiv:2003.05997; cited-by arXiv:2007.14062; cited-by arXiv:2001.04451; cited-by arXiv:2004.08483; cited-by arXiv:2006.16236
+arXiv:1905.07830 (2019) "HellaSwag: Can a Machine Really Finish Your Sentence?" [cs] (cited-by 36 in-topic, era 1)
+    key_innovation: Adversarial Filtering (AF) to create a dataset where machine-generated wrong answers are iteratively selected by discriminators to reach a 'Goldilocks' zone of difficulty.
+    relations: uses arXiv:1810.04805; cites arXiv:1802.05365; cites arXiv:1506.06724; cited-by arXiv:2302.13971; cited-by arXiv:2307.09288; cited-by arXiv:2303.08774; cited-by arXiv:2005.14165; cited-by arXiv:2204.02311
+arXiv:1901.10430 (2019) "Pay Less Attention with Lightweight and Dynamic Convolutions" [cs] (cited-by 33 in-topic, era 1)
+    attention_mechanism: dynamic convolutions
+    key_innovation: predicting separate convolution kernels based solely on the current time-step to determine context importance
+    context_handling: uses lightweight and dynamic convolutions instead of self-attention
+    complexity_scaling: linear in the input length
+    relations: uses arXiv:1705.03122; uses arXiv:1706.03762; cites arXiv:1803.02155; uses arXiv:1806.00187; cites arXiv:1701.06538; uses arXiv:1409.3215; cited-by arXiv:1908.08593; cited-by arXiv:1911.05507; used-by arXiv:1912.10077; compared-by arXiv:2005.00743; cited-by arXiv:2103.02143; cited-by arXiv:2205.14135
+arXiv:1902.10186 (2019) "Attention is not Explanation" [cs] (cited-by 30 in-topic, era 1)
+    attention_mechanism: standard attention modules
+    relations: cited-by arXiv:1906.04341
+arXiv:1907.10641 (2019) "WinoGrande: An Adversarial Winograd Schema Challenge at Scale" [cs] (cited-by 30 in-topic, era 1)
+    key_innovation: WinoGrande dataset construction using a novel AfLite algorithm for systematic bias reduction
+    training_paradigm: transfer learning
+    relations: cited-by arXiv:2302.13971; cited-by arXiv:2307.09288; compared-by arXiv:2005.14165; cited-by arXiv:2303.08774; cited-by arXiv:2204.02311
+arXiv:1911.11641 (2019) "PIQA: Reasoning about Physical Commonsense in Natural Language" [cs] (cited-by 28 in-topic, era 1)
+    key_innovation: Introduction of the PIQA (Physical Interaction: Question Answering) benchmark dataset for physical commonsense reasoning.
+    relations: cited-by arXiv:2302.13971; cited-by arXiv:2307.09288; critiqued-by arXiv:2005.14165; cited-by arXiv:2204.02311
+arXiv:1912.10077 (2019) "Are Transformers universal approximators of sequence-to-sequence
+  functions?" [cs] (cited-by 27 in-topic, era 1)
+    model_name: Transformer
+    attention_mechanism: self-attention
+    key_innovation: Proof that Transformers are universal approximators of continuous permutation equivariant sequence-to-sequence functions (and arbitrary continuous functions when using positional encodings)
+    relations: extends arXiv:1706.03762; uses arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1907.11692; uses arXiv:1906.04341; cites arXiv:1807.03819; cited-by arXiv:2007.14062; cited-by arXiv:2104.09864; cited-by arXiv:2208.01066
+arXiv:1910.01108 (2019) "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and
+  lighter" [cs] (cited-by 26 in-topic, era 1)
+    model_name: DistilBERT
+    key_innovation: Knowledge distillation during the pre-training phase using a triple loss (language modeling, distillation, and cosine-distance losses)
+    training_paradigm: Pre-training via knowledge distillation from a larger BERT model
+    relations: uses arXiv:1910.03771; compares-with arXiv:1706.03762; uses arXiv:1810.04805; uses arXiv:1907.11692; compares-with arXiv:1506.06724; uses arXiv:1804.07461; cited-by arXiv:1910.03771; critiqued-by arXiv:2006.04768; cited-by arXiv:1910.10683; cited-by arXiv:2005.14165; cited-by arXiv:2009.06732; motivates arXiv:2103.02143
+arXiv:1906.06755 (2019) "Theoretical Limitations of Self-Attention in Neural Sequence Models" [cs] (cited-by 24 in-topic, era 1)
+    attention_mechanism: soft and hard self-attention
+    key_innovation: Mathematical investigation of the computational power of self-attention to model formal languages
+    complexity_scaling: Requires number of layers or heads to increase with input length to model periodic finite-state languages or hierarchical structure
+    relations: uses arXiv:1706.03762; cites arXiv:1901.02860; cites arXiv:1904.10509; cites arXiv:1906.04341; compares-with arXiv:1905.05950; compares-with arXiv:1810.04805; cited-by arXiv:2208.01066
+arXiv:1908.08593 (2019) "Revealing the Dark Secrets of BERT" [cs] (cited-by 23 in-topic, era 1)
+    model_name: BERT
+    attention_mechanism: self-attention
+    key_innovation: qualitative and quantitative analysis of information encoded by individual attention heads to identify repeated patterns and overparametrization
+    training_paradigm: fine-tuning
+    relations: uses arXiv:1804.07461; cites arXiv:1706.03762; cites arXiv:1810.04805; uses arXiv:1606.05250; cites arXiv:1905.09418; cites arXiv:1901.10430; used-by arXiv:2009.14794
+arXiv:1904.01038 (2019) "fairseq: A Fast, Extensible Toolkit for Sequence Modeling" [cs] (cited-by 23 in-topic, era 1)
+    relations: uses arXiv:1705.03122; uses arXiv:1706.03762; cites arXiv:1803.02155; cites arXiv:1701.06538; uses arXiv:1806.00187; uses arXiv:1809.10853; used-by arXiv:1907.11692; cited-by arXiv:1910.03771; cited-by arXiv:2006.04768; cited-by arXiv:2009.06732; extended-by arXiv:2104.09864
+arXiv:1905.05950 (2019) "BERT Rediscovers the Classical NLP Pipeline" [cs] (cited-by 23 in-topic, era 1)
+    model_name: BERT
+    key_innovation: Demonstration that the model represents the classical NLP pipeline (POS tagging, parsing, NER, semantic roles, coreference) in an interpretable and localizable sequence.
+    training_paradigm: Pre-trained text encoder
+    relations: uses arXiv:1802.05365; extends arXiv:1810.04805; cites arXiv:1706.03762; cited-by arXiv:1906.04341; compared-by arXiv:1906.06755; cited-by arXiv:1910.03771
+arXiv:1912.01703 (2019) "PyTorch: An Imperative Style, High-Performance Deep Learning Library" [cs] (cited-by 23 in-topic, era 1)
+    key_innovation: Imperative and Pythonic programming style that supports code as a model while maintaining high performance
+    relations: used-by arXiv:2006.16236; cited-by arXiv:2205.14135
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 136 in-topic, era 1)
+    model_name: GPT-3
+    key_innovation: Scaling up language models to 175 billion parameters to improve task-agnostic, few-shot performance without task-specific fine-tuning.
+    training_paradigm: Pre-training on a large corpus of text followed by few-shot learning via text interaction (no gradient updates or fine-tuning).
+    relations: uses arXiv:1910.10683; uses arXiv:2001.08361; compares-with arXiv:1907.10641; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; used-by arXiv:2302.13971; critiqued-by arXiv:2303.08774; cited-by arXiv:2307.09288; used-by arXiv:2204.02311; cited-by arXiv:2108.12409; cited-by arXiv:2006.04768
+arXiv:2004.05150 (2020) "Longformer: The Long-Document Transformer" [cs] (cited-by 91 in-topic, era 1)
+    model_name: Longformer (including Longformer-Encoder-Decoder/LED)
+    attention_mechanism: Combination of local windowed attention and task-motivated global attention
+    key_innovation: An attention mechanism that scales linearly with sequence length
+    context_handling: Combines local windowed attention with task-motivated global attention to process documents of thousands of tokens or longer
+    training_paradigm: Pretraining and finetuning on downstream tasks
+    complexity_scaling: Scales linearly with sequence length
+    relations: cited-by arXiv:2307.08691; cited-by arXiv:1910.03771; compared-by arXiv:2004.08483; cited-by arXiv:2009.06732; critiqued-by arXiv:2108.12409; cited-by arXiv:2005.00743
+arXiv:2001.04451 (2020) "Reformer: The Efficient Transformer" [cs] (cited-by 76 in-topic, era 1)
+    abstract: Large Transformer models routinely achieve state-of-the-art results on a
+number of tasks but training these models can be prohibitively costly,
+especially on long sequences. We introduce two techniques to improve the
+efficiency of Transformers. For one, we replace dot-product attention by one
+that u
+    relations: compares-with arXiv:1706.03762; cites arXiv:1806.00187; cites arXiv:1808.04444; uses arXiv:1607.06450; cites arXiv:1810.04805; cites arXiv:1905.07799; cited-by arXiv:2307.08691; cited-by arXiv:1910.03771; cited-by arXiv:2003.05997; cited-by arXiv:2006.04768; cited-by arXiv:2009.06732; cited-by arXiv:2103.02143
+arXiv:2007.14062 (2020) "Big Bird: Transformers for Longer Sequences" [cs] (cited-by 66 in-topic, era 1)
+    model_name: BigBird
+    attention_mechanism: sparse attention mechanism
+    key_innovation: reducing quadratic dependency to linear via sparse attention while remaining a universal approximator and Turing complete
+    context_handling: handles sequences of length up to 8x of what was previously possible using similar hardware
+    complexity_scaling: linear
+    relations: cites arXiv:1905.07799; cites arXiv:1901.02860; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1910.10683; cited-by arXiv:2307.08691; cited-by arXiv:2009.06732; compared-by arXiv:2103.02143; extended-by arXiv:2004.08483; compared-by arXiv:2011.04006; cited-by arXiv:2204.02311
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 63 in-topic, era 1)
+    model_name: Vision Transformer (ViT)
+    key_innovation: Applying a pure transformer directly to sequences of image patches instead of relying on convolutional networks.
+    training_paradigm: Pre-training on large amounts of data and transferring to mid-sized or small image recognition benchmarks.
+    relations: uses arXiv:1706.03762; cites arXiv:2005.14165; uses arXiv:1810.04805; uses arXiv:1512.03385; cites arXiv:1904.10509; cites arXiv:1809.10853; cited-by arXiv:2205.14135; cited-by arXiv:2208.01066; cited-by arXiv:2212.07677
+arXiv:2006.04768 (2020) "Linformer: Self-Attention with Linear Complexity" [cs] (cited-by 60 in-topic, era 1)
+    model_name: Linformer
+    attention_mechanism: low-rank matrix approximation of self-attention
+    key_innovation: approximating self-attention with a low-rank matrix to reduce complexity
+    context_handling: reduces overall self-attention complexity from $O(n^2)$ to $O(n)$ in both time and space
+    complexity_scaling: $O(n)$ in both time and space
+    relations: cites arXiv:1706.03762; cites arXiv:1904.10509; cites arXiv:2001.04451; uses arXiv:1907.11692; compares-with arXiv:1810.04805; critiques arXiv:1910.01108; cited-by arXiv:2307.08691; cited-by arXiv:2009.06732; compared-by arXiv:2011.04006; cited-by arXiv:2103.02143; compared-by arXiv:2205.14135; compared-by arXiv:2005.00743
+arXiv:2006.16236 (2020) "Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention" [cs] (cited-by 59 in-topic, era 1)
+    model_name: Linear Transformers
+    attention_mechanism: linear dot-product of kernel feature maps
+    key_innovation: expressing self-attention as a linear dot-product of kernel feature maps to leverage the associativity property of matrix products
+    context_handling: iterative implementation that reveals a relationship to recurrent neural networks
+    complexity_scaling: reduced from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$
+    relations: uses arXiv:1912.01703; uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1906.08237; cited-by arXiv:2307.08691; cited-by arXiv:2009.06732; compared-by arXiv:2103.02143; cited-by arXiv:2205.14135; used-by arXiv:2009.14794; compared-by arXiv:2011.04006
+arXiv:2009.14794 (2020) "Rethinking Attention with Performers" [cs] (cited-by 53 in-topic, era 1)
+    model_name: Performers
+    attention_mechanism: Fast Attention Via positive Orthogonal Random features (FAVOR+)
+    key_innovation: FAVOR+ approach to approximate softmax attention-kernels using positive orthogonal random features
+    context_handling: Linear space and time complexity
+    complexity_scaling: Linear
+    relations: cites arXiv:1904.10509; compares-with arXiv:1911.05507; compares-with arXiv:2003.05997; cites arXiv:2004.05150; uses arXiv:2006.16236; cites arXiv:1706.03762; cited-by arXiv:2307.08691; compared-by arXiv:2103.02143; cited-by arXiv:2205.14135; cited-by arXiv:2009.06732; cited-by arXiv:2011.04006; compared-by arXiv:2104.09864
+arXiv:2001.08361 (2020) "Scaling Laws for Neural Language Models" [cs] (cited-by 38 in-topic, era 1)
+    key_innovation: Empirical discovery of power-law scaling relationships between cross-entropy loss and model size, dataset size, and compute usage.
+    training_paradigm: Scaling laws for determining optimal compute budget allocation and sample efficiency.
+    relations: uses arXiv:1807.03819; cites arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1907.11692; cites arXiv:1910.10683; uses arXiv:1706.03762; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2307.09288; used-by arXiv:2005.14165; cited-by arXiv:2101.00027; critiqued-by arXiv:2204.02311
+arXiv:2009.06732 (2020) "Efficient Transformers: A Survey" [cs] (cited-by 37 in-topic, era 1)
+    relations: cites arXiv:1706.03762; cites arXiv:1901.02860; cites arXiv:1904.10509; cites arXiv:2001.04451; cites arXiv:2003.05997; extends arXiv:1911.05507; cited-by arXiv:2011.04006; motivates arXiv:2103.02143; cited-by arXiv:2205.14135
+arXiv:2003.05997 (2020) "Efficient Content-Based Sparse Attention with Routing Transformers" [cs] (cited-by 30 in-topic, era 1)
+    model_name: Routing Transformer
+    attention_mechanism: Content-based sparse attention using a sparse routing module based on online k-means
+    key_innovation: Learning dynamic sparse attention patterns to avoid computing attention for content unrelated to the query
+    context_handling: Uses a sparse routing module to manage long sequences (e.g., length 8192)
+    complexity_scaling: $O(n^{1.5}d)$
+    relations: uses arXiv:1904.10509; cites arXiv:1905.07799; cites arXiv:1809.10853; cites arXiv:1901.02860; extends arXiv:1706.03762; cites arXiv:1803.02155; used-by arXiv:2108.12409; cited-by arXiv:2009.06732; cited-by arXiv:2004.08483; compared-by arXiv:2009.14794; cited-by arXiv:2011.04006; motivates arXiv:2103.02143
+arXiv:2004.08483 (2020) "ETC: Encoding Long and Structured Inputs in Transformers" [cs] (cited-by 28 in-topic, era 1)
+    model_name: Extended Transformer Construction (ETC)
+    attention_mechanism: global-local attention mechanism between global tokens and regular input tokens
+    key_innovation: combining global-local attention with relative position encodings and a Contrastive Predictive Coding (CPC) pre-training objective to encode structured inputs
+    context_handling: scaling input length via a novel global-local attention mechanism
+    training_paradigm: Contrastive Predictive Coding (CPC) pre-training
+    relations: compares-with arXiv:2004.05150; extends arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1909.11942; cites arXiv:1910.10683; extended-by arXiv:2009.06732; cited-by arXiv:2011.04006; cited-by arXiv:2103.02143
+arXiv:2011.04006 (2020) "Long Range Arena: A Benchmark for Efficient Transformers" [cs] (cited-by 23 in-topic, era 1)
+    key_innovation: Long Range Arena (LRA), a systematic and unified benchmark for evaluating efficient Transformers on long-context scenarios (1K to 16K tokens).
+    relations: compares-with arXiv:2006.04768; compares-with arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1910.10683; compares-with arXiv:1904.10509; compares-with arXiv:2001.04451; used-by arXiv:2103.02143; used-by arXiv:2205.14135; extended-by arXiv:2009.06732; compared-by arXiv:2009.14794
+arXiv:2005.00743 (2020) "Synthesizer: Rethinking Self-Attention in Transformer Models" [cs] (cited-by 22 in-topic, era 1)
+    model_name: Synthesizer
+    attention_mechanism: synthetic attention weights (without token-token interactions)
+    key_innovation: replacing dot product-based self-attention with learned or random synthetic attention weights
+    relations: cites arXiv:1706.03762; compares-with arXiv:1910.10683; compares-with arXiv:2006.04768; compares-with arXiv:1901.10430; compares-with arXiv:1807.03819; cites arXiv:1409.0473; cited-by arXiv:2009.06732; compared-by arXiv:2103.02143; compared-by arXiv:2011.04006
+arXiv:2104.09864 (2021) "RoFormer: Enhanced Transformer with Rotary Position Embedding" [cs] (cited-by 54 in-topic, era 1)
+    model_name: RoFormer
+    attention_mechanism: Self-attention with Rotary Position Embedding (RoPE)
+    key_innovation: Rotary Position Embedding (RoPE) which encodes absolute position with a rotation matrix to incorporate explicit relative position dependency in self-attention.
+    context_handling: Enables flexibility of sequence length and decaying inter-token dependency with increasing relative distances.
+    relations: extends arXiv:1706.03762; extends arXiv:1810.04805; cites arXiv:1803.02155; uses arXiv:2006.16236; cites arXiv:1901.02860; cites arXiv:1705.03122; used-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2204.02311
+arXiv:2101.00027 (2021) "The Pile: An 800GB Dataset of Diverse Text for Language Modeling" [cs] (cited-by 28 in-topic, era 1)
+    key_innovation: The creation of 'the Pile', an 825 GiB English text corpus composed of 22 diverse high-quality subsets for large-scale language model training.
+    relations: cites arXiv:1911.05507; critiques arXiv:1910.10683; uses arXiv:2005.14165; cites arXiv:2001.08361; cites arXiv:1506.06724; cites arXiv:1810.04805; used-by arXiv:2302.13971
+arXiv:2108.12409 (2021) "Train Short, Test Long: Attention with Linear Biases Enables Input
+  Length Extrapolation" [cs] (cited-by 26 in-topic, era 1)
+    attention_mechanism: Attention with Linear Biases (ALiBi)
+    key_innovation: Biasing query-key attention scores with a penalty proportional to their distance instead of adding positional embeddings to word embeddings.
+    context_handling: Enables length extrapolation by using a distance-based penalty to bias attention scores.
+    relations: uses arXiv:1809.10853; uses arXiv:1901.02860; cites arXiv:1911.05507; uses arXiv:2003.05997; uses arXiv:1706.03762; extends arXiv:1910.10683
+arXiv:2103.02143 (2021) "Random Feature Attention" [cs] (cited-by 21 in-topic, era 1)
+    model_name: RFA (Random Feature Attention)
+    attention_mechanism: Random feature approximation of the softmax function
+    key_innovation: Linear time and space attention using random feature methods to approximate softmax
+    context_handling: Linear scaling to handle long sequences more efficiently than quadratic attention
+    complexity_scaling: Linear time and space complexity
+    relations: compares-with arXiv:2006.16236; uses arXiv:1809.10853; cites arXiv:2006.04768; cites arXiv:2001.04451; compares-with arXiv:2005.00743; compares-with arXiv:2007.14062; cited-by arXiv:2009.06732
+arXiv:2205.14135 (2022) "FlashAttention: Fast and Memory-Efficient Exact Attention with
+  IO-Awareness" [cs] (cited-by 41 in-topic, era 2)
+    model_name: FlashAttention
+    attention_mechanism: IO-aware exact attention (using tiling)
+    key_innovation: Making attention algorithms IO-aware by using tiling to reduce memory reads/writes between GPU HBM and on-chip SRAM
+    context_handling: Uses tiling and block-sparse attention to enable longer context (up to 64K for Path-256)
+    complexity_scaling: Reduces HBM accesses compared to standard quadratic attention; provides an approximate block-sparse variant for faster computation
+    relations: compares-with arXiv:1910.03771; compares-with arXiv:2006.04768; cites arXiv:2006.16236; cites arXiv:2009.14794; uses arXiv:2011.04006; uses arXiv:2001.04451; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; extended-by arXiv:2307.08691
+arXiv:2204.02311 (2022) "PaLM: Scaling Language Modeling with Pathways" [cs] (cited-by 35 in-topic, era 2)
+    model_name: PaLM (Pathways Language Model)
+    key_innovation: Training a 540-billion parameter, densely activated Transformer using Pathways, a new ML system for efficient training across multiple TPU Pods.
+    training_paradigm: Few-shot learning
+    relations: uses arXiv:2005.14165; compares-with arXiv:1910.10683; cites arXiv:1905.07830; cites arXiv:1907.10641; cites arXiv:1911.11641; cites arXiv:1803.05457; used-by arXiv:2302.13971; used-by arXiv:2303.08774; compared-by arXiv:2307.09288; cited-by arXiv:2211.15661
+arXiv:2209.11895 (2022) "In-context Learning and Induction Heads" [cs] (cited-by 29 in-topic, era 2)
+    attention_mechanism: induction heads
+    key_innovation: hypothesis that induction heads constitute the mechanism for the majority of in-context learning in large transformer models
+    relations: cited-by arXiv:2208.01066; cited-by arXiv:2211.15661; extended-by arXiv:2212.07677
+arXiv:2208.01066 (2022) "What Can Transformers Learn In-Context? A Case Study of Simple Function
+  Classes" [cs] (cited-by 24 in-topic, era 2)
+    model_name: standard Transformers
+    key_innovation: demonstrating that Transformers can be trained from scratch to perform in-context learning of function classes (linear functions, sparse linear functions, two-layer neural networks, and decision trees)
+    training_paradigm: training from scratch to perform in-context learning
+    relations: cites arXiv:2005.14165; cites arXiv:2209.11895; uses arXiv:1706.03762; uses arXiv:1412.6980; cites arXiv:1807.03819; cites arXiv:1912.10077; cited-by arXiv:2211.15661; used-by arXiv:2212.07677
+arXiv:2211.15661 (2022) "What learning algorithm is in-context learning? Investigations with
+  linear models" [cs] (cited-by 23 in-topic, era 2)
+    key_innovation: Investigation of the hypothesis that transformers implement standard learning algorithms (gradient descent, ridge regression, least-squares) implicitly by encoding smaller models in activations.
+    training_paradigm: In-context learning (constructing predictors from sequences of labeled examples without parameter updates).
+    relations: cites arXiv:2005.14165; cites arXiv:2204.02311; cites arXiv:2208.01066; cites arXiv:1706.03762; cites arXiv:2209.11895; cites arXiv:1607.06450; cited-by arXiv:2212.07677
+arXiv:2212.07677 (2022) "Transformers learn in-context by gradient descent" [cs] (cited-by 22 in-topic, era 2)
+    model_name: self-attention-only Transformers
+    attention_mechanism: linear self-attention
+    key_innovation: demonstrating the equivalence between a single linear self-attention layer and gradient descent on a regression loss, positioning Transformers as mesa-optimizers
+    training_paradigm: training on auto-regressive objectives
+    relations: extends arXiv:2209.11895; cites arXiv:2010.11929; cites arXiv:2005.14165; uses arXiv:2208.01066; cites arXiv:2211.15661; cites arXiv:2009.14794
+arXiv:2302.13971 (2023) "LLaMA: Open and Efficient Foundation Language Models" [cs] (cited-by 50 in-topic, era 2)
+    model_name: LLaMA
+    key_innovation: training state-of-the-art models using exclusively publicly available datasets
+    training_paradigm: training on trillions of tokens
+    relations: cites arXiv:1911.11641; cites arXiv:1905.07830; cites arXiv:1907.10641; cites arXiv:1803.05457; uses arXiv:2005.14165; cites arXiv:2001.08361; cited-by arXiv:2303.08774; extended-by arXiv:2307.09288
+arXiv:2303.08774 (2023) "GPT-4 Technical Report" [cs] (cited-by 38 in-topic, era 2)
+    model_name: GPT-4
+    key_innovation: multimodal capabilities (accepting image and text inputs) and infrastructure/optimization methods that behave predictably across scales
+    training_paradigm: pre-trained to predict the next token followed by a post-training alignment process
+    relations: cites arXiv:2001.08361; critiques arXiv:2005.14165; uses arXiv:2204.02311; cites arXiv:1901.02860; cites arXiv:1907.11692; cites arXiv:1810.04805; cited-by arXiv:2307.08691; compared-by arXiv:2307.09288
+arXiv:2307.09288 (2023) "Llama 2: Open Foundation and Fine-Tuned Chat Models" [cs] (cited-by 29 in-topic, era 2)
+    model_name: Llama 2
+    training_paradigm: Pretraining and fine-tuning (optimized for dialogue via Llama 2-Chat)
+    relations: cites arXiv:1911.11641; extends arXiv:2302.13971; cites arXiv:2005.14165; uses arXiv:1711.05101; uses arXiv:1508.07909; cites arXiv:1905.07830
+arXiv:2312.00752 (2023) "Mamba: Linear-Time Sequence Modeling with Selective State Spaces" [cs] (cited-by 27 in-topic, era 2)
+    model_name: Mamba
+    key_innovation: Selective State Space Models (SSMs) where parameters are functions of the input, allowing for content-based reasoning.
+    context_handling: Selective propagation or forgetting of information along the sequence length dimension via input-dependent parameters.
+    complexity_scaling: Linear scaling in sequence length
+    relations: (none in-topic)
+arXiv:2307.08691 (2023) "FlashAttention-2: Faster Attention with Better Parallelism and Work
+  Partitioning" [cs] (cited-by 23 in-topic, era 2)
+    model_name: FlashAttention-2
+    attention_mechanism: Exact attention (no approximation) using asymmetric GPU memory hierarchy
+    key_innovation: Improved work partitioning across thread blocks and warps to reduce non-matmul FLOPs and shared memory communication
+    context_handling: Exploits GPU memory hierarchy to achieve linear memory savings instead of quadratic
+    training_paradigm: End-to-end training of GPT-style models
+    complexity_scaling: Memory savings are linear instead of quadratic
+    relations: cites arXiv:2006.04768; extends arXiv:2205.14135; cites arXiv:1706.03762; cites arXiv:2303.08774; cites arXiv:2001.04451; cites arXiv:2006.16236
+arXiv:2407.21783 (2024) "The Llama 3 Herd of Models" [cs] (cited-by 21 in-topic, era 2)
+    model_name: Llama 3
+    key_innovation: A herd of foundation models natively supporting multilinguality, coding, reasoning, and tool usage, with a compositional approach to integrate image, video, and speech capabilities.
+    context_handling: Context window of up to 128K tokens.
+    training_paradigm: Pre-trained and post-trained versions.
+    relations: (none in-topic)
+
+MAIN PATH (oldest -> newest):
+  arXiv:1409.3215 (2014) -> arXiv:1607.06450 (2016) -> arXiv:1706.03762 (2017) -> arXiv:1806.00187 (2018) -> arXiv:1905.10650 (2019) -> arXiv:2006.16236 (2020) -> arXiv:2104.09864 (2021) -> arXiv:2204.02311 (2022) -> arXiv:2302.13971 (2023)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:1906.08237 compares [negative] arXiv:1802.05365
+  arXiv:2103.02143 compares [negative] arXiv:2005.14165
+  arXiv:2303.08774 critiques [negative] arXiv:2005.14165
+  arXiv:2006.04768 critiques [negative] arXiv:1910.01108
+  arXiv:2108.12409 critiques [negative] arXiv:2004.05150
+  arXiv:2005.14165 critiques [negative] arXiv:1911.11641
+  arXiv:2101.00027 critiques [negative] arXiv:1910.10683
+  arXiv:2204.02311 critiques [negative] arXiv:2001.08361
+  arXiv:2307.09288 compares [positive] arXiv:2303.08774
+  arXiv:2307.09288 compares [positive] arXiv:2204.02311
+  arXiv:1910.10683 compares [neutral] arXiv:1909.11942
+  arXiv:1911.05507 compares [neutral] arXiv:1905.07799
+  arXiv:2004.08483 compares [neutral] arXiv:2004.05150
+  arXiv:2005.00743 compares [positive] arXiv:1910.10683
+  arXiv:2005.14165 compares [positive] arXiv:1907.10641
+  arXiv:2006.04768 compares [neutral] arXiv:1810.04805
+  arXiv:2011.04006 compares [neutral] arXiv:2006.04768
+  arXiv:2103.02143 compares [positive] arXiv:2006.16236
+  arXiv:2103.02143 compares [positive] arXiv:2005.00743
+  arXiv:2103.02143 compares [positive] arXiv:2007.14062
+  arXiv:2103.02143 compares [positive] arXiv:2009.14794
+  arXiv:2204.02311 compares [positive] arXiv:1910.10683
+  arXiv:2205.14135 compares [positive] arXiv:1910.03771
+  arXiv:2205.14135 compares [neutral] arXiv:2006.04768
+  arXiv:1704.05426 compares [neutral] arXiv:1412.6980
+  arXiv:1802.05365 compares [neutral] arXiv:1606.05250
+  arXiv:1809.10853 compares [neutral] arXiv:1808.04444
+  arXiv:1906.06755 compares [neutral] arXiv:1905.05950
+  arXiv:1906.06755 compares [neutral] arXiv:1810.04805
+  arXiv:1910.01108 compares [neutral] arXiv:1506.06724
+  arXiv:1910.10683 compares [positive] arXiv:1804.07461
+  arXiv:1910.10683 compares [positive] arXiv:1409.3215
+  arXiv:2005.00743 compares [positive] arXiv:2006.04768
+  arXiv:2005.00743 compares [positive] arXiv:1901.10430
+  arXiv:2006.04768 compares [neutral] arXiv:1506.06724
+  arXiv:2009.14794 compares [neutral] arXiv:1911.05507
+  arXiv:2009.14794 compares [positive] arXiv:2003.05997
+  arXiv:2009.14794 compares [neutral] arXiv:1506.06724
+  arXiv:2009.14794 compares [neutral] arXiv:2011.04006
+  arXiv:2010.11929 compares [positive] arXiv:1412.6980
+  arXiv:2011.04006 compares [neutral] arXiv:1904.10509
+  arXiv:2011.04006 compares [neutral] arXiv:2001.04451
+  arXiv:2011.04006 compares [neutral] arXiv:2006.16236
+  arXiv:2011.04006 compares [neutral] arXiv:2007.14062
+  arXiv:2011.04006 compares [neutral] arXiv:2004.05150
+  arXiv:2011.04006 compares [neutral] arXiv:2005.00743
+  arXiv:2103.02143 compares [neutral] arXiv:1806.00187
+  arXiv:2104.09864 compares [neutral] arXiv:1804.07461
+  arXiv:2104.09864 compares [neutral] arXiv:2009.14794
+  arXiv:2205.14135 compares [neutral] arXiv:1810.04805
+  arXiv:2104.09864 critiques [neutral] arXiv:1910.10683
+  arXiv:2103.02143 motivates [neutral] arXiv:2009.06732
+  arXiv:2103.02143 motivates [neutral] arXiv:2003.05997
+  arXiv:2103.02143 motivates [neutral] arXiv:1905.07799
+  arXiv:2103.02143 motivates [neutral] arXiv:1910.01108

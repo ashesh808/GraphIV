@@ -1,0 +1,38 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 3,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 4
+  },
+  "gaps": [
+   "video generation evaluation metrics FVD perceptual similarity",
+   "3D convolutional and axial attention video diffusion",
+   "video diffusion consistency distillation and acceleration",
+   "long-horizon video generation error accumulation mitigation"
+  ],
+  "assessment": "The review is well-structured but relies on citations not present in the digest and misses the critical sub-area of evaluation metrics."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 2,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "diffusion transformer video generation scaling",
+   "state space models for long video synthesis",
+   "video diffusion evaluation metrics VBench",
+   "autoregressive diffusion hybrid video models"
+  ],
+  "assessment": "The review provides a high-quality narrative but fails grounding by citing several 2025/2026 papers not present in the provided digest."
+ }
+]

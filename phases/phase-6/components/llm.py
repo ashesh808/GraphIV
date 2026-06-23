@@ -15,6 +15,10 @@ from openai.types.chat import ChatCompletionMessageParam
 from _common import LLM_BASE_URL  # noqa: E402
 from narrate import model_status, restart_router  # noqa: E402
 
+# server-side chat-template knobs for the thinking channel (llama.cpp / jinja).
+THINK: dict[str, object] = {"chat_template_kwargs": {"enable_thinking": True}}
+NO_THINK: dict[str, object] = {"chat_template_kwargs": {"enable_thinking": False}}
+
 
 def _user_content(user: str, images: list[bytes] | None) -> Any:
     """Plain string when text-only; OpenAI vision content-array when images are given."""
@@ -83,9 +87,16 @@ async def chat(
 
 
 def chat_sync(
-    model: str, system: str, user: str, temperature: float, max_tokens: int
+    model: str,
+    system: str,
+    user: str,
+    temperature: float,
+    max_tokens: int,
+    extra_body: dict[str, object] | None = None,
 ) -> tuple[str, int, int]:
-    return asyncio.run(chat(model, system, user, temperature, max_tokens))
+    return asyncio.run(
+        chat(model, system, user, temperature, max_tokens, extra_body=extra_body)
+    )
 
 
 async def ensure_loaded(model: str) -> None:

@@ -1,0 +1,339 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{state space models for sequence modeling}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is excellent and follows a perfect lineage, but needs more depth on scaling laws and specific hardware/multidimensional extensions to be fully saturated.
+\end{abstract}
+
+\section{From Recurrence to Selectivity: A Comprehensive Review of State Space Models for Sequence Modeling}
+
+The ability to model sequential data is fundamental to modern artificial intelligence, underpinning tasks ranging from natural language processing to complex signal analysis. For decades, the field was defined by the Foundations of Recurrence and Early Sequence Modeling, where recurrent architectures attempted to capture temporal dependencies through evolving hidden states. However, the paradigm shifted dramatically with the Rise of Transformers and Efficient Attention Mechanisms, which leveraged self-attention to achieve unprecedented performance in capturing long-range dependencies. Despite their success, Transformers face a critical scaling bottleneck: the quadratic computational complexity relative to sequence length, which limits their utility for processing extremely long contexts. This limitation has necessitated a search for new architectures that can provide the expressive power of attention while maintaining the linear scaling efficiency characteristic of recurrent systems.
+
+This review traces the trajectory of this search, beginning with the mathematical revitalization of linear systems through Structured State Space Models and HiPPO Foundations. We examine how these structured approaches provided the necessary framework to transition from continuous-time dynamics to discrete-time modeling, eventually leading to the Mamba Era and the development of Selective State Space Models. These selective mechanisms represent a pivotal shift, allowing models to dynamically gate information based on input content. The discussion then expands to include the emergence of Hybrid Architectures and Advanced Recurrent Alternatives that attempt to merge the strengths of different modeling paradigms. Furthermore, we explore the critical role of Hardware-Aware Implementation and Specialized SSMs in making these models computationally viable on modern accelerators. Finally, we conclude by surveying the Frontier, focusing on the ongoing theoretical refinements and future directions that aim to define the next generation of sequence intelligence.
+
+\subsection{Foundations of Recurrence and Early Sequence Modeling}
+
+The evolution of sequence modeling is defined by a continuous tension between the ability to capture long-term dependencies and the computational necessity of parallelization. Early research focused on the fundamental instabilities of Recurrent Neural Networks (RNNs). Using analytical and geometric perspectives, \texttt{arXiv:1211.5063} identified that training standard RNNs is hindered by vanishing and exploding gradients. The authors proposed gradient norm clipping to mitigate explosions and a soft constraint to address vanishing gradients, providing a necessary foundation for stable recurrent training [\texttt{arXiv:1211.5063}].
+
+Building upon these recurrent foundations, research shifted toward more sophisticated architectures to handle complex sequence-to-sequence tasks. \texttt{arXiv:1406.1078} introduced an RNN Encoder-Decoder framework that maps source sequences into fixed-length vector representations to compute conditional probabilities for phrase pairs [\texttt{arXiv:1406.1078}]. However, this fixed-length approach created a representational bottleneck. This limitation was directly addressed by \texttt{arXiv:1409.0473}, which replaced the static vector with an attention mechanism. By implementing a "soft-search" over source sentence parts, \texttt{arXiv:1409.0473} allowed the model to dynamically align target words with relevant parts of the input, significantly improving the handling of sequence dependencies compared to the rigid encoding of \texttt{arXiv:1406.1078} [\texttt{arXiv:1409.0473}].
+
+The literature also reflects a critical empirical divergence regarding how to manage temporal dependencies. While \texttt{arXiv:1409.0473} and \texttt{arXiv:1406.1078} relied on recurrent structures, \texttt{arXiv:1412.3555} provided a comparative evaluation of gating mechanisms, demonstrating that LSTMs and GRUs outperform traditional tanh-based RNNs in managing dependencies within signals like speech and music [\texttt{arXiv:1412.3555}].
+
+A significant paradigm shift occurred when researchers sought to bypass the sequential nature of RNNs to improve computational efficiency. \texttt{arXiv:1611.01576} introduced Quasi-Recurrent Neural Networks (QRNNs), which utilize alternating parallel convolutional layers and a minimalist recurrent pooling function [\texttt{arXiv:1611.01576}]. This architecture achieved up to 16 times faster training and testing compared to stacked LSTMs by increasing parallelism [\texttt{arXiv:1611.01576}]. Similarly, \texttt{arXiv:1612.08083} proposed gated convolutional networks, which apply a simplified gating mechanism to stacked convolutions [\texttt{arXiv:1612.08083}]. While \texttt{arXiv:1612.08083} successfully reduced sentence scoring latency by an order of magnitude compared to recurrent baselines, its reliance on a finite context approach via stacked convolutions represents a different trade-off in dependency modeling compared to the purely recurrent approaches of \texttt{arXiv:1412.3555} [\texttt{arXiv:1612.08083}]. Together, these developments illustrate a transition from stabilizing pure recurrence [\texttt{arXiv:1211.5063}] to optimizing it through attention [\texttt{arXiv:1409.0473}] and eventually replacing sequential bottlenecks with parallelizable convolutional structures [\texttt{arXiv:1611.01576}, \texttt{arXiv:1612.08083}].
+
+\subsection{The Rise of Transformers and Efficient Attention Mechanisms}
+
+The introduction of the Transformer architecture [\texttt{arXiv:1706.03762}] marked a paradigm shift in sequence modeling by dispensing with recurrence and convolutions entirely in favor of multi-head self-attention mechanisms. This innovation allowed for greater parallelization and significantly reduced training times compared to previous recurrent or convolutional models [\texttt{arXiv:1706.03762}]. Building upon this foundation, BERT [\texttt{arXiv:1810.04805}] extended the Transformer encoder architecture to achieve deep bidirectional representations by jointly conditioning on both left and right context in all layers, setting new benchmarks on tasks such as GLUE and SQuAD [\texttt{arXiv:1810.04805}].
+
+Despite these advancements, the quadratic computational complexity of standard self-attention relative to sequence length remains a significant bottleneck. Subsequent research has focused on overcoming this limitation through various architectural modifications. To address context length constraints, Transformer-XL [\texttt{arXiv:1901.02860}] introduced a segment-level recurrence mechanism and a novel relative positional encoding scheme. This enables the model to learn dependencies significantly longer than vanilla Transformers—specifically 450\% longer—and achieves evaluation speeds up to 1,800+ times faster than its predecessor [\texttt{arXiv:1901.02860}].
+
+Other approaches prioritize reducing the complexity of the attention mechanism itself through sparsity or hashing. The Reformer [\texttt{arXiv:2001.04451}] achieves \$O(L \textbackslash{}log L)\$ complexity for attention by replacing dot-product attention with locality-sensitive hashing (LSH) and utilizing reversible residual layers [\texttt{arXiv:2001.04451}]. In contrast, the Longformer [\texttt{arXiv:2004.05150}] achieves linear scaling by combining local windowed attention with task-motivated global attention, providing a drop-in replacement for standard self-attention to manage long-range dependencies [\texttt{arXiv:2004.05150}].
+
+A distinct line of inquiry seeks to bridge the gap between Transformers and recurrent models by reformulating the attention operation. The Linear Transformer [\texttt{arXiv:2006.16236}] expresses self-attention as an iterative, RNN-like structure by using the associativity property of matrix products via a linear dot-product of kernel feature maps, thereby reducing complexity from \$O(N\textasciicircum{}2)\$ to \$O(N)\$ [\texttt{arXiv:2006.16236}]. Similarly, the Performer [\texttt{arXiv:2009.14794}] utilizes the FAVOR+ (Fast Attention Via positive Orthogonal Random features) mechanism to approximate softmax attention-kernels through kernel methods, providing linear space and time complexity via an unbiased or nearly-unbiased estimation of the attention matrix [\texttt{arXiv:2009.14794}]. While the Linear Transformer emphasizes an iterative implementation for autoregressive prediction [\texttt{arXiv:2006.16236}], the Performer focuses on approximating the full-rank-attention of regular Transformers [\texttt{arXiv:2009.14794}].
+
+\subsection{Structured State Space Models and HiPPO Foundations}
+
+The core mathematical formalism for state space models (SSMs) is defined by the continuous-time equations \$x'(t) = Ax(t) + Bu(t)\$ and \$y(t) = Cx(t) + Du(t)\$ [\texttt{arXiv:2111.00396}]. A pivotal advancement in this field is the Structured State Space (S4) model, which utilizes a Normal Plus Low-Rank (NPLR) parameterization of the state matrix \$A\$ [\texttt{arXiv:2111.00396}]. This innovation enables stable diagonalization and efficient computation via a Cauchy kernel, allowing S4 to solve the 16k-length Path-X task with 88\% accuracy—a benchmark where all prior models failed—and achieve 60× faster generation than Transformers on WikiText-103 [\texttt{arXiv:2111.00396}]. However, the NPLR parameterization is not without flaws; the model is susceptible to numerical instability if \$A\$ contains eigenvalues in the right half-plane, and ablation studies suggest that its performance is driven primarily by HiPPO initialization rather than the NPLR structure itself [\texttt{arXiv:2111.00396}].
+
+The theoretical necessity of such initialization is explained through a generalized HiPPO framework, which interprets S4 as a decomposition onto exponentially-warped orthogonal bases, such as Legendre polynomials and Fourier bases [\texttt{arXiv:2206.12037}]. Building upon these foundations, S4D offers a more streamlined alternative by employing diagonal SSMs [\texttt{arXiv:2206.11893}]. While S4 relies on the complex NPLR parameterization, S4D recovers the S4 kernel in the limit of infinite state dimension, providing a highly efficient implementation that achieves 85\% on the Long Range Arena benchmark [\texttt{arXiv:2206.11893}].
+
+Further architectural evolution is seen in S5, which diverges from the single-input, single-output approach of S4 by implementing a multi-input, multi-output SSM layer [\texttt{arXiv:2208.04933}]. By utilizing parallel scans, S5 maintains the computational efficiency of S4 while providing a more flexible framework for sequence modeling [\texttt{arXiv:2208.04933}].
+
+In contrast to these structural refinements, the H3 architecture focuses on the functional limitations of SSMs regarding token recall and comparison [\texttt{arXiv:2212.14052}]. While S4, S4D, and S5 optimize the state matrix and layer structure to handle long-range dependencies, H3 introduces a specialized layer for token comparison and utilizes FlashConv—a fused block FFT algorithm combined with a novel state-passing algorithm [\texttt{arXiv:2212.14052}]. This approach provides a 2x speedup on the Long Range Arena and enables hybrid models to generate text 2.4x faster than Transformers [\texttt{arXiv:2212.14052}].
+
+\subsection{The Mamba Era: Selective State Space Models}
+
+The transition from traditional structured state space models (SSMs) to selective architectures has redefined sequence modeling efficiency. The foundational Mamba architecture introduces selectivity by making SSM parameters input-dependent, which enables content-based reasoning through the selective propagation or forgetting of information [\texttt{arXiv:2312.00752}]. This innovation allows Mamba to achieve linear scaling in sequence length and a 5x higher inference throughput compared to Transformers [\texttt{arXiv:2312.00752}]. While Hyena offers a subquadratic alternative to attention through implicitly parametrized long convolutions and data-controlled gating—demonstrating a 100x speedup at 64K sequence lengths [\texttt{arXiv:2302.10866}]—Mamba’s primary contribution is the dynamic, input-dependent adjustment of state transitions [\texttt{arXiv:2312.00752}].
+
+Recent research has focused on both the theoretical unification and the practical stability of these selective models. The State Space Duality (SSD) framework, which underpins Mamba-2, provides a critical theoretical bridge by establishing connections between SSMs and attention variants via structured semiseparable matrices [\texttt{arXiv:2405.21060}]. This framework provides a significant practical advantage, with Mamba-2 performing 2-8x faster than the original Mamba [\texttt{arXiv:2405.21060}]. To address potential instabilities inherent in input-dependent transitions, S7 introduces stable reparameterization, which allows for dynamic filtering while maintaining well-behaved transitions and controlled gradient norms [\texttt{arXiv:2410.03464}].
+
+Furthermore, the literature demonstrates a growing trend toward hybridizing SSMs with other architectural components to maximize performance. Jamba utilizes a Mixture-of-Experts (MoE) approach to interleave Transformer and Mamba layers, successfully supporting long-context evaluations up to 256K tokens while maintaining a manageable memory footprint [\texttt{arXiv:2403.19887}]. This contrasts with Griffin, which adopts a hybrid architecture mixing Hawk—a model utilizing gated linear recurrences—with local attention [\texttt{arXiv:2402.19427}]. While Jamba optimizes for high throughput and parameter efficiency through MoE interleaving [\texttt{arXiv:2403.19887}], Griffin focuses on combining recurrent structures with local attention to achieve high inference throughput and the ability to extrapolate to sequences significantly longer than those encountered during training [\texttt{arXiv:2402.19427}]. These diverse approaches highlight a shift toward architectures that leverage the linear complexity of SSMs while compensating for their limitations through hybrid integration.
+
+\subsection{Hybrid Architectures and Advanced Recurrent Alternatives}
+
+Recent advancements in sequence modeling have focused on bridging the gap between the parallelizable training of Transformers and the efficient, constant-memory inference of Recurrent Neural Networks (RNNs). A prominent approach involves reimagining the RNN through linear attention or retention mechanisms. RWKV (Receptance Weighted Key Value) achieves this by utilizing a linear attention mechanism that allows the model to be formulated as both a Transformer for parallel training and an RNN for efficient inference, maintaining constant computational and memory complexity during inference [\texttt{arXiv:2305.13048}]. Similarly, the Retentive Network (RetNet) introduces a retention mechanism that supports three distinct computation paradigms: parallel for training, recurrent for low-cost decoding, and chunkwise recurrent for efficient long-sequence modeling [\texttt{arXiv:2307.08621}]. While both architectures aim to replace the Transformer, RetNet specifically emphasizes the theoretical connection between recurrence and attention to achieve \$O(1)\$ inference complexity and linear complexity for long sequences via its chunkwise representation [\texttt{arXiv:2307.08621}].
+
+Beyond purely recurrent-style reinterpretations, researchers have explored hybridizing State Space Models (SSMs) with attention-based mechanisms to balance long-range contextualization and short-term precision. The Block-State Transformer (BST) implements a hybrid layer that combines an SSM sublayer for long-range dependencies with a Block Transformer sublayer for short-term sequence representation [\texttt{arXiv:2306.09539}]. This architecture achieves subquadratic runtime complexity and demonstrates a tenfold increase in layer-level speed compared to Block-Recurrent Transformers when using model parallelization [\texttt{arXiv:2306.09539}]. This evolutionary trend is further documented in the lineage from S4 to Mamba, where modern architectures integrate structured recurrence with state-space representations to achieve linear or near-linear scaling, reducing inference latency by up to 60\% compared to traditional approaches [\texttt{arXiv:2503.18970}].
+
+Other developments focus on enhancing the memory structures of classical recurrent models. The xLSTM architecture extends the Long Short-Term Memory framework by introducing exponential gating and two distinct memory structures: scalar memory (sLSTM) and matrix memory (mLSTM) [\texttt{arXiv:2405.04517}]. The mLSTM, in particular, utilizes a covariance update rule and is designed to be fully parallelizable, addressing the scaling limitations of traditional LSTMs [\texttt{arXiv:2405.04517}]. Complementing these architectural shifts is a growing theoretical interest in the control-theoretic foundations of these models. By viewing linear SSMs and Mamba through the lens of control theory, researchers can better understand how encoding sequential data into latent spaces creates compressed, synergistic representations for deep sequence modeling [\texttt{arXiv:2403.16899}]. Together, these works suggest a convergence where the rigid distinctions between Transformers, SSMs, and RNNs are being replaced by flexible, hybrid architectures capable of managing complex sequence dependencies with optimized computational footprints.
+
+\subsection{Hardware-Aware Implementation and Specialized SSMs}
+
+Recent advancements in State Space Models (SSMs) have shifted from purely algorithmic improvements toward hardware-aware co-design and architectural specialization to address specific data modalities. This evolution is characterized by a move away from general-purpose computation toward specialized accelerators and domain-specific structural modifications.
+
+A primary focus in hardware optimization involves the development of dedicated architectures that bypass the limitations of traditional GPUs and TPUs. For instance, the EpochCore accelerator utilizes a systolic array-based design featuring LIMA-PE processing elements and a novel ProDF dataflow to solve differential equations through continuous integration [\texttt{arXiv:2507.21394}]. This approach yields significant performance gains, achieving a 2000x improvement on LRA datasets compared to GPUs and a 250x gain over TPUs [\texttt{arXiv:2507.21394}]. While EpochCore optimizes for structured SSMs, other research targets extreme efficiency through compute-in-memory (CIM) systems. By re-parameterizing SSMs with real-valued coefficients and shared decay constants, researchers have implemented state evolution natively within memristor-based crossbars [\texttt{arXiv:2511.13912}]. This CIM approach is particularly effective for asynchronous, event-driven processing in vision and audio tasks, offering a level of real-time responsiveness that standard implementations may lack [\texttt{arXiv:2511.13912}].
+
+Beyond hardware accelerators, specialized SSM architectures have emerged to handle complex sequence dependencies. To address the need for multi-resolution analysis, MS-SSM introduces an input-dependent scale-mixer that allows the model to capture both fine-grained patterns and coarse global trends through multi-scale dynamics [\texttt{arXiv:2512.23824}]. This contrasts with the block-wise scanning schemes used in video world models, which prioritize temporal memory over spatial consistency by combining SSMs with dense local attention to maintain frame coherence [\texttt{arXiv:2505.20171}].
+
+The literature also reveals a trend toward integrating SSM principles into non-linear or non-sequential structures. Message-Passing State-Space Models (MP-SSM) embed SSM computation into the Message-Passing Neural Network (MPNN) framework [\texttt{arXiv:2505.18728}]. Unlike existing Graph State-Space Models (GSSMs) that merely apply SSM modules to pre-extracted sequences, MP-SSM enables permutation-equivariant, long-range propagation directly within the message-passing process, providing exact sensitivity analysis to mitigate over-squashing [\texttt{arXiv:2505.18728}]. Similarly, in the realm of long convolutions, FlashButterfly utilizes Butterfly decompositions to create an IO-aware algorithm that achieves a 2.2x speedup and 7.2x faster training on Path256 compared to prior work [\texttt{arXiv:2302.06646}]. While FlashButterfly focuses on optimizing the convolutional kernel smoothness via weight squashing, these specialized implementations collectively demonstrate that the efficiency of SSMs is increasingly dependent on how closely the mathematical formalism aligns with the underlying hardware or data topology.
+
+\subsection{The Frontier: Theoretical Refinements and Future Directions}
+
+The frontier of state space model (SSM) research is characterized by a tension between maintaining the computational efficiency of linear time-invariant (LTI) systems and achieving the selectivity required for complex, non-stationary sequence modeling. Recent advancements suggest a shift toward more sophisticated mechanisms for managing information density and temporal dynamics.
+
+A primary area of innovation involves how models handle information compression and selectivity. One approach formalizes selective gating through the lens of information theory and rate-distortion theory, providing a mathematical framework to manage the trade-off between memory efficiency and information retention (\texttt{arXiv:2410.03158}). This focus on information management is echoed in SeRpEnt, which introduces a selective resampling mechanism to compress sequences by aggregating elements based on their information content (\texttt{arXiv:2501.11729}). While these methods focus on filtering or resampling, Geometric SSM offers a different architectural path; it seeks to achieve selectivity within an LTI framework by using a dynamic residual generator to excite distinct invariant subspaces via input patterns (\texttt{arXiv:2505.17932}). Crucially, this geometric approach preserves the efficiency of FFT-based training, offering a potential middle ground between the flexibility of selective models like Mamba and the speed of traditional LTI systems (\texttt{arXiv:2505.17932}).
+
+Beyond selectivity, the ability to model non-stationary dynamics represents a significant leap forward. Rather than relying on input-dependent gating, recent work has introduced time-varying SSMs that utilize a dictionary of basis functions to parameterize the \$A[t]\$, \$B[t]\$, and \$C[t]\$ matrices (\texttt{arXiv:2605.15311}). This allow for continuous time-varying dynamics without needing to explicitly specify switching modes. The practical utility of this approach is evident in non-stationary tasks; for instance, in speech denoising, these time-varying models achieved an SI-SNR of 19.6 dB, a substantial improvement over the 14.2 dB achieved by time-invariant counterparts (\texttt{arXiv:2605.15311}). However, the theoretical foundation of these time-varying models remains a point of concern, as current stability guarantees rely on the simplifying assumption that the \$A[t]\$ matrix is diagonal and the basis functions are bounded, leaving the stability of non-diagonal configurations empirically unvalidated (\texttt{arXiv:2605.15311}).
+
+To rigorously evaluate these diverse architectural strategies, new benchmarking paradigms are emerging. Rather than relying solely on standard datasets, researchers are utilizing synthetic frameworks that employ controllable memory functions (\texttt{arXiv:2506.05678}). This allows for the creation of a continuum of tasks with varying temporal complexities, providing a more granular method for assessing how different SSM architectures capture distinct temporal structures (\texttt{arXiv:2506.05678}).
+
+\subsection{Tensions and Open Problems}
+
+A primary tension in sequence modeling concerns the fundamental trade-off between the expressive capacity of global attention and the computational efficiency of recurrent or convolutional architectures. While the Transformer paradigm has achieved unprecedented success in few-shot learning and transferability, as established in \texttt{arXiv:2005.14165}, recent surveys suggest that these attention-based mechanisms may be fundamentally limited by their quadratic scaling and memory overhead. This critique is echoed by \texttt{arXiv:2412.11211}, which argues that the dominance of Transformers—including bidirectional models like BERT (\texttt{arXiv:1810.04805}) and unified text frameworks (\texttt{arXiv:1910.10683})—may be superseded by State-Space Models (SSMs) that offer superior linear-time complexity. However, this transition is not without controversy; for instance, \texttt{arXiv:2406.09062} points out that many attempts to extend the Transformer's reach via sparse or local attention, such as Longformer (\texttt{arXiv:2004.05150}), fail to match the robust modeling capabilities of modern SSMs, even though earlier convolutional approaches (\texttt{arXiv:1612.08083}) were once thought to be viable alternatives.
+
+Another critical debate centers on the mathematical validity and "statefulness" of modern SSMs. There is a growing disagreement regarding whether recent advancements actually achieve a true latent state or merely simulate one through complex transformations. While architectures like Hungry Hungry Hippos (\texttt{arXiv:2212.14052}) attempt to bridge the gap between SSMs and language modeling, \texttt{arXiv:2404.08819} challenges this progress, suggesting that the "state" in these models may be an illusion that fails to capture long-term dependencies as effectively as traditional recurrent methods. This skepticism extends to the structural assumptions of these models; for example, while some argue that diagonal state spaces are sufficient for effective modeling, \texttt{arXiv:2303.09489} contends that more complex, non-diagonal structures are necessary to properly capture time-series dynamics. Furthermore, the hardware-software co-design problem remains unresolved, as seen in the tension between the need for hardware-efficient long convolutions (\texttt{arXiv:2302.06646}) and the specialized requirements of block-state architectures (\texttt{arXiv:2306.09539}).
+
+Finally, the community remains divided on the optimal way to scale these models for long-context applications. While the scaling laws popularized by \texttt{arXiv:2001.08361} provide a roadmap for Transformer growth, newer architectures like RWKV (\texttt{arXiv:2305.13048}) suggest that these laws may not apply uniformly to recurrent-style models, potentially offering a more efficient path to scale. This is complicated by the struggle to integrate multi-dimensional signals, where the efficiency of FlashAttention (\texttt{arXiv:2205.14135}) is weighed against the multidimensional modeling capabilities of S4ND (\texttt{arXiv:2210.06583}).
+
+\subsection{Outlook}
+
+The frontier of sequence modeling is rapidly shifting toward the integration of selective, time-varying dynamics and multi-scale architectures. As the field moves beyond simple linear recurrence, we expect to see the emergence of "Geometric SSMs" and multi-scale frameworks (\texttt{arXiv:2512.23824}) that can handle complex, switching dynamics in video and graph-structured data (\texttt{arXiv:2505.18970}). The next decade will likely be defined by the convergence of theoretical sequence modeling and specialized hardware, specifically through compute-in-memory implementations (\texttt{arXiv:2511.13912}) and systolic array accelerators (\texttt{arXiv:2507.21394}), finally realizing the promise of truly efficient, infinite-context world models.
+
+---
+
+\subsection{Key Figures}
+
+\textbf{Attention Is All You Need} — \texttt{arXiv:1706.03762} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/1706.03762_p3.png}\end{center}
+
+The figure illustrates the Transformer model architecture, consisting of an encoder stack on the left and a decoder stack on the right, both composed of \$N\$ repeated layers. The diagram uses labeled boxes to represent functional components—such as Multi-Head Attention, Feed Forward, and Add \& Norm—connected by arrows to show the data flow from input/output embeddings and positional encodings to the final softmax output probabilities.
+
+\textbf{Efficiently Modeling Long Sequences with Structured State Spaces} — \texttt{arXiv:2111.00396} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2111.00396_p2.png}\end{center}
+
+The figure consists of three panels illustrating the transition from continuous to discrete state space models. The left panel shows a block diagram of a continuous system with input \$u\$, state \$x\$, and output \$y\$ governed by differential equations, while the center panel displays a signal with a dashed red line connecting distant points to represent long-range dependencies and a matrix \$A\$. The right panel depicts discrete representations through a sequence of boxes and a convolution operation, conveying that SSMs can be computed efficiently as either recurrences or convolutions.
+
+\textbf{Mamba: Linear-Time Sequence Modeling with Selective State Spaces} — \texttt{arXiv:2312.00752} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2312.00752_p3.png}\end{center}
+
+The figure illustrates a Selective State Space Model where an input \$x\_t\$ is processed through a selection mechanism that projects and discretizes parameters to produce time-varying matrices \$B\_t\$, \$\textbackslash{}Delta\_t\$, and \$C\_t\$. These matrices, along with a state transition matrix \$A\$, interact with a high-dimensional latent state \$h\_\{t-1\}\$ via orange arrows to compute the next state \$h\_t\$ and the output \$y\_t\$. A pyramid icon on the right indicates the hardware-aware mapping of these expanded states across GPU SRAM and HBM.
+
+**Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention** — \texttt{arXiv:2006.16236} p.6
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2006.16236_p6.png}\end{center}
+
+The figure consists of two log-log line plots comparing the computational requirements of different attention mechanisms (linear, softmax, and three lsh variants) as a function of sequence length. The left plot shows "Time (milliseconds)" and the right plot shows "GPU Memory (MB)," conveying that the linear attention model scales linearly with sequence length while the softmax model scales quadratically.
+
+\textbf{Simplified State Space Layers for Sequence Modeling} — \texttt{arXiv:2208.04933} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2208.04933_p2.png}\end{center}
+
+The figure is a flowchart consisting of rectangular boxes representing operations (e.g., "Diagonalize," "Discretize," "Parallel scan") and colored boxes representing parameters, variables, or messages. Arrows connect these components to show a data pipeline where learnable parameters (\$A, B, C, \textbackslash{}Delta\$) are processed through diagonalization and discretization to feed into a parallel scan, which ultimately produces sequence outputs (\$x\_\{1:L\}, y\_\{1:L\}\$) that pass through a non-linearity. The diagram conveys the computational architecture of an S5 layer, illustrating how state-space models are transformed into a parallelizable sequence modeling operation.
+
+\textbf{Long Range Arena: A Benchmark for Efficient Transformers} — \texttt{arXiv:2011.04006} p.4
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2011.04006_p4.png}\end{center}
+
+The figure displays two grayscale images labeled as "(a) A positive example" and "(b) A negative example" of the Pathfinder task. Each image contains a collection of dashed line segments scattered across a black background, where the positive example shows a continuous path connecting two points and the negative example shows a disconnected set of segments.
+
+\textbf{HiPPO: Recurrent Memory with Optimal Polynomial Projections} — \texttt{arXiv:2008.07669} p.4
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2008.07669_p4.png}\end{center}
+
+The figure uses a sequence of four panels to illustrate the HiPPO framework, starting with a plot of a function \$f(t)\$ over time. It shows how \$f(t)\$ is projected onto a space of polynomials via an optimal projection \$g\textasciicircum{}\{(t)\}\$ relative to a measure \$\textbackslash{}mu\textasciicircum{}\{(t)\}\$ (represented by shaded areas), which is then mapped to a vector of coefficients \$c(t)\$ that evolves according to a continuous-time linear ODE. Finally, the figure shows that this ODE can be discretized into a closed-form recurrence relation \$c\_\{k+1\} = A\_k c\_k + B\_k f\_k\$ for online compression of time series.
+
+\textbf{Rethinking Attention with Performers} — \texttt{arXiv:2009.14794} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2009.14794_p3.png}\end{center}
+
+The figure uses colored matrices and mathematical operators to compare the regular attention mechanism with its approximation via random feature maps. On the left, a red \$L \textbackslash{}times L\$ matrix \$\textbackslash{}mathbf\{A\}\$ is multiplied by a yellow \$L \textbackslash{}times d\$ matrix \$\textbackslash{}mathbf\{V\}\$ with a time complexity of \$O(L\textasciicircum{}2d)\$. On the right, the approximation is shown as the expectation of a product involving a red \$L \textbackslash{}times r\$ matrix \$\textbackslash{}mathbf\{Q\}'\$, a green \$r \textbackslash{}times L\$ matrix \$(\textbackslash{}mathbf\{K\}')\textasciicircum{}\textbackslash{}top\$, and the same yellow \$L \textbackslash{}times d\$ matrix \$\textbackslash{}mathbf\{V\}\$, resulting in a reduced time complexity of \$O(Lrd)\$.
+
+\textbf{Time-Varying Deep State Space Models for Sequences with Switching Dynamics} — \texttt{arXiv:2605.15311} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2605.15311_p2.png}\end{center}
+
+The figure consists of three panels: a neural network diagram, a circular schematic of an SSM neuron, and a mathematical expansion box. The left panel shows a network architecture with input, two hidden, and output layers; the middle panel illustrates an SSM neuron with time-varying matrices \$A[t]\$, \$B[t]\$, and \$C[t]\$ processing inputs \$u[t-1]\$ and \$x[t-1]\$ to produce \$y[t]\$; and the right panel displays the basis function expansion of a single time-varying matrix element \$a\_\{ij\}[t]\$ as a sum of three weighted basis functions.
+
+\textbf{MS-SSM: A Multi-Scale State Space Model for Efficient Sequence Modeling} — \texttt{arXiv:2512.23824} p.4
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2512.23824_p4.png}\end{center}
+
+Figure 1 consists of two parts: (a) a block diagram of the MS-SSM model and (b) a detailed diagram of the multi-scale convolution layer. The figure illustrates how the model decomposes a signal into multiple scales using nested convolution layers and subsequently recombines them via an input-dependent weighted summation.
+
+\textbf{Advancing Intelligent Sequence Modeling: Evolution, Trade-offs, and Applications of State- Space Architectures from S4 to Mamba} — \texttt{arXiv:2503.18970} p.5
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2503.18970_p5.png}\end{center}
+
+The figure consists of three panels illustrating the conceptual evolution of State Space Models, labeled "Continuous State Space," "Long-Range Dependencies," and "Fast Discrete Representations." The first panel uses block diagrams with boxes for variables (\$u, x, y\$) and an \$A\$ matrix to represent continuous differential equations, while the second panel uses a waveform and a red dashed line to show a \$3 \textbackslash{}times 4\$ matrix \$A\$ capturing long-range dependencies. The third panel depicts discrete time steps via a sequence of boxes and dots, showing the transition to a convolution-based representation (\$y = \textbackslash{}bar\{K\} * u\$).
+
+\textbf{Long-Context State-Space Video World Models} — \texttt{arXiv:2505.20171} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2505.20171_p1.png}\end{center}
+
+The figure displays a flowchart comparing two approaches to video world modeling: "Existing work" and "Ours." The top path shows a sequence where a model "Looks Away" from a scene and then "Looks Back," resulting in a visual inconsistency where a previously observed object (labeled 2) disappears or changes, labeled as "Forgets." The bottom path shows the model "Looks Away" and "Looks Back" while successfully maintaining the consistency of the observed object (labeled 2), labeled as "Remembers."
+
+\textbf{Message-Passing State-Space Models: Improving Graph Learning with Modern Sequence Modeling} — \texttt{arXiv:2505.18728} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2505.18728_p3.png}\end{center}
+
+The figure illustrates the architecture of a Message-Passing State-Space Model (MP-SSM) for both temporal and static cases across three time steps. It depicts a block structure consisting of a linear recurrence layer (represented by boxes labeled \$\textbackslash{}mathbf\{AX\}\_k\textbackslash{}mathbf\{W\} + \textbackslash{}mathbf\{U\}\_k\textbackslash{}mathbf\{B\}\$) followed by a multilayer perceptron (MLP) that produces outputs \$\textbackslash{}mathbf\{Y\}\_k\$. The temporal case (left) shows evolving node embeddings \$\textbackslash{}mathbf\{U\}\$ over time, while the static case (right) shows identical node embeddings \$\textbackslash{}mathbf\{U\}\$ across all time steps.
+
+\section*{References}
+\begin{enumerate}\small
+  \item On the difficulty of training Recurrent Neural Networks (2012). \texttt{arXiv:1211.5063}
+  \item Adam: A Method for Stochastic Optimization (2014). \texttt{arXiv:1412.6980}
+  \item Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation (2014). \texttt{arXiv:1406.1078}
+  \item Neural Machine Translation by Jointly Learning to Align and Translate (2014). \texttt{arXiv:1409.0473}
+  \item Empirical Evaluation of Gated Recurrent Neural Networks on Sequence
+  Modeling (2014). \texttt{arXiv:1412.3555}
+  \item Deep Residual Learning for Image Recognition (2015). \texttt{arXiv:1512.03385}
+  \item Unitary Evolution Recurrent Neural Networks (2015). \texttt{arXiv:1511.06464}
+  \item Layer Normalization (2016). \texttt{arXiv:1607.06450}
+  \item Gaussian Error Linear Units (GELUs) (2016). \texttt{arXiv:1606.08415}
+  \item Pointer Sentinel Mixture Models (2016). \texttt{arXiv:1609.07843}
+  \item Language Modeling with Gated Convolutional Networks (2016). \texttt{arXiv:1612.08083}
+  \item The LAMBADA dataset: Word prediction requiring a broad discourse context (2016). \texttt{arXiv:1606.06031}
+  \item Quasi-Recurrent Neural Networks (2016). \texttt{arXiv:1611.01576}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Decoupled Weight Decay Regularization (2017). \texttt{arXiv:1711.05101}
+  \item Parallelizing Linear Recurrent Neural Nets Over Sequence Length (2017). \texttt{arXiv:1709.04057}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding (2018). \texttt{arXiv:1810.04805}
+  \item GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language
+  Understanding (2018). \texttt{arXiv:1804.07461}
+  \item An Empirical Evaluation of Generic Convolutional and Recurrent Networks
+  for Sequence Modeling (2018). \texttt{arXiv:1803.01271}
+  \item Think you have Solved Question Answering? Try ARC, the AI2 Reasoning
+  Challenge (2018). \texttt{arXiv:1803.05457}
+  \item Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition (2018). \texttt{arXiv:1804.03209}
+  \item ListOps: A Diagnostic Dataset for Latent Tree Learning (2018). \texttt{arXiv:1804.06028}
+  \item Can a Suit of Armor Conduct Electricity? A New Dataset for Open Book
+  Question Answering (2018). \texttt{arXiv:1809.02789}
+  \item Learning long-range spatial dependencies with horizontal gated-recurrent
+  units (2018). \texttt{arXiv:1805.08315}
+  \item Generating Long Sequences with Sparse Transformers (2019). \texttt{arXiv:1904.10509}
+  \item Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context (2019). \texttt{arXiv:1901.02860}
+  \item Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer (2019). \texttt{arXiv:1910.10683}
+  \item RoBERTa: A Robustly Optimized BERT Pretraining Approach (2019). \texttt{arXiv:1907.11692}
+  \item Compressive Transformers for Long-Range Sequence Modelling (2019). \texttt{arXiv:1911.05507}
+  \item Megatron-LM: Training Multi-Billion Parameter Language Models Using
+  Model Parallelism (2019). \texttt{arXiv:1909.08053}
+  \item PIQA: Reasoning about Physical Commonsense in Natural Language (2019). \texttt{arXiv:1911.11641}
+  \item PyTorch: An Imperative Style, High-Performance Deep Learning Library (2019). \texttt{arXiv:1912.01703}
+  \item HellaSwag: Can a Machine Really Finish Your Sentence? (2019). \texttt{arXiv:1905.07830}
+  \item WinoGrande: An Adversarial Winograd Schema Challenge at Scale (2019). \texttt{arXiv:1907.10641}
+  \item BoolQ: Exploring the Surprising Difficulty of Natural Yes/No Questions (2019). \texttt{arXiv:1905.10044}
+  \item Transformer Dissection: A Unified Understanding of Transformer's
+  Attention via the Lens of Kernel (2019). \texttt{arXiv:1908.11775}
+  \item Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention (2020). \texttt{arXiv:2006.16236}
+  \item HiPPO: Recurrent Memory with Optimal Polynomial Projections (2020). \texttt{arXiv:2008.07669}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item Long Range Arena: A Benchmark for Efficient Transformers (2020). \texttt{arXiv:2011.04006}
+  \item Reformer: The Efficient Transformer (2020). \texttt{arXiv:2001.04451}
+  \item Longformer: The Long-Document Transformer (2020). \texttt{arXiv:2004.05150}
+  \item Rethinking Attention with Performers (2020). \texttt{arXiv:2009.14794}
+  \item Linformer: Self-Attention with Linear Complexity (2020). \texttt{arXiv:2006.04768}
+  \item An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale (2020). \texttt{arXiv:2010.11929}
+  \item Big Bird: Transformers for Longer Sequences (2020). \texttt{arXiv:2007.14062}
+  \item Efficient Content-Based Sparse Attention with Routing Transformers (2020). \texttt{arXiv:2003.05997}
+  \item Efficient Transformers: A Survey (2020). \texttt{arXiv:2009.06732}
+  \item Scaling Laws for Neural Language Models (2020). \texttt{arXiv:2001.08361}
+  \item GLU Variants Improve Transformer (2020). \texttt{arXiv:2002.05202}
+  \item Sparse Sinkhorn Attention (2020). \texttt{arXiv:2002.11296}
+  \item Synthesizer: Rethinking Self-Attention in Transformer Models (2020). \texttt{arXiv:2005.00743}
+  \item Efficiently Modeling Long Sequences with Structured State Spaces (2021). \texttt{arXiv:2111.00396}
+  \item Combining Recurrent, Convolutional, and Continuous-time Models with
+  Linear State-Space Layers (2021). \texttt{arXiv:2110.13985}
+  \item CKConv: Continuous Kernel Convolution For Sequential Data (2021). \texttt{arXiv:2102.02611}
+  \item RoFormer: Enhanced Transformer with Rotary Position Embedding (2021). \texttt{arXiv:2104.09864}
+  \item The Pile: An 800GB Dataset of Diverse Text for Language Modeling (2021). \texttt{arXiv:2101.00027}
+  \item Random Feature Attention (2021). \texttt{arXiv:2103.02143}
+  \item Linear Transformers Are Secretly Fast Weight Programmers (2021). \texttt{arXiv:2102.11174}
+  \item Luna: Linear Unified Nested Attention (2021). \texttt{arXiv:2106.01540}
+  \item On the Parameterization and Initialization of Diagonal State Space
+  Models (2022). \texttt{arXiv:2206.11893}
+  \item Diagonal State Spaces are as Effective as Structured State Spaces (2022). \texttt{arXiv:2203.14343}
+  \item Simplified State Space Layers for Sequence Modeling (2022). \texttt{arXiv:2208.04933}
+  \item Hungry Hungry Hippos: Towards Language Modeling with State Space Models (2022). \texttt{arXiv:2212.14052}
+  \item FlashAttention: Fast and Memory-Efficient Exact Attention with
+  IO-Awareness (2022). \texttt{arXiv:2205.14135}
+  \item It's Raw! Audio Generation with State-Space Models (2022). \texttt{arXiv:2202.09729}
+  \item How to Train Your HiPPO: State Space Models with Generalized Orthogonal
+  Basis Projections (2022). \texttt{arXiv:2206.12037}
+  \item In-context Learning and Induction Heads (2022). \texttt{arXiv:2209.11895}
+  \item Mega: Moving Average Equipped Gated Attention (2022). \texttt{arXiv:2209.10655}
+  \item S4ND: Modeling Images and Videos as Multidimensional Signals Using State
+  Spaces (2022). \texttt{arXiv:2210.06583}
+  \item PaLM: Scaling Language Modeling with Pathways (2022). \texttt{arXiv:2204.02311}
+  \item Long Range Language Modeling via Gated State Spaces (2022). \texttt{arXiv:2206.13947}
+  \item Transformer Quality in Linear Time (2022). \texttt{arXiv:2202.10447}
+  \item What Makes Convolutional Models Great on Long Sequence Modeling? (2022). \texttt{arXiv:2210.09298}
+  \item Spectral State Space Models (2023). \texttt{arXiv:2312.06837}
+  \item Convolutional State Space Models for Long-Range Spatiotemporal Modeling (2023). \texttt{arXiv:2310.19694}
+  \item Effectively Modeling Time Series with Simple Discrete State Spaces (2023). \texttt{arXiv:2303.09489}
+  \item Simple Hardware-Efficient Long Convolutions for Sequence Modeling (2023). \texttt{arXiv:2302.06646}
+  \item Block-State Transformers (2023). \texttt{arXiv:2306.09539}
+  \item Resurrecting Recurrent Neural Networks for Long Sequences (2023). \texttt{arXiv:2303.06349}
+  \item StableSSM: Alleviating the Curse of Memory in State-space Models through
+  Stable Reparameterization (2023). \texttt{arXiv:2311.14495}
+  \item Mamba: Linear-Time Sequence Modeling with Selective State Spaces (2023). \texttt{arXiv:2312.00752}
+  \item Structured State Space Models for In-Context Reinforcement Learning (2023). \texttt{arXiv:2303.03982}
+  \item State-space Models with Layer-wise Nonlinearity are Universal
+  Approximators with Exponential Decaying Memory (2023). \texttt{arXiv:2309.13414}
+  \item RWKV: Reinventing RNNs for the Transformer Era (2023). \texttt{arXiv:2305.13048}
+  \item Hyena Hierarchy: Towards Larger Convolutional Language Models (2023). \texttt{arXiv:2302.10866}
+  \item Retentive Network: A Successor to Transformer for Large Language Models (2023). \texttt{arXiv:2307.08621}
+  \item LLaMA: Open and Efficient Foundation Language Models (2023). \texttt{arXiv:2302.13971}
+  \item Gated Linear Attention Transformers with Hardware-Efficient Training (2023). \texttt{arXiv:2312.06635}
+  \item Llama 2: Open Foundation and Fine-Tuned Chat Models (2023). \texttt{arXiv:2307.09288}
+  \item GPT-4 Technical Report (2023). \texttt{arXiv:2303.08774}
+  \item FlashAttention-2: Faster Attention with Better Parallelism and Work
+  Partitioning (2023). \texttt{arXiv:2307.08691}
+  \item Mathematical Formalism for Memory Compression in Selective State Space
+  Models (2024). \texttt{arXiv:2410.03158}
+  \item State-Space Modeling in Long Sequence Processing: A Survey on Recurrence in the Transformer Era (2024). \texttt{arXiv:2406.09062}
+  \item Learning Long Sequences in Spiking Neural Networks (2024). \texttt{arXiv:2401.00955}
+  \item Deep Learning-based Approaches for State Space Models: A Selective
+  Review (2024). \texttt{arXiv:2412.11211}
+  \item S7: Selective and Simplified State Space Layers for Sequence Modeling (2024). \texttt{arXiv:2410.03464}
+  \item State Space Models as Foundation Models: A Control Theoretic Overview (2024). \texttt{arXiv:2403.16899}
+  \item SpikingSSMs: Learning Long Sequences with Sparse and Parallel Spiking
+  State Space Models (2024). \texttt{arXiv:2408.14909}
+  \item SMR: State Memory Replay for Long Sequence Modeling (2024). \texttt{arXiv:2405.17534}
+  \item Slot State Space Models (2024). \texttt{arXiv:2406.12272}
+  \item Oscillatory State-Space Models (2024). \texttt{arXiv:2410.03943}
+  \item Transformers are SSMs: Generalized Models and Efficient Algorithms
+  Through Structured State Space Duality (2024). \texttt{arXiv:2405.21060}
+  \item Griffin: Mixing Gated Linear Recurrences with Local Attention for
+  Efficient Language Models (2024). \texttt{arXiv:2402.19427}
+  \item xLSTM: Extended Long Short-Term Memory (2024). \texttt{arXiv:2405.04517}
+  \item Jamba: A Hybrid Transformer-Mamba Language Model (2024). \texttt{arXiv:2403.19887}
+  \item Parallelizing Linear Transformers with the Delta Rule over Sequence
+  Length (2024). \texttt{arXiv:2406.06484}
+  \item The Illusion of State in State-Space Models (2024). \texttt{arXiv:2404.08819}
+  \item MS-SSM: A Multi-Scale State Space Model for Efficient Sequence Modeling (2025). \texttt{arXiv:2512.23824}
+  \item Advancing Intelligent Sequence Modeling: Evolution, Trade-offs, and Applications of State- Space Architectures from S4 to Mamba (2025). \texttt{arXiv:2503.18970}
+  \item Long-Context State-Space Video World Models (2025). \texttt{arXiv:2505.20171}
+  \item Message-Passing State-Space Models: Improving Graph Learning with Modern Sequence Modeling (2025). \texttt{arXiv:2505.18728}
+  \item Geometric SSM: LTI State Space Models for Selective Tasks (2025). \texttt{arXiv:2505.17932}
+  \item Compute-in-Memory Implementation of State Space Models for Event Sequence Processing (2025). \texttt{arXiv:2511.13912}
+  \item Numerical Investigation of Sequence Modeling Theory using Controllable Memory Functions (2025). \texttt{arXiv:2506.05678}
+  \item SeRpEnt: Selective Resampling for Expressive State Space Models (2025). \texttt{arXiv:2501.11729}
+  \item Systolic Array-based Accelerator for Structured State-Space Models (2025). \texttt{arXiv:2507.21394}
+  \item Sequential-Parallel Duality in Prefix Scannable Models (2025). \texttt{arXiv:2506.10918}
+  \item Time-Varying Deep State Space Models for Sequences with Switching Dynamics (2026). \texttt{arXiv:2605.15311}
+  \item 100 Glorious Years of the Ising Model (2026). \texttt{arXiv:2601.11671}
+\end{enumerate}
+
+\end{document}

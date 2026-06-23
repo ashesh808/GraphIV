@@ -31,8 +31,38 @@ from _common import (
     html_filename_to_paper_id,
     html_path,
     paper_id_to_ar5iv_url,
+    paper_id_to_arxiv_html_url,
     paper_id_to_yymm,
+    prefer_arxiv_html,
 )
+
+# Browser-like UA: arxiv.org rejects some scripted agents; ar5iv accepts anything.
+_UA = "Mozilla/5.0 (X11; Linux x86_64) arxiv-kg/0.2"
+
+
+def _looks_real(data: bytes) -> bool:
+    """LaTeXML output (ar5iv + arxiv.org) carries many ltx_ CSS classes; ar5iv render-failure
+    stubs ('contact arXiv' pages) have none. This is what separates real HTML from a stub.
+    """
+    return data.count(b"ltx_") >= 10
+
+
+def _try_fetch(
+    url: str, limiter: "RateLimiter", timeout: float
+) -> tuple[bytes | None, str]:
+    """One GET. Returns (data, 'ok') for real HTML; (None, '404'|'stub'|'err') otherwise."""
+    limiter.acquire()
+    req = urllib.request.Request(url, headers={"User-Agent": _UA})
+    try:
+        with urllib.request.urlopen(
+            req, timeout=timeout
+        ) as resp:  # pyright: ignore[reportAny]
+            data: bytes = resp.read()  # pyright: ignore[reportAny]
+    except urllib.error.HTTPError as e:
+        return None, "404" if e.code == 404 else "err"
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return None, "err"
+    return (data, "ok") if _looks_real(data) else (None, "stub")
 
 
 class RateLimiter:
@@ -103,38 +133,33 @@ def disk_resweep(conn: sqlite3.Connection) -> int:
 def download_one(
     paper_id: str, limiter: RateLimiter, timeout: float = 30.0
 ) -> tuple[str, int | None, str | None]:
-    """Returns (paper_id, status_or_None, error_msg_or_None).
-
-    status: STATUS_OK on 200; None on 404 (leave at -1); None on other errors too.
+    """Fetch real HTML, trying arxiv.org + ar5iv in date-determined order with the other as
+    fallback. Returns (paper_id, status, msg):
+      STATUS_OK    — real LaTeXML HTML saved (from whichever source had it)
+      STATUS_ERROR — both sources returned a hard 404 (genuinely no HTML anywhere)
+      None         — only stubs / transient errors -> leave at -1 to retry once rendering lands
     """
     dst = html_path(paper_id)
     if dst is None:
         return paper_id, None, "no yymm"
-    url = paper_id_to_ar5iv_url(paper_id)
-    limiter.acquire()
-    req = urllib.request.Request(url, headers={"User-Agent": "arxiv-kg/0.1"})
-    for attempt in (1, 2):
-        try:
-            with urllib.request.urlopen(
-                req, timeout=timeout
-            ) as resp:  # pyright: ignore[reportAny]
-                data: bytes = resp.read()  # pyright: ignore[reportAny]
+    arxiv = paper_id_to_arxiv_html_url(paper_id)
+    ar5iv = paper_id_to_ar5iv_url(paper_id)
+    sources = [arxiv, ar5iv] if prefer_arxiv_html(paper_id) else [ar5iv, arxiv]
+
+    outcomes: list[str] = []
+    for url in sources:
+        data, outcome = _try_fetch(url, limiter, timeout)
+        outcomes.append(outcome)
+        if outcome == "ok" and data is not None:
             dst.parent.mkdir(parents=True, exist_ok=True)
             tmp = dst.with_suffix(".html.part")
-            tmp.write_bytes(data)  # pyright: ignore[reportUnusedCallResult]
+            _ = tmp.write_bytes(data)
             os.replace(tmp, dst)
             return paper_id, STATUS_OK, None
-        except urllib.error.HTTPError as e:
-            # 404 and 503 are permanent "not available" from ar5iv — mark and skip
-            if e.code in (404, 503):
-                return paper_id, STATUS_ERROR, f"HTTP {e.code}"
-            if attempt == 2:
-                return paper_id, None, f"HTTP {e.code}"
-        except (urllib.error.URLError, TimeoutError, OSError) as e:
-            if attempt == 2:
-                return paper_id, None, f"{type(e).__name__}: {e}"
-        time.sleep(1.0)
-    return paper_id, None, "unreachable"
+
+    if all(o == "404" for o in outcomes):
+        return paper_id, STATUS_ERROR, "404 (both sources)"
+    return paper_id, None, "+".join(outcomes)  # stub/transient: retry next run
 
 
 def run(rate: float, threads: int, limit: int | None, dry_run: bool) -> None:

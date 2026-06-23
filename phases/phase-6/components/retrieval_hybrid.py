@@ -8,13 +8,10 @@ quantum optics). Promoted from the kg_rag_lab experiments.
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any
 
-from neo4j import Session
-
+from store import Store
 from subgraph import PoolNode, topical_pool
 
-LEXICAL_INDEX = "paper_title"
 RRF_K = 60
 
 
@@ -29,36 +26,12 @@ def dominant_group(pool: dict[str, PoolNode], top_k: int = 30) -> str | None:
     return c.most_common(1)[0][0] if c else None
 
 
-def lexical_pool(session: Session, query: str, k: int) -> list[PoolNode]:
-    cypher = (
-        f"CALL db.index.fulltext.queryNodes('{LEXICAL_INDEX}', $q) YIELD node, score "
-        "RETURN node.arxiv_id AS arxiv_id, node.title AS title, node.year AS year, "
-        "node.primary_category AS category, score ORDER BY score DESC LIMIT $k"
-    )
-    out: list[PoolNode] = []
-    for rec in session.run(cypher, q=query, k=k):  # pyright: ignore[reportArgumentType]
-        row: dict[str, Any] = dict(rec)
-        yr: Any = row["year"]  # pyright: ignore[reportAny]
-        out.append(
-            PoolNode(
-                arxiv_id=str(row["arxiv_id"]),  # pyright: ignore[reportAny]
-                title=str(row["title"] or ""),  # pyright: ignore[reportAny]
-                year=int(yr) if yr is not None else None,
-                category=(
-                    str(row["category"]) if row["category"] is not None else None
-                ),  # pyright: ignore[reportAny]
-                score=float(row["score"]),  # pyright: ignore[reportAny]
-            )
-        )
-    return out
-
-
 def hybrid_pool(
-    session: Session, qvec: list[float], query: str, n_pool: int, k_lexical: int = 400
+    store: Store, qvec: list[float], query: str, n_pool: int, k_lexical: int = 400
 ) -> dict[str, PoolNode]:
     """Vector ∪ lexical pools fused by RRF; `.score` becomes the fused rank score."""
-    vec = topical_pool(session, qvec, n_pool)
-    lex = lexical_pool(session, query, k_lexical)
+    vec = topical_pool(store, qvec, n_pool)
+    lex = store.lexical_pool(query, k_lexical)
     rank_v = {
         aid: i
         for i, aid in enumerate(sorted(vec, key=lambda a: vec[a].score, reverse=True))

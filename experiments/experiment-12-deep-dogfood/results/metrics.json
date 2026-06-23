@@ -1,0 +1,34 @@
+[
+ {
+  "pipeline": "before-2023",
+  "n_topics": 8,
+  "n_2026": 0.0,
+  "ge_2025": 1.75,
+  "frontier_count": 20.38,
+  "words": 830.75,
+  "grounded": 29.75,
+  "gold_recall": 0.96,
+  "n_figures": 0.0,
+  "caption_faithfulness": 0.0,
+  "j_coverage": 4.62,
+  "j_lineage": 4.94,
+  "j_overall": 4.86,
+  "gold_spine_recall": 1.0
+ },
+ {
+  "pipeline": "after-deep",
+  "n_topics": 8,
+  "n_2026": 3.38,
+  "ge_2025": 17.38,
+  "frontier_count": 53.88,
+  "words": 3989.62,
+  "grounded": 50.12,
+  "gold_recall": 0.85,
+  "n_figures": 12.88,
+  "caption_faithfulness": 0.91,
+  "j_coverage": 4.69,
+  "j_lineage": 5.0,
+  "j_overall": 4.92,
+  "gold_spine_recall": 1.0
+ }
+]

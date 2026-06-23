@@ -1,0 +1,655 @@
+QUESTION: large language model agents and tool use
+
+SCHEMA FIELDS: ['agent_architecture', 'tool_interaction_method', 'reasoning_strategy', 'application_domains', 'evaluation_benchmarks', 'identified_challenges']
+
+ERAS:
+  [0] Origins: 2017-2020
+  [1] Key Advances: 2020-2023
+  [2] Current Frontier: 2023-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 47 in-topic, era 0)
+    agent_architecture: Transformer (encoder-decoder configuration based solely on attention mechanisms, dispensing with recurrence and convolutions)
+    application_domains: Machine translation (English-to-German, English-to-French) and English constituency parsing
+    evaluation_benchmarks: WMT 2014 English-to-German (28.4 BLEU), WMT 2014 English-to-French (41.8 BLEU)
+    relations: used-by arXiv:2302.13971; cited-by arXiv:2303.08774; extended-by arXiv:2304.08354; cited-by arXiv:2510.09244; cited-by arXiv:2404.04442; cited-by arXiv:2601.02749
+arXiv:1707.06347 (2017) "Proximal Policy Optimization Algorithms" [cs] (cited-by 38 in-topic, era 0)
+    reasoning_strategy: Policy gradient methods using a surrogate objective function with multiple epochs of minibatch updates via stochastic gradient ascent.
+    application_domains: Simulated robotic locomotion and Atari game playing.
+    evaluation_benchmarks: Collection of benchmark tasks including simulated robotic locomotion and Atari games.
+    identified_challenges: Balancing sample complexity, simplicity, and wall-time in online policy gradient methods.
+    relations: cited-by arXiv:2304.08354; cited-by arXiv:2305.16291; cited-by arXiv:2308.11432; cited-by arXiv:2401.03428; cited-by arXiv:2307.09288; used-by arXiv:2112.09332
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 55 in-topic, era 0)
+    agent_architecture: Deep bidirectional Transformers (Bidirectional Encoder Representations from Transformers)
+    reasoning_strategy: Jointly conditioning on both left and right context in all layers
+    application_domains: Natural language processing tasks, including question answering and language inference
+    evaluation_benchmarks: GLUE (80.5%), MultiNLI (86.7% accuracy), SQuAD v1.1 (93.2 Test F1), and SQuAD v2.0 (83.1 Test F1)
+    relations: uses arXiv:1706.03762; used-by arXiv:2302.04761; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2304.08354; used-by arXiv:2307.16789; cited-by arXiv:2308.03688
+arXiv:1809.09600 (2018) "HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question
+  Answering" [cs] (cited-by 41 in-topic, era 0)
+    reasoning_strategy: multi-hop reasoning over multiple supporting documents and factoid comparison
+    application_domains: Question Answering (QA)
+    evaluation_benchmarks: HotpotQA (113k Wikipedia-based question-answer pairs)
+    identified_challenges: Existing QA datasets fail to train systems to perform complex reasoning and provide explanations
+    relations: used-by arXiv:2303.11366; extended-by arXiv:2304.08354; cited-by arXiv:2308.03427; cited-by arXiv:2503.19213; cited-by arXiv:2210.03629; cited-by arXiv:2401.03428
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 151 in-topic, era 0)
+    agent_architecture: Autoregressive language model (GPT-3) with 175 billion parameters
+    reasoning_strategy: Few-shot learning via text interaction (specifying tasks and demonstrations purely via text without gradient updates)
+    application_domains: NLP tasks including translation, question-answering, cloze tasks, unscrambling words, word usage, 3-digit arithmetic, and news article generation
+    identified_challenges: Struggles with specific datasets, methodological issues related to training on large web corpora, and broader societal impacts
+    relations: compares-with arXiv:2005.11401; cites arXiv:1706.03762; cites arXiv:1810.04805; used-by arXiv:2302.01560; used-by arXiv:2302.04761; used-by arXiv:2302.13971; critiqued-by arXiv:2303.08774; used-by arXiv:2303.17491; cited-by arXiv:2303.17580
+arXiv:2005.11401 (2020) "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" [cs] (cited-by 57 in-topic, era 0)
+    agent_architecture: Combination of a pre-trained parametric seq2seq model and a non-parametric memory consisting of a dense vector index of Wikipedia.
+    tool_interaction_method: Differentiable access mechanism using a pre-trained neural retriever to access a dense vector index.
+    reasoning_strategy: Two formulations: conditioning on the same retrieved passages across the whole generated sequence, or using different passages per token.
+    application_domains: Knowledge-intensive NLP tasks, including open domain Question Answering (QA) and language generation.
+    evaluation_benchmarks: Three open domain QA tasks and various knowledge-intensive NLP tasks (specific names not listed in text).
+    identified_challenges: Limited ability of LLMs to access and precisely manipulate knowledge, providing provenance for decisions, and updating world knowledge.
+    relations: cites arXiv:1810.04805; uses arXiv:1706.03762; cited-by arXiv:2304.08354; cited-by arXiv:2308.03427; used-by arXiv:2308.08155; cited-by arXiv:2309.07870; cited-by arXiv:2401.03428; cited-by arXiv:2402.01680
+arXiv:2010.03768 (2020) "ALFWorld: Aligning Text and Embodied Environments for Interactive
+  Learning" [cs] (cited-by 50 in-topic, era 0)
+    agent_architecture: BUTLER agent, a simple, modular design that factors the problem into language understanding, planning, navigation, and visual scene understanding.
+    reasoning_strategy: Learning abstract, text-based policies in TextWorld to correspond to concrete, visually grounded actions.
+    application_domains: Embodied AI, interactive learning, and task execution in rich visual environments (e.g., kitchen tasks).
+    evaluation_benchmarks: ALFWorld simulator, TextWorld, and the ALFRED benchmark.
+    identified_challenges: Existing work lacks the infrastructure for both abstract reasoning and concrete execution; the need for better agent generalization between abstract plans and visual scenes.
+    relations: uses arXiv:1706.03762; used-by arXiv:2302.01560; used-by arXiv:2303.11366; used-by arXiv:2304.08354; cited-by arXiv:2308.03688; used-by arXiv:2308.08155; motivates arXiv:2401.03428
+arXiv:2009.03300 (2020) "Measuring Massive Multitask Language Understanding" [cs] (cited-by 43 in-topic, era 0)
+    reasoning_strategy: problem solving ability
+    application_domains: ['elementary mathematics', 'US history', 'computer science', 'law', 'morality']
+    evaluation_benchmarks: ['57 tasks']
+    identified_challenges: ['near random-chance accuracy', 'need for substantial improvements to reach expert-level', 'lopsided performance', 'frequent inability to know when wrong', 'near-random accuracy on socially important subjects']
+    relations: uses arXiv:2005.14165; cites arXiv:1810.04805; cited-by arXiv:2302.13971; used-by arXiv:2303.08774; used-by arXiv:2305.14325; cited-by arXiv:2307.09288; cited-by arXiv:2308.03688; used-by arXiv:2310.03710
+arXiv:2107.03374 (2021) "Evaluating Large Language Models Trained on Code" [cs] (cited-by 86 in-topic, era 1)
+    agent_architecture: GPT language model fine-tuned on publicly available code from GitHub (Codex)
+    reasoning_strategy: Repeated sampling (using 100 samples per problem to improve success rates)
+    application_domains: Python code-writing and program synthesis from docstrings
+    evaluation_benchmarks: HumanEval (measures functional correctness)
+    identified_challenges: Difficulty with docstrings describing long chains of operations and difficulty with binding operations to variables
+    relations: cites arXiv:1706.03762; cites arXiv:1810.04805; compares-with arXiv:2005.14165; used-by arXiv:2302.01560; compared-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; compared-by arXiv:2303.17651; cited-by arXiv:2304.08354
+arXiv:2110.14168 (2021) "Training Verifiers to Solve Math Word Problems" [cs] (cited-by 82 in-topic, era 1)
+    reasoning_strategy: Generating multiple candidate solutions and using a trained verifier to rank and select the correct completion.
+    application_domains: Grade school math word problems.
+    evaluation_benchmarks: GSM8K (8.5K high quality linguistically diverse grade school math word problems).
+    identified_challenges: Robust performance in multi-step mathematical reasoning; large transformer models failing to achieve high test performance despite conceptual simplicity.
+    relations: compares-with arXiv:2005.14165; cites arXiv:2103.03874; uses arXiv:1706.03762; cited-by arXiv:2302.04761; compared-by arXiv:2302.13971; cited-by arXiv:2303.17491; used-by arXiv:2303.17651; cited-by arXiv:2304.08354; cited-by arXiv:2305.15334
+arXiv:2112.09332 (2021) "WebGPT: Browser-assisted question-answering with human feedback" [cs] (cited-by 73 in-topic, era 1)
+    agent_architecture: Fine-tuned GPT-3 with a text-based web-browsing environment
+    tool_interaction_method: Searching and navigating the web via a text-based browser
+    reasoning_strategy: Imitation learning (behavior cloning) followed by rejection sampling against a reward model trained on human preferences
+    application_domains: Long-form question-answering
+    evaluation_benchmarks: ELI5 dataset; human preference comparison (56% preferred over human demonstrators, 69% preferred over highest-voted Reddit answers)
+    relations: uses arXiv:2005.14165; uses arXiv:2005.11401; uses arXiv:1707.06347; critiqued-by arXiv:2302.04761; cited-by arXiv:2303.11366; cited-by arXiv:2303.17491; compared-by arXiv:2304.08354; cited-by arXiv:2305.15334; cited-by arXiv:2307.09288
+arXiv:2109.01652 (2021) "Finetuned Language Models Are Zero-Shot Learners" [cs] (cited-by 37 in-topic, era 1)
+    agent_architecture: Instruction-tuned pretrained language model (FLAN) based on a 137B parameter architecture.
+    reasoning_strategy: Instruction tuning (finetuning on a collection of tasks described via natural language instruction templates).
+    application_domains: Natural Language Processing (NLP) tasks.
+    evaluation_benchmarks: 25 unseen task types, including ANLI, RTE, BoolQ, AI2-ARC, OpenbookQA, and StoryCloze; compared against 175B GPT-3.
+    relations: uses arXiv:2005.14165; cites arXiv:2203.02155; cites arXiv:2201.11903; cites arXiv:1810.04805; cites arXiv:2107.03374; used-by arXiv:2303.17491; cited-by arXiv:2303.17580; extended-by arXiv:2304.08354; cited-by arXiv:2307.09288; cited-by arXiv:2307.16789; cited-by arXiv:2308.03427
+arXiv:2103.03874 (2021) "Measuring Mathematical Problem Solving With the MATH Dataset" [cs] (cited-by 35 in-topic, era 1)
+    agent_architecture: Transformer models
+    reasoning_strategy: Generating answer derivations and explanations via step-by-step solutions
+    application_domains: Mathematical problem solving
+    evaluation_benchmarks: MATH dataset (12,500 challenging competition mathematics problems)
+    identified_challenges: Low accuracy despite enormous model parameters; scaling trends in Transformers are insufficient for mathematical reasoning; need for new algorithmic advancements
+    relations: cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:2107.03374; cites arXiv:2009.03300; uses arXiv:2005.14165; compared-by arXiv:2302.13971; compared-by arXiv:2307.09288; used-by arXiv:2308.08155; used-by arXiv:2401.07324; cited-by arXiv:2503.19213; cited-by arXiv:2504.19678
+arXiv:2201.11903 (2022) "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" [cs] (cited-by 214 in-topic, era 1)
+    reasoning_strategy: Chain-of-thought prompting (generating a series of intermediate reasoning steps via few-shot exemplars)
+    application_domains: ['arithmetic reasoning', 'commonsense reasoning', 'symbolic reasoning', 'math word problems']
+    evaluation_benchmarks: ['GSM8K']
+    relations: compares-with arXiv:2110.14168; uses arXiv:2107.03374; cites arXiv:1810.04805; uses arXiv:2005.14165; cites arXiv:2103.03874; uses arXiv:2203.02155; compared-by arXiv:2302.01560; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; compared-by arXiv:2303.17491; cited-by arXiv:2303.17580; cited-by arXiv:2304.03442
+arXiv:2210.03629 (2022) "ReAct: Synergizing Reasoning and Acting in Language Models" [cs] (cited-by 199 in-topic, era 1)
+    agent_architecture: Interleaved generation of reasoning traces and task-specific actions
+    tool_interaction_method: Interacting with external sources (e.g., Wikipedia API) to gather additional information
+    reasoning_strategy: Synergizing reasoning traces and actions to induce, track, and update action plans and handle exceptions
+    application_domains: Question answering, fact verification, and interactive decision making
+    evaluation_benchmarks: HotpotQA, Fever, ALFWorld, and WebShop
+    identified_challenges: Hallucination and error propagation in chain-of-thought reasoning
+    relations: cites arXiv:1809.09600; cites arXiv:2010.03768; cites arXiv:2201.11903; cites arXiv:2203.11171; cites arXiv:2005.11401; cites arXiv:2207.01206; cited-by arXiv:2302.04761; used-by arXiv:2303.11366; cited-by arXiv:2303.17491; extended-by arXiv:2304.08354; cited-by arXiv:2305.10601; cited-by arXiv:2305.15334
+arXiv:2203.02155 (2022) "Training language models to follow instructions with human feedback" [cs] (cited-by 105 in-topic, era 1)
+    reasoning_strategy: Fine-tuning via supervised learning on labeler demonstrations followed by reinforcement learning from human feedback (RLHF) based on output rankings.
+    application_domains: General purpose language tasks, including truthfulness and toxicity reduction.
+    evaluation_benchmarks: Human evaluations on a custom prompt distribution and public NLP datasets.
+    identified_challenges: Alignment with user intent (preventing untruthful, toxic, or unhelpful outputs) and the tendency for models to still make simple mistakes.
+    relations: compares-with arXiv:2109.01652; uses arXiv:2005.14165; uses arXiv:1707.06347; cites arXiv:2107.03374; cites arXiv:2112.09332; used-by arXiv:2302.01560; used-by arXiv:2303.08774; used-by arXiv:2303.17491; cited-by arXiv:2303.17580; compared-by arXiv:2303.17651; cited-by arXiv:2304.03442
+arXiv:2204.01691 (2022) "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances" [cs] (cited-by 78 in-topic, era 1)
+    agent_architecture: Integration of Large Language Models (LLMs) for high-level semantic knowledge with pretrained low-level skills and associated value functions for physical grounding.
+    tool_interaction_method: LLM proposes natural language actions which are constrained by the feasibility of pretrained skills and their associated value functions.
+    reasoning_strategy: Combining high-level semantic knowledge from LLMs with real-world grounding via value functions to translate abstract instructions into feasible physical actions.
+    application_domains: Real-world robotic tasks involving long-horizon, abstract, natural language instructions for a mobile manipulator.
+    identified_challenges: LLMs lack real-world experience and embodiment, making it difficult to translate semantic knowledge into feasible actions within a specific physical environment.
+    relations: uses arXiv:2204.02311; uses arXiv:2109.01652; uses arXiv:2201.11903; cites arXiv:1706.03762; compares-with arXiv:1810.04805; cites arXiv:2207.05608; critiqued-by arXiv:2302.01560; cited-by arXiv:2303.11366; cited-by arXiv:2303.17491; cited-by arXiv:2304.08354; cited-by arXiv:2305.15334; cited-by arXiv:2305.16291
+arXiv:2203.11171 (2022) "Self-Consistency Improves Chain of Thought Reasoning in Language Models" [cs] (cited-by 68 in-topic, era 1)
+    reasoning_strategy: Self-consistency decoding strategy: sampling a diverse set of reasoning paths and selecting the most consistent answer by marginalizing out the sampled paths.
+    application_domains: Arithmetic and commonsense reasoning.
+    evaluation_benchmarks: GSM8K (+17.9%), SVAMP (+11.0%), AQuA (+12.2%), StrategyQA (+6.4%), and ARC-challenge (+3.9%).
+    relations: extends arXiv:2201.11903; uses arXiv:2110.14168; compares-with arXiv:2204.02311; cites arXiv:2205.11916; uses arXiv:2005.14165; uses arXiv:2107.03374; compared-by arXiv:2302.13971; cited-by arXiv:2303.17491; cited-by arXiv:2303.17580; extended-by arXiv:2304.08354; compared-by arXiv:2305.10601; cited-by arXiv:2305.14325
+arXiv:2204.02311 (2022) "PaLM: Scaling Language Modeling with Pathways" [cs] (cited-by 66 in-topic, era 1)
+    agent_architecture: 540-billion parameter, densely activated, Transformer language model
+    reasoning_strategy: few-shot learning and multi-step reasoning
+    application_domains: language understanding, generation, multilingual tasks, and source code generation
+    evaluation_benchmarks: hundreds of language understanding and generation benchmarks, BIG-bench
+    identified_challenges: bias, toxicity, training data memorization, and ethical considerations
+    relations: cites arXiv:2201.11903; uses arXiv:2005.14165; compares-with arXiv:2109.01652; compares-with arXiv:2009.03300; cites arXiv:2110.14168; uses arXiv:2107.03374; cited-by arXiv:2302.04761; used-by arXiv:2302.13971; used-by arXiv:2303.08774; cited-by arXiv:2303.17491; cited-by arXiv:2303.17580; cited-by arXiv:2305.10601
+arXiv:2205.11916 (2022) "Large Language Models are Zero-Shot Reasoners" [cs] (cited-by 65 in-topic, era 1)
+    reasoning_strategy: Zero-shot Chain of Thought (Zero-shot-CoT) via the prompt 'Let's think step by step'
+    application_domains: Arithmetic (MultiArith, GSM8K, AQUA-RAT, SVAMP), symbolic reasoning (Last Letter, Coin Flip), and logical reasoning (Date Understanding, Tracking Shuffled Objects)
+    evaluation_benchmarks: MultiArith, GSM8K, AQUA-RAT, SVAMP, Last Letter, Coin Flip, Date Understanding, Tracking Shuffled Objects
+    identified_challenges: Difficult system-2 tasks that do not follow standard scaling laws for LLMs
+    relations: uses arXiv:2201.11903; compares-with arXiv:2203.11171; uses arXiv:2005.14165; cites arXiv:2204.01691; cites arXiv:2110.14168; uses arXiv:2204.02311; cited-by arXiv:2303.08774; compared-by arXiv:2303.17491; cited-by arXiv:2303.17580; compared-by arXiv:2305.14325; cited-by arXiv:2305.15334; used-by arXiv:2308.11432
+arXiv:2201.07207 (2022) "Language Models as Zero-Shot Planners: Extracting Actionable Knowledge
+  for Embodied Agents" [cs] (cited-by 65 in-topic, era 1)
+    agent_architecture: Zero-shot planner using pre-trained Large Language Models (LLMs) to decompose high-level tasks into mid-level plans.
+    tool_interaction_method: Semantic translation of LLM-generated plans into admissible actions by conditioning on existing demonstrations.
+    reasoning_strategy: Task decomposition (high-level tasks to mid-level plans) via zero-shot prompting.
+    application_domains: Embodied agents in interactive environments (e.g., household tasks like 'make breakfast').
+    evaluation_benchmarks: VirtualHome environment; human evaluation (measuring executability vs. correctness).
+    identified_challenges: Naive LLM plans often fail to map precisely to admissible actions; trade-off between executability and correctness.
+    relations: uses arXiv:1810.04805; cites arXiv:2005.14165; uses arXiv:2107.03374; cites arXiv:1706.03762; cites arXiv:2110.14168; cites arXiv:2010.03768; compared-by arXiv:2302.01560; cited-by arXiv:2303.17491; cited-by arXiv:2304.08354; cited-by arXiv:2305.10601; cited-by arXiv:2305.16291; cited-by arXiv:2307.16789
+arXiv:2207.01206 (2022) "WebShop: Towards Scalable Real-World Web Interaction with Grounded
+  Language Agents" [cs] (cited-by 64 in-topic, era 1)
+    tool_interaction_method: Navigating multiple types of webpages and issuing diverse actions to find, customize, and purchase items
+    reasoning_strategy: Reinforcement learning, imitation learning, and use of pre-trained image and language models
+    application_domains: E-commerce and real-world web interaction
+    evaluation_benchmarks: WebShop (1.18 million products, 12,087 instructions); task success rate (best model 29%, rule-based 9.6%, human 59%); sim-to-real transfer on amazon.com and ebay.com
+    identified_challenges: Understanding compositional instructions, query (re-)formulation, comprehending and acting on noisy text, and performing strategic exploration
+    relations: cites arXiv:2005.14165; uses arXiv:1810.04805; compares-with arXiv:2112.09332; critiqued-by arXiv:2303.11366; cited-by arXiv:2303.17491; used-by arXiv:2304.08354; cited-by arXiv:2308.03427; used-by arXiv:2308.03688; cited-by arXiv:2308.11432
+arXiv:2207.05608 (2022) "Inner Monologue: Embodied Reasoning through Planning with Language
+  Models" [cs] (cited-by 51 in-topic, era 1)
+    agent_architecture: LLM-based agent utilizing an 'inner monologue' framework to process environment feedback.
+    reasoning_strategy: Closed-loop reasoning through an inner monologue leveraging natural language feedback (success detection, scene description, and human interaction) to plan and respond to environmental changes.
+    application_domains: Robotic control scenarios, specifically simulated and real tabletop rearrangement tasks and long-horizon mobile manipulation tasks in a kitchen environment.
+    evaluation_benchmarks: High-level instruction completion rates across three domains (simulated tabletop, real tabletop, and real-world kitchen mobile manipulation).
+    identified_challenges: The need for agents to understand semantic aspects of the world (skill repertoires, world influence, and language-to-world mapping) and to adapt plans over time in response to agent choices.
+    relations: uses arXiv:2204.01691; uses arXiv:2204.02311; uses arXiv:2005.14165; uses arXiv:2201.11903; cites arXiv:2205.11916; uses arXiv:2201.07207; compared-by arXiv:2302.01560; cited-by arXiv:2303.17491; cited-by arXiv:2304.03442; cited-by arXiv:2304.08354; cited-by arXiv:2305.10601; cited-by arXiv:2305.16291
+arXiv:2211.10435 (2022) "PAL: Program-aided Language Models" [cs] (cited-by 44 in-topic, era 1)
+    agent_architecture: Synergy between a neural LLM (for problem decomposition) and a symbolic Python interpreter (for execution).
+    tool_interaction_method: The LLM generates programs as intermediate reasoning steps which are then offloaded to a Python interpreter runtime.
+    reasoning_strategy: Program-aided reasoning where the LLM decomposes natural language problems into runnable code steps rather than solving them via text-based chain-of-thought.
+    application_domains: Mathematical, symbolic, and algorithmic reasoning tasks.
+    evaluation_benchmarks: BIG-Bench Hard and GSM8K.
+    identified_challenges: LLMs often make logical and arithmetic mistakes in the solution part of step-by-step decomposition.
+    relations: uses arXiv:2201.11903; uses arXiv:2203.11171; cites arXiv:2110.14168; cites arXiv:2109.01652; cites arXiv:2210.03629; cites arXiv:2204.01691; compared-by arXiv:2302.04761; cited-by arXiv:2303.17580; used-by arXiv:2303.17651; cited-by arXiv:2304.08354; cited-by arXiv:2305.10601; cited-by arXiv:2305.15334
+arXiv:2212.10560 (2022) "Self-Instruct: Aligning Language Models with Self-Generated Instructions" [cs] (cited-by 38 in-topic, era 1)
+    agent_architecture: A bootstrapping framework that generates instructions, inputs, and outputs from a pretrained language model to finetune the original model.
+    reasoning_strategy: Self-generation of instruction-following data followed by filtering of invalid or similar samples.
+    application_domains: Instruction tuning for pretrained language models.
+    evaluation_benchmarks: Super-NaturalInstructions and a curated set of expert-written instructions for novel tasks (human evaluation).
+    identified_challenges: Heavy dependence on human-written instruction data which is limited in quantity, diversity, and creativity.
+    relations: cites arXiv:2109.01652; compares-with arXiv:2203.02155; uses arXiv:2005.14165; used-by arXiv:2302.04761; cited-by arXiv:2303.17580; used-by arXiv:2304.08354; used-by arXiv:2305.15334; cited-by arXiv:2307.09288; cited-by arXiv:2307.16789
+arXiv:2206.07682 (2022) "Emergent Abilities of Large Language Models" [cs] (cited-by 36 in-topic, era 1)
+    application_domains: downstream tasks
+    identified_challenges: unpredictable phenomenon where abilities are not present in smaller models but appear in larger models, making performance impossible to predict via extrapolation
+    relations: cites arXiv:2009.03300; critiques arXiv:2005.14165; critiques arXiv:2204.02311; cites arXiv:2201.11903; cites arXiv:2109.01652; cites arXiv:2203.11171; cited-by arXiv:2302.04761; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2303.17580; cited-by arXiv:2304.08354; cited-by arXiv:2305.16291
+arXiv:2302.04761 (2023) "Toolformer: Language Models Can Teach Themselves to Use Tools" [cs] (cited-by 136 in-topic, era 1)
+    agent_architecture: Language model trained to decide API calls, arguments, and result incorporation via self-supervised learning.
+    tool_interaction_method: Self-supervised training to decide which APIs to call, when to call them, what arguments to pass, and how to incorporate results into token prediction.
+    reasoning_strategy: Self-supervised learning using a handful of demonstrations for each API to integrate tool outputs into future token prediction.
+    application_domains: Arithmetic, factual lookup, translation, and calendar tasks.
+    identified_challenges: LMs struggling with basic functionality like arithmetic or factual lookup compared to smaller models.
+    relations: uses arXiv:2005.14165; cites arXiv:2204.02311; cites arXiv:2206.07682; compares-with arXiv:2211.10435; uses arXiv:2212.10560; uses arXiv:1810.04805; cited-by arXiv:2303.11366; cited-by arXiv:2303.17491; cited-by arXiv:2303.17580; cited-by arXiv:2304.08354; used-by arXiv:2305.15334; cited-by arXiv:2305.17126
+arXiv:2303.08774 (2023) "GPT-4 Technical Report" [cs] (cited-by 131 in-topic, era 1)
+    agent_architecture: Transformer-based multimodal model (accepts image and text inputs, produces text outputs)
+    reasoning_strategy: Next-token prediction pre-training with post-training alignment for factuality and behavior adherence
+    application_domains: Professional and academic scenarios (e.g., simulated bar exam)
+    evaluation_benchmarks: Simulated bar exam (top 10% score), various professional and academic benchmarks
+    identified_challenges: Less capable than humans in many real-world scenarios
+    relations: critiques arXiv:2005.14165; uses arXiv:2204.02311; cites arXiv:1810.04805; cites arXiv:2201.11903; cites arXiv:2205.11916; cites arXiv:2206.07682; compared-by arXiv:2303.11366; compared-by arXiv:2303.17651; used-by arXiv:2305.10601; cited-by arXiv:2305.15334; used-by arXiv:2305.16291; compared-by arXiv:2307.09288
+arXiv:2303.11366 (2023) "Reflexion: Language Agents with Verbal Reinforcement Learning" [cs] (cited-by 119 in-topic, era 1)
+    agent_architecture: A framework that reinforces agents through linguistic feedback and an episodic memory buffer of reflective text rather than weight updates.
+    tool_interaction_method: Interaction with external environments such as games, compilers, and APIs.
+    reasoning_strategy: Verbal reinforcement learning where agents reflect on task feedback signals to improve decision-making in subsequent trials.
+    application_domains: Sequential decision-making, coding, and language reasoning.
+    evaluation_benchmarks: HumanEval coding benchmark (achieving 91% pass@1 accuracy).
+    identified_challenges: Difficulty for language agents to quickly and efficiently learn from trial-and-error without extensive training samples or expensive model fine-tuning.
+    relations: uses arXiv:2210.03629; cites arXiv:2204.01691; cites arXiv:2302.04761; cites arXiv:2303.17580; cites arXiv:2304.03442; cites arXiv:2112.09332; critiqued-by arXiv:2302.01560; cited-by arXiv:2303.17491; compared-by arXiv:2303.17651; compared-by arXiv:2305.14325; cited-by arXiv:2305.15334; used-by arXiv:2305.16291
+arXiv:2304.03442 (2023) "Generative Agents: Interactive Simulacra of Human Behavior" [cs] (cited-by 106 in-topic, era 1)
+    agent_architecture: An architecture that extends a large language model to store a complete record of experiences using natural language, synthesizing memories into higher-level reflections, and retrieving them dynamically.
+    reasoning_strategy: A three-part architecture consisting of observation, planning, and reflection to synthesize memories and plan behavior.
+    application_domains: Immersive environments, rehearsal spaces for interpersonal communication, prototyping tools, and interactive sandbox environments.
+    evaluation_benchmarks: An interactive sandbox environment (inspired by The Sims) containing 25 agents; qualitative assessment of believable individual and emergent social behaviors (e.g., Valentine's Day party coordination).
+    relations: cites arXiv:2005.14165; cites arXiv:2207.05608; cites arXiv:2201.11903; cites arXiv:2303.12712; cites arXiv:2203.02155; critiqued-by arXiv:2302.01560; cited-by arXiv:2303.11366; cited-by arXiv:2304.08354; cited-by arXiv:2305.16291; cited-by arXiv:2307.07924; cited-by arXiv:2308.00352
+arXiv:2308.11432 (2023) "A Survey on Large Language Model based Autonomous Agents" [cs] (cited-by 105 in-topic, era 1)
+    agent_architecture: A unified framework encompassing the construction of LLM-based autonomous agents
+    application_domains: Social science, natural science, and engineering
+    evaluation_benchmarks: Evaluation strategies commonly used for LLM-based autonomous agents
+    identified_challenges: Technical limitations and future directions in the field
+    relations: cites arXiv:2302.01560; cites arXiv:2207.05608; cites arXiv:2307.16789; cites arXiv:2204.01691; cites arXiv:2308.08155; cites arXiv:2304.08354; cited-by arXiv:2308.00352; cited-by arXiv:2308.08155; extended-by arXiv:2310.03710; cited-by arXiv:2402.01680; cited-by arXiv:2404.04442; used-by arXiv:2409.02977
+arXiv:2307.16789 (2023) "ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world
+  APIs" [cs] (cited-by 103 in-topic, era 1)
+    agent_architecture: ToolLLM framework encompassing data construction, model training, and evaluation; includes ToolLLaMA (fine-tuned LLaMA) equipped with a neural API retriever.
+    tool_interaction_method: Neural API retriever to recommend appropriate APIs; utilizes a chain of API calls for solution paths.
+    reasoning_strategy: Depth-first search-based decision tree algorithm to evaluate multiple reasoning traces and expand search space.
+    application_domains: Real-world RESTful APIs spanning 49 categories from RapidAPI Hub.
+    evaluation_benchmarks: ToolBench (instruction-tuning dataset) and ToolEval (automatic evaluator); APIBench (out-of-distribution tool-use dataset).
+    identified_challenges: Current instruction tuning focuses on basic language tasks and ignores the tool-use domain, limiting the tool-use capabilities of open-source LLMs.
+    relations: compares-with arXiv:2305.15334; cites arXiv:2304.08354; cites arXiv:2302.13971; cites arXiv:2303.12712; critiques arXiv:2201.11903; critiques arXiv:2210.03629; cited-by arXiv:2308.03427; cited-by arXiv:2308.11432; cited-by arXiv:2401.03428; used-by arXiv:2401.07324; compared-by arXiv:2403.03031; cited-by arXiv:2404.04442
+arXiv:2305.10601 (2023) "Tree of Thoughts: Deliberate Problem Solving with Large Language Models" [cs] (cited-by 100 in-topic, era 1)
+    agent_architecture: Tree of Thoughts (ToT) framework that generalizes Chain of Thought by enabling exploration over coherent units of text (thoughts) as intermediate steps.
+    reasoning_strategy: Deliberate decision making involving considering multiple reasoning paths, self-evaluating choices, looking ahead, and backtracking.
+    application_domains: Game of 24, Creative Writing, and Mini Crosswords.
+    evaluation_benchmarks: Success rates on Game of 24 (GPT-4 with CoT: 4% vs. ToT: 74%), Creative Writing, and Mini Crosswords.
+    identified_challenges: Token-level, left-to-right decision-making processes that lack exploration, strategic lookahead, or the ability to correct initial decisions.
+    relations: uses arXiv:2303.08774; cites arXiv:2005.14165; cites arXiv:2204.02311; cites arXiv:2201.11903; compares-with arXiv:2203.11171; cites arXiv:2201.07207; cited-by arXiv:2307.16789; used-by arXiv:2308.03688; cited-by arXiv:2308.11432; cited-by arXiv:2309.14365; cited-by arXiv:2310.03710; cited-by arXiv:2401.03428
+arXiv:2308.00352 (2023) "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework" [cs] (cited-by 85 in-topic, era 1)
+    agent_architecture: An assembly line paradigm that assigns diverse roles to various agents based on Standardized Operating Procedures (SOPs).
+    reasoning_strategy: Encoding SOPs into prompt sequences to streamline workflows and allow for verification of intermediate results.
+    application_domains: Collaborative software engineering.
+    evaluation_benchmarks: Collaborative software engineering benchmarks.
+    identified_challenges: Logic inconsistencies due to cascading hallucinations caused by naively chaining LLMs.
+    relations: motivated-by arXiv:2303.17760; uses arXiv:2307.07924; uses arXiv:2107.03374; cites arXiv:2304.03442; cites arXiv:2305.17126; cites arXiv:2305.14325; cited-by arXiv:2308.08155; cited-by arXiv:2308.11432; cited-by arXiv:2309.07870; cited-by arXiv:2401.03428; cited-by arXiv:2401.07324; cited-by arXiv:2402.01680
+arXiv:2309.07864 (2023) "The Rise and Potential of Large Language Model Based Agents: A Survey" [cs] (cited-by 83 in-topic, era 1)
+    agent_architecture: A general framework comprising three main components: brain, perception, and action.
+    application_domains: Single-agent scenarios, multi-agent scenarios, and human-agent cooperation.
+    identified_challenges: Lack of a general and powerful model to serve as a starting point for designing agents that can adapt to diverse scenarios.
+    relations: cited-by arXiv:2308.08155; extended-by arXiv:2310.03710; cited-by arXiv:2402.01680; cited-by arXiv:2404.04442; used-by arXiv:2409.02977; cited-by arXiv:2503.21460
+arXiv:2303.17580 (2023) "HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging
+  Face" [cs] (cited-by 83 in-topic, era 1)
+    agent_architecture: LLM-powered controller (e.g., ChatGPT) that manages various AI models via a language interface.
+    tool_interaction_method: Selecting models based on their function descriptions in Hugging Face, executing subtasks, and summarizing results.
+    reasoning_strategy: Task planning, model selection, subtask execution, and response summarization.
+    application_domains: Language, vision, speech, and other multi-modal AI tasks.
+    identified_challenges: Existing AI models cannot handle complicated AI tasks autonomously.
+    relations: cites arXiv:2005.14165; cites arXiv:2302.13971; cites arXiv:2203.02155; cites arXiv:2204.02311; cites arXiv:2109.01652; cites arXiv:2212.10560; cited-by arXiv:2303.11366; cited-by arXiv:2305.15334; cited-by arXiv:2305.17126; cited-by arXiv:2308.03427; used-by arXiv:2308.11432; cited-by arXiv:2309.00986
+arXiv:2305.16291 (2023) "Voyager: An Open-Ended Embodied Agent with Large Language Models" [cs] (cited-by 79 in-topic, era 1)
+    agent_architecture: Three-component system consisting of an automatic curriculum, an ever-growing skill library of executable code, and an iterative prompting mechanism.
+    tool_interaction_method: Uses an ever-growing skill library of executable code for storing and retrieving complex behaviors via blackbox queries to GPT-4.
+    reasoning_strategy: Iterative prompting mechanism incorporating environment feedback, execution errors, and self-verification for program improvement.
+    application_domains: Minecraft (embodied lifelong learning/open-ended exploration).
+    evaluation_benchmarks: Comparison against prior SOTA using metrics: 3.3x more unique items, 2.3x longer distances traveled, and 15.3x faster unlocking of key tech tree milestones.
+    relations: cites arXiv:2204.01691; uses arXiv:2210.03629; uses arXiv:2303.11366; cites arXiv:2207.05608; cites arXiv:2201.07207; uses arXiv:2303.08774; cited-by arXiv:2308.00352; cited-by arXiv:2308.03427; cited-by arXiv:2308.03688; cited-by arXiv:2308.08155; cited-by arXiv:2308.11432; compared-by arXiv:2309.14365
+arXiv:2305.15334 (2023) "Gorilla: Large Language Model Connected with Massive APIs" [cs] (cited-by 75 in-topic, era 1)
+    agent_architecture: Finetuned LLaMA-based model combined with a document retriever
+    tool_interaction_method: Generating API calls via fine-tuning and utilizing a retrieval system for documentation
+    application_domains: API call generation and tool use (specifically HuggingFace, TorchHub, and TensorHub APIs)
+    evaluation_benchmarks: APIBench
+    identified_challenges: Inability of LLMs to generate accurate input arguments, tendency to hallucinate wrong API usage, and difficulty keeping up with frequently updated documentation
+    relations: cites arXiv:2110.14168; cites arXiv:2211.10435; cites arXiv:2204.02311; cites arXiv:2005.14165; cites arXiv:2303.12712; cites arXiv:2303.08774; compared-by arXiv:2307.16789; cited-by arXiv:2308.03427; cited-by arXiv:2308.08155; cited-by arXiv:2308.11432; cited-by arXiv:2309.00986; cited-by arXiv:2309.07870
+arXiv:2302.13971 (2023) "LLaMA: Open and Efficient Foundation Language Models" [cs] (cited-by 73 in-topic, era 1)
+    relations: uses arXiv:2005.14165; compares-with arXiv:2103.03874; compares-with arXiv:2110.14168; uses arXiv:2204.02311; uses arXiv:1706.03762; compares-with arXiv:2203.11171; cited-by arXiv:2303.08774; cited-by arXiv:2303.17580; used-by arXiv:2303.17651; cited-by arXiv:2305.10601; cited-by arXiv:2305.15334; critiqued-by arXiv:2305.16291
+arXiv:2307.07924 (2023) "ChatDev: Communicative Agents for Software Development" [cs] (cited-by 73 in-topic, era 1)
+    agent_architecture: A chat-powered software development framework consisting of specialized agents driven by large language models (LLMs) organized into a chat chain.
+    reasoning_strategy: Multi-turn dialogues and unified language-based communication (natural language for design and programming language for debugging) to derive solutions.
+    application_domains: Software development (specifically design, coding, and testing phases).
+    identified_challenges: Technical inconsistencies across different phases of the waterfall model due to unique designs for each phase, leading to fragmented and ineffective development processes.
+    relations: uses arXiv:2005.14165; cites arXiv:2107.03374; cites arXiv:2305.14325; uses arXiv:2303.17760; cites arXiv:2304.03442; cites arXiv:2201.11903; used-by arXiv:2308.00352; cited-by arXiv:2308.11432; cited-by arXiv:2309.07870; cited-by arXiv:2401.03428; cited-by arXiv:2401.07324; cited-by arXiv:2402.01680
+arXiv:2303.17760 (2023) "CAMEL: Communicative Agents for "Mind" Exploration of Large Language
+  Model Society" [cs] (cited-by 71 in-topic, era 1)
+    agent_architecture: role-playing communicative agent framework
+    reasoning_strategy: inception prompting to guide chat agents toward task completion
+    application_domains: instruction-following cooperation in multi-agent settings
+    identified_challenges: reliance on human input to guide conversations; difficulty in achieving autonomous cooperation
+    relations: used-by arXiv:2307.07924; motivates arXiv:2308.00352; cited-by arXiv:2308.08155; cited-by arXiv:2309.07870; cited-by arXiv:2401.03428; cited-by arXiv:2402.01680
+arXiv:2307.09288 (2023) "Llama 2: Open Foundation and Fine-Tuned Chat Models" [cs] (cited-by 69 in-topic, era 1)
+    agent_architecture: Pretrained and fine-tuned large language models (LLMs) ranging from 7 billion to 70 billion parameters.
+    application_domains: Dialogue use cases.
+    evaluation_benchmarks: Human evaluations for helpfulness and safety; unspecified open-source chat model benchmarks.
+    relations: compares-with arXiv:2110.14168; compares-with arXiv:2103.03874; extends arXiv:2302.13971; cites arXiv:2005.14165; cites arXiv:2009.03300; cites arXiv:2107.03374; used-by arXiv:2307.16789; cited-by arXiv:2308.03688; cited-by arXiv:2308.11432; compared-by arXiv:2310.03710; used-by arXiv:2401.07324; cited-by arXiv:2504.19678
+arXiv:2308.08155 (2023) "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation" [cs] (cited-by 67 in-topic, era 1)
+    agent_architecture: Multi-agent framework with customizable, conversable agents that can operate in various modes (LLMs, human inputs, and tools).
+    tool_interaction_method: Agents can employ combinations of LLMs, human inputs, and tools; programmable via natural language and computer code.
+    application_domains: Mathematics, coding, question answering, operations research, online decision-making, and entertainment.
+    relations: uses arXiv:2210.03629; cites arXiv:2309.07864; cites arXiv:2308.11432; cites arXiv:2305.14325; uses arXiv:2103.03874; uses arXiv:2005.11401; cited-by arXiv:2308.11432; cited-by arXiv:2401.03428; cited-by arXiv:2401.07324; cited-by arXiv:2402.01680; cited-by arXiv:2404.04442; used-by arXiv:2601.02749
+arXiv:2303.17651 (2023) "Self-Refine: Iterative Refinement with Self-Feedback" [cs] (cited-by 65 in-topic, era 1)
+    agent_architecture: A single LLM acting as generator, refiner, and feedback provider in an iterative loop.
+    reasoning_strategy: Iterative refinement through self-generated feedback and subsequent self-correction.
+    application_domains: 7 diverse tasks including dialog response generation and mathematical reasoning.
+    evaluation_benchmarks: Human preference and automatic metrics; reported ~20% absolute average improvement in task performance.
+    relations: compares-with arXiv:2203.02155; cites arXiv:2005.14165; compares-with arXiv:2303.08774; compares-with arXiv:2107.03374; uses arXiv:2110.14168; compares-with arXiv:2303.11366; cited-by arXiv:2303.11366; cited-by arXiv:2303.17491; cited-by arXiv:2304.08354; cited-by arXiv:2305.10601; compared-by arXiv:2305.14325; cited-by arXiv:2305.17126
+arXiv:2308.03688 (2023) "AgentBench: Evaluating LLMs as Agents" [cs] (cited-by 65 in-topic, era 1)
+    reasoning_strategy: reasoning and decision-making abilities
+    application_domains: interactive environments
+    evaluation_benchmarks: AgentBench (consisting of 8 distinct environments)
+    identified_challenges: poor long-term reasoning, decision-making, and instruction following abilities; performance disparity between commercial LLMs and OSS competitors (≤70B)
+    relations: cites arXiv:2010.03768; uses arXiv:2207.01206; cites arXiv:2009.03300; uses arXiv:2210.03629; uses arXiv:2201.11903; cites arXiv:2005.14165; cited-by arXiv:2308.11432; cited-by arXiv:2309.14365; cited-by arXiv:2401.03428; cited-by arXiv:2404.04442; cited-by arXiv:2503.21460; cited-by arXiv:2508.17281
+arXiv:2305.14325 (2023) "Improving Factuality and Reasoning in Language Models through Multiagent
+  Debate" [cs] (cited-by 50 in-topic, era 1)
+    agent_architecture: Multiagent debate ('society of minds') where multiple LLM instances propose and debate responses and reasoning processes over multiple rounds.
+    reasoning_strategy: Multi-round debate involving individual proposals and reasoning processes to arrive at a common final answer.
+    application_domains: Mathematical reasoning, strategic reasoning, and factual content generation.
+    identified_challenges: Fallacious answers and hallucinations in contemporary models.
+    relations: compares-with arXiv:2205.11916; compares-with arXiv:2303.11366; compares-with arXiv:2303.17651; cites arXiv:2203.02155; uses arXiv:2110.14168; uses arXiv:2009.03300; cited-by arXiv:2307.07924; cited-by arXiv:2308.00352; cited-by arXiv:2308.08155; cited-by arXiv:2308.11432; cited-by arXiv:2402.01680; cited-by arXiv:2403.03031
+arXiv:2304.08354 (2023) "Tool Learning with Foundation Models" [cs] (cited-by 50 in-topic, era 1)
+    agent_architecture: A general tool learning framework involving task decomposition, dynamic plan adjustment, and tool selection.
+    tool_interaction_method: Selecting appropriate tools to conquer sub-tasks derived from user instructions.
+    reasoning_strategy: Decomposing complex tasks into subtasks and dynamically adjusting plans through reasoning.
+    evaluation_benchmarks: Experiments with 18 representative tools.
+    identified_challenges: Lack of a comprehensive understanding of key challenges, opportunities, and future endeavors; lack of systematic tool learning evaluation in prior works.
+    relations: extends arXiv:2210.03629; cites arXiv:2302.04761; cites arXiv:2206.07682; compares-with arXiv:2112.09332; extends arXiv:2201.11903; extends arXiv:2005.14165; cited-by arXiv:2303.17580; cited-by arXiv:2307.16789; cited-by arXiv:2308.03427; cited-by arXiv:2308.11432; cited-by arXiv:2309.00986; cited-by arXiv:2401.03428
+arXiv:2302.01560 (2023) "Describe, Explain, Plan and Select: Interactive Planning with Large
+  Language Models Enables Open-World Multi-Task Agents" [cs] (cited-by 42 in-topic, era 1)
+    agent_architecture: DEPS (Describe, Explain, Plan and Select), an interactive planning approach based on Large Language Models (LLMs) featuring a trainable goal selector module.
+    reasoning_strategy: Interactive planning involving plan execution description, self-explanation of feedback during failures, and ranking parallel candidate sub-goals based on estimated steps of completion.
+    application_domains: Open-world environments (Minecraft), ALFWorld, and tabletop manipulation.
+    evaluation_benchmarks: Minecraft (70+ tasks, ObtainDiamond grand challenge), ALFWorld, and tabletop manipulation tasks.
+    identified_challenges: 1) Necessity for accurate multi-step reasoning in long-term open-world tasks; 2) Inefficiency or infeasibility in vanilla planners due to failure to consider sub-task ease when ordering parallel sub-goals.
+    relations: uses arXiv:2005.14165; uses arXiv:2203.02155; uses arXiv:2107.03374; critiques arXiv:2204.01691; compares-with arXiv:2207.05608; uses arXiv:2010.03768; cited-by arXiv:2303.17491; cited-by arXiv:2304.08354; cited-by arXiv:2305.10601; compared-by arXiv:2305.16291; cited-by arXiv:2308.03688; cited-by arXiv:2308.11432
+arXiv:2303.12712 (2023) "Sparks of Artificial General Intelligence: Early experiments with GPT-4" [cs] (cited-by 41 in-topic, era 1)
+    agent_architecture: Large Language Model (LLM) based on next-word prediction
+    application_domains: ['mathematics', 'coding', 'vision', 'medicine', 'law', 'psychology']
+    identified_challenges: ['limitations of current models', 'need for a new paradigm beyond next-word prediction']
+    relations: cited-by arXiv:2303.17491; cited-by arXiv:2304.03442; cited-by arXiv:2304.08354; cited-by arXiv:2305.15334; compared-by arXiv:2305.16291; cited-by arXiv:2305.17126
+arXiv:2303.17491 (2023) "Language Models can Solve Computer Tasks" [cs] (cited-by 38 in-topic, era 1)
+    agent_architecture: Pre-trained large language model (LLM) agent using a prompting scheme.
+    reasoning_strategy: Recursively Criticizes and Improves (RCI) its output, combined with Chain of Thought (CoT) prompting.
+    application_domains: Automating computer tasks via natural language commands.
+    evaluation_benchmarks: MiniWoB++ benchmark and a suite of natural language reasoning tasks.
+    identified_challenges: Previous approaches require large amounts of expert demonstrations and task-specific reward functions, which are impractical for new tasks.
+    relations: cites arXiv:2302.04761; compares-with arXiv:2201.11903; compares-with arXiv:2205.11916; cites arXiv:2210.03629; cites arXiv:2207.05608; cites arXiv:2203.11171; cited-by arXiv:2303.11366; cited-by arXiv:2305.10601; cited-by arXiv:2305.15334; cited-by arXiv:2308.03427; cited-by arXiv:2308.03688; compared-by arXiv:2308.08155
+arXiv:2305.17126 (2023) "Large Language Models as Tool Makers" [cs] (cited-by 28 in-topic, era 1)
+    agent_architecture: Closed-loop framework (LATM) consisting of two phases: a powerful 'tool maker' model and a lightweight 'tool user' model.
+    tool_interaction_method: Tool user applies tools built by the tool maker via corresponding APIs; tools are stored in a functional cache for reuse.
+    reasoning_strategy: Strategic division of labor where a high-capability model crafts tools and a lightweight model executes them for problem-solving.
+    application_domains: Complex reasoning tasks.
+    evaluation_benchmarks: Big-Bench tasks.
+    relations: cites arXiv:2005.14165; cites arXiv:2204.02311; cites arXiv:2303.12712; cites arXiv:2210.03629; cites arXiv:2302.04761; compares-with arXiv:2201.11903; cited-by arXiv:2308.00352; cited-by arXiv:2308.03427; cited-by arXiv:2308.08155; cited-by arXiv:2401.03428; cited-by arXiv:2403.03031; cited-by arXiv:2409.18807
+arXiv:2303.09014 (2023) "ART: Automatic multi-step reasoning and tool-use for large language
+  models" [cs] (cited-by 26 in-topic, era 1)
+    agent_architecture: A framework using frozen LLMs to automatically generate intermediate reasoning steps as a program, selecting demonstrations from a task library.
+    tool_interaction_method: Seamlessly pauses generation whenever external tools are called and integrates their output before resuming generation.
+    reasoning_strategy: Automatic generation of intermediate reasoning steps as a program, utilizing multi-step reasoning and tool-use demonstrations.
+    application_domains: Complex reasoning tasks requiring external computation (e.g., search or running code).
+    evaluation_benchmarks: BigBench and MMLU.
+    identified_challenges: Prior work requires hand-crafting task-specific demonstrations and carefully scripted interleaving of model generations with tool use.
+    relations: cited-by arXiv:2303.17491; cited-by arXiv:2305.17126; cited-by arXiv:2308.03427; cited-by arXiv:2309.14365; cited-by arXiv:2403.03031; cited-by arXiv:2404.04442
+arXiv:2309.07870 (2023) "Agents: An Open-source Framework for Autonomous Language Agents" [cs] (cited-by 21 in-topic, era 1)
+    agent_architecture: Modularized design supporting planning, memory, tool usage, multi-agent communication, and fine-grained symbolic control.
+    tool_interaction_method: Tool usage (specific mechanism not detailed in abstract).
+    reasoning_strategy: Planning.
+    application_domains: Solving various tasks and interacting with environments, humans, and other agents via natural language interfaces.
+    relations: cites arXiv:2005.14165; cites arXiv:2203.02155; cites arXiv:2307.07924; critiques arXiv:2112.09332; critiques arXiv:2302.04761; cites arXiv:2305.15334; cited-by arXiv:2310.03710; cited-by arXiv:2402.01680; cited-by arXiv:2401.03428
+arXiv:2308.03427 (2023) "TPTU: Large Language Model-based AI Agents for Task Planning and Tool Usage" [cs] (cited-by 19 in-topic, era 1)
+    agent_architecture: A structured framework consisting of two distinct types of agents: one-step agent and sequential agent.
+    reasoning_strategy: Task planning combined with the usage of external tools.
+    application_domains: Complex real-world tasks requiring task planning and tool usage.
+    evaluation_benchmarks: Task Planning and Tool Usage (TPTU) abilities on typical tasks.
+    identified_challenges: Intrinsic generative abilities of LLMs may be insufficient for complex tasks; areas needing more investigation and improvement.
+    relations: cites arXiv:2204.01691; cites arXiv:2207.05608; cites arXiv:2005.11401; cites arXiv:2207.01206; cites arXiv:2112.09332; cites arXiv:1809.09600; cited-by arXiv:2308.11432; cited-by arXiv:2401.03428; cited-by arXiv:2402.01680
+arXiv:2309.00986 (2023) "ModelScope-Agent: Building Your Customizable Agent System with
+  Open-source Large Language Models" [cs] (cited-by 6 in-topic, era 1)
+    agent_architecture: A general and customizable agent framework based on open-source LLMs as controllers, featuring a customizable engine design and a system library.
+    tool_interaction_method: A comprehensive framework spanning tool-use data collection, tool retrieval, tool registration, and memory control to enable integration with model APIs and common APIs.
+    application_domains: Real-world applications, specifically demonstrated through ModelScopeGPT, an intelligent assistant for the ModelScope Community connecting to over 1000 public AI models and localized community knowledge.
+    relations: cites arXiv:2304.08354; cites arXiv:2303.08774; uses arXiv:2302.13971; cites arXiv:2204.02311; cites arXiv:2302.04761; cites arXiv:2303.17580; cited-by arXiv:2401.03428; used-by arXiv:2401.07324
+arXiv:2309.14365 (2023) "An In-depth Survey of Large Language Model-based Artificial Intelligence
+  Agents" [cs] (cited-by 3 in-topic, era 1)
+    agent_architecture: comprised of planning, memory, and tool use components
+    relations: cites arXiv:2303.17580; cites arXiv:2201.07207; cites arXiv:2305.10601; cites arXiv:2210.03629; cites arXiv:2207.05608; cites arXiv:2005.14165; cited-by arXiv:2503.21460
+arXiv:2310.03710 (2023) "Agent Instructs Large Language Models to be General Zero-Shot Reasoners" [cs] (cited-by 1 in-topic, era 1)
+    agent_architecture: An autonomous agent designed to instruct the reasoning process of large language models.
+    reasoning_strategy: Instructing the reasoning process of LLMs to improve zero-shot reasoning abilities.
+    application_domains: General language understanding tasks including generation, classification, and reasoning.
+    evaluation_benchmarks: 29 datasets spanning generation, classification, and reasoning; compared against zero-shot chain of thought.
+    relations: extends arXiv:2205.11916; uses arXiv:2303.08774; cites arXiv:2110.14168; cites arXiv:2005.14165; cites arXiv:2204.02311; cites arXiv:2302.13971
+arXiv:2402.01680 (2024) "Large Language Model based Multi-Agents: A Survey of Progress and
+  Challenges" [cs] (cited-by 54 in-topic, era 2)
+    agent_architecture: LLM-based multi-agent systems (MAS) involving single planning or decision-making agents and multi-agent communication frameworks.
+    reasoning_strategy: Planning and reasoning abilities of LLMs.
+    application_domains: Complex problem-solving and world simulation.
+    evaluation_benchmarks: Commonly used datasets or benchmarks (specific names not listed in abstract).
+    identified_challenges: General challenges in the dynamic field of LLM-based multi-agent systems.
+    relations: cites arXiv:2201.11903; cites arXiv:2308.00352; cites arXiv:2307.07924; cites arXiv:2304.03442; cites arXiv:2309.07864; cites arXiv:2305.10601; cited-by arXiv:2404.04442; used-by arXiv:2409.02977; compared-by arXiv:2503.21460; cited-by arXiv:2504.19678; cited-by arXiv:2508.17281; cited-by arXiv:2510.09244
+arXiv:2401.03428 (2024) "Exploring Large Language Model based Intelligent Agents: Definitions,
+  Methods, and Prospects" [cs] (cited-by 15 in-topic, era 2)
+    agent_architecture: Single-agent and multi-agent systems (including multi-role collaboration and message passing)
+    tool_interaction_method: Tool utilization and responses to environmental feedback
+    reasoning_strategy: Cognitive and planning methods
+    application_domains: Autonomous general-purpose task assistants, coding, social, and economic domains
+    identified_challenges: Communication issues between agents in multi-agent systems
+    relations: cites arXiv:2304.03442; cites arXiv:2302.04761; cites arXiv:2303.17580; cites arXiv:2305.15334; cites arXiv:2308.03427; cites arXiv:2307.16789; cited-by arXiv:2404.04442; cited-by arXiv:2409.02977; compared-by arXiv:2503.21460; used-by arXiv:2508.17281
+arXiv:2409.18807 (2024) "LLM With Tools: A Survey" [cs] (cited-by 10 in-topic, era 2)
+    agent_architecture: A standardized paradigm guided by functions that map user instructions to actionable plans and execution
+    tool_interaction_method: Mapping user instructions to actionable plans and execution via tool selection and invocation
+    reasoning_strategy: Dynamic plan adjustment and robust reasoning processes through fine-tuning and in-context learning
+    application_domains: Complex tasks requiring knowledge beyond pre-existing bases
+    evaluation_benchmarks: ScienceQA (reproduced results for Chameleon)
+    identified_challenges: Tool invocation timing, selection accuracy, and the need for robust reasoning processes
+    relations: cites arXiv:2303.08774; cites arXiv:2304.08354; uses arXiv:2307.16789; cites arXiv:2302.04761; cites arXiv:2112.09332; uses arXiv:2210.03629; cited-by arXiv:2503.21460
+arXiv:2401.07324 (2024) "Small LLMs Are Weak Tool Learners: A Multi-LLM Agent" [cs] (cited-by 9 in-topic, era 2)
+    agent_architecture: Modular multi-LLM framework decomposing capabilities into three specialized components: a planner, a caller, and a summarizer.
+    tool_interaction_method: Decomposition of capabilities into specialized sub-tasks: task planning, tool invocation, and result summarization.
+    reasoning_strategy: Two-stage training paradigm: 1) fine-tuning a backbone LLM on the entire dataset, and 2) continual fine-tuning of specialized LLM instances on respective sub-tasks.
+    application_domains: Tool use (interacting with external tools like APIs and functions) and task completion.
+    evaluation_benchmarks: Various tool-use benchmarks (specific names not listed).
+    identified_challenges: Performance limitations of single LLMs, particularly smaller models, in task planning, tool invocation, and result summarization.
+    relations: cites arXiv:2304.08354; cites arXiv:2305.15334; uses arXiv:2307.16789; cites arXiv:2302.13971; uses arXiv:2307.09288; cites arXiv:2302.04761
+arXiv:2403.03031 (2024) "Learning to Use Tools via Cooperative and Interactive Agents" [cs] (cited-by 9 in-topic, era 2)
+    agent_architecture: ConAgents: A Cooperative and interactive Agents framework coordinating three specialized agents (tool selection, tool execution, and action calibration).
+    tool_interaction_method: Cooperation between specialized agents via two communication protocols.
+    reasoning_strategy: Cooperative and interactive coordination among specialized agents to allow for action calibration and flexible cooperation.
+    application_domains: Tool use and external tool execution for large language models (LLMs).
+    evaluation_benchmarks: Three datasets (specific names not provided); measured by success rate (up to 14% improvement).
+    identified_challenges: Pre-defined pipelines with restricted flexibility to calibrate incorrect actions; difficulty adapting general LLM-based agents to perform a variety of specialized actions.
+    relations: cites arXiv:2212.10560; cites arXiv:2112.09332; cites arXiv:2302.04761; cites arXiv:2304.08354; compares-with arXiv:2307.16789; compares-with arXiv:2210.03629
+arXiv:2405.16533 (2024) "Tool Learning in the Wild: Empowering Language Models as Automatic Tool
+  Agents" [cs] (cited-by 8 in-topic, era 2)
+    agent_architecture: AutoTools framework (automates tool-use workflow by transforming documentation into callable functions and integrating them into executable programs)
+    tool_interaction_method: Automatic transformation of tool documentation into callable functions with syntax and runtime verification; integration into executable programs
+    reasoning_strategy: Grounding tool-use actions into reasoning processes via executable programming
+    application_domains: Solving practical/real-world tasks using external tools
+    evaluation_benchmarks: Existing and newly collected, more challenging benchmarks
+    identified_challenges: Manual parsing of tool documentation requires domain expertise; difficulty scaling to large toolsets; reliance on ad-hoc inference or special tokens; limited flexibility in handling diverse tool specifications and multiple tools
+    relations: cited-by arXiv:2509.16330
+arXiv:2409.02977 (2024) "Large Language Model-Based Agents for Software Engineering: A Survey" [cs] (cited-by 7 in-topic, era 2)
+    tool_interaction_method: perceiving and utilizing external resources and tools
+    application_domains: Software Engineering (SE)
+    identified_challenges: open challenges and future directions in the domain
+    relations: cites arXiv:2307.07924; cites arXiv:2303.17760; cites arXiv:2308.00352; uses arXiv:2309.07864; uses arXiv:2308.11432; uses arXiv:2402.01680
+arXiv:2404.04442 (2024) "Exploring Autonomous Agents through the Lens of Large Language Models: A
+  Review" [cs] (cited-by 2 in-topic, era 2)
+    tool_interaction_method: tool utilization
+    reasoning_strategy: prompting, reasoning, and in-context learning
+    application_domains: customer service, healthcare, email responses, and disease diagnosis
+    evaluation_benchmarks: AgentBench, WebArena, and ToolLLM
+    identified_challenges: multimodality, human value alignment, hallucinations, and evaluation
+    relations: cites arXiv:2308.11432; cites arXiv:2401.03428; cites arXiv:2302.13971; cites arXiv:1810.04805; cites arXiv:2303.08774; cites arXiv:2308.08155; cited-by arXiv:2409.02977
+arXiv:2412.13233 (2024) "Creating an LLM-based AI-agent: A high-level methodology towards
+  enhancing LLMs with APIs" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: On-device architecture utilizing small models from the Hugging Face community
+    tool_interaction_method: 7-step methodology involving task decomposition, training data generation for API interactions, and heuristics for API selection to generate syntactically and semantically aligned API calls
+    reasoning_strategy: Task decomposition for complex problem-solving
+    application_domains: Engineering, science, and piano sheet generation
+    identified_challenges: Lack of interaction with the external digital environment and gaps in current frameworks/tools for API integration
+    relations: (none in-topic)
+arXiv:2503.21460 (2025) "Large Language Model Agent: A Survey on Methodology, Applications and
+  Challenges" [cs] (cited-by 9 in-topic, era 2)
+    agent_architecture: methodology-centered taxonomy linking architectural foundations, collaboration mechanisms, and evolutionary pathways
+    reasoning_strategy: goal-driven behaviors and dynamic adaptation capabilities
+    relations: cites arXiv:2203.11171; cites arXiv:2309.07864; cites arXiv:2309.14365; cites arXiv:2308.11432; compares-with arXiv:2402.01680; compares-with arXiv:2401.03428; cited-by arXiv:2508.17281; extended-by arXiv:2601.12560; critiqued-by arXiv:2509.16330
+arXiv:2502.04644 (2025) "Agentic Reasoning: A Streamlined Framework for Enhancing LLM Reasoning with Agentic Tools" [cs] (cited-by 8 in-topic, era 2)
+    agent_architecture: Integration of external tool-using agents including a Mind-Map agent (structured knowledge graph for reasoning context) and a Web-Search agent.
+    tool_interaction_method: Dynamic leveraging of web search, code execution, and structured memory.
+    reasoning_strategy: Constructing a structured knowledge graph to track logical relationships and maintain coherence in long reasoning chains.
+    application_domains: Complex problems requiring deep research.
+    identified_challenges: Maintaining coherence in long reasoning chains with extensive tool usage.
+    relations: cites arXiv:2201.11903; cited-by arXiv:2504.19678
+arXiv:2505.01441 (2025) "Agentic Reasoning and Tool Integration for LLMs via Reinforcement
+  Learning" [cs] (cited-by 5 in-topic, era 2)
+    agent_architecture: ARTIST (Agentic Reasoning and Tool Integration in Self-improving Transformers), a unified framework coupling agentic reasoning, reinforcement learning, and tool integration.
+    tool_interaction_method: Autonomous decision-making on when, how, and which tools to invoke within multi-turn reasoning chains via outcome-based RL.
+    reasoning_strategy: Multi-turn reasoning chains and outcome-based reinforcement learning (RL) to learn robust strategies without step-level supervision.
+    application_domains: Mathematical reasoning and multi-turn function calling.
+    evaluation_benchmarks: Mathematical reasoning and multi-turn function calling benchmarks.
+    identified_challenges: Reliance on static internal knowledge and text-only reasoning in standard LLMs.
+    relations: (none in-topic)
+arXiv:2504.19678 (2025) "From LLM Reasoning to Autonomous AI Agents: A Comprehensive Review" [cs] (cited-by 3 in-topic, era 2)
+    agent_architecture: Modular toolkits integrated with large language models for autonomous decision-making.
+    tool_interaction_method: Dynamic tool integration via reinforcement learning and integrated search capabilities.
+    reasoning_strategy: Multi-step reasoning and advanced reasoning strategies.
+    application_domains: Materials science, biomedical research, academic ideation, software engineering, synthetic data generation, chemical reasoning, mathematical problem-solving, geographic information systems, multimedia, healthcare, and finance.
+    evaluation_benchmarks: Approximately 60 benchmarks covering general/academic knowledge, math, code, factual grounding, domain-specific, multimodal/embodied, task orchestration, and interactive assessments.
+    identified_challenges: Fragmented landscape, lack of unified taxonomy, failure modes in multi-agent systems, security vulnerabilities in agent protocols.
+    relations: compares-with arXiv:2009.03300; cites arXiv:2303.08774; cites arXiv:2307.09288; cites arXiv:2210.03629; cites arXiv:2402.01680; cites arXiv:2308.00352; cited-by arXiv:2508.17281
+arXiv:2510.09244 (2025) "Fundamentals of Building Autonomous LLM Agents" [cs] (cited-by 1 in-topic, era 2)
+    agent_architecture: A four-component system consisting of a perception system, a reasoning system, a memory system (short-term and long-term), and an execution system.
+    reasoning_strategy: Formulating plans, adapting to feedback, and evaluating actions using techniques such as Chain-of-Thought and Tree-of-Thought.
+    application_domains: Automating complex tasks and real-world tasks.
+    identified_challenges: Limitations of traditional LLMs in real-world tasks and the performance gap compared to human capabilities.
+    relations: cites arXiv:2302.04761; cites arXiv:2305.15334; cites arXiv:2211.10435; cites arXiv:2303.17580; cites arXiv:2203.11171; compares-with arXiv:2210.03629
+arXiv:2508.17281 (2025) "From Language to Action: A Review of Large Language Models as Autonomous Agents and Tool Users" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Single-agent and multi-agent systems
+    tool_interaction_method: Strategies for integrating external tools
+    reasoning_strategy: Cognitive mechanisms including reasoning, planning, and memory; impact of prompting methods and fine-tuning procedures
+    evaluation_benchmarks: 68 publicly available datasets
+    identified_challenges: Verifiable reasoning of LLMs, capacity for self-improvement, and personalization of LLM-based agents
+    relations: cites arXiv:2307.16789; cites arXiv:2303.17760; cites arXiv:2005.14165; uses arXiv:2201.11903; cites arXiv:2307.07924; cites arXiv:2304.03442
+arXiv:2511.14650 (2025) "AutoTool: Efficient Tool Selection for Large Language Model Agents" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: A graph-based framework that constructs a directed graph from historical agent trajectories, where nodes represent tools and edges capture transition probabilities.
+    tool_interaction_method: Traversing a structured directed graph to select tools and integrating parameter-level information to refine tool input generation.
+    reasoning_strategy: Exploiting 'tool usage inertia' (predictable sequential patterns) to bypass repeated LLM inference via statistical structure.
+    application_domains: Automating complex tasks via Large Language Model (LLM) agents.
+    identified_challenges: High inference cost of tool selection in current agent frameworks (e.g., ReAct) due to repeated LLM invocations.
+    relations: (none in-topic)
+arXiv:2503.19213 (2025) "A Survey of Large Language Model Agents for Question Answering" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: LLM-based agents using LLMs as a core reasoning engine, organized across stages of planning, question understanding, information retrieval, and answer generation.
+    tool_interaction_method: Interaction with external environments.
+    reasoning_strategy: Planning, question understanding, information retrieval, and answer generation.
+    application_domains: Question Answering (QA).
+    identified_challenges: Substantial data requirements and difficulty in generalizing to new environments in traditional agents.
+    relations: cites arXiv:2304.03442; cites arXiv:2308.11432; cites arXiv:1810.04805; cites arXiv:2303.08774; cites arXiv:2005.11401; cites arXiv:1809.09600
+arXiv:2509.16330 (2025) "Generalizability of Large Language Model-Based Agents: A Comprehensive Survey" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Integration of reasoning with perception, memory, and tool use; categorized into backbone LLM, agent components, and their interactions.
+    reasoning_strategy: Integration of reasoning with perception, memory, and tool use.
+    application_domains: Web navigation and household robotics.
+    identified_challenges: Underdefined concept of generalizability; lack of systematic approaches to measure and improve it; need for standardized frameworks and variance- and cost-based metrics.
+    relations: cites arXiv:2010.03768; critiques arXiv:2309.07864; extends arXiv:2210.03629; cites arXiv:2405.16533; cites arXiv:2402.01680; extends arXiv:2201.11903
+arXiv:2508.17692 (2025) "LLM-based Agentic Reasoning Frameworks: A Survey from Methods to Scenarios" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Single-agent methods, tool-based methods, and multi-agent methods
+    tool_interaction_method: tool-based methods
+    application_domains: scientific discovery, healthcare, software engineering, social simulation, and economics
+    relations: (none in-topic)
+arXiv:2601.12538 (2026) "Agentic Reasoning for Large Language Models" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Three-layered framework: foundational agentic reasoning (single-agent), self-evolving agentic reasoning (feedback/memory/adaptation), and collective multi-agent reasoning (coordination/knowledge sharing).
+    reasoning_strategy: In-context reasoning (structured orchestration) and post-training reasoning (reinforcement learning and supervised fine-tuning); includes planning, tool use, search, and self-evolution via feedback and memory.
+    application_domains: Science, robotics, healthcare, autonomous research, and mathematics.
+    identified_challenges: Personalization, long-horizon interaction, world modeling, scalable multi-agent training, and governance for real-world deployment.
+    relations: (none in-topic)
+arXiv:2604.00835 (2026) "Agentic Tool Use in Large Language Models" [cs] (cited-by 0 in-topic, era 2)
+    tool_interaction_method: Three paradigms: prompting as plug-and-play, supervised tool learning, and reward-driven tool policy learning.
+    application_domains: Information retrieval, computation, and external action.
+    identified_challenges: Fragmentation across tasks, tool types, and training settings; failure modes in tool-use methods.
+    relations: (none in-topic)
+arXiv:2601.12560 (2026) "Agentic Artificial Intelligence (AI): Architectures, Taxonomies, and Evaluation of Large Language Model Agents" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Unified taxonomy consisting of Perception, Brain, Planning, Action, Tool Use, and Collaboration; includes single loop agents and hierarchical multi-agent systems.
+    tool_interaction_method: Transition from fixed API calls to open standards like Model Context Protocol (MCP) and Native Computer Use.
+    reasoning_strategy: Move from linear reasoning procedures to native inference time reasoning models.
+    application_domains: Software engineering, scientific discovery, web navigation, digital operating systems, and embodied robotics.
+    identified_challenges: Hallucination in action, infinite loops, and prompt injection.
+    relations: cites arXiv:2308.11432; cites arXiv:2309.07864; extends arXiv:2503.21460; cites arXiv:2303.11366; cites arXiv:2303.17651; extends arXiv:2308.03688
+arXiv:2601.02749 (2026) "The Path Ahead for Agentic AI: Challenges and Opportunities" [cs] (cited-by 0 in-topic, era 2)
+    agent_architecture: Integrative framework comprising perception, memory, planning, and tool execution; transition from statistical models to transformer-based systems.
+    tool_interaction_method: Tool execution as a core component of the integrative framework.
+    reasoning_strategy: Reasoning-action-reflection loops, long-range reasoning, and adaptive decision-making.
+    identified_challenges: Safety, alignment, reliability, sustainability, verifiable planning, scalable multi-agent coordination, persistent memory architectures, governance frameworks, technical robustness, interpretability, and ethical safeguards.
+    relations: cites arXiv:1810.04805; uses arXiv:2210.03629; uses arXiv:2302.04761; uses arXiv:2308.08155; cites arXiv:2305.16291; cites arXiv:1706.03762
+
+MAIN PATH (oldest -> newest):
+  arXiv:1706.03762 (2017) -> arXiv:1810.04805 (2018) -> arXiv:2005.11401 (2020) -> arXiv:2112.09332 (2021) -> arXiv:2203.02155 (2022) -> arXiv:2302.01560 (2023) -> arXiv:2401.03428 (2024) -> arXiv:2503.21460 (2025) -> arXiv:2601.12560 (2026)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2205.11916 compares [negative] arXiv:2203.11171
+  arXiv:2302.01560 critiques [negative] arXiv:2204.01691
+  arXiv:2302.01560 critiques [negative] arXiv:2303.11366
+  arXiv:2302.01560 critiques [negative] arXiv:2304.03442
+  arXiv:2302.04761 critiques [negative] arXiv:2112.09332
+  arXiv:2303.08774 critiques [negative] arXiv:2005.14165
+  arXiv:2303.11366 critiques [negative] arXiv:2207.01206
+  arXiv:2305.16291 critiques [negative] arXiv:2107.03374
+  arXiv:2305.16291 critiques [negative] arXiv:2302.13971
+  arXiv:2307.16789 critiques [negative] arXiv:2201.11903
+  arXiv:2307.16789 critiques [negative] arXiv:2210.03629
+  arXiv:2309.07870 critiques [negative] arXiv:2112.09332
+  arXiv:2309.07870 critiques [negative] arXiv:2302.04761
+  arXiv:2206.07682 critiques [negative] arXiv:2005.14165
+  arXiv:2206.07682 critiques [negative] arXiv:2204.02311
+  arXiv:2509.16330 critiques [negative] arXiv:2309.07864
+  arXiv:2509.16330 critiques [negative] arXiv:2303.11366
+  arXiv:2509.16330 critiques [negative] arXiv:2503.21460
+  arXiv:2302.01560 compares [neutral] arXiv:2207.05608
+  arXiv:2302.01560 compares [neutral] arXiv:2201.07207
+  arXiv:2302.01560 compares [neutral] arXiv:2201.11903
+  arXiv:2302.04761 compares [neutral] arXiv:2211.10435
+  arXiv:2302.13971 compares [neutral] arXiv:2103.03874
+  arXiv:2302.13971 compares [neutral] arXiv:2110.14168
+  arXiv:2302.13971 compares [neutral] arXiv:2203.11171
+  arXiv:2302.13971 compares [neutral] arXiv:2107.03374
+  arXiv:2303.11366 compares [neutral] arXiv:2303.08774
+  arXiv:2303.17491 compares [neutral] arXiv:2201.11903
+  arXiv:2303.17491 compares [neutral] arXiv:2205.11916
+  arXiv:2303.17651 compares [positive] arXiv:2203.02155
+  arXiv:2303.17651 compares [positive] arXiv:2303.08774
+  arXiv:2303.17651 compares [positive] arXiv:2107.03374
+  arXiv:2303.17651 compares [positive] arXiv:2303.11366
+  arXiv:2304.08354 compares [neutral] arXiv:2112.09332
+  arXiv:2305.10601 compares [positive] arXiv:2203.11171
+  arXiv:2305.14325 compares [positive] arXiv:2205.11916
+  arXiv:2305.14325 compares [positive] arXiv:2303.11366
+  arXiv:2305.14325 compares [positive] arXiv:2303.17651
+  arXiv:2305.16291 compares [neutral] arXiv:2302.01560
+  arXiv:2305.16291 compares [positive] arXiv:2303.12712
+  arXiv:2305.17126 compares [positive] arXiv:2201.11903
+  arXiv:2305.17126 compares [neutral] arXiv:2211.10435
+  arXiv:2307.09288 compares [neutral] arXiv:2110.14168
+  arXiv:2307.09288 compares [neutral] arXiv:2103.03874
+  arXiv:2307.09288 compares [positive] arXiv:2303.08774
+  arXiv:2307.09288 compares [positive] arXiv:2204.02311
+  arXiv:2307.16789 compares [positive] arXiv:2305.15334
+  arXiv:2308.00352 compares [neutral] arXiv:2201.11903
+  arXiv:2308.00352 compares [neutral] arXiv:2204.02311
+  arXiv:2308.08155 compares [positive] arXiv:2303.17491
+  arXiv:2309.14365 compares [neutral] arXiv:2305.16291
+  arXiv:2310.03710 compares [positive] arXiv:2307.09288
+  arXiv:2310.03710 compares [neutral] arXiv:2203.11171
+  arXiv:2403.03031 compares [neutral] arXiv:2307.16789
+  arXiv:2403.03031 compares [neutral] arXiv:2210.03629
+  arXiv:2403.03031 compares [neutral] arXiv:2302.01560
+  arXiv:2404.04442 compares [neutral] arXiv:2203.11171
+  arXiv:2404.04442 compares [neutral] arXiv:2305.10601
+  arXiv:2503.21460 compares [positive] arXiv:2402.01680
+  arXiv:2503.21460 compares [positive] arXiv:2401.03428
+  arXiv:2504.19678 compares [neutral] arXiv:2009.03300
+  arXiv:2005.14165 compares [positive] arXiv:2005.11401
+  arXiv:2201.11903 compares [neutral] arXiv:2110.14168
+  arXiv:2510.09244 compares [neutral] arXiv:2210.03629
+  arXiv:2510.09244 compares [neutral] arXiv:2305.10601
+  arXiv:2203.11171 compares [neutral] arXiv:2204.02311
+  arXiv:2204.02311 compares [neutral] arXiv:2109.01652
+  arXiv:2204.02311 compares [positive] arXiv:2009.03300
+  arXiv:2601.12560 compares [neutral] arXiv:2201.11903
+  arXiv:2601.12560 compares [neutral] arXiv:2210.03629
+  arXiv:2510.09244 compares [neutral] arXiv:2201.11903
+  arXiv:2107.03374 compares [positive] arXiv:2005.14165
+  arXiv:2110.14168 compares [neutral] arXiv:2005.14165
+  arXiv:2203.02155 compares [neutral] arXiv:2109.01652
+  arXiv:2204.01691 compares [neutral] arXiv:1810.04805
+  arXiv:2204.01691 compares [neutral] arXiv:2201.07207
+  arXiv:2207.01206 compares [neutral] arXiv:2112.09332
+  arXiv:2211.10435 compares [positive] arXiv:2107.03374
+  arXiv:2212.10560 compares [positive] arXiv:2203.02155
+  arXiv:2305.16291 motivates [positive] arXiv:2204.02311
+  arXiv:2308.00352 motivates [positive] arXiv:2303.17760
+  arXiv:2401.03428 motivates [neutral] arXiv:2010.03768
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2210.03629:
+NOVELTY: Interleaves verbal reasoning traces with task-specific actions to create a closed-loop "reason-to-act" and "act-to-reason" synergy.
+STRENGTHS: Demonstrates significant few-shot advantages in interactive environments, outperforming imitation/RL methods by 34% in ALFWorld and 10% in WebShop.
+WEAKNESSES: Susceptible to repetitive reasoning loops and highly dependent on external tool quality, with 23% of HotpotQA errors resulting from non-informative search results.
+RELEVANCE: Provides a framework for grounding LLM reasoning in external environments, addressing the hallucination and error propagation issues inherent in standalone Chain-of-Thought (CoT) reasoning.
+arXiv:2601.12538:
+NOVELTY: Establishes a unified "Agentic Reasoning" paradigm that distinguishes between foundational (single-agent), self-evolving (feedback/memory), and collective (multi-agent) layers, further bifurcating methods into in-context orchestration versus post-training optimization.
+
+STRENGTHS: Provides a rigorous mathematical formalization of the "think-act" structure using a POMDP framework, explicitly factorizing the policy into internal reasoning ($\pi_{reason}$) and external execution ($\pi_{exec}$).
+
+WEAKNESSES: The distinction between "in-context" and "post-training" is occasionally blurred in the taxonomy; for instance, the paper categorizes "Self-evolving" as a layer but also discusses "Parametric Adaptation" (post-training) as a mechanism, creating potential overlap in the hierarchical classification.
+
+RELEVANCE: Advances the review of LLM agents by shifting the focus from mere architectural components (memory, tools) to the underlying cognitive process of reasoning that drives agentic behavior.
+arXiv:2201.11903:
+NOVELTY: Introduces "chain-of-thought prompting," a few-shot method that elicits intermediate reasoning steps to unlock complex reasoning abilities in large language models without fine-tuning.
+
+STRENGTHS: Demonstrates that CoT is an emergent property of scale, with PaLM 540B achieving state-of-the-art accuracy on the GSM8K benchmark, surpassing fine-tuned models.
+
+WEAKNESSES: The method relies on manual composition of exemplars and lacks a guarantee of logical correctness, as models can produce "fluent but illogical" reasoning paths.
+
+RELEVANCE: Provides a foundational prompting mechanism for LLM agents to decompose multi-step tasks, directly addressing the gap between model scale and reasoning performance.

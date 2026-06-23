@@ -1,0 +1,2463 @@
+{
+ "question": "graph neural networks",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 6,
+ "rounds_run": 6,
+ "critique_k": 4,
+ "n_critiques": 4,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep6-k4-r0.4-nofig",
+ "schema": [
+  [
+   "gnn_category",
+   "The classification of the GNN architecture or type."
+  ],
+  [
+   "learning_mechanism",
+   "The method used for message passing or aggregation."
+  ],
+  [
+   "task_level",
+   "The granularity of the target task (node, edge, graph)."
+  ],
+  [
+   "application_domain",
+   "The specific field or use case addressed."
+  ],
+  [
+   "theoretical_foundation",
+   "The mathematical basis, such as graph filters or geometry."
+  ],
+  [
+   "key_contribution",
+   "The main novelty or advancement presented."
+  ]
+ ],
+ "n_pool": 2228,
+ "n_landmarks": 260,
+ "n_edges": 29591,
+ "frontier_year": 2020,
+ "frontier_count": 140,
+ "grounded": [
+  "1312.6203",
+  "1403.6652",
+  "1503.03578",
+  "1506.05163",
+  "1511.05493",
+  "1607.00653",
+  "1609.02907",
+  "1611.08097",
+  "1703.06103",
+  "1706.02216",
+  "1710.10903",
+  "1802.03480",
+  "1802.08773",
+  "1802.09691",
+  "1803.03324",
+  "1809.02657",
+  "1810.00826",
+  "1810.02244",
+  "1810.05997",
+  "1811.05868",
+  "1812.09902",
+  "1901.00596",
+  "1903.03894",
+  "1905.10947",
+  "1905.11136",
+  "1905.12560",
+  "2001.06216",
+  "2002.04025",
+  "2003.03777",
+  "2003.04078",
+  "2006.04131",
+  "2006.05205",
+  "2006.09252",
+  "2009.00142",
+  "2010.05788",
+  "2010.14945",
+  "2012.15445",
+  "2102.09844",
+  "2103.00111",
+  "2110.07875",
+  "2110.14446",
+  "2111.14522",
+  "2201.08821",
+  "2202.03036",
+  "2202.07230",
+  "2206.08164",
+  "2206.11990",
+  "2207.12599",
+  "2209.14734",
+  "2305.06142",
+  "2306.01958",
+  "2306.08385",
+  "2312.02783",
+  "2402.07630",
+  "2403.00485",
+  "2404.16130",
+  "2501.00309",
+  "2502.16533",
+  "2508.19884",
+  "2602.12613",
+  "2605.02452"
+ ],
+ "off_digest": [
+  "2506.02452"
+ ],
+ "report_chars": 26461,
+ "judge_scores_final": {
+  "grounding": 5,
+  "coverage": 4,
+  "lineage": 5,
+  "coherence": 5,
+  "frontier": 4
+ },
+ "landmarks": [
+  {
+   "arxiv_id": "2602.23998",
+   "title": "Invariants in equivariant birational geometry",
+   "year": 2026,
+   "category": "math",
+   "score": 0.783933115158648,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.02302",
+   "title": "EdgeGFL: Rethinking Edge Information in Graph Feature Preference\n  Learning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8091687553269681,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.00485",
+   "title": "A Survey of Geometric Graph Neural Networks: Data Structures, Models and Applications",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8450278128845597,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.01267",
+   "title": "Cooperative Graph Neural Networks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8328762652986784,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2205.15555",
+   "title": "Graph-level Neural Networks: Current Progress and Future Directions",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.8462516460208418,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2108.10733",
+   "title": "Graph Neural Networks: Methods, Applications, and Opportunities",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8530537092538101,
+   "in_degree": 2,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.03777",
+   "title": "Graphs, Convolutions, and Neural Networks: From Graph Filters to Graph\n  Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8612677747862012,
+   "in_degree": 5,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2602.00753",
+   "title": "GraphNNK -- Graph Classification and Interpretability",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7699969155072515,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2508.19884",
+   "title": "Parameter-Free Structural-Diversity Message Passing for Graph Neural Networks",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8033321830037982,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.13849",
+   "title": "Graphs Unveiled: Graph Neural Networks and Graph Generation",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8421914230865558,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.01958",
+   "title": "A Survey on Explainability of Graph Neural Networks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8328520842313409,
+   "in_degree": 10,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2207.12599",
+   "title": "A Survey of Explainable Graph Neural Networks: Taxonomy and Evaluation\n  Metrics",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.8435568395321202,
+   "in_degree": 10,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2107.10957",
+   "title": "Ego-GNNs: Exploiting Ego Structures in Graph Neural Networks",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8308669717802387,
+   "in_degree": 4,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2002.05287",
+   "title": "Geom-GCN: Geometric Graph Convolutional Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8535283134232017,
+   "in_degree": 152,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2604.19719",
+   "title": "On Languages Describing Large Graph Classes",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7621033979341691,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.11732",
+   "title": "Graph Neural Networks Powered by Encoder Embedding for Improved Node Learning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8017947325714297,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2407.03125",
+   "title": "Foundations and Frontiers of Graph Learning Theory",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8365180420273819,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.06142",
+   "title": "Feature Expansion for Graph Neural Networks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8317879065473874,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2203.09258",
+   "title": "Explainability in Graph Neural Networks: An Experimental Survey",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.8394398303839035,
+   "in_degree": 6,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2106.06218",
+   "title": "Graph Transformer Networks: Learning Meta-path Graphs to Improve GNNs",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8263059157270249,
+   "in_degree": 0,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2008.01767",
+   "title": "Graph Neural Networks: Architectures, Stability and Transferability",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8453706749171507,
+   "in_degree": 7,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2602.12613",
+   "title": "Coden: Efficient Temporal Graph Neural Networks for Continuous Prediction",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7465697426081555,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.16533",
+   "title": "A Survey of Graph Transformers: Architectures, Theories and Applications",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8016519061469111,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.15584",
+   "title": "DGNN: Decoupled Graph Neural Networks with Structural Consistency\n  between Attribute and Graph Embedding Representations",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8212289771231666,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.18632",
+   "title": "Graph Rewriting for Graph Neural Networks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8304443693185125,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2202.07230",
+   "title": "Geometrically Equivariant Graph Neural Networks: A Survey",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.8340386692490888,
+   "in_degree": 16,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2102.02026",
+   "title": "Learning Graph Representations",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8217635294995959,
+   "in_degree": 0,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.00804",
+   "title": "Architectural Implications of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8417096562137278,
+   "in_degree": 1,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2605.02452",
+   "title": "Position: How can Graphs Help Large Language Models?",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7429852836906513,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.12908",
+   "title": "Graph Neural Networks for Databases: A Survey",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8007596906813303,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2407.18480",
+   "title": "Scalable Graph Compressed Convolutions",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8153391861071417,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.05631",
+   "title": "A Survey on Spectral Graph Neural Networks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8240956083919855,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1312.6203",
+   "title": "Spectral Networks and Locally Connected Networks on Graphs",
+   "year": 2013,
+   "category": "cs",
+   "score": 0.7329417123956309,
+   "in_degree": 234,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.48234269352451176,
+   "in_degree": 352,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1403.6652",
+   "title": "DeepWalk: Online Learning of Social Representations",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6377105268233669,
+   "in_degree": 300,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1609.02907",
+   "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7313088377945337,
+   "in_degree": 1172,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1511.05493",
+   "title": "Gated Graph Sequence Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7591547535644633,
+   "in_degree": 168,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1502.03167",
+   "title": "Batch Normalization: Accelerating Deep Network Training by Reducing\n  Internal Covariate Shift",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5919978999443345,
+   "in_degree": 96,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1509.09292",
+   "title": "Convolutional Networks on Graphs for Learning Molecular Fingerprints",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7200249481574863,
+   "in_degree": 179,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.02216",
+   "title": "Inductive Representation Learning on Large Graphs",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.671866965481153,
+   "in_degree": 839,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1710.10903",
+   "title": "Graph Attention Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.7907486460313933,
+   "in_degree": 786,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1606.09375",
+   "title": "Convolutional Neural Networks on Graphs with Fast Localized Spectral\n  Filtering",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.766018619008933,
+   "in_degree": 378,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1503.03578",
+   "title": "LINE: Large-scale Information Network Embedding",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6446290494958957,
+   "in_degree": 116,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1704.01212",
+   "title": "Neural Message Passing for Quantum Chemistry",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.641622093391875,
+   "in_degree": 532,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1512.03385",
+   "title": "Deep Residual Learning for Image Recognition",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.631395548183548,
+   "in_degree": 143,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1607.00653",
+   "title": "node2vec: Scalable Feature Learning for Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6738656066277708,
+   "in_degree": 220,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.00826",
+   "title": "How Powerful are Graph Neural Networks?",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7299403711407033,
+   "in_degree": 686,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1605.05273",
+   "title": "Learning Convolutional Neural Networks for Graphs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.8093428843421616,
+   "in_degree": 121,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1506.05163",
+   "title": "Deep Convolutional Networks on Graph-Structured Data",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7608087788023931,
+   "in_degree": 81,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5427123171170621,
+   "in_degree": 310,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1406.1078",
+   "title": "Learning Phrase Representations using RNN Encoder-Decoder for\n  Statistical Machine Translation",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.5894399002743547,
+   "in_degree": 78,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1603.08861",
+   "title": "Revisiting Semi-Supervised Learning with Graph Embeddings",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6998349465754893,
+   "in_degree": 174,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1611.07308",
+   "title": "Variational Graph Auto-Encoders",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.6711042441676208,
+   "in_degree": 266,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1602.07576",
+   "title": "Group Equivariant Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6979263633079021,
+   "in_degree": 132,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1511.02136",
+   "title": "Diffusion-Convolutional Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7818945331924111,
+   "in_degree": 74,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.11401",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6063005706657946,
+   "in_degree": 80,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1901.00596",
+   "title": "A Comprehensive Survey on Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7268059121015411,
+   "in_degree": 352,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.08402",
+   "title": "Geometric deep learning on graphs and manifolds using mixture model CNNs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7587423800942302,
+   "in_degree": 108,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2002.08909",
+   "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5888266842433382,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.08097",
+   "title": "Geometric deep learning: going beyond Euclidean data",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7793031250067837,
+   "in_degree": 138,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1903.02428",
+   "title": "Fast Graph Representation Learning with PyTorch Geometric",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6876000188359741,
+   "in_degree": 284,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.08804",
+   "title": "Hierarchical Graph Representation Learning with Differentiable Pooling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.739475823630196,
+   "in_degree": 194,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1703.06103",
+   "title": "Modeling Relational Data with Graph Convolutional Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6692514773210492,
+   "in_degree": 152,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1709.05584",
+   "title": "Representation Learning on Graphs: Methods and Applications",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7844585913030858,
+   "in_degree": 118,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1802.03690",
+   "title": "On the Generalization of Equivariance and Convolution in Neural Networks\n  to the Action of Compact Groups",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.6603953107751638,
+   "in_degree": 72,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.08219",
+   "title": "Tensor field networks: Rotation- and translation-equivariant neural\n  networks for 3D point clouds",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6771145336125344,
+   "in_degree": 115,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1211.0053",
+   "title": "The Emerging Field of Signal Processing on Graphs: Extending\n  High-Dimensional Data Analysis to Networks and Other Irregular Domains",
+   "year": 2012,
+   "category": "cs",
+   "score": 0.7061117848027891,
+   "in_degree": 64,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.00687",
+   "title": "Open Graph Benchmark: Datasets for Machine Learning on Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6777153943995013,
+   "in_degree": 347,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.03536",
+   "title": "Representation Learning on Graphs with Jumping Knowledge Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.770591153177617,
+   "in_degree": 197,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1612.00222",
+   "title": "Interaction Networks for Learning about Objects, Relations and Physics",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6351463551400204,
+   "in_degree": 63,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1806.01973",
+   "title": "Graph Convolutional Neural Networks for Web-Scale Recommender Systems",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7339590318317794,
+   "in_degree": 178,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1912.01703",
+   "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5696613927865518,
+   "in_degree": 173,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.07153",
+   "title": "Simplifying Graph Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7848421600847577,
+   "in_degree": 256,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1812.08434",
+   "title": "Graph Neural Networks: A Review of Methods and Applications",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7489917938941301,
+   "in_degree": 191,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.01261",
+   "title": "Relational inductive biases, deep learning, and graph networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7132285360023312,
+   "in_degree": 145,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1811.05868",
+   "title": "Pitfalls of Graph Neural Network Evaluation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7765107348007418,
+   "in_degree": 203,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.03894",
+   "title": "GNNExplainer: Generating Explanations for Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.8054470713753406,
+   "in_degree": 164,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.02244",
+   "title": "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7550957569271713,
+   "in_degree": 205,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.07697",
+   "title": "Think-on-Graph: Deep and Responsible Reasoning of Large Language Model\n  on Knowledge Graph",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.015625,
+   "in_degree": 108,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1801.07606",
+   "title": "Deeper Insights into Graph Convolutional Networks for Semi-Supervised\n  Learning",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7492272232402084,
+   "in_degree": 182,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.10341",
+   "title": "Deep Graph Infomax",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.7106651326653697,
+   "in_degree": 186,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1807.02547",
+   "title": "3D Steerable CNNs: Learning Rotationally Equivariant Features in\n  Volumetric Data",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.635611172847542,
+   "in_degree": 67,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.08773",
+   "title": "GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6536738874240243,
+   "in_degree": 114,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.10247",
+   "title": "FastGCN: Fast Learning with Graph Convolutional Networks via Importance\n  Sampling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7075102194358074,
+   "in_degree": 126,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.05997",
+   "title": "Predict then Propagate: Graph Neural Networks meet Personalized PageRank",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6846728031611521,
+   "in_degree": 163,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.03480",
+   "title": "GraphVAE: Towards Generation of Small Graphs Using Variational\n  Autoencoders",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6588333510294841,
+   "in_degree": 72,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1812.09902",
+   "title": "Invariant and Equivariant Graph Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7779661140374042,
+   "in_degree": 116,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2201.08860",
+   "title": "GreaseLM: Graph REASoning Enhanced Language Models for Question\n  Answering",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6657648130038245,
+   "in_degree": 16,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1704.02901",
+   "title": "Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on\n  Graphs",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7585073860914114,
+   "in_degree": 52,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2003.00982",
+   "title": "Benchmarking Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7568091272029897,
+   "in_degree": 169,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1803.03324",
+   "title": "Learning Deep Generative Models of Graphs",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6851970197125556,
+   "in_degree": 66,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1710.10568",
+   "title": "Stochastic Training of Graph Convolutional Networks with Variance\n  Reduction",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.7385143676971172,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2102.09844",
+   "title": "E(n) Equivariant Graph Neural Networks",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7499544159051922,
+   "in_degree": 120,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.12265",
+   "title": "Strategies for Pre-training Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7021068920186986,
+   "in_degree": 173,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.13902",
+   "title": "Graph Contrastive Learning with Augmentations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7873674055430275,
+   "in_degree": 217,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.01061",
+   "title": "Reasoning on Graphs: Faithful and Interpretable Large Language Model\n  Reasoning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.015384615384615385,
+   "in_degree": 81,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.04136",
+   "title": "Knowledge-Augmented Language Model Prompting for Zero-Shot Knowledge\n  Graph Question Answering",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6592359717135742,
+   "in_degree": 40,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.05582",
+   "title": "Contrastive Multi-View Representation Learning on Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7534716519085211,
+   "in_degree": 179,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1803.10743",
+   "title": "Intertwiners between Induced Representations (with Applications to the\n  Theory of Equivariant Neural Networks)",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6518905211737638,
+   "in_degree": 8,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1703.00564",
+   "title": "MoleculeNet: A Benchmark for Molecular Machine Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5662854428258178,
+   "in_degree": 125,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2009.02252",
+   "title": "KILT: a Benchmark for Knowledge Intensive Language Tasks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6224922986718373,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.09691",
+   "title": "Link Prediction Based on Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6770431771014146,
+   "in_degree": 103,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1908.01000",
+   "title": "InfoGraph: Unsupervised and Semi-supervised Graph-Level Representation\n  Learning via Mutual Information Maximization",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6745528436059426,
+   "in_degree": 147,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.13478",
+   "title": "Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7461747598059792,
+   "in_degree": 110,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.10637",
+   "title": "Temporal Graph Networks for Deep Learning on Dynamic Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7845240399236542,
+   "in_degree": 115,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.04131",
+   "title": "Deep Graph Contrastive Representation Learning",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7184530788392501,
+   "in_degree": 169,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.08251",
+   "title": "General $E(2)$-Equivariant Steerable CNNs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6568302083388435,
+   "in_degree": 62,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.09699",
+   "title": "A Generalization of Transformer Networks to Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.760942947117496,
+   "in_degree": 146,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.05234",
+   "title": "Do Transformers Really Perform Bad for Graph Representation?",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7312725998754946,
+   "in_degree": 179,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.11136",
+   "title": "Provably Powerful Graph Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6989430174501204,
+   "in_degree": 127,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2011.04573",
+   "title": "Parameterized Explainer for Graph Neural Network",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7628764717438277,
+   "in_degree": 117,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2002.07962",
+   "title": "Inductive Representation Learning on Temporal Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7288799395803593,
+   "in_degree": 105,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2312.10997",
+   "title": "Retrieval-Augmented Generation for Large Language Models: A Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6515354192396849,
+   "in_degree": 59,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1803.07294",
+   "title": "GaAN: Gated Attention Networks for Learning on Large and Spatiotemporal\n  Graphs",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7249348260811462,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2301.12652",
+   "title": "REPLUG: Retrieval-Augmented Black-Box Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6297187488216586,
+   "in_degree": 14,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1811.02017",
+   "title": "A General Theory of Equivariant CNNs on Homogeneous Spaces",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6946533042860165,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.14945",
+   "title": "Graph Contrastive Learning with Adaptive Augmentation",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7169256763560703,
+   "in_degree": 146,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1805.11273",
+   "title": "DynGEM: Deep Embedding Method for Dynamic Graphs",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6657073946173234,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1707.01926",
+   "title": "Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic\n  Forecasting",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6238072873857634,
+   "in_degree": 66,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1801.07829",
+   "title": "Dynamic Graph CNN for Learning on Point Clouds",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7362266145502238,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.01144",
+   "title": "Categorical Reparameterization with Gumbel-Softmax",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.6004327682095318,
+   "in_degree": 65,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1907.10903",
+   "title": "DropEdge: Towards Deep Graph Convolutional Networks on Node\n  Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6914055795119155,
+   "in_degree": 118,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.11485",
+   "title": "Representation Learning for Dynamic Graphs: A Survey",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7338948626082434,
+   "in_degree": 81,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.09963",
+   "title": "GCC: Graph Contrastive Coding for Graph Neural Network Pre-Training",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7092314054794494,
+   "in_degree": 136,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1707.03815",
+   "title": "Deep Gaussian Embedding of Graphs: Unsupervised Inductive Learning via\n  Ranking",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.7597744291925677,
+   "in_degree": 51,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.02263",
+   "title": "Graph Convolutional Matrix Completion",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6791380955534024,
+   "in_degree": 39,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2002.12880",
+   "title": "Generalizing Convolutional Neural Networks for Equivariance to Lie\n  Groups on Arbitrary Continuous Data",
+   "year": 2020,
+   "category": "stat",
+   "score": 0.6588851042571849,
+   "in_degree": 59,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.01315",
+   "title": "Deep Graph Library: A Graph-Centric, Highly-Performant Package for Graph\n  Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7611798614232554,
+   "in_degree": 83,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.08663",
+   "title": "TUDataset: A collection of benchmark datasets for learning with graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7200973464455225,
+   "in_degree": 132,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.04615",
+   "title": "Gauge Equivariant Convolutional Networks and the Icosahedral CNN",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6917807748581386,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.02587",
+   "title": "XGNN: Towards Model-Level Explanations of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7444693230974928,
+   "in_degree": 82,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.03893",
+   "title": "Rethinking Graph Transformers with Spectral Attention",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7330120268457713,
+   "in_degree": 146,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.04931",
+   "title": "GraphSAINT: Graph Sampling Based Inductive Learning Method",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.709513766800036,
+   "in_degree": 122,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.07953",
+   "title": "Cluster-GCN: An Efficient Algorithm for Training Deep and Large Graph\n  Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.699028753491953,
+   "in_degree": 100,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.05788",
+   "title": "PGM-Explainer: Probabilistic Graphical Model Explanations for Graph\n  Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7327885249673615,
+   "in_degree": 77,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1912.09893",
+   "title": "A Fair Comparison of Graph Neural Networks for Graph Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.730359608657697,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.10947",
+   "title": "Graph Neural Networks Exponentially Lose Expressive Power for Node\n  Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7928974544790921,
+   "in_degree": 96,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.15445",
+   "title": "Explainability in Graph Neural Networks: A Taxonomic Survey",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8269703875729729,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.07293",
+   "title": "Heterogeneous Graph Attention Network",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7370921911676453,
+   "in_degree": 78,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.10191",
+   "title": "EvolveGCN: Evolving Graph Convolutional Networks for Dynamic Graphs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6896455339831611,
+   "in_degree": 79,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.11468",
+   "title": "Beyond Homophily in Graph Neural Networks: Current Limitations and\n  Effective Designs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7752231233684111,
+   "in_degree": 124,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.07630",
+   "title": "G-Retriever: Retrieval-Augmented Generation for Textual Graph\n  Understanding and Question Answering",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.690788325575629,
+   "in_degree": 57,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1901.09342",
+   "title": "On the Universality of Invariant Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6575859758331961,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.07243",
+   "title": "Graph Neural Networks for Social Recommendation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7348940074014472,
+   "in_degree": 94,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1904.08082",
+   "title": "Self-Attention Graph Pooling",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7142736501694862,
+   "in_degree": 74,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1705.07664",
+   "title": "CayleyNets: Graph Convolutional Neural Networks with Complex Rational\n  Spectral Filters",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7562120572640996,
+   "in_degree": 51,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1910.00760",
+   "title": "Efficient Graph Generation with Graph Recurrent Attention Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6253930185601767,
+   "in_degree": 59,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.02541",
+   "title": "Relational Pooling for Graph Representations",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7152173517225626,
+   "in_degree": 65,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2404.16130",
+   "title": "From Local to Global: A Graph RAG Approach to Query-Focused\n  Summarization",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6607614899516897,
+   "in_degree": 55,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2004.05718",
+   "title": "Principal Neighbourhood Aggregation for Graph Nets",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.784545827680295,
+   "in_degree": 87,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.05205",
+   "title": "On the Bottleneck of Graph Neural Networks and its Practical\n  Implications",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7361817807587073,
+   "in_degree": 120,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.04817",
+   "title": "Position-aware Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7752423764037211,
+   "in_degree": 53,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.04943",
+   "title": "Universal Invariant and Equivariant Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7576111166325562,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.05152",
+   "title": "On Explainability of Graph Neural Networks via Subgraph Explorations",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7888210671930209,
+   "in_degree": 80,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.02133",
+   "title": "Simple and Deep Graph Convolutional Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7659487984366503,
+   "in_degree": 113,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.13686",
+   "title": "Explainability Techniques for Graph Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6891687927643567,
+   "in_degree": 63,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1808.03965",
+   "title": "Large-Scale Learnable Graph Convolutional Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7573649574612593,
+   "in_degree": 46,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.00142",
+   "title": "Distance Encoding: Design Provably More Powerful Neural Networks for\n  Graph Representation Learning",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.762280167088835,
+   "in_degree": 68,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.00067",
+   "title": "MixHop: Higher-Order Graph Convolutional Architectures via Sparsified\n  Neighborhood Mixing",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7370118537189018,
+   "in_degree": 96,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1904.03751",
+   "title": "DeepGCNs: Can GCNs Go as Deep as CNNs?",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7303624981703293,
+   "in_degree": 76,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.12454",
+   "title": "Recipe for a General, Powerful, Scalable Graph Transformer",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7126906719699125,
+   "in_degree": 116,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1909.03211",
+   "title": "Measuring and Relieving the Over-smoothing Problem for Graph Neural\n  Networks from the Topological View",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7605719482519235,
+   "in_degree": 89,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2312.02783",
+   "title": "Large Language Models on Graphs: A Comprehensive Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.753142151429745,
+   "in_degree": 26,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.09252",
+   "title": "Improving Graph Neural Network Expressivity via Subgraph Isomorphism\n  Counting",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7628397813633361,
+   "in_degree": 83,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2002.04025",
+   "title": "Can Graph Neural Networks Count Substructures?",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7207647416467325,
+   "in_degree": 68,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1711.07553",
+   "title": "Residual Gated Graph ConvNets",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.770077184396998,
+   "in_degree": 75,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1803.03735",
+   "title": "Attention-based Graph Neural Network for Semi-supervised Learning",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.6884373438662998,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.13021",
+   "title": "Multi-scale Attributed Node Embedding",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6292011990383735,
+   "in_degree": 82,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2001.06216",
+   "title": "GraphLIME: Local Interpretable Model Explanations for Graph Neural\n  Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7128098694216977,
+   "in_degree": 59,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.12560",
+   "title": "On the equivalence between graph isomorphism testing and function\n  approximation with GNNs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7428334539277578,
+   "in_degree": 64,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.05343",
+   "title": "Adaptive Sampling Towards Fast Graph Representation Learning",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7585048032418185,
+   "in_degree": 45,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.02905",
+   "title": "Geometric and Physical Quantities Improve E(3) Equivariant Message\n  Passing",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6567828741747712,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.05485",
+   "title": "Diffusion Improves Graph Learning",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7667259102119827,
+   "in_degree": 66,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.09550",
+   "title": "Revisiting Graph Neural Networks: All We Have is Low-Pass Filters",
+   "year": 2019,
+   "category": "stat",
+   "score": 0.8057645138051768,
+   "in_degree": 70,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.15437",
+   "title": "GPT-GNN: Generative Pre-Training of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6703524411938441,
+   "in_degree": 77,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1812.04202",
+   "title": "Deep Learning on Graphs: A Survey",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.802829002507064,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2001.05140",
+   "title": "Graph-Bert: Only Attention is Needed for Learning Graph Representations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7878414723766756,
+   "in_degree": 46,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.03199",
+   "title": "What graph neural networks cannot learn: depth vs width",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.778364980963993,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.07988",
+   "title": "Adaptive Universal Generalized PageRank Graph Neural Network",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7416452023818946,
+   "in_degree": 87,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.04407",
+   "title": "Adversarially Regularized Graph Autoencoder for Graph Embedding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6028978382683681,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.02657",
+   "title": "dyngraph2vec: Capturing Network Dynamics using Dynamic Graph\n  Representation Learning",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6989383757587629,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.07594",
+   "title": "Graph Contrastive Learning Automated",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7146544026261487,
+   "in_degree": 85,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.00577",
+   "title": "Interpreting Graph Neural Networks for NLP With Differentiable Edge\n  Masking",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.76243026836118,
+   "in_degree": 50,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.05178",
+   "title": "Graph U-Nets",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7579796215515816,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.06455",
+   "title": "Graph Transformer Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.678286479388019,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2004.11198",
+   "title": "SIGN: Scalable Inception Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7533503324449778,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.09459",
+   "title": "A Practical Method for Constructing Equivariant Multilayer Perceptrons\n  for Arbitrary Matrix Groups",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6539150302801764,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2209.14734",
+   "title": "DiGress: Discrete Denoising diffusion for graph generation",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6712737306750218,
+   "in_degree": 53,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.03589",
+   "title": "Higher-Order Explanations of Graph Neural Networks via Relevant Walks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7562086650239337,
+   "in_degree": 43,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.04078",
+   "title": "A Survey on The Expressive Power of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8206668564542027,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2408.08921",
+   "title": "Graph Retrieval-Augmented Generation: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6786619704763688,
+   "in_degree": 37,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2002.06157",
+   "title": "Generalization and Representational Limits of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8209176067724901,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.00638",
+   "title": "Permutation Invariant Graph Generation via Score-Based Generative\n  Modeling",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.650422179493359,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.03226",
+   "title": "Adaptive Graph Convolutional Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7003881321493193,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.02901",
+   "title": "Wiki-CS: A Wikipedia-Based Benchmark for Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.581787890380416,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.05819",
+   "title": "Adversarial Graph Augmentation to Improve Graph Contrastive Learning",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.734105240873028,
+   "in_degree": 66,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.13269",
+   "title": "Chain-of-Knowledge: Grounding Large Language Models via Dynamic\n  Knowledge Adapting over Heterogeneous Sources",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6258161968325858,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2011.11545",
+   "title": "APAN: Asynchronous Propagation Attention Network for Real-time Temporal\n  Graph Embedding",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7002459558542253,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2202.03036",
+   "title": "Structure-Aware Transformer for Graph Representation Learning",
+   "year": 2022,
+   "category": "stat",
+   "score": 0.6765134451601308,
+   "in_degree": 81,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1901.01484",
+   "title": "LanczosNet: Multi-Scale Deep Graph Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6369987151995185,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2103.00111",
+   "title": "Graph Self-Supervised Learning: A Survey",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7676089230844821,
+   "in_degree": 65,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.06514",
+   "title": "Large-Scale Representation Learning on Graphs via Bootstrapping",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6960995093978232,
+   "in_degree": 66,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2002.03155",
+   "title": "Random Features Strengthen Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7711563170589539,
+   "in_degree": 51,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.10627",
+   "title": "Streaming Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7201797311166451,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.11730",
+   "title": "Knowledge Graph Prompting for Multi-Document Question Answering",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6376788479666902,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2111.14522",
+   "title": "Understanding over-squashing and bottlenecks on graphs via curvature",
+   "year": 2021,
+   "category": "stat",
+   "score": 0.7430145882732461,
+   "in_degree": 68,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.07875",
+   "title": "Graph Neural Networks with Learnable Structural and Positional\n  Representations",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7982386876724793,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2005.03675",
+   "title": "Machine Learning on Graphs: A Model and Comprehensive Taxonomy",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7825851971352098,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.04780",
+   "title": "Lorentz Group Equivariant Neural Network for Particle Physics",
+   "year": 2020,
+   "category": "hep-ph",
+   "score": 0.6913100105281862,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2105.14491",
+   "title": "How Attentive are Graph Attention Networks?",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7239372757620937,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.10141",
+   "title": "Self-supervised Learning on Graphs: Deep Insights and New Direction",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.737510206430494,
+   "in_degree": 51,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.07739",
+   "title": "DeeperGCN: All You Need to Train Deeper GCNs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7665257922973604,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.12057",
+   "title": "B-Spline CNNs on Lie Groups",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5982638132666068,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.13047",
+   "title": "Towards Better Dynamic Graph Learning: New Architecture and Unified\n  Library",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6720072959494078,
+   "in_degree": 41,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.07239",
+   "title": "ROLAND: Graph Learning Framework for Dynamic Graphs",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7019167410990529,
+   "in_degree": 41,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2201.08821",
+   "title": "Representing Long-Range Context for Graph Neural Networks with Global\n  Attention",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7871491789792228,
+   "in_degree": 62,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.20139",
+   "title": "GNN-RAG: Graph Neural Retrieval for Large Language Model Reasoning",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.010526315789473684,
+   "in_degree": 43,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.00309",
+   "title": "Retrieval-Augmented Generation with Graphs (GraphRAG)",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.6442905998803216,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2207.10128",
+   "title": "Towards Better Evaluation for Dynamic Link Prediction",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.661920368140904,
+   "in_degree": 39,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1909.12223",
+   "title": "PairNorm: Tackling Oversmoothing in GNNs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7094801493588277,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.01332",
+   "title": "Heterogeneous Graph Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6399927679574897,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.10757",
+   "title": "Self-Supervised Learning of Graph Neural Networks: A Unified Review",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7359944787808314,
+   "in_degree": 51,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1904.01543",
+   "title": "Weisfeiler and Leman go sparse: Towards scalable higher-order graph\n  embeddings",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7065497195344767,
+   "in_degree": 48,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2101.00797",
+   "title": "Beyond Low-frequency Information in Graph Convolutional Networks",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7782037650796394,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.09136",
+   "title": "When Does Self-Supervision Help Graph Convolutional Networks?",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6966496827612445,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1807.07984",
+   "title": "Attention Models in Graphs: A Survey",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6777645764316695,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.14446",
+   "title": "Large Scale Learning on Non-Homophilous Graphs: New Benchmarks and\n  Strong Simple Methods",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7199826143498548,
+   "in_degree": 63,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.15107",
+   "title": "Building powerful and equivariant graph neural networks with structural\n  message-passing",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8188019055266227,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.05667",
+   "title": "GraphiT: Encoding Graph Structure in Transformers",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.707415067274038,
+   "in_degree": 53,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.08218",
+   "title": "Self-supervised Learning: Generative or Contrastive",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7714644279298074,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.01179",
+   "title": "The Surprising Power of Graph Neural Networks with Random Node\n  Initialization",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7415304427455576,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.10885",
+   "title": "LieTransformer: Equivariant self-attention for Lie Groups",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6915123279710418,
+   "in_degree": 26,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.08888",
+   "title": "N-GCN: Multi-scale Graph Convolution for Semi-supervised Node\n  Classification",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6224343079849693,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.10261",
+   "title": "Approximation Ratios of Graph Neural Networks for Combinatorial Problems",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7296179942222852,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.03336",
+   "title": "Frame Averaging for Invariant and Equivariant Network Design",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6778104848119937,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1811.10734",
+   "title": "DynamicGEM: A Library for Dynamic Graph Embedding Methods",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.723024661238272,
+   "in_degree": 7,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.01026",
+   "title": "Temporal Graph Benchmark for Machine Learning on Temporal Graphs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7143380952063041,
+   "in_degree": 33,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2007.09296",
+   "title": "Towards Deeper Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8243219232968861,
+   "in_degree": 31,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.15294",
+   "title": "Enhancing Retrieval-Augmented Large Language Models with Iterative\n  Retrieval-Generation Synergy",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6438490492001198,
+   "in_degree": 12,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1905.02850",
+   "title": "Understanding Attention and Generalization in Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7161727579229172,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2202.03104",
+   "title": "SimGRACE: A Simple Framework for Graph Contrastive Learning without Data\n  Augmentation",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6986864841634781,
+   "in_degree": 42,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.06830",
+   "title": "Data Augmentation for Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8057901258560933,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2005.07496",
+   "title": "Foundations and modelling of dynamic networks using Dynamic Graph Neural\n  Networks: A survey",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7599231576941063,
+   "in_degree": 24,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.11990",
+   "title": "Equiformer: Equivariant Graph Attention Transformer for 3D Atomistic\n  Graphs",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7037116222229644,
+   "in_degree": 30,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1903.08889",
+   "title": "Node Embedding over Temporal Graphs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7029933670520496,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.14883",
+   "title": "TGL: A General Framework for Temporal GNN Training on Billion-Scale\n  Graphs",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6942937120254709,
+   "in_degree": 33,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.09339",
+   "title": "Evaluating Explainability for Graph Neural Networks",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7591778423221708,
+   "in_degree": 25,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.08385",
+   "title": "NodeFormer: A Scalable Graph Structure Learning Transformer for Node\n  Classification",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6405903423692388,
+   "in_degree": 52,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.00149",
+   "title": "One for All: Towards Training One Graph Model for All Classification\n  Tasks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6318740838308928,
+   "in_degree": 30,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.11206",
+   "title": "Retrieve-Rewrite-Answer: A KG-to-Text Enhanced LLMs Framework for\n  Knowledge Graph Question Answering",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6481262930545755,
+   "in_degree": 18,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1802.00910",
+   "title": "GeniePath: Graph Neural Networks with Adaptive Receptive Paths",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6731979394633992,
+   "in_degree": 14,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.04579",
+   "title": "Are Powerful Graph Neural Nets Necessary? A Dissection on Graph\n  Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7199084519174966,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.01613",
+   "title": "SPECTRE: Spectral Conditioning Helps to Overcome the Expressivity Limits\n  of One-shot Graph Generators",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5641051913912786,
+   "in_degree": 27,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2206.08164",
+   "title": "Long Range Graph Benchmark",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5440313338083523,
+   "in_degree": 57,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2207.02505",
+   "title": "Pure Transformers are Powerful Graph Learners",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6775393304719047,
+   "in_degree": 52,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1903.11960",
+   "title": "Learning Discrete Structures for Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.8085385705662587,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.11163",
+   "title": "KG-Agent: An Efficient Autonomous Agent Framework for Complex Reasoning\n  over Knowledge Graph",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6768362784047938,
+   "in_degree": 21,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2105.13926",
+   "title": "Geometric Deep Learning and Equivariant Neural Networks",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7807097702296324,
+   "in_degree": 11,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2105.07342",
+   "title": "Self-supervised Learning on Graphs: Contrastive, Generative,or\n  Predictive",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7490270989054446,
+   "in_degree": 41,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.06610",
+   "title": "Scalars are universal: Equivariant machine learning, structured like\n  classical physics",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6193086400906006,
+   "in_degree": 26,
+   "era": 1
+  }
+ ]
+}

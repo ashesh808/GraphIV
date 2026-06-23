@@ -1,0 +1,230 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{graph neural networks for drug discovery}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is exceptionally well-structured and covers molecular generation and property prediction, but it neglects the significant frontier of protein-ligand interaction and docking.
+\end{abstract}
+
+\section{Harnessing Graph Neural Networks for Accelerated Drug Discovery: A Review of Evolution and Emerging Trends}
+
+The traditional drug discovery pipeline is characterized by immense computational costs and high attrition rates, often requiring years of iterative experimentation to identify viable therapeutic candidates. Central to this challenge is the need to accurately model the complex, non-linear relationships inherent in molecular structures. Because chemical entities are fundamentally composed of atoms and bonds, they are most naturally represented as mathematical graphs rather than linear strings or fixed-length vectors. The emergence of Graph Neural Networks (GNNs) has transformed this field by enabling the direct learning of molecular representations from topological data, bypassing the limitations of traditional hand-crafted descriptors and providing a more nuanced understanding of chemical space.
+
+This review traces the trajectory of GNN applications in pharmacology, beginning with their \textbf{Origins} in basic graph-based feature extraction and early message-passing paradigms. We then examine the \textbf{Key Advances} that propelled the field forward, such as the integration of attention mechanisms and the development of architectures specifically tailored to capture both local atomic environments and global molecular properties. Finally, the discussion moves toward the \textbf{Current Frontier}, exploring how the field is shifting toward generative modeling, 3D geometric deep learning, and the large-scale pre-training of molecular transformers to navigate the vastness of the chemical universe.
+
+\subsection{Origins}
+
+The development of Graph Neural Networks (GNNs) for drug discovery emerged from a convergence of spectral graph theory, sequence modeling, and molecular representation learning. Early foundational work in graph processing focused on spectral networks and locally connected networks [\texttt{arXiv:1312.6203}], which established the mathematical basis for graph-based convolutions. This spectral approach was further refined through fast localized spectral filtering [\texttt{arXiv:1606.09375}]. However, a significant shift toward scalability occurred with the introduction of Graph Convolutional Networks (GCNs) [\texttt{arXiv:1609.02907}]. By utilizing a first-order approximation of spectral graph convolutions via a renormalized adjacency matrix, GCNs provided a novel, scalable method for deep learning on graphs, moving away from the computational constraints of purely spectral methods [\texttt{arXiv:1609.02907}].
+
+In the specific domain of chemoinformatics, early efforts sought to bridge the gap between traditional molecular fingerprints and deep learning. While earlier multitask networks focused on property prediction across hundreds of biological targets [\texttt{arXiv:1502.02072}], the transition to graph-based representations allowed for more nuanced learning. For instance, convolutional neural networks were developed to generalize circular fingerprints for property prediction [\texttt{arXiv:1509.09292}]. This trajectory led to the development of molecular graph convolutions designed for ligand-based virtual screening, which moved beyond fixed fingerprints by representing molecules as undirected graphs containing atoms, bonds, and distances [\texttt{arXiv:1603.00856}].
+
+The architectural diversity of early GNNs also drew from sequence and generative modeling. Gated Graph Sequence Neural Networks (GGNNs) integrated gated recurrent units to perform feature learning on graph-structured inputs [\texttt{arXiv:1511.05493}], extending concepts from RNN encoder-decoder architectures used in machine translation [\texttt{arXiv:1406.1078}]. Simultaneously, the field moved toward generative tasks; by extending variational Bayesian frameworks [\texttt{arXiv:1312.6114}], researchers developed continuous multidimensional latent spaces to enable automatic chemical design and molecule optimization [\texttt{arXiv:1610.02415}].
+
+The application of these architectures varied significantly in their target properties. Some models focused on 3D structural information for bioactivity prediction [\texttt{arXiv:1510.02855}], while others, such as Deep Tensor Neural Networks (DTNN), targeted quantum-mechanical observables like atomic energies [\texttt{arXiv:1609.08259}]. Other specialized approaches, such as gradient-domain machine learning, were employed to construct energy-conserving molecular force fields by learning potential energy surfaces from conformational geometries [\texttt{arXiv:1611.04678}]. These diverse origins—ranging from scalable spectral approximations [\texttt{arXiv:1609.02907}] to generative latent space modeling [\texttt{arXiv:1610.02415}]—form the multifaceted foundation of modern graph-based drug discovery.
+
+\subsection{Key Advances}
+
+The evolution of Graph Neural Networks (GNNs) in drug discovery has transitioned from fundamental message-passing frameworks to sophisticated models incorporating 3D geometry, self-supervision, and generative capabilities. A foundational milestone was the introduction of Message Passing Neural Networks (MPNNs), which unified disparate graph models into a single framework for molecular property prediction [\texttt{arXiv:1704.01212}]. While MPNNs achieved state-of-the-art results on the QM9 benchmark, reaching "chemical accuracy" for most targets, the architecture faced challenges in generalizing to larger, more complex molecular graphs [\texttt{arXiv:1704.01212}].
+
+To address the limitations of 2D representations, recent advances have integrated 3D structural information. For instance, SchNet utilizes continuous-filter convolutional layers to model quantum interactions [\texttt{arXiv:1706.08566}], while DimeNet employs directional message passing to predict quantum mechanical properties using spatial directions [\texttt{arXiv:2003.03123}]. More advanced equivariant architectures, such as E(n)-Equivariant GNNs (EGNNs) [\texttt{arXiv:2102.09844}] and SE(3)-Transformers [\texttt{arXiv:2006.10503}], provide rotation, translation, and reflection equivariance, which is critical for modeling 3D point clouds and atomic potential energy surfaces. This geometric awareness is further leveraged in the SIGN architecture, which uses polar-inspired graph attention layers (PGAL) to predict protein-ligand binding affinity [\texttt{arXiv:2107.10670}].
+
+Parallel to structural advancements, the field has seen a surge in representation learning via self-supervision and meta-learning. Large-scale pre-training, such as the MolGNet framework [\texttt{arXiv:2012.11175}] and the GROVER transformer-based architecture [\texttt{arXiv:2007.02835}], allows models to learn from millions of unlabeled molecules. To combat data scarcity in specific biological tasks, Meta-MGNN utilizes a meta-learning framework with self-attentive task weights to enable few-shot molecular property prediction [\texttt{arXiv:2102.07916}].
+
+Finally, molecular generation has shifted from simple sequence-based models to complex graph-based generative architectures. Early methods like GraphVAE [\texttt{arXiv:1802.03480}] and MolGAN [\texttt{arXiv:1805.11973}] focused on unconditional or property-directed 2D graph generation. These were surpassed by more structured approaches, such as the Junction Tree VAE (JT-VAE), which uses tree-structured scaffolds to ensure chemical validity [\texttt{arXiv:1802.04364}], and GraphAF, a flow-based autoregressive model that achieves significantly faster training speeds than policy-based methods like GCPN [\texttt{arXiv:2001.09382}]. While generative models like GCPN excel at goal-directed optimization of drug-likeness and synthetic accessibility [\texttt{arXiv:1806.02473}], newer models increasingly focus on maintaining 3D conformational validity [\texttt{arXiv:2104.08474}] and structural motifs [\texttt{arXiv:2002.03230}] to better mimic real-world chemical synthesis.
+
+\subsection{Current Frontier}
+
+The current frontier of Graph Neural Networks (GNNs) in drug discovery is characterized by a transition from simple message-passing architectures toward models that integrate complex physical inductive biases, structural similarity, and generative diffusion processes. While early research focused on standard molecular property prediction using 2D molecular graphs [\texttt{arXiv:2208.04852}], recent advancements have moved toward more sophisticated representations. For instance, MSSM-GNN enhances 2D graphs by incorporating structural similarity motifs via graph kernel algorithms [\texttt{arXiv:2409.08580}], and GSL-MPP improves property prediction by learning molecular similarity graphs (MSG) alongside the GNN [\texttt{arXiv:2312.16855}].
+
+A significant shift is occurring in the realm of molecular generation. While traditional methods often relied on discrete structures, recent work has leveraged diffusion models. DiGress utilizes graph transformer networks for discrete denoising diffusion [\texttt{arXiv:2209.14734}], whereas EDM focuses on 3D molecule generation by employing E(3) equivariant networks to handle continuous atom coordinates [\texttt{arXiv:2203.17003}]. This move toward 3D modeling is echoed in the theoretical landscape; recent taxonomies bridge mathematical GNN theory (spectral vs. spatial) with physical inductive biases like invariance and equivariance [\texttt{arXiv:2506.06915}]. However, a critical gap remains in the literature regarding the trade-offs between this increasing geometric complexity—such as the 3rd-order interactions found in GemNet—and the computational scalability required for large-scale virtual screening [\texttt{arXiv:2506.06915}].
+
+Interpretability and structural hierarchy also represent a growing frontier. Rather than treating molecules as monolithic graphs, models like FragNet provide four levels of interpretability (atoms, bonds, fragments, and fragment connections) [\texttt{arXiv:2410.12156}], and HiGNN utilizes feature-wise attention to co-represent molecular graphs with chemically synthesizable BRICS fragments [\texttt{arXiv:2208.13994}]. Similarly, SLGNN utilizes sparse learning to improve explainability in drug-protein binding predictions [\texttt{arXiv:2309.12906}].
+
+The field is also expanding into complex biological interactions and multi-task frameworks. Recent surveys map GNN applications across seven categories, including drug-target binding, drug-drug interactions, and microbiome interactions [\texttt{arXiv:2509.07887}]. This breadth is supported by specialized architectures like the Graph-in-Graph (GiG) framework for drug-target interaction [\texttt{arXiv:2507.11757}] and models addressing the scalability of GNNs across 38 downstream tasks using graph Transformers and hybrid architectures [\texttt{arXiv:2404.11568}]. Despite this progress, current surveys tend to be descriptive, often summarizing individual model performances rather than providing a critical meta-analysis of overarching architectural trends [\texttt{arXiv:2509.07887}].
+
+\subsection{Tensions and Open Problems}
+
+A fundamental tension persists regarding the structural expressive power of graph architectures versus their practical utility in molecular modeling. On one hand, the pursuit of theoretical upper bounds has led to the development of higher-order architectures, such as the Weisfeiler-Lehman (WL) based models in \texttt{arXiv:1810.02244}, which aim to overcome the limitations of standard message-passing schemes. However, as noted in \texttt{arXiv:1810.00826}, even these sophisticated frameworks face scrutiny regarding their actual capacity to distinguish complex graph isomorphisms. This debate is further complicated by the distinction between theoretical expressivity and computational efficiency; while \texttt{arXiv:2012.09699} suggests that generalizing Transformer architectures can offer new ways to capture global dependencies, earlier sequential models like the Gated Graph Sequence Neural Networks in \texttt{arXiv:1511.05493} struggle to scale to the complex, long-range interactions required for large-scale molecular graphs.
+
+Another critical disagreement concerns the generative paradigm: autoregressive modeling versus continuous diffusion processes. Early approaches to graph generation, such as the GraphRNN framework in \texttt{arXiv:1802.08773}, rely on sequential node and edge additions to build structures. While this allows for precise control, it is often critiqued for being computationally inefficient and prone to error accumulation compared to the more holistic approaches found in \texttt{arXiv:2304.01565}. Similarly, variational methods like GraphVAE in \texttt{arXiv:1802.03480} and MolGAN in \texttt{arXiv:1805.11973} attempt to map graphs to a latent space, yet these are frequently criticized for failing to capture the discrete, combinatorial nature of graph topology. This has paved the way for discrete denoising diffusion models, such as DiGress in \texttt{arXiv:2209.14734}, which argue that score-based generative models in the continuous domain, like those in \texttt{arXiv:2003.00638}, may struggle to maintain the rigorous structural constraints necessary for valid chemical synthesis.
+
+Finally, there is an ongoing debate regarding the representation of molecular information: whether to rely on learned latent embeddings or classical structural descriptors. While deep learning models like those in \texttt{arXiv:1509.09292} and \texttt{arXiv:1603.00856} attempt to move beyond fixed fingerprints by learning representations directly from the graph, recent investigations in \texttt{arXiv:2411.13688} suggest that classical feature-extraction techniques still maintain a competitive edge in specific tasks like activity-cliff prediction. This tension highlights a gap in current research: the difficulty of reconciling the high-dimensional, abstract features learned by GNNs with the chemically intuitive, interpretable descriptors required for reliable drug discovery and property prediction.
+
+\subsubsection{Outlook}
+
+The frontier of graph learning is rapidly shifting from simple topology modeling toward multi-scale, multi-modal integration. As the field moves toward 2025, the focus is pivoting from general graph representation to specialized, high-fidelity applications in drug discovery and multi-omics research, as evidenced by recent frameworks for drug-target interaction (\texttt{arXiv:2507.11757}) and multi-level fusion for property prediction (\texttt{arXiv:2507.03430}). The next generation of models will likely transcend the "black box" nature of current GNNs by integrating multi-level interpretability (\texttt{arXiv:2410.12156}) and structural similarity information (\texttt{arXiv:2409.08580}) to bridge the gap between deep generative power and the rigorous constraints of biological reality.
+
+\section*{References}
+\begin{enumerate}\small
+  \item On representing chemical environments (2012). \texttt{arXiv:1209.3140}
+  \item Spectral Networks and Locally Connected Networks on Graphs (2013). \texttt{arXiv:1312.6203}
+  \item Auto-Encoding Variational Bayes (2013). \texttt{arXiv:1312.6114}
+  \item Adam: A Method for Stochastic Optimization (2014). \texttt{arXiv:1412.6980}
+  \item Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation (2014). \texttt{arXiv:1406.1078}
+  \item Convolutional Networks on Graphs for Learning Molecular Fingerprints (2015). \texttt{arXiv:1509.09292}
+  \item Gated Graph Sequence Neural Networks (2015). \texttt{arXiv:1511.05493}
+  \item Massively Multitask Networks for Drug Discovery (2015). \texttt{arXiv:1502.02072}
+  \item Deep Residual Learning for Image Recognition (2015). \texttt{arXiv:1512.03385}
+  \item AtomNet: A Deep Convolutional Neural Network for Bioactivity Prediction
+  in Structure-based Drug Discovery (2015). \texttt{arXiv:1510.02855}
+  \item Semi-Supervised Classification with Graph Convolutional Networks (2016). \texttt{arXiv:1609.02907}
+  \item Automatic chemical design using a data-driven continuous representation
+  of molecules (2016). \texttt{arXiv:1610.02415}
+  \item Molecular Graph Convolutions: Moving Beyond Fingerprints (2016). \texttt{arXiv:1603.00856}
+  \item Convolutional Neural Networks on Graphs with Fast Localized Spectral
+  Filtering (2016). \texttt{arXiv:1606.09375}
+  \item Learning Convolutional Neural Networks for Graphs (2016). \texttt{arXiv:1605.05273}
+  \item Quantum-Chemical Insights from Deep Tensor Neural Networks (2016). \texttt{arXiv:1609.08259}
+  \item Variational Graph Auto-Encoders (2016). \texttt{arXiv:1611.07308}
+  \item Geometric deep learning: going beyond Euclidean data (2016). \texttt{arXiv:1611.08097}
+  \item Machine Learning of Accurate Energy-Conserving Molecular Force Fields (2016). \texttt{arXiv:1611.04678}
+  \item Learning to SMILE(S) (2016). \texttt{arXiv:1602.06289}
+  \item Neural Message Passing for Quantum Chemistry (2017). \texttt{arXiv:1704.01212}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item MoleculeNet: A Benchmark for Molecular Machine Learning (2017). \texttt{arXiv:1703.00564}
+  \item Grammar Variational Autoencoder (2017). \texttt{arXiv:1703.01925}
+  \item Graph Attention Networks (2017). \texttt{arXiv:1710.10903}
+  \item Inductive Representation Learning on Large Graphs (2017). \texttt{arXiv:1706.02216}
+  \item Objective-Reinforced Generative Adversarial Networks (ORGAN) for
+  Sequence Generation Models (2017). \texttt{arXiv:1705.10843}
+  \item SchNet: A continuous-filter convolutional neural network for modeling
+  quantum interactions (2017). \texttt{arXiv:1706.08566}
+  \item Molecular De Novo Design through Deep Reinforcement Learning (2017). \texttt{arXiv:1704.07555}
+  \item Modeling Relational Data with Graph Convolutional Networks (2017). \texttt{arXiv:1703.06103}
+  \item Predicting Organic Reaction Outcomes with Weisfeiler-Lehman Network (2017). \texttt{arXiv:1709.04555}
+  \item Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks (2017). \texttt{arXiv:1703.03400}
+  \item SchNet - a deep learning architecture for molecules and materials (2017). \texttt{arXiv:1712.06113}
+  \item Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on
+  Graphs (2017). \texttt{arXiv:1704.02901}
+  \item How Powerful are Graph Neural Networks? (2018). \texttt{arXiv:1810.00826}
+  \item Junction Tree Variational Autoencoder for Molecular Graph Generation (2018). \texttt{arXiv:1802.04364}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding (2018). \texttt{arXiv:1810.04805}
+  \item GraphVAE: Towards Generation of Small Graphs Using Variational
+  Autoencoders (2018). \texttt{arXiv:1802.03480}
+  \item Learning Deep Generative Models of Graphs (2018). \texttt{arXiv:1803.03324}
+  \item MolGAN: An implicit generative model for small molecular graphs (2018). \texttt{arXiv:1805.11973}
+  \item GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models (2018). \texttt{arXiv:1802.08773}
+  \item Graph Convolutional Policy Network for Goal-Directed Molecular Graph
+  Generation (2018). \texttt{arXiv:1806.02473}
+  \item Hierarchical Graph Representation Learning with Differentiable Pooling (2018). \texttt{arXiv:1806.08804}
+  \item PotentialNet for Molecular Property Prediction (2018). \texttt{arXiv:1803.04465}
+  \item Syntax-Directed Variational Autoencoder for Structured Data (2018). \texttt{arXiv:1802.08786}
+  \item Constrained Graph Variational Autoencoders for Molecule Design (2018). \texttt{arXiv:1805.09076}
+  \item Tensor field networks: Rotation- and translation-equivariant neural
+  networks for 3D point clouds (2018). \texttt{arXiv:1802.08219}
+  \item Relational inductive biases, deep learning, and graph networks (2018). \texttt{arXiv:1806.01261}
+  \item Multi-Objective De Novo Drug Design with Conditional Graph Generative
+  Model (2018). \texttt{arXiv:1801.07299}
+  \item Representation Learning with Contrastive Predictive Coding (2018). \texttt{arXiv:1807.03748}
+  \item Deep Graph Infomax (2018). \texttt{arXiv:1809.10341}
+  \item Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks (2018). \texttt{arXiv:1810.02244}
+  \item Molecular Transformer - A Model for Uncertainty-Calibrated Chemical
+  Reaction Prediction (2018). \texttt{arXiv:1811.02633}
+  \item N-Gram Graph: Simple Unsupervised Representation for Graphs, with
+  Applications to Molecules (2018). \texttt{arXiv:1806.09206}
+  \item GuacaMol: Benchmarking Models for De Novo Molecular Design (2018). \texttt{arXiv:1811.09621}
+  \item Learning Multimodal Graph-to-Graph Translation for Molecular
+  Optimization (2018). \texttt{arXiv:1812.01070}
+  \item Analyzing Learned Molecular Representations for Property Prediction (2019). \texttt{arXiv:1904.01561}
+  \item Strategies for Pre-training Graph Neural Networks (2019). \texttt{arXiv:1905.12265}
+  \item Fast Graph Representation Learning with PyTorch Geometric (2019). \texttt{arXiv:1903.02428}
+  \item PyTorch: An Imperative Style, High-Performance Deep Learning Library (2019). \texttt{arXiv:1912.01703}
+  \item Efficient Graph Generation with Graph Recurrent Attention Networks (2019). \texttt{arXiv:1910.00760}
+  \item Molecular Property Prediction: A Multilevel Quantum Interactions
+  Modeling Perspective (2019). \texttt{arXiv:1906.11081}
+  \item A Comprehensive Survey on Graph Neural Networks (2019). \texttt{arXiv:1901.00596}
+  \item Momentum Contrast for Unsupervised Visual Representation Learning (2019). \texttt{arXiv:1911.05722}
+  \item Cormorant: Covariant Molecular Neural Networks (2019). \texttt{arXiv:1906.04015}
+  \item InfoGraph: Unsupervised and Semi-supervised Graph-Level Representation
+  Learning via Mutual Information Maximization (2019). \texttt{arXiv:1908.01000}
+  \item Self-Referencing Embedded Strings (SELFIES): A 100\% robust molecular
+  string representation (2019). \texttt{arXiv:1905.13741}
+  \item Graph Neural Network Architecture Search for Molecular Property
+  Prediction (2020). \texttt{arXiv:2008.12187}
+  \item Molecular graph generation with Graph Neural Networks (2020). \texttt{arXiv:2012.07397}
+  \item Learn molecular representations from large-scale unlabeled molecules for
+  drug discovery (2020). \texttt{arXiv:2012.11175}
+  \item Utilising Graph Machine Learning within Drug Discovery and Development (2020). \texttt{arXiv:2012.05716}
+  \item Transformer Based Molecule Encoding for Property Prediction (2020). \texttt{arXiv:2011.03518}
+  \item Directional Message Passing for Molecular Graphs (2020). \texttt{arXiv:2003.03123}
+  \item Self-Supervised Graph Transformer on Large-Scale Molecular Data (2020). \texttt{arXiv:2007.02835}
+  \item GraphAF: a Flow-based Autoregressive Model for Molecular Graph
+  Generation (2020). \texttt{arXiv:2001.09382}
+  \item Open Graph Benchmark: Datasets for Machine Learning on Graphs (2020). \texttt{arXiv:2005.00687}
+  \item Molecule Attention Transformer (2020). \texttt{arXiv:2002.08264}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item A Simple Framework for Contrastive Learning of Visual Representations (2020). \texttt{arXiv:2002.05709}
+  \item ChemBERTa: Large-Scale Self-Supervised Pretraining for Molecular
+  Property Prediction (2020). \texttt{arXiv:2010.09885}
+  \item Hierarchical Generation of Molecular Graphs using Structural Motifs (2020). \texttt{arXiv:2002.03230}
+  \item A Generalization of Transformer Networks to Graphs (2020). \texttt{arXiv:2012.09699}
+  \item Graph Contrastive Learning with Augmentations (2020). \texttt{arXiv:2010.13902}
+  \item Permutation Invariant Graph Generation via Score-Based Generative
+  Modeling (2020). \texttt{arXiv:2003.00638}
+  \item SE(3)-Transformers: 3D Roto-Translation Equivariant Attention Networks (2020). \texttt{arXiv:2006.10503}
+  \item Learning from Protein Structure with Geometric Vector Perceptrons (2020). \texttt{arXiv:2009.01411}
+  \item Molecular Graph Generation via Geometric Scattering (2021). \texttt{arXiv:2110.06241}
+  \item Quantitative Evaluation of Explainable Graph Neural Networks for
+  Molecular Property Prediction (2021). \texttt{arXiv:2107.04119}
+  \item Few-Shot Graph Learning for Molecular Property Prediction (2021). \texttt{arXiv:2102.07916}
+  \item Learning to design drug-like molecules in three-dimensional space using
+  deep generative models (2021). \texttt{arXiv:2104.08474}
+  \item Structure-aware Interactive Graph Neural Networks for the Prediction of
+  Protein-Ligand Binding Affinity (2021). \texttt{arXiv:2107.10670}
+  \item Do Transformers Really Perform Bad for Graph Representation? (2021). \texttt{arXiv:2106.05234}
+  \item E(n) Equivariant Graph Neural Networks (2021). \texttt{arXiv:2102.09844}
+  \item Pre-training Molecular Graph Representation with 3D Geometry (2021). \texttt{arXiv:2110.07728}
+  \item Molecular Contrastive Learning of Representations via Graph Neural
+  Networks (2021). \texttt{arXiv:2102.10056}
+  \item ChemRL-GEM: Geometry Enhanced Molecular Representation Learning for
+  Property Prediction (2021). \texttt{arXiv:2106.06130}
+  \item Graph neural networks for the prediction of molecular structure-property
+  relationships (2022). \texttt{arXiv:2208.04852}
+  \item Graph Neural Networks for Molecules (2022). \texttt{arXiv:2209.05582}
+  \item HiGNN: Hierarchical Informative Graph Neural Networks for Molecular
+  Property Prediction Equipped with Feature-Wise Attention (2022). \texttt{arXiv:2208.13994}
+  \item Application of Graph Neural Networks and graph descriptors for graph
+  classification (2022). \texttt{arXiv:2211.03666}
+  \item Graph neural networks for materials science and chemistry (2022). \texttt{arXiv:2208.09481}
+  \item DiGress: Discrete Denoising diffusion for graph generation (2022). \texttt{arXiv:2209.14734}
+  \item Equivariant Diffusion for Molecule Generation in 3D (2022). \texttt{arXiv:2203.17003}
+  \item Molecular Property Prediction Based on Graph Structure Learning (2023). \texttt{arXiv:2312.16855}
+  \item Building explainable graph neural network by sparse learning for the
+  drug-protein binding prediction (2023). \texttt{arXiv:2309.12906}
+  \item A Survey on Graph Diffusion Models: Generative AI in Science for
+  Molecule, Protein and Material (2023). \texttt{arXiv:2304.01565}
+  \item Attending to Graph Transformers (2023). \texttt{arXiv:2302.04181}
+  \item Comprehensive evaluation of deep and graph learning on drug-drug
+  interactions prediction (2023). \texttt{arXiv:2306.05257}
+  \item Using GNN property predictors as molecule generators (2024). \texttt{arXiv:2406.03278}
+  \item Molecular Graph Representation Learning via Structural Similarity
+  Information (2024). \texttt{arXiv:2409.08580}
+  \item On the Scalability of GNNs for Molecular Graphs (2024). \texttt{arXiv:2404.11568}
+  \item Learning From Graph-Structured Data: Addressing Design Issues and
+  Exploring Practical Applications in Graph Representation Learning (2024). \texttt{arXiv:2411.07269}
+  \item FragNet: A Graph Neural Network for Molecular Property Prediction with Four Levels of Interpretability (2024). \texttt{arXiv:2410.12156}
+  \item Investigating Graph Neural Networks and Classical Feature-Extraction
+  Techniques in Activity-Cliff and Molecular Property Prediction (2024). \texttt{arXiv:2411.13688}
+  \item Graph Neural Networks in Modern AI-aided Drug Discovery (2025). \texttt{arXiv:2506.06915}
+  \item A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges (2025). \texttt{arXiv:2509.07887}
+  \item Recent Developments in GNNs for Drug Discovery (2025). \texttt{arXiv:2506.01302}
+  \item Multi-Level Fusion Graph Neural Network for Molecule Property Prediction (2025). \texttt{arXiv:2507.03430}
+  \item Graph Neural Networks in Multi-Omics Cancer Research: A Structured Survey (2025). \texttt{arXiv:2506.17234}
+  \item A Graph-in-Graph Learning Framework for Drug-Target Interaction Prediction (2025). \texttt{arXiv:2507.11757}
+\end{enumerate}
+
+\end{document}

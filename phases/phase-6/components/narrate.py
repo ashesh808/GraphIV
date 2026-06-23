@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import re
+from typing import Any
 
 import httpx
 from openai import AsyncOpenAI
@@ -225,17 +226,18 @@ def check_citations(story: str, allowed: set[str]) -> tuple[list[str], list[str]
 
 
 def verify_ids_exist(arxiv_ids: list[str]) -> set[str]:
-    """Subset of `arxiv_ids` that exist as :Paper nodes in Neo4j (case-sensitive)."""
+    """Subset of `arxiv_ids` that exist as papers in the corpus (case-sensitive)."""
     if not arxiv_ids:
         return set()
-    from _common import (
-        NEO4J_DB,
-        neo4j_driver,
-    )  # local import: keeps module import light
+    import psycopg  # local import: keeps module import light
 
-    cypher = "MATCH (p:Paper) WHERE p.arxiv_id IN $ids RETURN p.arxiv_id AS id"
-    with neo4j_driver() as drv, drv.session(database=NEO4J_DB) as session:
-        return {str(r["id"]) for r in session.run(cypher, ids=arxiv_ids)}
+    from _common import PG_DSN
+
+    with psycopg.connect(PG_DSN) as conn:
+        rows: list[tuple[Any, ...]] = conn.execute(
+            "SELECT arxiv_id FROM paper WHERE arxiv_id = ANY(%s)", (arxiv_ids,)
+        ).fetchall()
+    return {str(r[0]) for r in rows}
 
 
 def classify_citations(
@@ -243,9 +245,9 @@ def classify_citations(
 ) -> tuple[list[str], list[str], list[str]]:
     """Strict grounding check: (grounded, off_digest_but_real, fabricated).
 
-    `off_digest_but_real` ids exist in the graph but weren't in the digest (the model
+    `off_digest_but_real` ids exist in the corpus but weren't in the digest (the model
     reached beyond what it was given); `fabricated` ids don't exist at all (true
-    hallucinations). Verifies the off-digest ids against Neo4j.
+    hallucinations). Verifies the off-digest ids against the corpus (`paper` table).
     """
     grounded, off = check_citations(story, allowed)
     if not off:

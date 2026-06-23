@@ -1,0 +1,800 @@
+{
+ "question": "graph neural networks",
+ "effort": "standard",
+ "rank": "indegree",
+ "no_cluster": false,
+ "no_graph": false,
+ "recency": 0.0,
+ "no_frontier_pull": true,
+ "config": "standard-indegree-r0.0-nofpull",
+ "schema": [
+  [
+   "model_architecture",
+   "The fundamental design approach (e.g., spectral, spatial, message-passing)."
+  ],
+  [
+   "learning_paradigm",
+   "Whether the model is transductive or inductive."
+  ],
+  [
+   "aggregation_method",
+   "The mathematical function used to combine neighbor information."
+  ],
+  [
+   "expressive_power",
+   "Theoretical limits regarding graph isomorphism or WL-test equivalence."
+  ],
+  [
+   "primary_task",
+   "The main application goal (e.g., node or graph classification)."
+  ],
+  [
+   "scalability_strategy",
+   "Techniques used to manage large-scale graphs or edges."
+  ]
+ ],
+ "n_pool": 435,
+ "n_landmarks": 80,
+ "n_edges": 6086,
+ "frontier_year": 2020,
+ "frontier_count": 12,
+ "grounded": [
+  "1211.0053",
+  "1310.4546",
+  "1312.6203",
+  "1403.6652",
+  "1502.03167",
+  "1503.03578",
+  "1509.09292",
+  "1511.02136",
+  "1511.05493",
+  "1512.03385",
+  "1609.02907",
+  "1612.00222",
+  "1703.06103",
+  "1704.01212",
+  "1706.02216",
+  "1710.10903",
+  "1801.07606",
+  "1806.01973",
+  "1810.00826",
+  "1810.02244",
+  "1811.05868",
+  "1903.02541",
+  "1905.00067",
+  "1905.07953",
+  "1905.10947",
+  "1907.03199",
+  "2005.00687",
+  "2006.09252",
+  "2007.02133",
+  "2007.08663",
+  "2106.05234"
+ ],
+ "off_digest": [],
+ "n_figures": 0,
+ "figures": {},
+ "report_chars": 5955,
+ "landmarks": [
+  {
+   "arxiv_id": "1609.02907",
+   "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.726375873209217,
+   "in_degree": 330,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1706.02216",
+   "title": "Inductive Representation Learning on Large Graphs",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6778556826994654,
+   "in_degree": 264,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1710.10903",
+   "title": "Graph Attention Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.7977897354187968,
+   "in_degree": 222,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.00826",
+   "title": "How Powerful are Graph Neural Networks?",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.014925373134328358,
+   "in_degree": 211,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1704.01212",
+   "title": "Neural Message Passing for Quantum Chemistry",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6696519605863713,
+   "in_degree": 191,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1606.09375",
+   "title": "Convolutional Neural Networks on Graphs with Fast Localized Spectral\n  Filtering",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7741335152739202,
+   "in_degree": 169,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1901.00596",
+   "title": "A Comprehensive Survey on Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.014492753623188406,
+   "in_degree": 111,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1312.6203",
+   "title": "Spectral Networks and Locally Connected Networks on Graphs",
+   "year": 2013,
+   "category": "cs",
+   "score": 0.7373507636042191,
+   "in_degree": 109,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.4385707242934458,
+   "in_degree": 98,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1509.09292",
+   "title": "Convolutional Networks on Graphs for Learning Molecular Fingerprints",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7339374972286898,
+   "in_degree": 92,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1511.05493",
+   "title": "Gated Graph Sequence Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7597566715048815,
+   "in_degree": 91,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1806.03536",
+   "title": "Representation Learning on Graphs with Jumping Knowledge Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7726233984867147,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.07153",
+   "title": "Simplifying Graph Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7515451835719321,
+   "in_degree": 84,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2005.00687",
+   "title": "Open Graph Benchmark: Datasets for Machine Learning on Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6711558676562555,
+   "in_degree": 83,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1403.6652",
+   "title": "DeepWalk: Online Learning of Social Representations",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6291974604756857,
+   "in_degree": 83,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1806.08804",
+   "title": "Hierarchical Graph Representation Learning with Differentiable Pooling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7232265188879091,
+   "in_degree": 82,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.02244",
+   "title": "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7466309313061826,
+   "in_degree": 81,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.07606",
+   "title": "Deeper Insights into Graph Convolutional Networks for Semi-Supervised\n  Learning",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7151907204154224,
+   "in_degree": 80,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.02428",
+   "title": "Fast Graph Representation Learning with PyTorch Geometric",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6591981358208021,
+   "in_degree": 72,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1812.08434",
+   "title": "Graph Neural Networks: A Review of Methods and Applications",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.014705882352941176,
+   "in_degree": 68,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.01973",
+   "title": "Graph Convolutional Neural Networks for Web-Scale Recommender Systems",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7233442919895695,
+   "in_degree": 67,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1605.05273",
+   "title": "Learning Convolutional Neural Networks for Graphs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.8051299704882141,
+   "in_degree": 63,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.01261",
+   "title": "Relational inductive biases, deep learning, and graph networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7101064475021295,
+   "in_degree": 63,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.08097",
+   "title": "Geometric deep learning: going beyond Euclidean data",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6998674815470588,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1607.00653",
+   "title": "node2vec: Scalable Feature Learning for Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6659817353978068,
+   "in_degree": 57,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.05997",
+   "title": "Predict then Propagate: Graph Neural Networks meet Personalized PageRank",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6871750956708452,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1703.06103",
+   "title": "Modeling Relational Data with Graph Convolutional Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6760657422411448,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1811.05868",
+   "title": "Pitfalls of Graph Neural Network Evaluation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.752453800235556,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1512.03385",
+   "title": "Deep Residual Learning for Image Recognition",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.587488264691952,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2002.05287",
+   "title": "Geom-GCN: Geometric Graph Convolutional Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.01639344262295082,
+   "in_degree": 53,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1905.11136",
+   "title": "Provably Powerful Graph Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.691196722512385,
+   "in_degree": 52,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2003.00982",
+   "title": "Benchmarking Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7407830455087671,
+   "in_degree": 51,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1611.07308",
+   "title": "Variational Graph Auto-Encoders",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.6571536561157753,
+   "in_degree": 51,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.08402",
+   "title": "Geometric deep learning on graphs and manifolds using mixture model CNNs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7010723542302565,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5229176638372527,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1709.05584",
+   "title": "Representation Learning on Graphs: Methods and Applications",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7744741280404284,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1603.08861",
+   "title": "Revisiting Semi-Supervised Learning with Graph Embeddings",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6580769137088797,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.10247",
+   "title": "FastGCN: Fast Learning with Graph Convolutional Networks via Importance\n  Sampling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6869796065014903,
+   "in_degree": 46,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.00067",
+   "title": "MixHop: Higher-Order Graph Convolutional Architectures via Sparsified\n  Neighborhood Mixing",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7264658077239359,
+   "in_degree": 41,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1907.10903",
+   "title": "DropEdge: Towards Deep Graph Convolutional Networks on Node\n  Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6478961417259157,
+   "in_degree": 41,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1812.09902",
+   "title": "Invariant and Equivariant Graph Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7654835295345929,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.11468",
+   "title": "Beyond Homophily in Graph Neural Networks: Current Limitations and\n  Effective Designs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7560184746705982,
+   "in_degree": 39,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1506.05163",
+   "title": "Deep Convolutional Networks on Graph-Structured Data",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7210118512731623,
+   "in_degree": 39,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1503.03578",
+   "title": "LINE: Large-scale Information Network Embedding",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6392727626815703,
+   "in_degree": 39,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1511.02136",
+   "title": "Diffusion-Convolutional Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7650685642794526,
+   "in_degree": 38,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1502.03167",
+   "title": "Batch Normalization: Accelerating Deep Network Training by Reducing\n  Internal Covariate Shift",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5608755021874007,
+   "in_degree": 38,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1903.03894",
+   "title": "GNNExplainer: Generating Explanations for Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7915214994553464,
+   "in_degree": 37,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1903.02541",
+   "title": "Relational Pooling for Graph Representations",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7097693275323753,
+   "in_degree": 37,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1912.01703",
+   "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5315628870356146,
+   "in_degree": 37,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2007.02133",
+   "title": "Simple and Deep Graph Convolutional Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7203918400823169,
+   "in_degree": 36,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1905.10947",
+   "title": "Graph Neural Networks Exponentially Lose Expressive Power for Node\n  Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7649107503134561,
+   "in_degree": 35,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1704.02901",
+   "title": "Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on\n  Graphs",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7348519768403629,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.03199",
+   "title": "What graph neural networks cannot learn: depth vs width",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7642448533299667,
+   "in_degree": 33,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2002.06157",
+   "title": "Generalization and Representational Limits of Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.8353155421208605,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1905.12560",
+   "title": "On the equivalence between graph isomorphism testing and function\n  approximation with GNNs",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.729229410014419,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.05205",
+   "title": "On the Bottleneck of Graph Neural Networks and its Practical\n  Implications",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7180708774661485,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1909.03211",
+   "title": "Measuring and Relieving the Over-smoothing Problem for Graph Neural\n  Networks from the Topological View",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7116044677989777,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1904.03751",
+   "title": "DeepGCNs: Can GCNs Go as Deep as CNNs?",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.676094049085154,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2007.08663",
+   "title": "TUDataset: A collection of benchmark datasets for learning with graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7110689089281833,
+   "in_degree": 31,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1904.08082",
+   "title": "Self-Attention Graph Pooling",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6888347634414097,
+   "in_degree": 30,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1905.07953",
+   "title": "Cluster-GCN: An Efficient Algorithm for Training Deep and Large Graph\n  Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6643693116820434,
+   "in_degree": 30,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1703.00564",
+   "title": "MoleculeNet: A Benchmark for Molecular Machine Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5765411663294157,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.09550",
+   "title": "Revisiting Graph Neural Networks: All We Have is Low-Pass Filters",
+   "year": 2019,
+   "category": "stat",
+   "score": 0.7920335648541411,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2002.04025",
+   "title": "Can Graph Neural Networks Count Substructures?",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7142070088604535,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2106.05234",
+   "title": "Do Transformers Really Perform Bad for Graph Representation?",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7001931733632709,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1802.09691",
+   "title": "Link Prediction Based on Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6917811733471361,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.04931",
+   "title": "GraphSAINT: Graph Sampling Based Inductive Learning Method",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6898218029174655,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1912.09893",
+   "title": "A Fair Comparison of Graph Neural Networks for Graph Classification",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.006134969325153374,
+   "in_degree": 28,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2002.03155",
+   "title": "Random Features Strengthen Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7687790831929641,
+   "in_degree": 27,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1711.07553",
+   "title": "Residual Gated Graph ConvNets",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7604209159877806,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.04817",
+   "title": "Position-aware Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.757920880834994,
+   "in_degree": 27,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2006.09252",
+   "title": "Improving Graph Neural Network Expressivity via Subgraph Isomorphism\n  Counting",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7517842243918351,
+   "in_degree": 27,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1612.00222",
+   "title": "Interaction Networks for Learning about Objects, Relations and Physics",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.620394856963034,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1409.0473",
+   "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.5452466687000487,
+   "in_degree": 27,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1211.0053",
+   "title": "The Emerging Field of Signal Processing on Graphs: Extending\n  High-Dimensional Data Analysis to Networks and Other Irregular Domains",
+   "year": 2012,
+   "category": "cs",
+   "score": 0.7255204457918126,
+   "in_degree": 26,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.02263",
+   "title": "Graph Convolutional Matrix Completion",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6902062904480768,
+   "in_degree": 26,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.13021",
+   "title": "Multi-scale Attributed Node Embedding",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.637615395135525,
+   "in_degree": 26,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1310.4546",
+   "title": "Distributed Representations of Words and Phrases and their\n  Compositionality",
+   "year": 2013,
+   "category": "cs",
+   "score": 0.5174321290945063,
+   "in_degree": 26,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1902.07243",
+   "title": "Graph Neural Networks for Social Recommendation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7600338439475505,
+   "in_degree": 25,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1808.03965",
+   "title": "Large-Scale Learnable Graph Convolutional Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7469776373822729,
+   "in_degree": 25,
+   "era": 1
+  }
+ ]
+}

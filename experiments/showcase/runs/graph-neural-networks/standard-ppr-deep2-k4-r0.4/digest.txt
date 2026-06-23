@@ -1,0 +1,602 @@
+QUESTION: graph neural networks
+
+SCHEMA FIELDS: ['contribution', 'method', 'dataset', 'result', 'limitation']
+
+ERAS:
+  [0] Origins: 2009-2014
+  [1] Key Advances: 2014-2020
+  [2] Current Frontier: 2020-2025
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:0912.3848 (2009) "Wavelets on Graphs via Spectral Graph Theory" [math] (cited-by 21 in-topic, era 0)
+    abstract: We propose a novel method for constructing wavelet transforms of functions
+defined on the vertices of an arbitrary finite weighted graph. Our approach is
+based on defining scaling using the the graph analogue of the Fourier domain,
+namely the spectral decomposition of the discrete graph Laplacian $\
+    relations: cited-by arXiv:2302.05631; used-by arXiv:1606.09375; motivates arXiv:1609.02907; compared-by arXiv:2101.00079
+arXiv:1211.0053 (2012) "The Emerging Field of Signal Processing on Graphs: Extending
+  High-Dimensional Data Analysis to Networks and Other Irregular Domains" [cs] (cited-by 27 in-topic, era 0)
+    contribution: A tutorial overview of the field of signal processing on graphs, outlining challenges, spectral domain definitions, and the generalization of fundamental signal processing operations to irregular graph structures.
+    method: Merging algebraic and spectral graph theoretic concepts with computational harmonic analysis to generalize filtering, translation, modulation, dilation, and downsampling.
+    relations: cited-by arXiv:2407.03125; cited-by arXiv:2503.00578; cited-by arXiv:1606.09375; cited-by arXiv:1901.00596; cited-by arXiv:2008.01767; cited-by arXiv:2105.04493
+arXiv:1312.6203 (2013) "Spectral Networks and Locally Connected Networks on Graphs" [cs] (cited-by 115 in-topic, era 0)
+    contribution: Proposes two constructions for generalizing CNNs to non-Euclidean domains: one based on hierarchical clustering and another based on the spectrum of the graph Laplacian.
+    method: Spectral Networks and Locally Connected Networks on graphs.
+    result: Demonstrated that for low-dimensional graphs, convolutional layers can be learned with a number of parameters independent of the input size.
+    relations: cited-by arXiv:2302.05631; cited-by arXiv:2407.03125; extended-by arXiv:1506.05163; used-by arXiv:1606.09375; compared-by arXiv:1901.00596; cited-by arXiv:2003.03777
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 98 in-topic, era 0)
+    contribution: Introduction of Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions using adaptive estimates of lower-order moments.
+    method: Adaptive estimates of lower-order moments; includes a variant called AdaMax based on the infinity norm.
+    result: Provides a regret bound on the convergence rate comparable to the best known results under the online convex optimization framework; empirical results show it compares favorably to other stochastic optimization methods.
+    relations: used-by arXiv:2306.02376; used-by arXiv:2502.17739; used-by arXiv:1810.05997; cited-by arXiv:1905.10947; used-by arXiv:1509.09292; cited-by arXiv:1511.05493
+arXiv:1403.6652 (2014) "DeepWalk: Online Learning of Social Representations" [cs] (cited-by 79 in-topic, era 0)
+    contribution: A novel approach for learning latent representations of vertices in a network by generalizing language modeling to graphs.
+    method: Truncated random walks treated as equivalent to sentences for unsupervised feature learning.
+    dataset: BlogCatalog, Flickr, and YouTube.
+    result: $F_1$ scores up to 10% higher than competing methods with sparse labeled data; outperforms baselines using 60% less training data.
+    relations: cited-by arXiv:2407.03125; cited-by arXiv:2501.00773; compared-by arXiv:1603.08861; compared-by arXiv:1609.02907; compared-by arXiv:1611.07308; cited-by arXiv:1709.05584
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 24 in-topic, era 0)
+    contribution: A novel RNN Encoder-Decoder model for learning phrase representations to improve statistical machine translation.
+    method: A neural network architecture consisting of two RNNs (one encoder to create a fixed-length vector and one decoder to reconstruct the sequence) trained jointly to maximize conditional probability.
+    result: Empirical improvement in statistical machine translation performance when using RNN-computed phrase pair probabilities as an additional feature in a log-linear model.
+    relations: cited-by arXiv:2503.00578; extended-by arXiv:1709.05584; extended-by arXiv:1511.05493; cited-by arXiv:1706.03762; cited-by arXiv:1710.10903; used-by arXiv:1806.01261
+arXiv:1511.05493 (2015) "Gated Graph Sequence Neural Networks" [cs] (cited-by 92 in-topic, era 1)
+    contribution: A flexible class of neural network models for graph-structured inputs that extends Graph Neural Networks to output sequences and utilizes gated recurrent units.
+    method: Modification of Graph Neural Networks using gated recurrent units (GRUs), modern optimization techniques, and extension to sequence output.
+    dataset: bAbI (AI tasks), graph algorithm learning tasks, and a program verification problem involving subgraph matching.
+    result: Achieves state-of-the-art performance on a program verification problem involving matching subgraphs to abstract data structures.
+    relations: cites arXiv:1403.6652; cites arXiv:1312.6203; cites arXiv:1509.09292; extends arXiv:1406.1078; cites arXiv:1412.6980; cited-by arXiv:2305.18632; used-by arXiv:2501.00773; used-by arXiv:1901.00596; cited-by arXiv:1903.02428; cited-by arXiv:1605.05273; cited-by arXiv:1606.09375
+arXiv:1509.09292 (2015) "Convolutional Networks on Graphs for Learning Molecular Fingerprints" [cs] (cited-by 87 in-topic, era 1)
+    contribution: A convolutional neural network that operates directly on graphs for end-to-end learning of prediction pipelines, generalizing standard circular fingerprint methods.
+    method: Convolutional neural network operating on graphs of arbitrary size and shape.
+    result: Data-driven features are more interpretable and have better predictive performance on a variety of tasks.
+    relations: compares-with arXiv:1312.6203; uses arXiv:1502.03167; uses arXiv:1412.6980; critiqued-by arXiv:2407.03125; cited-by arXiv:1806.01261; cited-by arXiv:1511.02136; cited-by arXiv:1511.05493; cited-by arXiv:1605.05273; cited-by arXiv:1609.02907
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 58 in-topic, era 1)
+    contribution: A residual learning framework that reformulates layers to learn residual functions with reference to layer inputs, enabling the training of substantially deeper networks.
+    method: Residual learning framework (residual networks) using identity shortcut connections to ease optimization.
+    dataset: ImageNet, CIFAR-10, and COCO.
+    result: Achieved 3.57% error on the ImageNet test set (1st place ILSVRC 2015) and a 28% relative improvement on the COCO object detection dataset.
+    relations: uses arXiv:1502.03167; motivates arXiv:2407.03125; cited-by arXiv:2411.07269; used-by arXiv:1609.02907; used-by arXiv:1706.03762; compared-by arXiv:1710.10903; cited-by arXiv:1901.00596
+arXiv:1506.05163 (2015) "Deep Convolutional Networks on Graph-Structured Data" [cs] (cited-by 42 in-topic, era 1)
+    contribution: Development of an extension of Spectral Networks that incorporates a Graph Estimation procedure for deep architectures on non-Euclidean domains.
+    method: Extension of Spectral Networks incorporating Graph Estimation to handle unknown non-Euclidean domains.
+    result: Matches or improves over Dropout Networks while using far fewer parameters to estimate.
+    relations: extends arXiv:1312.6203; compared-by arXiv:1901.00596; cited-by arXiv:1511.02136; cited-by arXiv:1605.05273; compared-by arXiv:1606.09375; cited-by arXiv:1710.10903; cited-by arXiv:1801.10247
+arXiv:1502.03167 (2015) "Batch Normalization: Accelerating Deep Network Training by Reducing
+  Internal Covariate Shift" [cs] (cited-by 41 in-topic, era 1)
+    contribution: Reducing internal covariate shift by normalizing layer inputs as part of the model architecture to accelerate training and allow higher learning rates.
+    method: Batch Normalization (normalizing for each training mini-batch).
+    dataset: ImageNet
+    result: Achieved 4.9% top-5 validation error (4.8% test error) on ImageNet; achieved same accuracy with 14 times fewer training steps in a state-of-the-art model.
+    relations: compared-by arXiv:2407.03125; used-by arXiv:1512.03385; used-by arXiv:1509.09292; cited-by arXiv:1806.01261; compared-by arXiv:1806.08804; used-by arXiv:1810.00826
+arXiv:1511.02136 (2015) "Diffusion-Convolutional Neural Networks" [cs] (cited-by 40 in-topic, era 1)
+    contribution: Introduction of diffusion-convolutional neural networks (DCNNs) for learning diffusion-based representations from graph-structured data.
+    method: Diffusion-convolution operation used to create latent representations that are invariant under isomorphism and can be implemented as tensor operations.
+    dataset: Real structured datasets (specific names not mentioned in text).
+    result: DCNNs outperform probabilistic relational models and kernel-on-graph methods at relational node classification tasks.
+    relations: cites arXiv:1312.6203; cites arXiv:1506.05163; cites arXiv:1509.09292; used-by arXiv:1901.00596; cited-by arXiv:1905.11136; cited-by arXiv:2003.03777; cited-by arXiv:1609.02907; extended-by arXiv:1710.10903; compared-by arXiv:1810.00826
+arXiv:1503.03578 (2015) "LINE: Large-scale Information Network Embedding" [cs] (cited-by 36 in-topic, era 1)
+    contribution: A novel large-scale network embedding method (LINE) that preserves both local and global structures and scales to networks with millions of nodes.
+    method: Optimization of a designed objective function using a novel edge-sampling algorithm to improve efficiency and effectiveness over classical stochastic gradient descent.
+    dataset: Real-world information networks including language networks, social networks, and citation networks.
+    result: Capable of learning embeddings for networks with millions of vertices and billions of edges in a few hours on a typical single machine.
+    relations: compares-with arXiv:1403.6652; cited-by arXiv:1603.08861; used-by arXiv:1607.00653; cited-by arXiv:1609.02907; compared-by arXiv:1611.07308; cited-by arXiv:1706.02216; cited-by arXiv:1709.05584
+arXiv:1609.02907 (2016) "Semi-Supervised Classification with Graph Convolutional Networks" [cs] (cited-by 341 in-topic, era 1)
+    contribution: A scalable approach for semi-supervised learning on graph-structured data using an efficient variant of convolutional neural networks.
+    method: Localized first-order approximation of spectral graph convolutions that scales linearly with the number of graph edges.
+    dataset: Citation networks and a knowledge graph dataset.
+    result: Outperforms related methods by a significant margin.
+    relations: uses arXiv:1603.08861; compares-with arXiv:1403.6652; uses arXiv:1512.03385; compares-with arXiv:1312.6203; motivated-by arXiv:0912.3848; compares-with arXiv:1606.09375; cited-by arXiv:2302.05631; compared-by arXiv:2306.02376; extended-by arXiv:2401.01626; used-by arXiv:2403.06079; cited-by arXiv:2407.03125; compared-by arXiv:2411.07269
+arXiv:1606.09375 (2016) "Convolutional Neural Networks on Graphs with Fast Localized Spectral
+  Filtering" [cs] (cited-by 170 in-topic, era 1)
+    contribution: A formulation of CNNs in the context of spectral graph theory that provides fast localized convolutional filters universal to any graph structure.
+    method: Spectral graph theory-based formulation of CNNs designed to achieve linear computational complexity and constant learning complexity.
+    dataset: MNIST and 20NEWS
+    result: Demonstrated ability to learn local, stationary, and compositional features on graphs.
+    relations: cites arXiv:1211.0053; uses arXiv:1312.6203; uses arXiv:0912.3848; uses arXiv:1412.6980; cites arXiv:1511.05493; compares-with arXiv:1506.05163; used-by arXiv:2302.05631; compared-by arXiv:2305.06142; cited-by arXiv:2401.01626; cited-by arXiv:2407.03125; cited-by arXiv:2503.00578; used-by arXiv:1710.10903
+arXiv:1603.08861 (2016) "Revisiting Semi-Supervised Learning with Graph Embeddings" [cs] (cited-by 66 in-topic, era 1)
+    contribution: A semi-supervised learning framework based on graph embeddings that jointly predicts class labels and neighborhood context.
+    method: Transductive and inductive variants of graph embedding training where embeddings are learned to predict labels and neighborhood context.
+    dataset: A large and diverse set of benchmark tasks including text classification, distantly supervised entity extraction, and entity classification.
+    result: Improved performance over many existing models across benchmark tasks.
+    relations: compares-with arXiv:1403.6652; cites arXiv:1503.03578; used-by arXiv:2305.06142; used-by arXiv:2306.02376; used-by arXiv:2403.06079; used-by arXiv:2411.12330; used-by arXiv:1609.02907; used-by arXiv:1710.10903
+arXiv:1605.05273 (2016) "Learning Convolutional Neural Networks for Graphs" [cs] (cited-by 64 in-topic, era 1)
+    contribution: A framework for learning convolutional neural networks for arbitrary graphs (undirected, directed, with discrete/continuous node and edge attributes).
+    method: A general approach to extracting locally connected regions from graphs, analogous to image-based convolutional networks.
+    dataset: Established benchmark data sets.
+    result: Learned feature representations are competitive with state of the art graph kernels and highly efficient in computation.
+    relations: cites arXiv:1511.05493; cites arXiv:1312.6203; cites arXiv:1506.05163; cites arXiv:1509.09292; motivates arXiv:1901.00596; cited-by arXiv:1905.11136; cited-by arXiv:2002.09518; cited-by arXiv:1609.02907; cited-by arXiv:1704.01212; cited-by arXiv:1706.02216
+arXiv:1611.08097 (2016) "Geometric deep learning: going beyond Euclidean data" [cs] (cited-by 63 in-topic, era 1)
+    contribution: Provides an overview of geometric deep learning, including problem examples, available solutions, key difficulties, applications, and future research directions.
+    method: Generalizing structured deep neural models to non-Euclidean domains such as graphs and manifolds.
+    limitation: Existing deep learning tools have been most successful on data with Euclidean or grid-like structures where invariances are built into the networks.
+    relations: compared-by arXiv:1709.05584; cited-by arXiv:1806.01261; used-by arXiv:1806.01973; cited-by arXiv:1806.08804; cited-by arXiv:1901.00596; cited-by arXiv:1903.02428
+arXiv:1607.00653 (2016) "node2vec: Scalable Feature Learning for Networks" [cs] (cited-by 54 in-topic, era 1)
+    contribution: An algorithmic framework for learning continuous, task-independent feature representations for nodes in networks that generalizes prior work by providing a flexible notion of network neighborhoods.
+    method: A biased random walk procedure designed to explore diverse neighborhoods, mapping nodes to a low-dimensional space by maximizing the likelihood of preserving network neighborhoods.
+    dataset: Several real-world networks from diverse domains used for multi-label classification and link prediction.
+    result: Demonstrated efficacy over existing state-of-the-art techniques on multi-label classification and link prediction tasks.
+    relations: extends arXiv:1403.6652; uses arXiv:1503.03578; cites arXiv:1511.05493; compared-by arXiv:2411.07269; compared-by arXiv:1709.05584; cited-by arXiv:1609.02907; used-by arXiv:1611.07308; critiqued-by arXiv:1706.02216; cited-by arXiv:1801.10247
+arXiv:1611.08402 (2016) "Geometric deep learning on graphs and manifolds using mixture model CNNs" [cs] (cited-by 53 in-topic, era 1)
+    contribution: A unified framework to generalize CNN architectures to non-Euclidean domains (graphs and manifolds) to learn local, stationary, and compositional task-specific features.
+    method: Mixture model CNNs designed for geometric deep learning on graphs and manifolds.
+    dataset: Standard tasks from image-, graph-, and 3D shape analysis.
+    result: Consistently outperforms previous approaches in image-, graph-, and 3D shape analysis tasks.
+    relations: compared-by arXiv:2411.07269; extended-by arXiv:1710.10903; cited-by arXiv:1801.10247; cited-by arXiv:1806.01261; cited-by arXiv:1810.05997; used-by arXiv:1811.05868
+arXiv:1611.07308 (2016) "Variational Graph Auto-Encoders" [stat] (cited-by 44 in-topic, era 1)
+    contribution: Introduction of the Variational Graph Auto-Encoder (VGAE) framework for unsupervised learning on undirected graphs that naturally incorporates node features.
+    method: Variational auto-encoder (VAE) framework using a Graph Convolutional Network (GCN) encoder and an inner product decoder.
+    dataset: Citation networks and unspecified benchmark datasets.
+    result: Achieved competitive results on link prediction tasks and significant improvements in predictive performance when incorporating node features.
+    relations: compares-with arXiv:1403.6652; compares-with arXiv:1503.03578; uses arXiv:1607.00653; uses arXiv:1412.6980; compares-with arXiv:1609.02907; compared-by arXiv:2411.07269; critiqued-by arXiv:1901.00596; used-by arXiv:2108.10733; compared-by arXiv:1706.02216; used-by arXiv:1709.05584; cited-by arXiv:1801.10247
+arXiv:1612.00222 (2016) "Interaction Networks for Learning about Objects, Relations and Physics" [cs] (cited-by 28 in-topic, era 1)
+    contribution: Introduction of the interaction network, a general-purpose, learnable physics engine capable of reasoning about objects, relations, and physics.
+    method: A deep neural network model that takes graphs as input and performs object- and relation-centric reasoning analogous to a simulation.
+    dataset: n-body problems, rigid-body collision, and non-rigid dynamics.
+    result: Accurately simulates physical trajectories of dozens of objects over thousands of time steps and estimates abstract quantities like energy; generalizes to different numbers and configurations of objects.
+    relations: uses arXiv:1511.05493; uses arXiv:1412.6980; cited-by arXiv:1806.01261; cited-by arXiv:1704.01212; cited-by arXiv:1810.00826; extended-by arXiv:2108.10733; cited-by arXiv:2204.07697
+arXiv:1706.02216 (2017) "Inductive Representation Learning on Large Graphs" [cs] (cited-by 268 in-topic, era 1)
+    contribution: GraphSAGE, a general, inductive framework that leverages node feature information to generate embeddings for previously unseen nodes.
+    method: Learning a function that generates embeddings by sampling and aggregating features from a node's local neighborhood.
+    dataset: Citation data, Reddit post data, and a multi-graph dataset of protein-protein interactions.
+    result: Outperforms strong baselines on three inductive node-classification benchmarks.
+    relations: critiques arXiv:1607.00653; uses arXiv:1403.6652; cites arXiv:1503.03578; uses arXiv:1609.02907; compares-with arXiv:1611.07308; cites arXiv:1603.08861; cited-by arXiv:2302.05631; compared-by arXiv:2305.06142; cited-by arXiv:2407.03125; compared-by arXiv:2411.07269; compared-by arXiv:2411.12330; used-by arXiv:2501.00773
+arXiv:1710.10903 (2017) "Graph Attention Networks" [stat] (cited-by 240 in-topic, era 1)
+    contribution: Introduction of Graph Attention Networks (GATs) using masked self-attentional layers to allow nodes to attend to their neighborhoods with varying weights.
+    method: Masked self-attentional layers applied to graph-structured data, enabling inductive and transductive learning without costly matrix operations.
+    dataset: Cora, Citeseer, Pubmed citation networks, and a protein-protein interaction dataset.
+    result: Achieved or matched state-of-the-art results across four established transductive and inductive graph benchmarks.
+    relations: compares-with arXiv:1403.6652; uses arXiv:1603.08861; uses arXiv:1606.09375; extends arXiv:1609.02907; extends arXiv:1611.08402; uses arXiv:1706.02216; cited-by arXiv:2302.05631; compared-by arXiv:2305.06142; cited-by arXiv:2306.02376; extended-by arXiv:2401.01626; compared-by arXiv:2411.07269; compared-by arXiv:2411.12330
+arXiv:1704.01212 (2017) "Neural Message Passing for Quantum Chemistry" [cs] (cited-by 193 in-topic, era 1)
+    contribution: Reformulation of existing models into a single common framework called Message Passing Neural Networks (MPNNs) and exploration of novel variations.
+    method: Message Passing Neural Networks (MPNNs) utilizing a message passing algorithm and aggregation procedure invariant to molecular symmetries.
+    dataset: An important molecular property prediction benchmark (specific name not provided in text).
+    result: Demonstrated state of the art results on the molecular property prediction benchmark.
+    limitation: The approach may be limited by the size of molecules or the accuracy of ground truth labels in current datasets.
+    relations: cites arXiv:1312.6203; cites arXiv:1606.09375; motivated-by arXiv:1609.02907; cites arXiv:1612.00222; cites arXiv:1509.09292; compares-with arXiv:1511.05493; cited-by arXiv:2302.05631; used-by arXiv:2305.18632; cited-by arXiv:2306.02376; cited-by arXiv:2411.07269; cited-by arXiv:2502.17739; cited-by arXiv:2503.00578
+arXiv:1703.06103 (2017) "Modeling Relational Data with Graph Convolutional Networks" [stat] (cited-by 53 in-topic, era 1)
+    contribution: Introduction of Relational Graph Convolutional Networks (R-GCNs) specifically designed for highly multi-relational data in knowledge bases.
+    method: Relational Graph Convolutional Networks (R-GCNs) applied to link prediction and entity classification, including using R-GCNs as an encoder for factorization models like DistMult.
+    dataset: FB15k-237
+    result: 29.8% improvement on FB15k-237 when using R-GCNs as an encoder compared to a decoder-only baseline.
+    relations: cited-by arXiv:2502.12908; used-by arXiv:1709.05584; cited-by arXiv:1806.08804; cited-by arXiv:1810.05997; cited-by arXiv:1901.00596; used-by arXiv:1903.02428
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 53 in-topic, era 1)
+    contribution: The Transformer, a new simple network architecture based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
+    method: Attention-based architecture (Transformer) replacing recurrent or convolutional neural networks.
+    dataset: WMT 2014 English-to-German, WMT 2014 English-to-French, and English constituency parsing.
+    result: 28.4 BLEU on WMT 2014 English-to-German (improving existing best results by over 2 BLEU); 41.8 BLEU on WMT 2014 English-to-French.
+    relations: cites arXiv:1406.1078; uses arXiv:1512.03385; uses arXiv:1412.6980; cited-by arXiv:2302.05631; extended-by arXiv:2306.02376; cited-by arXiv:2501.00773; used-by arXiv:1806.01261; extended-by arXiv:1710.10903; cited-by arXiv:2002.09518
+arXiv:1709.05584 (2017) "Representation Learning on Graphs: Methods and Applications" [cs] (cited-by 45 in-topic, era 1)
+    contribution: A conceptual review of advancements in graph representation learning and the development of a unified framework to describe recent approaches.
+    method: Review of matrix factorization-based methods, random-walk based algorithms, and graph neural networks (GNNs) for node and (sub)graph embedding.
+    relations: compares-with arXiv:1607.00653; cites arXiv:1403.6652; extends arXiv:1406.1078; compares-with arXiv:1611.08097; uses arXiv:1611.07308; uses arXiv:1609.02907; cited-by arXiv:2411.07269; used-by arXiv:1806.01973; cited-by arXiv:1806.08804; cited-by arXiv:1810.00826; cited-by arXiv:1901.00596; cited-by arXiv:1905.11136
+arXiv:1810.00826 (2018) "How Powerful are Graph Neural Networks?" [cs] (cited-by 219 in-topic, era 1)
+    contribution: A theoretical framework for analyzing the expressive power of GNNs and the development of a simple architecture that is as powerful as the Weisfeiler-Lehman graph isomorphism test.
+    method: Theoretical characterization of discriminative power and the development of a new GNN architecture designed to match the Weisfeiler-Lehman test.
+    dataset: A number of graph classification benchmarks.
+    result: The proposed model achieves state-of-the-art performance on graph classification benchmarks.
+    limitation: Popular GNN variants (e.g., GCN, GraphSAGE) cannot learn to distinguish certain simple graph structures.
+    relations: cites arXiv:1806.08804; cites arXiv:1709.05584; cites arXiv:1511.05493; cites arXiv:1706.02216; uses arXiv:1609.02907; cites arXiv:1710.10903; cited-by arXiv:2302.05631; used-by arXiv:2305.06142; extended-by arXiv:2401.01626; cited-by arXiv:2403.06079; motivates arXiv:2407.03125; compared-by arXiv:2411.07269
+arXiv:1801.07606 (2018) "Deeper Insights into Graph Convolutional Networks for Semi-Supervised
+  Learning" [cs] (cited-by 103 in-topic, era 1)
+    contribution: Provides theoretical insights into GCNs as a form of Laplacian smoothing and proposes co-training and self-training approaches to improve performance with minimal labels and eliminate the need for validation labels.
+    method: Analysis of GCN as Laplacian smoothing; implementation of co-training and self-training approaches.
+    result: Significantly improved GCN performance in learning with very few labels and removed the requirement for additional labels for validation.
+    limitation: Potential concerns of over-smoothing when using many convolutional layers.
+    relations: cited-by arXiv:2302.05631; cited-by arXiv:2305.06142; cited-by arXiv:2306.02376; cited-by arXiv:2401.01626; compared-by arXiv:2407.03125; cited-by arXiv:2411.12330
+arXiv:1806.03536 (2018) "Representation Learning on Graphs with Jumping Knowledge Networks" [cs] (cited-by 101 in-topic, era 1)
+    contribution: Proposes Jumping Knowledge (JK) networks to flexibly leverage different neighborhood ranges for each node to enable better structure-aware representation.
+    method: Jumping Knowledge (JK) networks architecture that adapts to local neighborhood properties by combining different neighborhood ranges.
+    dataset: Social, bioinformatics, and citation networks.
+    result: Achieves state-of-the-art performance and consistently improves the performance of GCN, GraphSAGE, and GAT models.
+    relations: compared-by arXiv:2407.03125; compared-by arXiv:2411.12330; compared-by arXiv:2503.00578; compared-by arXiv:2101.11859; used-by arXiv:1903.02428; cited-by arXiv:1810.00826
+arXiv:1810.02244 (2018) "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks" [cs] (cited-by 84 in-topic, era 1)
+    contribution: Relates GNN expressiveness to the 1-dimensional Weisfeiler-Leman (1-WL) heuristic and proposes k-dimensional GNNs (k-GNNs) to capture higher-order graph structures.
+    method: Generalization of GNNs into k-dimensional GNNs (k-GNNs) to account for higher-order structures at multiple scales.
+    result: Confirms that GNNs have the same expressiveness as 1-WL and that higher-order information is useful for graph classification and regression tasks.
+    limitation: GNNs share the same shortcomings as the 1-WL algorithm in terms of distinguishing non-isomorphic (sub-)graphs.
+    relations: extended-by arXiv:2401.01626; cited-by arXiv:2403.06079; cited-by arXiv:2407.03125; cited-by arXiv:2411.07269; used-by arXiv:1905.11136; cited-by arXiv:2002.09518
+arXiv:1806.08804 (2018) "Hierarchical Graph Representation Learning with Differentiable Pooling" [cs] (cited-by 83 in-topic, era 1)
+    contribution: DiffPool, a differentiable graph pooling module that enables end-to-end hierarchical graph representation learning.
+    method: Differentiable soft cluster assignment that maps nodes to clusters to form coarsened inputs for subsequent GNN layers.
+    dataset: Five benchmark datasets for graph classification.
+    result: Average improvement of 5-10% accuracy on graph classification benchmarks; achieved new state-of-the-art on four out of five datasets.
+    relations: compares-with arXiv:1704.01212; uses arXiv:1706.02216; compares-with arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1509.09292; cites arXiv:1511.05493; compared-by arXiv:2411.07269; cited-by arXiv:2501.00773; compared-by arXiv:1901.00596; cited-by arXiv:1905.11136; used-by arXiv:2002.09518; cited-by arXiv:1810.00826
+arXiv:1810.05997 (2018) "Predict then Propagate: Graph Neural Networks meet Personalized PageRank" [cs] (cited-by 74 in-topic, era 1)
+    contribution: Introduction of PPNP (Personalized Propagation of Neural Predictions) and its fast approximation APPNP, which leverages personalized PageRank to allow for a large, adjustable neighborhood for node classification.
+    method: A propagation scheme based on the relationship between Graph Convolutional Networks (GCN) and personalized PageRank, decoupling feature transformation from propagation.
+    result: Outperforms several recently proposed methods for semi-supervised classification; training time is on par or faster and parameter count is on par or lower than previous models.
+    relations: uses arXiv:1412.6980; compares-with arXiv:1710.10903; cites arXiv:1607.00653; cites arXiv:1509.09292; cites arXiv:1605.05273; cites arXiv:1704.01212; cited-by arXiv:2302.05631; compared-by arXiv:2305.06142; compared-by arXiv:2306.02376; motivates arXiv:2407.03125; compared-by arXiv:2411.07269; compared-by arXiv:2411.12330
+arXiv:1812.08434 (2018) "Graph Neural Networks: A Review of Methods and Applications" [cs] (cited-by 73 in-topic, era 1)
+    contribution: Proposes a general design pipeline for GNN models, systematically categorizes applications, and proposes four open problems for future research.
+    method: Survey of Graph Neural Networks (GNNs) focusing on message passing between nodes and variants such as GCN, GAT, and GRN.
+    relations: cited-by arXiv:2302.05631; cited-by arXiv:2305.18632; cited-by arXiv:2411.12330; cited-by arXiv:2108.10733; cited-by arXiv:1902.07153; cited-by arXiv:2002.09518
+arXiv:1806.01973 (2018) "Graph Convolutional Neural Networks for Web-Scale Recommender Systems" [cs] (cited-by 70 in-topic, era 1)
+    contribution: Development and deployment of PinSage, a data-efficient Graph Convolutional Network (GCN) algorithm for web-scale recommendation.
+    method: Combines efficient random walks with graph convolutions to generate node embeddings incorporating graph structure and node features, utilizing a training strategy based on increasingly hard training examples and a MapReduce model inference algorithm.
+    dataset: Pinterest graph containing 7.5 billion examples, 3 billion nodes (pins and boards), and 18 billion edges.
+    result: PinSage generated higher-quality recommendations than comparable deep learning and graph-based alternatives according to offline metrics, user studies, and A/B tests.
+    relations: extends arXiv:1706.02216; extends arXiv:1609.02907; uses arXiv:1709.05584; uses arXiv:1611.08097; cites arXiv:1511.05493; cites arXiv:1312.6203; cited-by arXiv:2411.07269; cited-by arXiv:1810.05997; cited-by arXiv:1901.00596; cited-by arXiv:2005.00687; used-by arXiv:2008.01767; cited-by arXiv:2105.04493
+arXiv:1811.05868 (2018) "Pitfalls of Graph Neural Network Evaluation" [cs] (cited-by 63 in-topic, era 1)
+    contribution: Identification of serious shortcomings in existing GNN evaluation strategies, specifically regarding split selection and training procedure consistency.
+    method: Empirical evaluation of four prominent GNN models across different data splits and training procedures (e.g., early stopping criteria).
+    result: Different data splits lead to dramatically different model rankings; simpler GNN architectures can outperform sophisticated ones when hyperparameters and training procedures are tuned fairly.
+    relations: uses arXiv:1603.08861; uses arXiv:1609.02907; uses arXiv:1611.08402; uses arXiv:1706.02216; uses arXiv:1710.10903; uses arXiv:1412.6980; used-by arXiv:2305.06142; cited-by arXiv:2306.02376; used-by arXiv:2411.12330; compared-by arXiv:2007.09296; cited-by arXiv:2108.10733; used-by arXiv:1810.05997
+arXiv:1806.01261 (2018) "Relational inductive biases, deep learning, and graph networks" [cs] (cited-by 62 in-topic, era 1)
+    contribution: Argues that combinatorial generalization via structured representations and relational inductive biases is essential for human-like AI; introduces the graph network as a unified building block.
+    method: Relational inductive biases within deep learning architectures, specifically the introduction of the 'graph network' framework to generalize neural networks operating on graphs.
+    limitation: Current AI struggles with generalizing beyond experiences (combinatorial generalization) compared to human intelligence.
+    relations: cites arXiv:1509.09292; cites arXiv:1612.00222; uses arXiv:1706.03762; extends arXiv:1704.01212; cites arXiv:1611.08097; cites arXiv:1502.03167; cited-by arXiv:2503.00578; cited-by arXiv:1901.00596; cited-by arXiv:1902.07153; cited-by arXiv:1903.02428; compared-by arXiv:1905.10947; cited-by arXiv:2101.00079
+arXiv:1801.10247 (2018) "FastGCN: Fast Learning with Graph Convolutional Networks via Importance
+  Sampling" [cs] (cited-by 53 in-topic, era 1)
+    contribution: FastGCN, a batched training scheme for Graph Convolutional Networks that relaxes the requirement for simultaneous availability of test data and improves training efficiency.
+    method: Interpreting graph convolutions as integral transforms of embedding functions under probability measures and using Monte Carlo approaches with importance sampling.
+    result: Training is orders of magnitude more efficient while predictions remain comparably accurate to GCN.
+    relations: extends arXiv:1706.02216; cites arXiv:1312.6203; cites arXiv:1509.09292; cites arXiv:1511.05493; cites arXiv:1506.05163; cites arXiv:1605.05273; cited-by arXiv:2407.03125; used-by arXiv:2503.00578; cited-by arXiv:1901.00596; extended-by arXiv:1806.01973; cited-by arXiv:1810.05997; used-by arXiv:1902.07153
+arXiv:1812.09902 (2018) "Invariant and Equivariant Graph Networks" [cs] (cited-by 40 in-topic, era 1)
+    contribution: A characterization of all permutation invariant and equivariant linear layers for (hyper-)graph data.
+    method: Computation of orthogonal bases for invariant and equivariant layers; generalization to multi-graph data and k-tuples of nodes.
+    result: For edge-value graph data, dimensions are 2 (invariant) and 15 (equivariant); for k-tuples of nodes, dimensions are the k-th and 2k-th Bell numbers; model can approximate any message passing neural network.
+    relations: uses arXiv:1704.01212; cites arXiv:1506.05163; cites arXiv:1312.6203; cites arXiv:1611.08402; uses arXiv:1806.08804; uses arXiv:1511.02136; cited-by arXiv:2401.01626; cited-by arXiv:2407.03125; extended-by arXiv:1905.11136; extended-by arXiv:2204.07697; cited-by arXiv:1901.00596; cited-by arXiv:2108.10733
+arXiv:1901.00596 (2019) "A Comprehensive Survey on Graph Neural Networks" [cs] (cited-by 115 in-topic, era 1)
+    contribution: A comprehensive overview of graph neural networks (GNNs) and a new taxonomy dividing state-of-the-art GNNs into four categories: recurrent, convolutional, graph autoencoders, and spatial-temporal GNNs.
+    method: Taxonomy-based survey and literature review.
+    relations: uses arXiv:1511.05493; compares-with arXiv:1312.6203; compares-with arXiv:1506.05163; uses arXiv:1606.09375; uses arXiv:1609.02907; uses arXiv:1511.02136; cited-by arXiv:2302.05631; cited-by arXiv:2305.06142; cited-by arXiv:2407.03125; cited-by arXiv:2411.12330; cited-by arXiv:2108.10733; cited-by arXiv:1902.07153
+arXiv:1902.07153 (2019) "Simplifying Graph Convolutional Networks" [cs] (cited-by 103 in-topic, era 1)
+    contribution: Reducing GCN complexity by removing nonlinearities and collapsing weight matrices, resulting in a linear model equivalent to a fixed low-pass filter followed by a linear classifier.
+    method: Successive removal of nonlinearities and collapsing of weight matrices between consecutive layers to create a simplified linear model.
+    result: Simplifications do not negatively impact accuracy in many applications; yields up to two orders of magnitude speedup over FastGCN.
+    relations: uses arXiv:1609.02907; compares-with arXiv:1710.10903; uses arXiv:1801.10247; compares-with arXiv:1810.00826; compares-with arXiv:1706.02216; uses arXiv:1412.6980; cited-by arXiv:2302.05631; used-by arXiv:2305.06142; cited-by arXiv:2306.02376; cited-by arXiv:2401.01626; compared-by arXiv:2411.12330; compared-by arXiv:2501.15461
+arXiv:1903.02428 (2019) "Fast Graph Representation Learning with PyTorch Geometric" [cs] (cited-by 73 in-topic, era 1)
+    contribution: Introduction of PyTorch Geometric, a library for deep learning on irregularly structured input data (graphs, point clouds, manifolds) built on PyTorch.
+    method: Leveraging sparse GPU acceleration, dedicated CUDA kernels, and efficient mini-batch handling for varying input sizes.
+    result: High data throughput achieved via sparse GPU acceleration and efficient mini-batching; includes a comprehensive comparative study of implemented methods.
+    relations: uses arXiv:1806.03536; cites arXiv:1511.05493; uses arXiv:1609.02907; uses arXiv:1710.10903; cites arXiv:1611.08097; uses arXiv:1704.01212; used-by arXiv:2306.02376; cited-by arXiv:2503.00578; cited-by arXiv:2005.00687; cited-by arXiv:2108.10733; used-by arXiv:1905.11136; used-by arXiv:2007.09296
+arXiv:1907.10903 (2019) "DropEdge: Towards Deep Graph Convolutional Networks on Node
+  Classification" [cs] (cited-by 56 in-topic, era 1)
+    contribution: A novel and flexible technique called DropEdge to alleviate over-fitting and over-smoothing in deep Graph Convolutional Networks (GCNs).
+    method: Randomly removing a certain number of edges from the input graph at each training epoch to act as a data augmenter and message passing reducer.
+    result: Consistently improves performance on a variety of both shallow and deep GCNs across several benchmarks; theoretically demonstrates reduction in over-smoothing convergence speed or relief of information loss.
+    relations: uses arXiv:1905.10947; uses arXiv:1609.02907; cites arXiv:1801.07606; cites arXiv:1403.6652; uses arXiv:1806.03536; cites arXiv:1901.00596; cited-by arXiv:2306.02376; cited-by arXiv:2407.03125; cited-by arXiv:2503.00578; compared-by arXiv:2005.00687; used-by arXiv:2101.11859; cited-by arXiv:2212.09034
+arXiv:1905.11136 (2019) "Provably Powerful Graph Networks" [cs] (cited-by 51 in-topic, era 1)
+    contribution: Demonstrates that k-order invariant/equivariant networks can match k-WL test expressiveness and introduces a scalable 2-order network with 3-WL expressive power.
+    method: k-order invariant and equivariant graph neural networks; specifically, a reduced 2-order network interleaving MLPs with a single quadratic operation (matrix multiplication).
+    result: Achieved state of the art results on popular graph classification and regression tasks; provides guaranteed 3-WL expressiveness.
+    limitation: Higher expressiveness of k-order networks comes with a computational cost of processing high order tensors.
+    relations: uses arXiv:1810.02244; cites arXiv:1605.05273; cites arXiv:1511.02136; cites arXiv:1806.08804; extends arXiv:1812.09902; uses arXiv:1810.00826; cited-by arXiv:2403.06079; cited-by arXiv:2407.03125; used-by arXiv:2204.07697; cited-by arXiv:2205.15555; cited-by arXiv:2212.09034
+arXiv:1905.10947 (2019) "Graph Neural Networks Exponentially Lose Expressive Power for Node
+  Classification" [cs] (cited-by 50 in-topic, era 1)
+    contribution: Demonstrates that GCN outputs exponentially approach signals containing only connected component and node degree information as layers tend to infinity, leading to information loss.
+    method: Generalizing GCN forward propagation as a dynamical system and analyzing asymptotic behavior via the spectra of the (augmented) normalized Laplacian.
+    dataset: Erdős–Rényi graphs and unspecified real-world datasets.
+    result: GCNs on sufficiently dense and large Erdős–Rényi graphs suffer from information loss with high probability; proposed weight scaling enhances predictive performance on real data.
+    relations: cites arXiv:1412.6980; compares-with arXiv:1509.09292; compares-with arXiv:1511.05493; uses arXiv:1704.01212; motivated-by arXiv:1706.02216; uses arXiv:1609.02907; cited-by arXiv:2401.01626; cited-by arXiv:2407.03125; cited-by arXiv:2503.00578; used-by arXiv:1907.10903; critiqued-by arXiv:2108.10733; cited-by arXiv:2101.11859
+arXiv:2005.00687 (2020) "Open Graph Benchmark: Datasets for Machine Learning on Graphs" [cs] (cited-by 88 in-topic, era 1)
+    contribution: The Open Graph Benchmark (OGB), a diverse set of large-scale, realistic benchmark datasets and an automated end-to-end graph ML pipeline to facilitate scalable, robust, and reproducible research.
+    method: Unified evaluation protocol using application-specific data splits and evaluation metrics, including data loaders, evaluation scripts, and baseline code.
+    dataset: Diverse domains including social and information networks, biological networks, molecular graphs, source code ASTs, and knowledge graphs.
+    result: Experiments indicate significant challenges in scalability to large-scale graphs and out-of-distribution generalization under realistic data splits.
+    limitation: Significant challenges regarding scalability to large-scale graphs and out-of-distribution generalization.
+    relations: cites arXiv:1810.00826; cites arXiv:1903.02428; cites arXiv:1611.07308; cites arXiv:1704.01212; uses arXiv:1609.02907; uses arXiv:1706.02216; used-by arXiv:2411.07269; cited-by arXiv:2411.12330; cited-by arXiv:2501.00773; cited-by arXiv:2503.00578; used-by arXiv:2212.09034; compared-by arXiv:2101.00079
+arXiv:2002.05287 (2020) "Geom-GCN: Geometric Graph Convolutional Networks" [cs] (cited-by 63 in-topic, era 1)
+    contribution: A novel geometric aggregation scheme for graph neural networks to overcome the loss of structural information and the inability to capture long-range dependencies in disassortative graphs.
+    method: Geom-GCN (Geometric Graph Convolutional Networks) consisting of three modules: node embedding, structural neighborhood, and bi-level aggregation.
+    dataset: A wide range of open datasets of graphs.
+    result: Achieved state-of-the-art performance on a wide range of open datasets of graphs.
+    relations: cites arXiv:1606.09375; cites arXiv:1511.05493; uses arXiv:1609.02907; cites arXiv:1704.01212; critiques arXiv:1810.00826; cites arXiv:1806.03536; used-by arXiv:2305.06142; used-by arXiv:2306.02376; used-by arXiv:2411.12330; used-by arXiv:2503.00578; cited-by arXiv:2007.09296; used-by arXiv:2105.04493
+arXiv:2006.11468 (2020) "Beyond Homophily in Graph Neural Networks: Current Limitations and
+  Effective Designs" [cs] (cited-by 51 in-topic, era 1)
+    contribution: Identification of key design principles (ego- and neighbor-embedding separation, higher-order neighborhoods, and combination of intermediate representations) to improve GNN performance under heterophily.
+    method: H2GCN, a graph neural network incorporating ego- and neighbor-embedding separation, higher-order neighborhoods, and combination of intermediate representations.
+    dataset: Synthetic and real networks with heterophily.
+    result: Increased accuracy by up to 40% on synthetic networks and 27% on real networks compared to models without these designs.
+    limitation: Many popular GNNs fail to generalize to heterophily settings and can be outperformed by models that ignore graph structure (e.g., MLPs).
+    relations: compared-by arXiv:2411.07269; compared-by arXiv:2411.12330; compared-by arXiv:2503.00578; used-by arXiv:2105.04493; compared-by arXiv:2212.09034
+arXiv:2007.09296 (2020) "Towards Deeper Graph Neural Networks" [cs] (cited-by 16 in-topic, era 1)
+    contribution: Systematic analysis of over-smoothing, identifying the entanglement of representation transformation and propagation as the key factor, and proposing the Deep Adaptive Graph Neural Network (DAGNN).
+    method: Decoupling representation transformation from propagation and proposing Deep Adaptive Graph Neural Network (DAGNN) to adaptively incorporate information from large receptive fields.
+    dataset: Citation, co-authorship, and co-purchase datasets.
+    result: Demonstrated superiority of the proposed methods through experiments on citation, co-authorship, and co-purchase datasets.
+    relations: compares-with arXiv:1811.05868; uses arXiv:1706.02216; uses arXiv:1609.02907; uses arXiv:1611.08402; cites arXiv:1806.03536; uses arXiv:1810.05997; cited-by arXiv:2306.02376; cited-by arXiv:2503.00578; cited-by arXiv:2105.04493; cited-by arXiv:2212.09034
+arXiv:2008.01767 (2020) "Graph Neural Networks: Architectures, Stability and Transferability" [cs] (cited-by 5 in-topic, era 1)
+    contribution: Generalization of CNNs to graphs, demonstration of permutation equivariance, stability to graph deformations, and proof of convergence to graphon neural networks to justify transferability.
+    method: Graph convolutional filters composed with pointwise nonlinearities and stacked in layers.
+    relations: uses arXiv:1609.02907; cites arXiv:1211.0053; uses arXiv:1806.01973; uses arXiv:1606.09375; uses arXiv:1312.6203; uses arXiv:1509.09292; cited-by arXiv:2204.07697
+arXiv:2003.03777 (2020) "Graphs, Convolutions, and Neural Networks: From Graph Filters to Graph
+  Neural Networks" [cs] (cited-by 4 in-topic, era 1)
+    contribution: Characterization of the representation space of GNNs using graph signal processing and the introduction of GNN extensions using edge-varying and autoregressive moving average graph filters.
+    method: Graph signal processing to analyze graph convolutional filters, focusing on permutation equivariance and stability to topological changes.
+    result: Demonstrated that architectures with graph convolutional filters possess permutation equivariance and stability to changes in topology, explaining scalability and transferability.
+    relations: cites arXiv:1312.6203; cites arXiv:1606.09375; cites arXiv:1609.02907; cites arXiv:1902.07153; cites arXiv:1810.00826; cites arXiv:1511.02136
+arXiv:2002.09518 (2020) "Memory-Based Graph Networks" [cs] (cited-by 3 in-topic, era 1)
+    contribution: Introduction of an efficient memory layer for GNNs that jointly learns node representations and coarsens the graph, alongside two new architectures: MemGNN and GMN.
+    method: Memory-based layer for hierarchical graph representation learning (MemGNN and GMN).
+    dataset: Eight out of nine graph classification and regression benchmarks, including molecule data.
+    result: Achieved state-of-the-art results in 8 out of 9 benchmarks; learned representations correspond to chemical features in molecule data.
+    relations: cites arXiv:1605.05273; cites arXiv:1706.02216; cites arXiv:1810.02244; uses arXiv:1806.08804; cites arXiv:1609.02907; uses arXiv:1710.10903; cited-by arXiv:2205.15555
+arXiv:2101.11859 (2021) "Interpreting and Unifying Graph Neural Networks with An Optimization
+  Framework" [cs] (cited-by 9 in-topic, era 2)
+    contribution: Establishes a unified optimization framework that connects different GNN propagation mechanisms by showing they are optimal solutions to a feature fitting function over graph kernels with graph regularization.
+    method: A unified optimization framework involving a feature fitting function over a class of graph kernels with a graph regularization term, including two novel objective functions with adjustable low-pass or high-pass filtering kernels.
+    result: The proposed GNNs outperform state-of-the-art methods and demonstrate an ability to alleviate over-smoothing.
+    relations: compares-with arXiv:1806.03536; uses arXiv:1902.07153; compares-with arXiv:1609.02907; compares-with arXiv:1810.05997; compares-with arXiv:1606.09375; compares-with arXiv:1706.02216; compared-by arXiv:2302.05631; compared-by arXiv:2305.06142
+arXiv:2108.10733 (2021) "Graph Neural Networks: Methods, Applications, and Opportunities" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A comprehensive survey of graph neural networks (GNNs) across supervised, unsupervised, semi-supervised, and self-supervised learning settings, including a taxonomy of methods and architecture guidelines.
+    method: Taxonomy and analysis of GNN approaches from theoretical and empirical standpoints.
+    limitation: Open challenges affecting the general applicability of GNNs.
+    relations: critiques arXiv:1905.10947; cites arXiv:1901.00596; cites arXiv:1812.08434; cites arXiv:1706.02216; uses arXiv:1611.07308; cites arXiv:1403.6652
+arXiv:2105.04493 (2021) "Graph Feature Gating Networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Graph Feature Gating Networks (GFGN) to enable heterogeneous contributions of feature dimensions during aggregation.
+    method: A general graph feature gating network based on the graph signal denoising problem, incorporating three specific graph filters to allow varying levels of feature dimension contributions.
+    dataset: Various real-world datasets (specific names not listed in abstract).
+    result: Demonstrated effectiveness and robustness through extensive experiments.
+    relations: uses arXiv:1706.02216; uses arXiv:1710.10903; cites arXiv:1606.09375; compares-with arXiv:1902.07153; cites arXiv:1806.01261; cites arXiv:1901.00596
+arXiv:2101.00079 (2021) "Graph Networks with Spectral Message Passing" [stat] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of the Spectral Graph Network (SGN), which applies message passing to both spatial and spectral domains by projecting vertices onto Laplacian eigenvectors.
+    method: Projecting spatial graph vertices onto Laplacian eigenvectors to form a fully connected 'spectral graph' and applying learned message passing.
+    dataset: Graph-based MNIST, MoleculeNet, QM9, and random graphs (shortest path problems).
+    result: Promotes efficient training with fewer iterations, provides robustness to edge dropout, and outperforms baselines on classification tasks.
+    relations: uses arXiv:1312.6203; cites arXiv:1611.08097; cites arXiv:1704.01212; cites arXiv:1806.01261; cites arXiv:1812.08434; cites arXiv:1901.00596
+arXiv:2102.02026 (2021) "Learning Graph Representations" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Discussion of methods for learning lower-dimensional graph representations for downstream machine learning tasks.
+    method: Graph Convolutional Neural Networks (GCNNs), graph autoencoders, and spatio-temporal graph neural networks.
+    relations: cites arXiv:1609.02907; cites arXiv:1312.6203; cites arXiv:1406.1078
+arXiv:2204.07697 (2022) "Theory of Graph Neural Networks: Representation and Learning" [cs] (cited-by 6 in-topic, era 2)
+    contribution: Summarizes emerging theoretical results on approximation and learning properties of message passing and higher-order GNNs, focusing on representation, generalization, and extrapolation.
+    method: Theoretical analysis of representation, generalization, and extrapolation properties of message passing GNNs and higher-order GNNs.
+    relations: extends arXiv:1810.00826; extends arXiv:1810.02244; extends arXiv:1812.09902; cites arXiv:1612.00222; cites arXiv:1806.01261; cites arXiv:1509.09292; cited-by arXiv:2407.03125
+arXiv:2212.09034 (2022) "Graph Neural Networks are Inherently Good Generalizers: Insights by
+  Bridging GNNs and MLPs" [cs] (cited-by 4 in-topic, era 2)
+    contribution: Identifies that GNN superiority in node-level prediction stems from intrinsic generalization capability rather than expressivity, introducing the P(ropagational)MLP model class as an analytic tool.
+    method: Introduction of P(ropagational)MLP (trained as MLP, tested as GNN) and analysis of the Neural Tangent Kernel (NTK) feature map at the infinite-width limit.
+    result: PMLPs perform on par with or exceed GNN counterparts while being much more efficient in training; both struggle to extrapolate non-linear functions for extremely out-of-distribution samples but show greater potential to generalize to samples near the training range.
+    limitation: GNNs and PMLP counterparts cannot extrapolate non-linear functions for extremely out-of-distribution samples.
+    relations: uses arXiv:1609.02907; compares-with arXiv:1902.07153; cites arXiv:1810.05997; uses arXiv:2005.00687; cites arXiv:1312.6203; cites arXiv:1704.01212
+arXiv:2205.15555 (2022) "Graph-level Neural Networks: Current Progress and Future Directions" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A systematic survey and taxonomy of Graph-level Neural Networks (GLNNs) covering deep neural networks, graph neural networks, and graph pooling, including an investigation of reproducibility, benchmarks, and datasets.
+    method: Systematic taxonomy and literature review of GLNN categories.
+    relations: cites arXiv:1901.00596; cites arXiv:1810.00826; cites arXiv:1704.01212; cites arXiv:1509.09292; cites arXiv:1605.05273; cites arXiv:1511.02136
+arXiv:2201.01188 (2022) "Graph Neural Networks: a bibliometrics overview" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A Scopus-based bibliometric overview of Graph Neural Networks (GNNs) research from 2004 to the present, evaluating trends quantitatively and qualitatively.
+    method: Bibliometric analysis of Scopus database records including research trends, subject distribution, author/institution activity, publication sources, and citation analysis.
+    dataset: Scopus database
+    result: Identified frequent subject categories (e.g., computer science, engineering, telecommunications), most active publication source (Lecture Notes in Computer Science), and most impactful regions (United States, China, and Canada).
+    relations: (none in-topic)
+arXiv:2201.00115 (2022) "Toward the Analysis of Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: An approach to analyze GNNs by converting them into FFNNs to reuse existing FFNN analysis techniques.
+    method: Converting GNNs into FFNNs and discussing designs for scalability and accuracy.
+    relations: cites arXiv:1806.01973; cites arXiv:1704.01212
+arXiv:2305.06142 (2023) "Feature Expansion for Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    contribution: Analysis of the feature space in spatial and spectral GNNs and the proposal of methods to expand it to prevent linear correlation caused by repeated aggregations.
+    method: Decomposition of GNNs into determined feature spaces and trainable weights; introduction of 1) feature subspaces flattening and 2) structural principal components.
+    result: Demonstrated effectiveness of a more comprehensive feature space with comparable inference time to baselines and efficient convergence capability.
+    relations: compares-with arXiv:1606.09375; uses arXiv:1810.00826; cites arXiv:1901.00596; compares-with arXiv:1710.10903; compares-with arXiv:2101.11859; uses arXiv:1902.07153
+arXiv:2310.01267 (2023) "Cooperative Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    contribution: A novel framework for training graph neural networks where nodes act as players choosing between 'listen', 'broadcast', 'listen and broadcast', or 'isolate' strategies.
+    method: A dynamic message-passing paradigm where node strategies are determined based on their state, generalizing the standard message-passing scheme.
+    dataset: Synthetic dataset and real-world datasets.
+    relations: (none in-topic)
+arXiv:2302.05631 (2023) "A Survey on Spectral Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    contribution: A comprehensive survey and review of the recent developments in spectral Graph Neural Networks (GNNs), covering models, theory, and applications.
+    method: Categorization of spectral GNNs based on spectrum information (eigenvalues or eigenvectors) and a comparative analysis of the connection between spatial and spectral GNNs.
+    result: A quantitative experiment benchmarking popular spectral GNNs (specific numerical results not provided in the abstract).
+    relations: cites arXiv:1312.6203; cites arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1810.00826; cites arXiv:1704.01212; cites arXiv:1706.02216
+arXiv:2305.18632 (2023) "Graph Rewriting for Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes that graph rewriting subsumes GNNs and introduces Graph Rewriting Neural Networks (GReNN) as a formal semantic foundation and engineering discipline.
+    method: Representing GNNs as graph rewrite systems; specifically implementing a Message Passing Neural Network using a Groove graph rewriting model.
+    result: Demonstrated a case study of a Message Passing Neural Network realized as a Groove graph rewriting model and explored its incremental operation for dynamic updates.
+    relations: cites arXiv:1812.08434; uses arXiv:1704.01212; cites arXiv:1511.05493
+arXiv:2306.02376 (2023) "Towards Deep Attention in Graph Neural Networks: Problems and Remedies" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Identification of problematic phenomena in deep graph attention (vulnerability to over-smoothed features and smooth cumulative attention) and the proposal of AERO-GNN to mitigate these issues.
+    method: AERO-GNN, a novel GNN architecture featuring adaptive and less smooth attention functions designed for deep layers (up to 64).
+    dataset: 9 out of 12 node classification benchmarks.
+    result: AERO-GNN outperforms baseline GNNs on 9 out of 12 node classification benchmarks and demonstrates higher performance at deep layers (up to 64).
+    relations: cites arXiv:1907.10903; extends arXiv:1706.03762; cites arXiv:1801.07606; cites arXiv:2007.09296; uses arXiv:2002.05287; cites arXiv:1811.05868
+arXiv:2407.03125 (2024) "Foundations and Frontiers of Graph Learning Theory" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides a comprehensive summary of theoretical foundations and breakthroughs regarding approximation and learning behaviors in prevalent graph learning models.
+    method: Theoretical analysis framework covering expressiveness power, generalization, optimization, over-smoothing, and over-squashing.
+    relations: cites arXiv:1907.10903; cites arXiv:1901.00596; cites arXiv:2204.07697; cites arXiv:1403.6652; cites arXiv:1211.0053; cites arXiv:1312.6203
+arXiv:2403.13849 (2024) "Graphs Unveiled: Graph Neural Networks and Graph Generation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A comprehensive survey providing an overview of Graph Neural Networks (GNNs) and their applications, including an introduction to the field of graph generation.
+    method: Literature survey and review of existing deep learning approaches for graph data.
+    relations: (none in-topic)
+arXiv:2403.06079 (2024) "Generalization of Graph Neural Networks through the Lens of Homomorphism" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel perspective on GNN generalization by analyzing the entropy of graph homomorphism, providing data-dependent generalization bounds for graph and node classifications.
+    method: Linking graph homomorphism with information-theoretic measures to derive generalization bounds and a unifying framework to characterize GNN models.
+    dataset: Real-world and synthetic datasets.
+    result: The proposed bounds align with empirically observed generalization gaps.
+    relations: cites arXiv:1810.00826; cites arXiv:1810.02244; cites arXiv:1905.11136; uses arXiv:1609.02907; uses arXiv:1603.08861
+arXiv:2411.07269 (2024) "Learning From Graph-Structured Data: Addressing Design Issues and
+  Exploring Practical Applications in Graph Representation Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: An exhaustive review of advancements in graph representation learning and GNNs, including the introduction of a GNN with an advanced high-order pooling function and a molecular graph generative model.
+    method: High-order pooling function for capturing complex node interactions and a GNN-based molecular graph generative model capable of learning invariant and equivariant molecular characteristics.
+    result: Superior performance in addressing diverse real-world challenges compared to established methods (specific quantitative values not provided).
+    relations: compares-with arXiv:1710.10903; compares-with arXiv:1609.02907; cites arXiv:1709.05584; cites arXiv:1806.01973; cites arXiv:1704.01212; compares-with arXiv:1706.02216
+arXiv:2401.01626 (2024) "On the Expressive Power of Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides an overview of the notion of 'expressive power' in GNNs and offers insights into GNN architecture design choices.
+    method: Review and analysis of different perspectives on expressiveness: universal approximation properties, ability to distinguish graph structures (graph isomorphism test), and ability to compute graph properties (graph moments).
+    relations: cites arXiv:1812.09902; extends arXiv:1810.02244; extends arXiv:1810.00826; extends arXiv:1609.02907; cites arXiv:1606.09375; extends arXiv:1710.10903
+arXiv:2411.12330 (2024) "Graph as a feature: improving node classification with non-neural
+  graph-aware logistic regression" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Graph-aware Logistic Regression (GLR), a non-neural model for node classification that encodes node relationships as additional feature vectors.
+    method: Encoding each node's relationships as an additional feature vector and combining it with the node's self-attributes, bypassing message passing.
+    result: Outperforms foundational and state-of-the-art GNN models in node classification and achieves computation time gains up to two orders of magnitude compared to its best neural competitor.
+    limitation: Struggles with generalization in datasets lacking strong homophily (noted as a general problem for GNNs which GLR aims to address).
+    relations: compares-with arXiv:1710.10903; compares-with arXiv:2006.11468; compares-with arXiv:1609.02907; compares-with arXiv:1902.07153; compares-with arXiv:1810.05997; compares-with arXiv:1806.03536
+arXiv:2501.00773 (2025) "OpenGLT: A Comprehensive Benchmark of Graph Neural Networks for Graph-Level Tasks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Presentation of OpenGLT, a unified evaluation framework for GNNs on graph-level tasks across four domains and three real-world scenarios.
+    method: Systematic categorization of GNNs into five types (node-based, hierarchical pooling-based, subgraph-based, graph learning-based, and self-supervised learning-based) and standardized evaluation across classification and regression tasks.
+    dataset: 26 classification and regression datasets across four domains (social networks, biology, chemistry, and motif counting).
+    result: No single architecture dominates; subgraph-based GNNs excel in expressiveness, graph learning/SSL-based methods in robustness, and node/pooling-based models in efficiency; graph topological features (density, centrality) can guide architecture selection.
+    relations: cites arXiv:2005.00687; uses arXiv:1511.05493; cites arXiv:1710.10903; uses arXiv:1706.02216; cites arXiv:1609.02907; uses arXiv:1810.00826
+arXiv:2511.11046 (2025) "Enhancing Graph Representations with Neighborhood-Contextualized Message-Passing" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of the neighborhood-contextualized message-passing (NCMP) framework and the Soft-Isomorphic Neighborhood-Contextualized Graph Convolution Network (SINC-GCN) to incorporate broader local neighborhood context into GNNs.
+    method: Neighborhood-contextualization framework and the SINC-GCN architecture, which generalizes message-passing by considering the context of the entire set of neighboring nodes rather than just pairwise features.
+    dataset: A diverse set of synthetic and benchmark GNN datasets.
+    result: Competitive performance against baseline GNN models and substantial, statistically significant performance gains in graph property prediction tasks.
+    relations: (none in-topic)
+arXiv:2503.00578 (2025) "Channel-Attentive Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes the Channel-Attentive GNN (CHAT-GNN) to alleviate over-smoothing by learning to attend to neighboring nodes and their feature channels.
+    method: Adaptive channel-wise message-passing approach that learns attention over neighboring nodes and feature channels.
+    dataset: Widely used benchmark datasets (specific names not listed in text).
+    result: Achieves state-of-the-art performances for various graphs with strong heterophily and shows higher resistance to over-smoothing than baselines.
+    relations: cites arXiv:2007.09296; uses arXiv:1609.02907; cites arXiv:1606.09375; cites arXiv:1706.02216; cites arXiv:1704.01212; cites arXiv:1801.07606
+arXiv:2502.12908 (2025) "Graph Neural Networks for Databases: A Survey" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides a structured and in-depth overview and a new taxonomy for GNNs in database systems, classifying them into Relational Databases and Graph Databases.
+    method: Taxonomy-based survey classifying methods into (1) Relational Databases (performance prediction, query optimization, text-to-SQL) and (2) Graph Databases (graph query processing, graph similarity computation).
+    relations: cites arXiv:1609.02907; cites arXiv:1703.06103
+arXiv:2501.15461 (2025) "Mamba-Based Graph Convolutional Networks: Tackling Over-smoothing with Selective State Space" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of MbaGCN, a novel graph convolutional architecture that integrates the Mamba paradigm into GNNs to tackle the over-smoothing problem.
+    method: A three-component backbone consisting of a Message Aggregation Layer, a Selective State Space Transition Layer, and a Node State Prediction Layer.
+    limitation: May not consistently outperform all existing methods on each dataset.
+    relations: cites arXiv:1801.07606; compares-with arXiv:1609.02907; compares-with arXiv:1710.10903; compares-with arXiv:1902.07153; compares-with arXiv:1810.05997
+arXiv:2502.17739 (2025) "Are GNNs doomed by the topology of their input graph?" [stat] (cited-by 0 in-topic, era 2)
+    contribution: Investigation of how local topological features interact with message-passing schemes to influence global phenomena like oversmoothing or expressive representations.
+    method: Introduction of the concept of $k$-hop similarity to study consistency in node representations.
+    result: Validation that the interaction between local topology and message-passing can lead to either effective learning or inevitable oversmoothing.
+    relations: uses arXiv:1609.02907; uses arXiv:1412.6980; cites arXiv:1704.01212; cites arXiv:1706.02216; compares-with arXiv:1810.00826
+
+MAIN PATH (oldest -> newest):
+  arXiv:1312.6203 (2013) -> arXiv:1506.05163 (2015) -> arXiv:1605.05273 (2016) -> arXiv:1704.01212 (2017) -> arXiv:1806.01261 (2018) -> arXiv:1901.00596 (2019) -> arXiv:2002.09518 (2020) -> arXiv:2205.15555 (2022)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2407.03125 critiques [negative] arXiv:1509.09292
+  arXiv:2108.10733 critiques [negative] arXiv:1905.10947
+  arXiv:1706.02216 critiques [negative] arXiv:1607.00653
+  arXiv:1806.01973 critiques [negative] arXiv:1607.00653
+  arXiv:1806.01973 critiques [negative] arXiv:1403.6652
+  arXiv:2007.09296 critiques [negative] arXiv:1801.07606
+  arXiv:2205.15555 critiques [negative] arXiv:1806.01261
+  arXiv:2205.15555 critiques [negative] arXiv:2005.00687
+  arXiv:2302.05631 compares [neutral] arXiv:2101.11859
+  arXiv:2305.06142 compares [neutral] arXiv:1606.09375
+  arXiv:2305.06142 compares [neutral] arXiv:1710.10903
+  arXiv:2305.06142 compares [neutral] arXiv:2101.11859
+  arXiv:2305.06142 compares [neutral] arXiv:1810.05997
+  arXiv:2305.06142 compares [neutral] arXiv:1706.02216
+  arXiv:2306.02376 compares [neutral] arXiv:1609.02907
+  arXiv:2306.02376 compares [neutral] arXiv:1810.05997
+  arXiv:2407.03125 compares [positive] arXiv:1502.03167
+  arXiv:2407.03125 compares [neutral] arXiv:1801.07606
+  arXiv:2407.03125 compares [neutral] arXiv:1806.03536
+  arXiv:2411.07269 compares [neutral] arXiv:1710.10903
+  arXiv:2411.07269 compares [neutral] arXiv:1609.02907
+  arXiv:2411.07269 compares [neutral] arXiv:1706.02216
+  arXiv:2411.07269 compares [neutral] arXiv:1806.08804
+  arXiv:2411.07269 compares [neutral] arXiv:2006.11468
+  arXiv:2411.07269 compares [neutral] arXiv:1810.05997
+  arXiv:2411.07269 compares [neutral] arXiv:1607.00653
+  arXiv:2411.07269 compares [neutral] arXiv:1611.08402
+  arXiv:2411.07269 compares [neutral] arXiv:1611.07308
+  arXiv:2411.12330 compares [neutral] arXiv:1710.10903
+  arXiv:2411.12330 compares [neutral] arXiv:2006.11468
+  arXiv:2411.12330 compares [neutral] arXiv:1609.02907
+  arXiv:2411.12330 compares [neutral] arXiv:1902.07153
+  arXiv:2411.12330 compares [neutral] arXiv:1810.05997
+  arXiv:2411.12330 compares [neutral] arXiv:1806.03536
+  arXiv:2411.12330 compares [neutral] arXiv:1706.02216
+  arXiv:2501.15461 compares [neutral] arXiv:1609.02907
+  arXiv:2501.15461 compares [neutral] arXiv:1710.10903
+  arXiv:2501.15461 compares [neutral] arXiv:1902.07153
+  arXiv:2501.15461 compares [neutral] arXiv:1810.05997
+  arXiv:2503.00578 compares [neutral] arXiv:2006.11468
+  arXiv:2503.00578 compares [neutral] arXiv:1806.03536
+  arXiv:2101.11859 compares [neutral] arXiv:1806.03536
+  arXiv:1603.08861 compares [neutral] arXiv:1403.6652
+  arXiv:1609.02907 compares [neutral] arXiv:1403.6652
+  arXiv:1611.07308 compares [neutral] arXiv:1403.6652
+  arXiv:1709.05584 compares [neutral] arXiv:1607.00653
+  arXiv:1710.10903 compares [neutral] arXiv:1403.6652
+  arXiv:2007.09296 compares [neutral] arXiv:1811.05868
+  arXiv:2101.11859 compares [neutral] arXiv:1609.02907
+  arXiv:2101.11859 compares [neutral] arXiv:1810.05997
+  arXiv:2212.09034 compares [positive] arXiv:1902.07153
+  arXiv:1810.05997 compares [neutral] arXiv:1710.10903
+  arXiv:1503.03578 compares [neutral] arXiv:1403.6652
+  arXiv:1509.09292 compares [neutral] arXiv:1312.6203
+  arXiv:1606.09375 compares [neutral] arXiv:1506.05163
+  arXiv:1609.02907 compares [neutral] arXiv:1312.6203
+  arXiv:1609.02907 compares [neutral] arXiv:1606.09375
+  arXiv:1611.07308 compares [neutral] arXiv:1503.03578
+  arXiv:1611.07308 compares [positive] arXiv:1609.02907
+  arXiv:1704.01212 compares [positive] arXiv:1511.05493
+  arXiv:1706.02216 compares [neutral] arXiv:1611.07308
+  arXiv:1709.05584 compares [neutral] arXiv:1611.08097
+  arXiv:1709.05584 compares [neutral] arXiv:1606.09375
+  arXiv:1709.05584 compares [neutral] arXiv:1312.6203
+  arXiv:1710.10903 compares [neutral] arXiv:1512.03385
+  arXiv:1806.08804 compares [positive] arXiv:1704.01212
+  arXiv:1806.08804 compares [positive] arXiv:1609.02907
+  arXiv:1806.08804 compares [neutral] arXiv:1606.09375
+  arXiv:1806.08804 compares [positive] arXiv:1502.03167
+  arXiv:1810.05997 compares [neutral] arXiv:1609.02907
+  arXiv:1810.05997 compares [neutral] arXiv:1801.07606
+  arXiv:1810.05997 compares [neutral] arXiv:1806.03536
+  arXiv:1902.07153 compares [neutral] arXiv:1710.10903
+  arXiv:1902.07153 compares [neutral] arXiv:1706.02216
+  arXiv:1902.07153 compares [neutral] arXiv:1312.6203
+  arXiv:1905.10947 compares [neutral] arXiv:1509.09292
+  arXiv:1905.10947 compares [neutral] arXiv:1511.05493
+  arXiv:1905.10947 compares [neutral] arXiv:1806.01261
+  arXiv:1905.10947 compares [neutral] arXiv:1710.10903
+  arXiv:1905.10947 compares [neutral] arXiv:1506.05163
+  arXiv:1905.10947 compares [neutral] arXiv:1606.09375
+  arXiv:2002.05287 compares [neutral] arXiv:1710.10903
+  arXiv:2005.00687 compares [neutral] arXiv:1603.08861
+  arXiv:2005.00687 compares [positive] arXiv:1806.03536
+  arXiv:2005.00687 compares [positive] arXiv:1907.10903
+  arXiv:2005.00687 compares [positive] arXiv:1810.05997
+  arXiv:2101.00079 compares [neutral] arXiv:1806.08804
+  arXiv:2101.00079 compares [neutral] arXiv:0912.3848
+  arXiv:2101.00079 compares [neutral] arXiv:2005.00687
+  arXiv:2101.11859 compares [neutral] arXiv:1606.09375
+  arXiv:2101.11859 compares [neutral] arXiv:1706.02216
+  arXiv:2101.11859 compares [neutral] arXiv:1710.10903
+  arXiv:2105.04493 compares [neutral] arXiv:1902.07153
+  arXiv:2105.04493 compares [neutral] arXiv:1609.02907
+  arXiv:2105.04493 compares [neutral] arXiv:1706.03762
+  arXiv:2105.04493 compares [neutral] arXiv:1810.05997
+  arXiv:2105.04493 compares [neutral] arXiv:1511.05493
+  arXiv:2105.04493 compares [neutral] arXiv:1406.1078
+  arXiv:2105.04493 compares [neutral] arXiv:1903.02428
+  arXiv:2212.09034 compares [positive] arXiv:2002.05287
+  arXiv:2212.09034 compares [positive] arXiv:2006.11468
+  arXiv:2407.03125 motivates [neutral] arXiv:1512.03385
+  arXiv:2407.03125 motivates [neutral] arXiv:1810.05997
+  arXiv:1609.02907 motivates [neutral] arXiv:0912.3848
+  arXiv:1704.01212 motivates [neutral] arXiv:1609.02907
+  arXiv:1905.10947 motivates [positive] arXiv:1706.02216
+  arXiv:1905.10947 motivates [positive] arXiv:1703.06103
+  arXiv:1907.10903 motivates [positive] arXiv:1312.6203
+  arXiv:1907.10903 motivates [positive] arXiv:1606.09375
+  arXiv:1907.10903 motivates [positive] arXiv:1506.05163
+  arXiv:1907.10903 motivates [positive] arXiv:1611.08402
+  arXiv:1907.10903 motivates [positive] arXiv:1605.05273
+  arXiv:1907.10903 motivates [positive] arXiv:1801.10247
+  arXiv:1907.10903 motivates [positive] arXiv:1710.10903
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:1706.02216:
+NOVELTY: Shifts from transductive, node-specific embeddings to an inductive framework that learns trainable aggregator functions to generate embeddings for unseen nodes via neighborhood sampling.
+STRENGTHS: Demonstrates superior performance across three benchmarks, notably being ~100× faster than transductive baselines at inference and improving supervised F1-scores by an average of 51% over raw features.
+WEAKNESSES: The theoretical proof for learning structural information (Theorem 1) relies on the restrictive assumption that all node features are distinct ($||x_v - x_{v'}||_2 > C$).
+RELEVANCE: Provides a scalable, inductive methodology for GNNs, enabling generalization to evolving graphs and entirely new graph structures.
+arXiv:1609.02907:
+NOVELTY: A first-order approximation of spectral graph convolutions using a renormalization trick ($\tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2}$) to enable efficient, layer-wise propagation.
+STRENGTHS: Superior accuracy and efficiency over Planetoid* (e.g., 81.5% vs 75.7% on Cora) with $O(|E|)$ computational complexity.
+WEAKNESSES: Restricted to undirected graphs without edge features and limited by full-batch gradient descent memory requirements for large-scale graphs.
+RELEVANCE: Establishes a scalable, foundational architecture for GNNs
+arXiv:2501.00773:
+NOVELTY: A five-category taxonomy (node, pooling, subgraph, graph learning, and SSL) and the OpenGLT framework, which standardizes evaluation across four domains and three stress scenarios (noise, imbalance, and few-shot).
+STRENGTHS: Extensive empirical breadth, testing 20 models across 26 datasets to demonstrate that no single architecture universally optimizes both effectiveness and efficiency.
+WEAKNESSES: Scalability constraints, specifically Out-of-Memory (OOM) errors for subgraph-based and SSL-based models when applied to large-scale datasets like REDDIT and COLLAB.
+RELEVANCE: Provides a standardized, multi-domain benchmark to transition GNN research from narrow, domain-specific evaluations to a systematic, multi-task comparative framework.
+arXiv:2511.11046:
+NOVELTY: Formalizes "neighborhood-contextualization" as a functional dependence on the entire set of one-hop neighbor features, extending the multi-dimensional message $\psi$ beyond the pair-wise center/neighbor paradigm.
+
+STRENGTHS: SINC-GCN achieves 1.00 $\pm$ 0.00 balanced accuracy on the UniqueSignature synthetic dataset across all tested configurations, demonstrating a clear capability to solve reasoning tasks that fail for GCN and GIN.
+
+WEAKNESSES: The claim of "minimal asymptotic computational overhead" is potentially undermined by the requirement of an additional learnable weight matrix $W_N$ and the aggregation of the entire neighborhood context $N_u$ for every node.
+
+RELEVANCE: Provides a theoretical framework (NCMP) and a practical architecture (SINC-GCN) to bridge the gap between the expressivity of attentional variants and the efficiency of message-passing variants.

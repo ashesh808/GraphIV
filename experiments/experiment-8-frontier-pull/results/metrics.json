@@ -1,0 +1,22 @@
+[
+ {
+  "frontier_pull": "on",
+  "n_topics": 27,
+  "n_2026": 1.89,
+  "ge_2025": 9.19,
+  "frontier_count": 22.52,
+  "n_landmarks": 38.96,
+  "grounded": 24.19,
+  "landmark_recall": 0.07
+ },
+ {
+  "frontier_pull": "off",
+  "n_topics": 27,
+  "n_2026": 0.0,
+  "ge_2025": 7.59,
+  "frontier_count": 23.81,
+  "n_landmarks": 40.0,
+  "grounded": 24.89,
+  "landmark_recall": 0.07
+ }
+]

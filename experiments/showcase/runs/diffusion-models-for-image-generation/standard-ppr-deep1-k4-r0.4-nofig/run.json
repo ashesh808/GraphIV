@@ -1,0 +1,827 @@
+{
+ "question": "diffusion models for image generation",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 1,
+ "rounds_run": 1,
+ "critique_k": 4,
+ "n_critiques": 2,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep1-k4-r0.4-nofig",
+ "schema": [
+  [
+   "model_type",
+   "The specific diffusion architecture or variant used."
+  ],
+  [
+   "core_methodology",
+   "The primary technical innovation or mathematical approach."
+  ],
+  [
+   "optimization_objective",
+   "The main goal like speed, efficiency, or quality."
+  ],
+  [
+   "training_requirement",
+   "Whether the method is training-free or requires training."
+  ],
+  [
+   "input_context",
+   "The nature of input data used for generation."
+  ],
+  [
+   "performance_metrics",
+   "Metrics used to evaluate image generation quality."
+  ]
+ ],
+ "n_pool": 414,
+ "n_landmarks": 80,
+ "n_edges": 9362,
+ "frontier_year": 2023,
+ "frontier_count": 32,
+ "grounded": [
+  "1312.6114",
+  "1406.2661",
+  "1503.03585",
+  "1706.08500",
+  "1710.10196",
+  "1812.04948",
+  "1907.05600",
+  "2006.09011",
+  "2006.11239",
+  "2010.02502",
+  "2011.13456",
+  "2101.02388",
+  "2102.09672",
+  "2105.05233",
+  "2106.05931",
+  "2112.10741",
+  "2112.10752",
+  "2202.00512",
+  "2204.06125",
+  "2205.11487",
+  "2206.00364",
+  "2206.00927",
+  "2207.12598",
+  "2210.03142",
+  "2302.02398",
+  "2303.01469",
+  "2306.13720",
+  "2311.14028",
+  "2312.13253",
+  "2312.15707",
+  "2402.16907",
+  "2406.11138",
+  "2408.08306",
+  "2410.01540",
+  "2501.13349",
+  "2502.21278",
+  "2503.07578",
+  "2503.17657",
+  "2504.16064",
+  "2506.09376",
+  "2509.21470",
+  "2510.12220",
+  "2512.10954",
+  "2512.21020",
+  "2605.18736",
+  "2606.00094",
+  "2606.04299"
+ ],
+ "off_digest": [],
+ "report_chars": 23450,
+ "judge_scores_final": {
+  "grounding": 5,
+  "coverage": 3,
+  "lineage": 5,
+  "coherence": 5,
+  "frontier": 5
+ },
+ "landmarks": [
+  {
+   "arxiv_id": "2606.00094",
+   "title": "Diffusion Image Generation with Explicit Modeling of Data Manifold Geometry",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.8089061030323083,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.16064",
+   "title": "Boosting Generative Image Modeling via Joint Image-Feature Synthesis",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7866918777142599,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2408.08306",
+   "title": "Accelerated Image-Aware Generative Diffusion Modeling",
+   "year": 2024,
+   "category": "eess",
+   "score": 0.825713938079591,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.02398",
+   "title": "Diffusion Model for Generative Image Denoising",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8089400080246928,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2606.04299",
+   "title": "Efficient and Training-Free Single-Image Diffusion Models",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7790542149682383,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.10954",
+   "title": "Group Diffusion: Enhancing Image Generation by Unlocking Cross-Sample Collaboration",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7779956953221547,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.18459",
+   "title": "DiffuseHigh: Training-free Progressive High-Resolution Image Synthesis\n  through Structure Guidance",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.812245972082506,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.15707",
+   "title": "High-Fidelity Diffusion-based Image Editing",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8020460662550649,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2605.18736",
+   "title": "Spectral Progressive Diffusion for Efficient Image and Video Generation",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7771640590228195,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.13349",
+   "title": "MSF: Efficient Diffusion Model Via Multi-Scale Latent Factorize",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7606104203873497,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2402.16907",
+   "title": "Diffusion Posterior Proximal Sampling for Image Restoration",
+   "year": 2024,
+   "category": "eess",
+   "score": 0.7984856023901764,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.19066",
+   "title": "Nested Diffusion Processes for Anytime Image Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7922486410538385,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.21278",
+   "title": "Does Generation Require Memorization? Creative Diffusion Models using Ambient Diffusion",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7602777219466826,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.14422",
+   "title": "Enhancing Diffusion Models for High-Quality Image Generation",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7965625008567948,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.01469",
+   "title": "Consistency Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7901146944772872,
+   "in_degree": 79,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.21020",
+   "title": "Enhancing diffusion models with Gaussianization preprocessing",
+   "year": 2025,
+   "category": "stat",
+   "score": 0.7524071262274631,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.18588",
+   "title": "Varying Manifolds in Diffusion: From Time-varying Geometries to Visual\n  Saliency",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7938474937003678,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.02490",
+   "title": "Diffusion Models Generate Images Like Painters: an Analytical Theory of\n  Outline First, Details Later",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.789819407847702,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.12220",
+   "title": "Hierarchical Koopman Diffusion: Fast Generation with Interpretable Diffusion Trajectory",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.752139273546748,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.10948",
+   "title": "Generative Modeling with Diffusion",
+   "year": 2024,
+   "category": "stat",
+   "score": 0.7917377321206829,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.13720",
+   "title": "Simultaneous Image-to-Zero and Zero-to-Noise: Diffusion Models with\n  Analytical Image Attenuation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7895410858202747,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.07578",
+   "title": "Denoising Score Distillation: From Noisy Diffusion Pretraining to One-Step High-Quality Generation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7520416204408867,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2410.01540",
+   "title": "Edge-preserving noise for diffusion models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7876365997825057,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2301.11093",
+   "title": "Simple diffusion: End-to-end diffusion for high resolution images",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7844220807002437,
+   "in_degree": 32,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.17657",
+   "title": "Efficient Diffusion Training through Parallelization with Truncated Karhunen-Lo\\`eve Expansion",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7453511846624954,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.11138",
+   "title": "Diffusion Models in Low-Level Vision: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7870704508559462,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.13253",
+   "title": "Conditional Image Generation with Pretrained Generative Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7835428428042613,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.09376",
+   "title": "Revisiting Diffusion Models: From Generative Pre-training to One-Step Generation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7411142195800575,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2407.10897",
+   "title": "Optical Diffusion Models for Image Generation",
+   "year": 2024,
+   "category": "physics",
+   "score": 0.7860757487488843,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.14028",
+   "title": "Continual Learning of Diffusion Models with Generative Distillation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7828245196764848,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.21470",
+   "title": "Score-based Idempotent Distillation of Diffusion Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7397964616729035,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2402.16369",
+   "title": "Generative AI in Vision: A Survey on Models, Metrics and Applications",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7852243715413159,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1312.6114",
+   "title": "Auto-Encoding Variational Bayes",
+   "year": 2013,
+   "category": "stat",
+   "score": 0.5317519342851752,
+   "in_degree": 119,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.5171937314873534,
+   "in_degree": 72,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.08500",
+   "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash\n  Equilibrium",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6574654315382643,
+   "in_degree": 239,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2006.11239",
+   "title": "Denoising Diffusion Probabilistic Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7646899997564656,
+   "in_degree": 354,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1606.03498",
+   "title": "Improved Techniques for Training GANs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6363753986034058,
+   "in_degree": 90,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1506.03365",
+   "title": "LSUN: Construction of a Large-scale Image Dataset using Deep Learning\n  with Humans in the Loop",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5850432956685366,
+   "in_degree": 81,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1503.03585",
+   "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6400722753739595,
+   "in_degree": 253,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2011.13456",
+   "title": "Score-Based Generative Modeling through Stochastic Differential\n  Equations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7377220325990255,
+   "in_degree": 318,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1411.7766",
+   "title": "Deep Learning Face Attributes in the Wild",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.4920609410466529,
+   "in_degree": 63,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1907.05600",
+   "title": "Generative Modeling by Estimating Gradients of the Data Distribution",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7049430569879075,
+   "in_degree": 192,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1710.10196",
+   "title": "Progressive Growing of GANs for Improved Quality, Stability, and\n  Variation",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6753316926176037,
+   "in_degree": 53,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2010.02502",
+   "title": "Denoising Diffusion Implicit Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7653834202412233,
+   "in_degree": 275,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.11096",
+   "title": "Large Scale GAN Training for High Fidelity Natural Image Synthesis",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7321516204835182,
+   "in_degree": 98,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2105.05233",
+   "title": "Diffusion Models Beat GANs on Image Synthesis",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8286271040058081,
+   "in_degree": 244,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1812.04948",
+   "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6667225500807548,
+   "in_degree": 89,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.09011",
+   "title": "Improved Techniques for Training Score-Based Generative Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7369372967235682,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.09672",
+   "title": "Improved Denoising Diffusion Probabilistic Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7299165875787883,
+   "in_degree": 153,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.00713",
+   "title": "WaveGrad: Estimating Gradients for Waveform Generation",
+   "year": 2020,
+   "category": "eess",
+   "score": 0.6092967369077394,
+   "in_degree": 75,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1505.04597",
+   "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5579461393606134,
+   "in_degree": 88,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2112.10752",
+   "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.786849822879988,
+   "in_degree": 231,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1406.2661",
+   "title": "Generative Adversarial Networks",
+   "year": 2014,
+   "category": "stat",
+   "score": 0.6485336737309171,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2009.09761",
+   "title": "DiffWave: A Versatile Diffusion Model for Audio Synthesis",
+   "year": 2020,
+   "category": "eess",
+   "score": 0.6459171969792717,
+   "in_degree": 106,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.4575101472197336,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1807.03039",
+   "title": "Glow: Generative Flow with Invertible 1x1 Convolutions",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.6605586622872629,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1912.04958",
+   "title": "Analyzing and Improving the Image Quality of StyleGAN",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6212890853917222,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.00364",
+   "title": "Elucidating the Design Space of Diffusion-Based Generative Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7444023949895506,
+   "in_degree": 207,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2202.00512",
+   "title": "Progressive Distillation for Fast Sampling of Diffusion Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.011764705882352941,
+   "in_degree": 208,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.07366",
+   "title": "Neural Ordinary Differential Equations",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5532359002386548,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2207.12598",
+   "title": "Classifier-Free Diffusion Guidance",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6870048309765107,
+   "in_degree": 135,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.06125",
+   "title": "Hierarchical Text-Conditional Image Generation with CLIP Latents",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6268585152757062,
+   "in_degree": 129,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.00927",
+   "title": "DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling\n  in Around 10 Steps",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6564278794852293,
+   "in_degree": 177,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2107.00630",
+   "title": "Variational Diffusion Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.762551839531712,
+   "in_degree": 94,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.07636",
+   "title": "Image Super-Resolution via Iterative Refinement",
+   "year": 2021,
+   "category": "eess",
+   "score": 0.7072169349024275,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.07088",
+   "title": "Sliced Score Matching: A Scalable Approach to Density and Score\n  Estimation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5502974407803474,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.15282",
+   "title": "Cascaded Diffusion Models for High Fidelity Image Generation",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7620441049594976,
+   "in_degree": 82,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.11487",
+   "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language\n  Understanding",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7041310505066137,
+   "in_degree": 129,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.03924",
+   "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5586383105298719,
+   "in_degree": 59,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2101.02388",
+   "title": "Knowledge Distillation in Iterative Generative Models for Improved\n  Sampling Speed",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7277940746449882,
+   "in_degree": 114,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1904.06991",
+   "title": "Improved Precision and Recall Metric for Assessing Generative Models",
+   "year": 2019,
+   "category": "stat",
+   "score": 0.6706045200711142,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.06676",
+   "title": "Training Generative Adversarial Networks with Limited Data",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6031751368369557,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2112.10741",
+   "title": "GLIDE: Towards Photorealistic Image Generation and Editing with\n  Text-Guided Diffusion Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7419303176529887,
+   "in_degree": 85,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2103.00020",
+   "title": "Learning Transferable Visual Models From Natural Language Supervision",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5808963972834663,
+   "in_degree": 76,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1711.05101",
+   "title": "Decoupled Weight Decay Regularization",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5450046443911971,
+   "in_degree": 47,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1405.0312",
+   "title": "Microsoft COCO: Common Objects in Context",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.46537185121221203,
+   "in_degree": 71,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2106.05931",
+   "title": "Score-based Generative Modeling in Latent Space",
+   "year": 2021,
+   "category": "stat",
+   "score": 0.6588041841969869,
+   "in_degree": 73,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2101.09258",
+   "title": "Maximum Likelihood Training of Score-Based Diffusion Models",
+   "year": 2021,
+   "category": "stat",
+   "score": 0.6871211849404539,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2209.03003",
+   "title": "Flow Straight and Fast: Learning to Generate and Transfer Data with\n  Rectified Flow",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5894337841863689,
+   "in_degree": 109,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2210.03142",
+   "title": "On Distillation of Guided Diffusion Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7664930622208678,
+   "in_degree": 105,
+   "era": 1
+  }
+ ]
+}

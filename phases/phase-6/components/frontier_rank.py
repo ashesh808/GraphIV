@@ -12,6 +12,7 @@ Drop-in alternative to subgraph.rank_landmarks(pool, edges, m).
 from __future__ import annotations
 
 
+from recency import age_norm_score, frontier_select  # noqa: E402
 from subgraph import Edge, Landmark, PoolNode  # noqa: E402
 
 
@@ -26,17 +27,17 @@ def rank_landmarks_frontier(
     pool: dict[str, PoolNode],
     edges: list[Edge],
     m: int,
-    recent_year: int = 2023,
-    recent_floor: int = 18,
+    recent_year: int,
+    recent_floor: int,
+    now_year: int,
 ) -> list[Landmark]:
     """Top-`m` landmarks that GUARANTEE frontier representation.
 
-    Tertile-era quotas were too coarse — a 12-year "recent" tertile let high-in-degree
-    2015-2020 papers crowd out 2023+. Instead: reserve up to `recent_floor` slots for
-    papers with year >= `recent_year` (ranked by similarity, since recent papers have ~0
-    in-degree), then fill the rest by the usual (in_degree, score) so the foundational
-    spine is preserved. If there aren't `recent_floor` recent papers, the remainder just
-    goes to the in-degree fill (no harm).
+    Reserve up to `recent_floor` slots for papers with year >= `recent_year` (the
+    topic-adaptive frontier cutoff, ranked by similarity since recent papers have ~0
+    in-degree), then fill the rest by age-normalized in-degree (citations-per-year) so a
+    fast-rising recent paper competes with an old hub instead of being crowded out. If
+    there aren't `recent_floor` recent papers, the remainder just goes to the fill.
     """
     indeg = _in_degree(edges)
     lms = [
@@ -51,22 +52,22 @@ def rank_landmarks_frontier(
         for n in pool.values()
     ]
     if len(lms) <= m:
-        lms.sort(key=lambda lm: (lm.in_degree, lm.score), reverse=True)
+        lms.sort(
+            key=lambda lm: (age_norm_score(lm.in_degree, lm.year, now_year), lm.score),
+            reverse=True,
+        )
         return lms[:m]
 
-    # 1. reserve the most relevant recent papers (frontier)
-    recent = sorted(
-        (lm for lm in lms if lm.year is not None and lm.year >= recent_year),
-        key=lambda lm: lm.score,
-        reverse=True,
-    )[:recent_floor]
+    # 1. reserve frontier slots, newest-cohort-first (so 2025 AND 2026 both surface)
+    recent = frontier_select(lms, recent_year, recent_floor)
     chosen: list[Landmark] = list(recent)
     chosen_ids: set[str] = {lm.arxiv_id for lm in chosen}
 
-    # 2. fill the rest by in-degree (the foundational/most-cited spine)
+    # 2. fill the rest by age-normalized in-degree (citations-per-year) so the foundational
+    #    spine survives but recent papers are judged on merit-per-opportunity, not raw count
     rest = sorted(
         (lm for lm in lms if lm.arxiv_id not in chosen_ids),
-        key=lambda lm: (lm.in_degree, lm.score),
+        key=lambda lm: (age_norm_score(lm.in_degree, lm.year, now_year), lm.score),
         reverse=True,
     )
     for lm in rest:

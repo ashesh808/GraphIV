@@ -1,0 +1,1545 @@
+{
+ "question": "transformer attention models for language",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 4,
+ "rounds_run": 3,
+ "critique_k": 4,
+ "n_critiques": 3,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep4-k4-r0.4-nofig",
+ "schema": [
+  [
+   "attention_type",
+   "The specific attention variant (e.g., local, chunked, recurrent)."
+  ],
+  [
+   "problem_addressed",
+   "The main challenge targeted (e.g., efficiency, long-context)."
+  ],
+  [
+   "core_innovation",
+   "The specific technical or mathematical novelty introduced."
+  ],
+  [
+   "complexity_analysis",
+   "The theoretical time or space complexity."
+  ],
+  [
+   "context_capacity",
+   "The model's ability to handle long sequence lengths."
+  ],
+  [
+   "empirical_results",
+   "Key performance improvements or findings reported."
+  ]
+ ],
+ "n_pool": 548,
+ "n_landmarks": 160,
+ "n_edges": 5201,
+ "frontier_year": 2025,
+ "frontier_count": 32,
+ "grounded": [
+  "1406.1078",
+  "1409.0473",
+  "1409.3215",
+  "1508.04025",
+  "1706.03762",
+  "1802.05365",
+  "1810.04805",
+  "1904.10509",
+  "1906.04284",
+  "1906.04341",
+  "1906.08237",
+  "1907.11692",
+  "1908.08593",
+  "1910.13461",
+  "2001.04451",
+  "2001.08361",
+  "2002.12327",
+  "2005.14165",
+  "2006.04768",
+  "2009.14794",
+  "2103.02143",
+  "2201.11903",
+  "2205.14135",
+  "2209.11895",
+  "2210.10749",
+  "2211.00593",
+  "2302.13971",
+  "2303.08774",
+  "2305.13048",
+  "2306.09927",
+  "2307.08691",
+  "2312.00752",
+  "2405.21060",
+  "2407.21783",
+  "2503.02130",
+  "2506.11305",
+  "2507.00453",
+  "2507.19595",
+  "2509.24663",
+  "2510.11602",
+  "2604.22071",
+  "2605.00768"
+ ],
+ "off_digest": [
+  "2305.08774",
+  "2506.27836"
+ ],
+ "report_chars": 24704,
+ "judge_scores_final": {
+  "grounding": 5,
+  "coverage": 5,
+  "lineage": 5,
+  "coherence": 5,
+  "frontier": 5
+ },
+ "landmarks": [
+  {
+   "arxiv_id": "2605.00768",
+   "title": "Characterizing the Expressivity of Local Attention in Transformers",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7715184359779246,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.19595",
+   "title": "Efficient Attention Mechanisms for Large Language Models: A Survey",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8134308326666071,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2604.22071",
+   "title": "Large language models are not the problem",
+   "year": 2026,
+   "category": "astro-ph",
+   "score": 0.7135152069577174,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.02130",
+   "title": "Forgetting Transformer: Softmax Attention with a Forget Gate",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.772258241723316,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2601.11671",
+   "title": "100 Glorious Years of the Ising Model",
+   "year": 2026,
+   "category": "cond-mat",
+   "score": 0.703554207699076,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.00453",
+   "title": "Recurrent Memory-Augmented Transformers with Chunked Attention for Long-Context Language Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7709714383554086,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2605.27836",
+   "title": "Symmetry Defeats Auditing",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7002170522075734,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.01115",
+   "title": "Is Random Attention Sufficient for Sequence Modeling? Disentangling Trainable Components in the Transformer",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7620863628778661,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2604.17762",
+   "title": "A Parameter-Centric View on Regression",
+   "year": 2026,
+   "category": "stat",
+   "score": 0.6903775374554944,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.20666",
+   "title": "Recent Topics on Linear Dynamics",
+   "year": 2025,
+   "category": "math",
+   "score": 0.7535443452716994,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.11602",
+   "title": "Deconstructing Attention: Investigating Design Principles for Effective Language Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7505902757384908,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.11305",
+   "title": "Don't Pay Attention",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7485826140938254,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.06633",
+   "title": "Attention Is Not All You Need: The Importance of Feedforward Networks in Transformer Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7398978694435996,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.03268",
+   "title": "A conclusive remark on linguistic theorizing and language modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7356292166055697,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.00617",
+   "title": "Efficient Language Modeling for Low-Resource Settings with Hybrid\n  RNN-Transformer Architectures",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7355330690822354,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2508.09834",
+   "title": "Speed Always Wins: A Survey on Efficient Architectures for Large Language Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.734811354356093,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.18565",
+   "title": "Distil-xLSTM: Learning Attention Mechanisms through Recurrent Structures",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7344332959545251,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.22107",
+   "title": "Curse of High Dimensionality Issue in Transformer for Long-context Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7339003664308906,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.00929",
+   "title": "Compact Recurrent Transformer with Persistent Memory",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7316211480222026,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.20395",
+   "title": "Partial Answer of How Transformers Learn Automata",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7314455214209509,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.08719",
+   "title": "SWAN-GPT: An Efficient and Scalable Approach for Long-Context Language\n  Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7216667498673318,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2508.00544",
+   "title": "PaPaformer: Language Model from Pre-trained Parallel Paths",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7201028289227306,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.17671",
+   "title": "TPTT: Transforming Pretrained Transformers into Titans",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7194926086326854,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.15343",
+   "title": "StackTrans: From Large Language Model to Large Pushdown Automata Model",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7188908441126994,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.24663",
+   "title": "InfLLM-V2: Dense-Sparse Switchable Attention for Seamless Short-to-Long Adaptation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7119992426582155,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.20496",
+   "title": "Inceptive Transformers: Enhancing Contextual Representations through Multi-Scale Feature Learning Across Domains and Languages",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7117843826893854,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.00605",
+   "title": "Gated Associative Memory: A Parallel O(N) Architecture for Efficient Sequence Modeling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7116339770527381,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.15548",
+   "title": "Short-Range Dependency Effects on Transformer Instability and a Decomposed Attention Solution",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7090213665814145,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.05151",
+   "title": "Quantum machine learning -- lecture notes",
+   "year": 2025,
+   "category": "quant-ph",
+   "score": 0.7067698912413635,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.23814",
+   "title": "An extension of linear self-attention for in-context learning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7067531874940245,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.01919",
+   "title": "Transformers as Multi-task Learners: Decoupling Features in Hidden Markov Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7044584689471184,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.02266",
+   "title": "Parameter-Efficient Transformer Embeddings",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7029111721269459,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1409.0473",
+   "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6690041755645985,
+   "in_degree": 94,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1406.1078",
+   "title": "Learning Phrase Representations using RNN Encoder-Decoder for\n  Statistical Machine Translation",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6284951236291472,
+   "in_degree": 28,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.015873015873015872,
+   "in_degree": 350,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1409.3215",
+   "title": "Sequence to Sequence Learning with Neural Networks",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6083269955965692,
+   "in_degree": 33,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.4628849784784802,
+   "in_degree": 91,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.04805",
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6701439338648606,
+   "in_degree": 215,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1606.05250",
+   "title": "SQuAD: 100,000+ Questions for Machine Comprehension of Text",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.5447195334248477,
+   "in_degree": 46,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1607.06450",
+   "title": "Layer Normalization",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.5187757494174585,
+   "in_degree": 61,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1512.03385",
+   "title": "Deep Residual Learning for Image Recognition",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.4947526991502007,
+   "in_degree": 62,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1802.05365",
+   "title": "Deep contextualized word representations",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5756813977588104,
+   "in_degree": 39,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1508.07909",
+   "title": "Neural Machine Translation of Rare Words with Subword Units",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6061904863052171,
+   "in_degree": 57,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1506.06724",
+   "title": "Aligning Books and Movies: Towards Story-like Visual Explanations by\n  Watching Movies and Reading Books",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5002010618551513,
+   "in_degree": 44,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1503.08895",
+   "title": "End-To-End Memory Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.6716982121665576,
+   "in_degree": 17,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.648114034638563,
+   "in_degree": 139,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1804.07461",
+   "title": "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6107994833996957,
+   "in_degree": 76,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1508.04025",
+   "title": "Effective Approaches to Attention-based Neural Machine Translation",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.727240634966142,
+   "in_degree": 41,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1901.02860",
+   "title": "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.01639344262295082,
+   "in_degree": 108,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1907.11692",
+   "title": "RoBERTa: A Robustly Optimized BERT Pretraining Approach",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.604285437379861,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1808.04444",
+   "title": "Character-Level Language Modeling with Deeper Self-Attention",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6826610968408545,
+   "in_degree": 26,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1609.08144",
+   "title": "Google's Neural Machine Translation System: Bridging the Gap between\n  Human and Machine Translation",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6480154813663749,
+   "in_degree": 22,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1410.5401",
+   "title": "Neural Turing Machines",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.6391168447636232,
+   "in_degree": 18,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1904.10509",
+   "title": "Generating Long Sequences with Sparse Transformers",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7319152546665583,
+   "in_degree": 88,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1910.10683",
+   "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text\n  Transformer",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.670886939792366,
+   "in_degree": 87,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1705.03122",
+   "title": "Convolutional Sequence to Sequence Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6449868656232357,
+   "in_degree": 29,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1701.06538",
+   "title": "Outrageously Large Neural Networks: The Sparsely-Gated\n  Mixture-of-Experts Layer",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6075285440820406,
+   "in_degree": 28,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1906.08237",
+   "title": "XLNet: Generalized Autoregressive Pretraining for Language Understanding",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6212621711770687,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1704.05426",
+   "title": "A Broad-Coverage Challenge Corpus for Sentence Understanding through\n  Inference",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5611151704741769,
+   "in_degree": 31,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1803.02155",
+   "title": "Self-Attention with Relative Position Representations",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.758779446468439,
+   "in_degree": 48,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1609.07843",
+   "title": "Pointer Sentinel Mixture Models",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.5749385360778712,
+   "in_degree": 68,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2004.05150",
+   "title": "Longformer: The Long-Document Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7407717864536986,
+   "in_degree": 90,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.11942",
+   "title": "ALBERT: A Lite BERT for Self-supervised Learning of Language\n  Representations",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6289244945944291,
+   "in_degree": 48,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2001.04451",
+   "title": "Reformer: The Efficient Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6970745213746558,
+   "in_degree": 78,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.11929",
+   "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at\n  Scale",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6660726902122434,
+   "in_degree": 65,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1608.05859",
+   "title": "Using the Output Embedding to Improve Language Models",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6212666988247896,
+   "in_degree": 19,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1905.09418",
+   "title": "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy\n  Lifting, the Rest Can Be Pruned",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6920602730709284,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.10853",
+   "title": "Adaptive Input Representations for Neural Language Modeling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5975130972843208,
+   "in_degree": 36,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1806.00187",
+   "title": "Scaling Neural Machine Translation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5918242317458546,
+   "in_degree": 30,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1910.03771",
+   "title": "HuggingFace's Transformers: State-of-the-art Natural Language Processing",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7091362896585438,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2001.08361",
+   "title": "Scaling Laws for Neural Language Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.590977625094693,
+   "in_degree": 41,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.09864",
+   "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.687441192059836,
+   "in_degree": 55,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.04768",
+   "title": "Linformer: Self-Attention with Linear Complexity",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7444550032986262,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.16236",
+   "title": "Transformers are RNNs: Fast Autoregressive Transformers with Linear\n  Attention",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7117121664259397,
+   "in_degree": 62,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.14062",
+   "title": "Big Bird: Transformers for Longer Sequences",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7034562917150996,
+   "in_degree": 64,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.14794",
+   "title": "Rethinking Attention with Performers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6860889919940217,
+   "in_degree": 57,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.05507",
+   "title": "Compressive Transformers for Long-Range Sequence Modelling",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7023412145847215,
+   "in_degree": 53,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.07799",
+   "title": "Adaptive Attention Span in Transformers",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.759588002621349,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.10650",
+   "title": "Are Sixteen Heads Really Better than One?",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6590136117457992,
+   "in_degree": 45,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1711.05101",
+   "title": "Decoupled Weight Decay Regularization",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.4581414328403365,
+   "in_degree": 42,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1906.04341",
+   "title": "What Does BERT Look At? An Analysis of BERT's Attention",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6795250370580953,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.08053",
+   "title": "Megatron-LM: Training Multi-Billion Parameter Language Models Using\n  Model Parallelism",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6992458758044149,
+   "in_degree": 26,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.03822",
+   "title": "Know What You Don't Know: Unanswerable Questions for SQuAD",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.49454965844738785,
+   "in_degree": 22,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1612.08083",
+   "title": "Language Modeling with Gated Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6903103944605783,
+   "in_degree": 24,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1610.08613",
+   "title": "Can Active Memory Replace Attention?",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6970537480305425,
+   "in_degree": 4,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1910.01108",
+   "title": "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and\n  lighter",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6211634079157012,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.13971",
+   "title": "LLaMA: Open and Efficient Foundation Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5629464793562753,
+   "in_degree": 51,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1912.10077",
+   "title": "Are Transformers universal approximators of sequence-to-sequence\n  functions?",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7139739351118077,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.10186",
+   "title": "Attention is not Explanation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6014585284144922,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.07830",
+   "title": "HellaSwag: Can a Machine Really Finish Your Sentence?",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.49758314550380345,
+   "in_degree": 36,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1901.10430",
+   "title": "Pay Less Attention with Lightweight and Dynamic Convolutions",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7074612130047843,
+   "in_degree": 36,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1807.03819",
+   "title": "Universal Transformers",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.010752688172043012,
+   "in_degree": 27,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2204.02311",
+   "title": "PaLM: Scaling Language Modeling with Pathways",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6697093243019753,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.08774",
+   "title": "GPT-4 Technical Report",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6302984249378268,
+   "in_degree": 40,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1904.01038",
+   "title": "fairseq: A Fast, Extensible Toolkit for Sequence Modeling",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5947053047315018,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.06755",
+   "title": "Theoretical Limitations of Self-Attention in Neural Sequence Models",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7181590999305926,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.05950",
+   "title": "BERT Rediscovers the Classical NLP Pipeline",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5721596263540508,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1910.13461",
+   "title": "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language\n  Generation, Translation, and Comprehension",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6403806248495796,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.14135",
+   "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with\n  IO-Awareness",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6775922528943203,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1901.03429",
+   "title": "On the Turing Completeness of Modern Neural Network Architectures",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6938144258240637,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1803.05457",
+   "title": "Think you have Solved Question Answering? Try ARC, the AI2 Reasoning\n  Challenge",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5201348434650959,
+   "in_degree": 30,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1907.10641",
+   "title": "WinoGrande: An Adversarial Winograd Schema Challenge at Scale",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5015161273697459,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2208.01066",
+   "title": "What Can Transformers Learn In-Context? A Case Study of Simple Function\n  Classes",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.624373390566422,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2209.11895",
+   "title": "In-context Learning and Induction Heads",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6363448976520799,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1606.06031",
+   "title": "The LAMBADA dataset: Word prediction requiring a broad discourse context",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.5352988260893949,
+   "in_degree": 22,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1911.11641",
+   "title": "PIQA: Reasoning about Physical Commonsense in Natural Language",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.4860761894637078,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.05997",
+   "title": "Efficient Content-Based Sparse Attention with Routing Transformers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7129454826122209,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.06732",
+   "title": "Efficient Transformers: A Survey",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6830894933495869,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2011.04006",
+   "title": "Long Range Arena: A Benchmark for Efficient Transformers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6384757151761259,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2211.15661",
+   "title": "What learning algorithm is in-context learning? Investigations with\n  linear models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5950671305810977,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2101.00027",
+   "title": "The Pile: An 800GB Dataset of Diverse Text for Language Modeling",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6136091069003518,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2312.00752",
+   "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6957699767577961,
+   "in_degree": 31,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1912.01703",
+   "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5686832942452061,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2201.11903",
+   "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5642338787764487,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2210.10749",
+   "title": "Transformers Learn Shortcuts to Automata",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.629217879779467,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.09685",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.63165146535624,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.14913",
+   "title": "Transformer Feed-Forward Layers Are Key-Value Memories",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6897971919672422,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.14168",
+   "title": "Training Verifiers to Solve Math Word Problems",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.605307149310962,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2005.00928",
+   "title": "Quantifying Attention Flow in Transformers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7140118075677868,
+   "in_degree": 10,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2212.07677",
+   "title": "Transformers learn in-context by gradient descent",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6274423485298063,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2004.08483",
+   "title": "ETC: Encoding Long and Structured Inputs in Transformers",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7031473435241784,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.11264",
+   "title": "On the Ability and Limitations of Transformers to Recognize Formal\n  Languages",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7257485200706129,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1908.04626",
+   "title": "Attention is not not Explanation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5896286917118762,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.09286",
+   "title": "On the Computational Power of Transformers and its Implications in\n  Sequence Modeling",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7046664516948253,
+   "in_degree": 13,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1908.08593",
+   "title": "Revealing the Dark Secrets of BERT",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6338471884495277,
+   "in_degree": 24,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.02972",
+   "title": "Blockwise Self-Attention for Long Document Understanding",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6734383024206184,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.15556",
+   "title": "Training Compute-Optimal Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6452400231278338,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.03300",
+   "title": "Measuring Massive Multitask Language Understanding",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5766627298484319,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1805.00631",
+   "title": "Accelerating Neural Transformer via an Average Attention Network",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7595786781472404,
+   "in_degree": 8,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1711.02132",
+   "title": "Weighted Transformer Network for Machine Translation",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.011764705882352941,
+   "in_degree": 13,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2002.12327",
+   "title": "A Primer in BERTology: What we know about how BERT works",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6459533522415084,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.01787",
+   "title": "Learning Deep Transformer Models for Machine Translation",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7431059221802349,
+   "in_degree": 12,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.10090",
+   "title": "Inductive Biases and Variable Creation in Self-Attention Mechanisms",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6741607702633841,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.09288",
+   "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5934223845475757,
+   "in_degree": 24,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2407.21783",
+   "title": "The Llama 3 Herd of Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6636609199821265,
+   "in_degree": 21,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2005.00743",
+   "title": "Synthesizer: Rethinking Self-Attention in Transformer Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7358917727237293,
+   "in_degree": 24,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1911.02150",
+   "title": "Fast Transformer Decoding: One Write-Head is All You Need",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.715872603784899,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2105.11115",
+   "title": "Self-Attention Networks Can Process Bounded Hierarchical Languages",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6466432148575272,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.08691",
+   "title": "FlashAttention-2: Faster Attention with Better Parallelism and Work\n  Partitioning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.665567734284925,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2108.12409",
+   "title": "Train Short, Test Long: Attention with Linear Biases Enables Input\n  Length Extrapolation",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6020669041001424,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1909.00015",
+   "title": "Adaptively Sparse Transformers",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6962565665652884,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.01068",
+   "title": "OPT: Open Pre-trained Transformer Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6626340215664739,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.11174",
+   "title": "Linear Transformers Are Secretly Fast Weight Programmers",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6331831869087393,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2211.00593",
+   "title": "Interpretability in the Wild: a Circuit for Indirect Object\n  Identification in GPT-2 small",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.592487618162508,
+   "in_degree": 15,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.13048",
+   "title": "RWKV: Reinventing RNNs for the Transformer Era",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7272270459441532,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2202.05262",
+   "title": "Locating and Editing Factual Associations in GPT",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5973434030272142,
+   "in_degree": 15,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.09927",
+   "title": "Trained Transformers Learn Linear Models In-Context",
+   "year": 2023,
+   "category": "stat",
+   "score": 0.6788038340439869,
+   "in_degree": 14,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2103.02143",
+   "title": "Random Feature Attention",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7295283245829856,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2002.05202",
+   "title": "GLU Variants Improve Transformer",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5676389225583668,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1908.04211",
+   "title": "On Identifiability in Transformers",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7218561452326244,
+   "in_degree": 14,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.06981",
+   "title": "Thinking Like Transformers",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7413267912448391,
+   "in_degree": 13,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.04637",
+   "title": "Transformers as Statisticians: Provable In-Context Learning with\n  In-Context Algorithm Selection",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6519306750723769,
+   "in_degree": 15,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2111.00396",
+   "title": "Efficiently Modeling Long Sequences with Structured State Spaces",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6177737521321279,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2405.21060",
+   "title": "Transformers are SSMs: Generalized Models and Efficient Algorithms\n  Through Structured State Space Duality",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6892472855017763,
+   "in_degree": 16,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2002.11296",
+   "title": "Sparse Sinkhorn Attention",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6899765827865377,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.13245",
+   "title": "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head\n  Checkpoints",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6595730286394617,
+   "in_degree": 14,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2101.03961",
+   "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple\n  and Efficient Sparsity",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6550516262456609,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2309.17453",
+   "title": "Efficient Streaming Language Models with Attention Sinks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6644481227647716,
+   "in_degree": 17,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1909.11556",
+   "title": "Reducing Transformer Depth on Demand with Structured Dropout",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6655261178340938,
+   "in_degree": 15,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.04284",
+   "title": "Analyzing the Structure of Attention in a Transformer Language Model",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.031754032258064516,
+   "in_degree": 17,
+   "era": 1
+  }
+ ]
+}

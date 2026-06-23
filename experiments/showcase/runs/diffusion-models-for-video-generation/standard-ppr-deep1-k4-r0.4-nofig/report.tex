@@ -1,0 +1,198 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{diffusion models for video generation}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+An excellent, high-fidelity review that masterfully connects historical foundations to the 2025 frontier, including recent SSM and autoregressive-diffusion hybrids.
+\end{abstract}
+
+\section{The Evolution of Video Synthesis: A Survey of Diffusion-Based Generative Models}
+
+The challenge of synthesizing coherent video lies in the dual requirement of maintaining spatial fidelity while ensuring temporal consistency across a sequence of frames. Unlike static image generation, video modeling necessitates a sophisticated understanding of the foundations of generative modeling and video representation, where the addition of the temporal dimension exponentially increases the complexity of the data manifold. As the demand for automated content creation, cinematic simulation, and realistic digital environments grows, the ability to generate high-fidelity, motion-accurate video has become a central pursuit in computer vision, necessitating models that can capture both fine-grained textures and complex, long-term dynamics.
+
+This review traces the technological trajectory of the field, beginning with the limitations of early video generation techniques, such as GANs, VQ-VAEs, and autoregressive models, which often struggled with temporal stability and semantic diversity. We then examine the paradigm shift brought about by the rise of latent diffusion and text-to-video synthesis, which significantly improved the alignment between linguistic prompts and visual motion. The discussion proceeds to explore architectural advances, specifically focusing on spatio-temporal decoupling and the integration of Transformers to manage high-dimensional dependencies. Finally, we address the critical challenges of scaling and efficiency required for long-form and high-resolution video, concluding with an analysis of current frontiers, including autoregressive diffusion and the emergence of dynamic control mechanisms.
+
+\subsection{Foundations of Generative Modeling and Video Representation}
+
+The evolution of generative modeling has transitioned from variational inference to adversarial training and, most recently, to diffusion-based frameworks. Early foundations were laid by the reparameterization of the variational lower bound to enable stochastic gradient optimization in variational auto-encoders (\texttt{arXiv:1312.6114}). This was contrasted by the introduction of Generative Adversarial Networks (GANs), which eschew approximate inference and Markov chains in favor of a minimax two-player game between a generator and a discriminator (\texttt{arXiv:1406.2661}). While GANs capture data distributions through this adversarial process, score-based models offer an alternative by estimating gradients of perturbed data distributions via score matching, providing a method that requires no adversarial training (\texttt{arXiv:1907.05600}).
+
+Diffusion models represent a convergence of these ideas, inspired by non-equilibrium statistical physics through an iterative forward process that destroys data structure and a learned reverse process that restores it (\texttt{arXiv:1503.03585}). A pivotal advancement is the Denoising Diffusion Probabilistic Model (DDPM), which established a mathematical equivalence between diffusion, denoising score matching, and Langevin dynamics using an \$\textbackslash{}epsilon\$-prediction parameterization (\texttt{arXiv:2006.11239}). While DDPM achieves state-of-the-art image synthesis—evidenced by an FID of 3.17 on CIFAR10—it is fundamentally limited to static image synthesis and lacks any methodology for temporal modeling (\texttt{arXiv:2006.11239}). This limitation is addressed by Denoising Diffusion Implicit Models (DDIMs), which utilize non-Markovian processes to achieve sampling speeds 10x to 50x faster than the original DDPM framework (\texttt{arXiv:2010.02502}). These disparate approaches are further unified through Stochastic Differential Equations (SDEs), which connect score-based modeling and diffusion probabilistic modeling into a single framework (\texttt{arXiv:2011.13456}).
+
+To transition from static images to video, models must incorporate temporal mechanisms. Early attempts utilized GANs with spatio-temporal convolutional architectures to untangle foreground from background (\texttt{arXiv:1609.02612}). This was extended by MoCoGAN, which decomposes video into fixed content and stochastic motion components using a dual discriminator scheme (\texttt{arXiv:1707.04993}). These video-specific architectures often rely on foundational components such as the U-Net, which uses symmetric contracting and expanding paths for precise localization (\texttt{arXiv:1505.04597}), or the Transformer, which replaces recurrence and convolutions with pure attention mechanisms for increased parallelizability (\texttt{arXiv:1706.03762}). Finally, as video generation complexity increases, specialized evaluation metrics like the Fréchet Video Distance (FVD) have become essential for assessing temporal quality (\texttt{arXiv:1812.01717}).
+
+\subsection{Early Video Generation: GANs, VQ-VAEs, and Autoregressive Models}
+
+Before the dominance of diffusion-based frameworks, video generation research primarily focused on three paradigms: Generative Adversarial Networks (GANs), Vector Quantized-Variational AutoEncoders (VQ-VAEs), and autoregressive modeling. Early advancements in GANs emphasized spatio-temporal consistency through adversarial objectives. For instance, \texttt{arXiv:1808.06601} introduced a framework for video-to-video synthesis, mapping semantic masks or sketches to photorealistic videos using a specialized spatio-temporal adversarial objective, capable of synthesizing 2K resolution videos up to 30 seconds long. To address the high computational costs of such high-resolution synthesis, \texttt{arXiv:1811.09245} proposed a memory-efficient approach using a stack of small sub-generators and auxiliary subsampling layers, allowing computational costs to scale linearly with resolution.
+
+A significant shift occurred with the introduction of discrete latent representations. \texttt{arXiv:1711.00937} established the VQ-VAE architecture, which utilizes vector quantization to output discrete codes and employs a learned prior to circumvent the issue of posterior collapse. This innovation provided a foundation for scaling generative modeling to the temporal domain. Building upon this, \texttt{arXiv:2104.10157} (VideoGPT) combined VQ-VAE with 3D convolutions and axial self-attention, utilizing a GPT-like autoregressive transformer to model discrete latents via spatio-temporal position encodings. This approach contrasts with earlier GAN-based methods by prioritizing likelihood-based modeling of discrete representations rather than direct pixel-level adversarial training.
+
+The role of autoregressive mechanisms also evolved through the use of attention. While \texttt{arXiv:1906.02634} demonstrated that conceptually simple autoregressive models using 3D self-attention could achieve competitive video continuation results without complex video-specific architectures, later works integrated these concepts into more complex pipelines. For example, \texttt{arXiv:2104.10157} successfully scaled these autoregressive principles to natural video generation by combining the discrete latent space of VQ-VAEs with transformer-based temporal modeling.
+
+Finally, the transition toward diffusion-based methods is exemplified by \texttt{arXiv:2209.14792}, which bridges the gap between text-to-image (T2I) and text-to-video (T2V) generation. Unlike the previous models that often required massive paired datasets or specialized adversarial training, \texttt{arXiv:2209.14792} augments existing T2I diffusion models with temporal U-Net modules and attention tensors. This allows the model to learn motion from unsupervised video footage and visual representations from text-image data, effectively bypassing the need for paired text-video data and accelerating training by leveraging pre-existing T2I progress. This represents a departure from the purely autoregressive or GAN-based paradigms by decomposing temporal components to approximate them in space and time.
+
+\subsection{The Rise of Latent Diffusion and Text-to-Video Synthesis}
+
+The evolution of video generation has been fundamentally shaped by the transition from pixel-space diffusion to latent-space frameworks. The foundational shift occurred with Latent Diffusion Models (LDMs), which decoupled perceptual compression from semantic generation by training diffusion models within the low-dimensional latent space of a pretrained autoencoder [\texttt{arXiv:2112.10752}]. This approach significantly reduced computational requirements compared to pixel-based models, achieving state-of-the-art results such as an FID of 5.11 on CelebA-HQ [\texttt{arXiv:2112.10752}]. However, the efficacy of LDMs is sensitive to the downsampling factor (\$f\$), where excessive compression can lead to information loss and stagnating fidelity [\texttt{arXiv:2112.10752}].
+
+Text-conditioning strategies further refined these models. Early efforts like GLIDE utilized CLIP guidance for text-to-image synthesis [\texttt{arXiv:2112.10741}], while hierarchical approaches introduced a two-stage process using a prior to generate CLIP image embeddings followed by a diffusion-based decoder [\texttt{arXiv:2204.06125}]. A critical advancement in guidance was the introduction of classifier-free guidance, which enables conditional generation by combining conditional and unconditional score estimates without requiring a separate classifier [\texttt{arXiv:2207.12598}]. Furthermore, research demonstrated that scaling large transformer language models, such as T5, to encode text improves fidelity and alignment more effectively than simply increasing the diffusion model's size [\texttt{arXiv:2205.11487}].
+
+The transition from static images to dynamic video necessitated new temporal mechanisms. One approach involves cascading models, as seen in Imagen Video, which utilizes a sequence of interleaved spatial and temporal super-resolution models to achieve high-definition generation [\texttt{arXiv:2210.02303}]. In contrast, more efficient methods extend the LDM paradigm directly to video by introducing a temporal dimension to the latent space [\texttt{arXiv:2304.08818}]. This allows for the use of off-the-shelf image LDMs, which are then fine-tuned with temporal alignment layers [\texttt{arXiv:2304.08818}].
+
+Recent innovations focus on modularity and motion decomposition. AnimateDiff introduces a plug-and-play motion module that can be integrated into existing text-to-image models to learn transferable motion priors without model-specific tuning [\texttt{arXiv:2307.04725}]. Similarly, the LaMD framework decomposes video generation into a two-step process: generating latent motion via a motion-decomposed autoencoder and then reconstructing the video [\texttt{arXiv:2304.11603}]. While these methods enhance efficiency, other works focus on structural control, such as using monocular depth estimates to disentangle structure from content during video editing [\texttt{arXiv:2302.03011}], or employing 'zero convolutions' to add spatial conditioning like edges or poses to pretrained models without destabilizing them [\texttt{arXiv:2302.05543}].
+
+\subsection{Architectural Advances: Spatio-Temporal Decoupling and Transformers}
+
+Recent advancements in video diffusion architectures have shifted from simple temporal extensions of image models toward sophisticated methods for decoupling spatial and temporal dimensions or adopting unified transformer-based frameworks. A prominent strategy involves hierarchical decoupling to manage the complexity of video synthesis. \texttt{arXiv:2312.04483} proposes a hierarchical spatio-temporal decoupling approach that separates reasoning into structure-level (spatial followed by temporal) and content-level (motion and appearance) stages to ensure temporal stability. This differs from \texttt{arXiv:2311.11325}, which employs a motion-aware framework using separate diffusion models for depth/optical flow and latent video generation. While \texttt{arXiv:2311.11325} relies on optical flow-based warped latent videos and occlusion masks to guide generation, \texttt{arXiv:2312.04483} focuses on the interplay between motion cues and spatial reasoning within a unified denoiser.
+
+A parallel trend explores the use of transformers to handle the high dimensionality of video data. \texttt{arXiv:2401.03048} introduces Latte, a Latent Diffusion Transformer (DiT) that decomposes spatial and temporal dimensions into four efficient variants using spatio-temporal tokens and temporal positional embeddings. This token-based decomposition allows for modeling large numbers of tokens efficiently. Similarly, \texttt{arXiv:2312.06662} utilizes a transformer-based architecture featuring a causal encoder for joint image/video compression and a window attention mechanism. This window attention architecture is specifically designed for joint spatial and spatiotemporal modeling, providing memory efficiency that enables the generation of high-resolution (512 x 896) video at 8 fps through a cascade of three models.
+
+Alternative architectural philosophies attempt to bypass traditional temporal modeling entirely or redefine its fundamental variables. \texttt{arXiv:2404.00234} introduces Grid Diffusion, which represents video as a grid image, effectively reducing video dimensions to image dimensions to allow the application of image-based methods. This approach offers a significant computational advantage, as it can generate high-quality video using a fixed amount of GPU memory regardless of frame count. In contrast, \texttt{arXiv:2410.03160} redefines temporal modeling through a Vectorized Timestep Variable (VTV). Unlike standard models where a single timestep applies to the entire sequence, the VTV allows each frame in a Frame-aware Video Diffusion Model (FVDM) to follow an independent noise schedule, capturing finer temporal dependencies for tasks ranging from interpolation to long video synthesis.
+
+Finally, efficiency is addressed through distillation and guidance. \texttt{arXiv:2309.00398} utilizes a reference-guided cascaded latent diffusion approach, employing an enhanced video decoder and flow-based temporal upsampling to achieve high-definition results. While many models focus on architectural structure, \texttt{arXiv:2312.09109} optimizes the sampling process itself; by leveraging consistency distillation, VideoLCM achieves high-fidelity, smooth video synthesis in only four sampling steps, addressing the computational bottlenecks inherent in standard latent video diffusion models.
+
+\subsection{Scaling and Efficiency: Long-Form and High-Resolution Video}
+
+Recent advancements in video diffusion models focus on overcoming the computational bottlenecks of high-resolution rendering and the temporal limitations of short-duration generation. A primary tension exists between architectural redesigns for efficiency and training-free methods for extended duration.
+
+To address computational complexity, several works propose structural modifications to the temporal mechanism. \texttt{arXiv:2403.07711} replaces quadratic-complexity attention layers with bidirectional State-Space Models (SSMs), achieving linear-time memory consumption relative to sequence length. This approach is particularly effective for long-term generation, as it requires less memory than attention-based models to achieve comparable Fréchet Video Distance (FVD) for sequences up to 256 frames. Similarly, \texttt{arXiv:2403.14148} optimizes efficiency through a Content-Motion Latent Decomposition (CMD) framework. By using a dual-stream approach that separates a single content frame from a low-dimensional motion latent representation, this model achieves 7.7x faster sampling than prior methods, generating 512x1024 resolution, 16-frame videos in just 3.1 seconds with an FVD of 212.7 on WebVid-10M.
+
+While these methods optimize the underlying architecture, other researchers focus on hierarchical and decoupled strategies to manage long-form content. \texttt{arXiv:2407.16655} introduces a hierarchical framework, MovieDreamer, which factorizes complex stories into manageable scenes using autoregressive visual token prediction followed by diffusion rendering to ensure global narrative coherence. This contrasts with the decoupled approach in \texttt{arXiv:2408.13423}, which utilizes a chain of off-the-shelf diffusion model experts to separate structure control from spatial-temporal refinement. Notably, \texttt{arXiv:2408.13423} achieves high efficiency by using only 10\% of the inference cost compared to representative models, though it critiques the hierarchical approach of \texttt{arXiv:2311.15127}.
+
+A third paradigm focuses on extending the temporal window of existing models without extensive retraining. \texttt{arXiv:2501.05484} proposes GLC-Diffusion, which utilizes Global-Local Collaborative Denoising and a Noise Reinitialization strategy to maintain consistency. This is complemented by \texttt{arXiv:2502.12632}, which employs Memory-Augmented Latent Transformers (MALT) to achieve any-length generation. MALT uses recurrent attention layers to encode segments into a compact memory latent vector, reaching an FVD of 220.4 on 128-frame videos. For even greater flexibility, \texttt{arXiv:2503.09926} introduces VideoMerge, a training-free method that merges short videos from pretrained models through orthogonal strategies to ensure smoothness and dynamic variation. Unlike the architectural shifts in \texttt{arXiv:2403.07711} or the latent decompositions in \texttt{arXiv:2403.14148}, VideoMerge avoids the expensive data curation and computational costs associated with training new models. Finally, \texttt{arXiv:2406.04277} enhances compositional text-to-video generation by manipulating denoising network attention maps and employing a reference frame attention mechanism for auto-regressive generation.
+
+\subsection{Current Frontiers: Autoregressive Diffusion and Dynamic Control}
+
+Recent advancements in video generation have increasingly focused on bridging the gap between autoregressive (AR) modeling and diffusion processes to facilitate long-range synthesis and temporal consistency. A prominent direction involves unifying these paradigms to overcome the limitations of standard diffusion. For instance, GPDiT (Generative Pre-trained Autoregressive Diffusion Transformer) integrates these approaches by autoregressively predicting future latent frames using a diffusion loss within a continuous latent space, utilizing a lightweight causal attention variant for efficiency [\texttt{arXiv:2505.07344}]. Similarly, AR-Diffusion introduces an asynchronous generation framework that employs temporal causal attention and a non-decreasing constraint on corruption timesteps to manage frame-wise temporal dependencies [\texttt{arXiv:2503.07418}]. While GPDiT focuses on the continuous latent space [\texttt{arXiv:2505.07344}], VideoAR adopts a Visual Autoregressive (VAR) framework with a 3D multi-scale tokenizer, disentangling spatial and temporal dependencies through multi-scale next-frame and scale prediction [\texttt{arXiv:2601.05966}]. Notably, VideoAR achieves significant efficiency gains, reducing inference steps by over 10x compared to traditional diffusion models [\texttt{arXiv:2601.05966}].
+
+Parallel to these structural unifications, research into dynamic control and adaptive computation aims to mitigate the high computational costs associated with spatial-temporal token growth. VGDFR introduces a training-free Dynamic Latent Frame Rate mechanism that adaptively adjusts latent space elements based on motion frequency, achieving up to a 3x speedup [\texttt{arXiv:2504.12259}]. This concept of content-aware acceleration is further extended by the DVG framework, which jointly allocates computation across time and space to achieve up to a 7x speedup on models like HunyuanVideo [\texttt{arXiv:2605.21042}]. For high-frame-rate requirements, DiffuseSlide offers a training-free pipeline using noise re-injection and sliding window latent denoising to generate high FPS video from low FPS inputs [\texttt{arXiv:2506.01454}].
+
+The literature also provides critical meta-analyses of these efficiency-driven trends. A recent survey categorizes efficient video diffusion into four paradigms: step distillation, efficient attention, model compression, and cache/trajectory optimization [\texttt{arXiv:2604.15911}]. While this taxonomy provides a rigorous mathematical framework for distinguishing between reducing sampling depth (NFE) and per-step overhead, it also highlights a significant weakness in the field: the lack of inherently stable objectives for long-horizon generation. The survey notes that current progress relies heavily on "stability engineering" and "staged training" rather than unified algorithmic solutions [\texttt{arXiv:2604.15911}]. This observation underscores the tension between the rapid efficiency gains seen in methods like VGDFR [\texttt{arXiv:2504.12259}] or DVG [\texttt{arXiv:2605.21042}] and the fundamental need for more robust, unified generative objectives.
+
+\subsection{Tensions and Open Problems}
+
+A fundamental tension persists regarding the architectural backbone of generative modeling: the choice between GAN-based adversarial frameworks and diffusion-based score-matching approaches. Early advancements in high-fidelity synthesis relied heavily on style-based generator architectures to achieve perceptual realism (\texttt{arXiv:1812.04948}), yet these models often struggled with training stability and mode collapse. This vulnerability is addressed by the shift toward score-based generative modeling, which utilizes stochastic differential equations to provide a more mathematically grounded and stable sampling process (\texttt{arXiv:2011.13456}). This debate extends into the temporal domain, where the community is divided over whether video synthesis should rely on decomposing motion and content through explicit latent structures (\texttt{arXiv:1707.04993}) or whether such decompositions are superseded by projected latent spaces that more holistically capture probabilistic dynamics (\texttt{arXiv:2302.07685}).
+
+A second critical debate concerns the methodology for achieving high-fidelity, controllable generation in text-to-image and text-to-video tasks. One school of thought emphasizes the necessity of sophisticated guidance mechanisms, such as classifier-free diffusion guidance, to align visual outputs with complex linguistic prompts (\texttt{arXiv:2207.12598}), often integrating deep language models to bridge the semantic gap (\texttt{arXiv:2205.11487}). Conversely, other researchers argue that the efficacy of these models depends less on guidance alone and more on the underlying representation of the visual features themselves, suggesting that the "unreasonable effectiveness" of deep features (\texttt{arXiv:1801.03924}) provides a more direct path to realism than complex conditioning. This tension is particularly visible in video generation, where recent works critique the efficiency of large-scale latent diffusion models (\texttt{arXiv:2311.15127}) and specialized animation modules (\texttt{arXiv:2307.04725}) in favor of more streamlined, consistency-focused models like VideoLCM (\texttt{arXiv:2312.09109}) that aim to reduce the computational overhead of temporal consistency.
+
+Finally, there is an ongoing disagreement regarding the scaling laws and structural paradigms for long-form video synthesis. While some approaches advocate for scaling autoregressive models to predict next-frame sequences (\texttt{arXiv:1906.02634}), others critique this reliance on autoregressive dependencies as being computationally inefficient compared to direct diffusion-based approaches. This conflict is further complicated by the struggle to balance temporal coherence with spatial resolution; while some models attempt to decouple video generation into training-free diffusion chains to maintain high quality (\texttt{arXiv:2408.13423}), others argue that the most robust path forward lies in the integration of memory-augmented transformers to handle the increasing complexity of any-length video generation (\texttt{arXiv:2502.12632}).
+
+\textbf{Outlook}
+
+The field is currently transitioning from short-clip synthesis toward the frontier of "infinite" and highly dynamic video generation. As we move beyond static latent representations, the focus is shifting toward asynchronous, autoregressive diffusion (\texttt{arXiv:2503.07418}) and dynamic latent frame rates (\texttt{arXiv:2504.12259}) to manage temporal complexity. The next generation of models will likely move away from fixed-length generation, instead leveraging global-local collaborative diffusion (\texttt{arXiv:2501.05484}) and memory-augmented architectures to achieve seamless, long-duration cinematic content that maintains both spatial integrity and temporal fluidness.
+
+\section*{References}
+\begin{enumerate}\small
+  \item UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild (2012). \texttt{arXiv:1212.0402}
+  \item Auto-Encoding Variational Bayes (2013). \texttt{arXiv:1312.6114}
+  \item Generative Adversarial Networks (2014). \texttt{arXiv:1406.2661}
+  \item Deep Unsupervised Learning using Nonequilibrium Thermodynamics (2015). \texttt{arXiv:1503.03585}
+  \item U-Net: Convolutional Networks for Biomedical Image Segmentation (2015). \texttt{arXiv:1505.04597}
+  \item Generating Videos with Scene Dynamics (2016). \texttt{arXiv:1609.02612}
+  \item Temporal Generative Adversarial Nets with Singular Value Clipping (2016). \texttt{arXiv:1611.06624}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash
+  Equilibrium (2017). \texttt{arXiv:1706.08500}
+  \item Decoupled Weight Decay Regularization (2017). \texttt{arXiv:1711.05101}
+  \item Neural Discrete Representation Learning (2017). \texttt{arXiv:1711.00937}
+  \item MoCoGAN: Decomposing Motion and Content for Video Generation (2017). \texttt{arXiv:1707.04993}
+  \item Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset (2017). \texttt{arXiv:1705.07750}
+  \item A Style-Based Generator Architecture for Generative Adversarial Networks (2018). \texttt{arXiv:1812.04948}
+  \item The Unreasonable Effectiveness of Deep Features as a Perceptual Metric (2018). \texttt{arXiv:1801.03924}
+  \item Towards Accurate Generative Models of Video: A New Metric \& Challenges (2018). \texttt{arXiv:1812.01717}
+  \item Video-to-Video Synthesis (2018). \texttt{arXiv:1808.06601}
+  \item Train Sparsely, Generate Densely: Memory-efficient Unsupervised Training
+  of High-resolution Temporal GAN (2018). \texttt{arXiv:1811.09245}
+  \item Generative Modeling by Estimating Gradients of the Data Distribution (2019). \texttt{arXiv:1907.05600}
+  \item Analyzing and Improving the Image Quality of StyleGAN (2019). \texttt{arXiv:1912.04958}
+  \item Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer (2019). \texttt{arXiv:1910.10683}
+  \item Scaling Autoregressive Video Models (2019). \texttt{arXiv:1906.02634}
+  \item Denoising Diffusion Probabilistic Models (2020). \texttt{arXiv:2006.11239}
+  \item Denoising Diffusion Implicit Models (2020). \texttt{arXiv:2010.02502}
+  \item Score-Based Generative Modeling through Stochastic Differential
+  Equations (2020). \texttt{arXiv:2011.13456}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale (2020). \texttt{arXiv:2010.11929}
+  \item Taming Transformers for High-Resolution Image Synthesis (2020). \texttt{arXiv:2012.09841}
+  \item Learning Transferable Visual Models From Natural Language Supervision (2021). \texttt{arXiv:2103.00020}
+  \item High-Resolution Image Synthesis with Latent Diffusion Models (2021). \texttt{arXiv:2112.10752}
+  \item Diffusion Models Beat GANs on Image Synthesis (2021). \texttt{arXiv:2105.05233}
+  \item Zero-Shot Text-to-Image Generation (2021). \texttt{arXiv:2102.12092}
+  \item GLIDE: Towards Photorealistic Image Generation and Editing with
+  Text-Guided Diffusion Models (2021). \texttt{arXiv:2112.10741}
+  \item Improved Denoising Diffusion Probabilistic Models (2021). \texttt{arXiv:2102.09672}
+  \item Cascaded Diffusion Models for High Fidelity Image Generation (2021). \texttt{arXiv:2106.15282}
+  \item VideoGPT: Video Generation using VQ-VAE and Transformers (2021). \texttt{arXiv:2104.10157}
+  \item Frozen in Time: A Joint Video and Image Encoder for End-to-End Retrieval (2021). \texttt{arXiv:2104.00650}
+  \item Make-A-Video: Text-to-Video Generation without Text-Video Data (2022). \texttt{arXiv:2209.14792}
+  \item Hierarchical Text-Conditional Image Generation with CLIP Latents (2022). \texttt{arXiv:2204.06125}
+  \item Video Diffusion Models (2022). \texttt{arXiv:2204.03458}
+  \item Photorealistic Text-to-Image Diffusion Models with Deep Language
+  Understanding (2022). \texttt{arXiv:2205.11487}
+  \item Classifier-Free Diffusion Guidance (2022). \texttt{arXiv:2207.12598}
+  \item Imagen Video: High Definition Video Generation with Diffusion Models (2022). \texttt{arXiv:2210.02303}
+  \item CogVideo: Large-scale Pretraining for Text-to-Video Generation via
+  Transformers (2022). \texttt{arXiv:2205.15868}
+  \item VideoGen: A Reference-Guided Latent Diffusion Approach for High
+  Definition Text-to-Video Generation (2023). \texttt{arXiv:2309.00398}
+  \item Stable Video Diffusion: Scaling Latent Video Diffusion Models to Large
+  Datasets (2023). \texttt{arXiv:2311.15127}
+  \item MoVideo: Motion-Aware Video Generation with Diffusion Models (2023). \texttt{arXiv:2311.11325}
+  \item Hierarchical Spatio-temporal Decoupling for Text-to-Video Generation (2023). \texttt{arXiv:2312.04483}
+  \item Video Probabilistic Diffusion Models in Projected Latent Space (2023). \texttt{arXiv:2302.07685}
+  \item VideoFusion: Decomposed Diffusion Models for High-Quality Video
+  Generation (2023). \texttt{arXiv:2303.08320}
+  \item Photorealistic Video Generation with Diffusion Models (2023). \texttt{arXiv:2312.06662}
+  \item LaMD: Latent Motion Diffusion for Image-Conditional Video Generation (2023). \texttt{arXiv:2304.11603}
+  \item VideoLCM: Video Latent Consistency Model (2023). \texttt{arXiv:2312.09109}
+  \item Align your Latents: High-Resolution Video Synthesis with Latent
+  Diffusion Models (2023). \texttt{arXiv:2304.08818}
+  \item Adding Conditional Control to Text-to-Image Diffusion Models (2023). \texttt{arXiv:2302.05543}
+  \item Structure and Content-Guided Video Synthesis with Diffusion Models (2023). \texttt{arXiv:2302.03011}
+  \item AnimateDiff: Animate Your Personalized Text-to-Image Diffusion Models
+  without Specific Tuning (2023). \texttt{arXiv:2307.04725}
+  \item Video Diffusion Models: A Survey (2024). \texttt{arXiv:2405.03150}
+  \item Latte: Latent Diffusion Transformer for Video Generation (2024). \texttt{arXiv:2401.03048}
+  \item VideoTetris: Towards Compositional Text-to-Video Generation (2024). \texttt{arXiv:2406.04277}
+  \item Efficient Video Diffusion Models via Content-Frame Motion-Latent
+  Decomposition (2024). \texttt{arXiv:2403.14148}
+  \item Redefining Temporal Modeling in Video Diffusion: The Vectorized Timestep
+  Approach (2024). \texttt{arXiv:2410.03160}
+  \item Decoupled Video Generation with Chain of Training-free Diffusion Model
+  Experts (2024). \texttt{arXiv:2408.13423}
+  \item SSM Meets Video Diffusion Models: Efficient Long-Term Video Generation
+  with Structured State Spaces (2024). \texttt{arXiv:2403.07711}
+  \item MovieDreamer: Hierarchical Generation for Coherent Long Visual Sequence (2024). \texttt{arXiv:2407.16655}
+  \item Grid Diffusion Models for Text-to-Video Generation (2024). \texttt{arXiv:2404.00234}
+  \item Survey of Video Diffusion Models: Foundations, Implementations, and Applications (2025). \texttt{arXiv:2504.16081}
+  \item DiffuseSlide: Training-Free High Frame Rate Video Generation Diffusion (2025). \texttt{arXiv:2506.01454}
+  \item MALT Diffusion: Memory-Augmented Latent Transformers for Any-Length Video Generation (2025). \texttt{arXiv:2502.12632}
+  \item From Image to Video: An Empirical Study of Diffusion Representations (2025). \texttt{arXiv:2502.07001}
+  \item Generative Pre-trained Autoregressive Diffusion Transformer (2025). \texttt{arXiv:2505.07344}
+  \item AR-Diffusion: Asynchronous Video Generation with Auto-Regressive
+  Diffusion (2025). \texttt{arXiv:2503.07418}
+  \item Tuning-Free Long Video Generation via Global-Local Collaborative
+  Diffusion (2025). \texttt{arXiv:2501.05484}
+  \item VGDFR: Diffusion-based Video Generation with Dynamic Latent Frame Rate (2025). \texttt{arXiv:2504.12259}
+  \item Fitting Image Diffusion Models on Video Datasets (2025). \texttt{arXiv:2509.03794}
+  \item VideoMerge: Towards Training-free Long Video Generation (2025). \texttt{arXiv:2503.09926}
+  \item Efficient Video Diffusion Models: Advancements and Challenges (2026). \texttt{arXiv:2604.15911}
+  \item Image-to-Video Diffusion: From Foundations to Open Frontiers (2026). \texttt{arXiv:2605.17248}
+  \item Dynamic Video Generation: Shaping Video Generation Across Time and Space (2026). \texttt{arXiv:2605.21042}
+  \item VideoAR: Autoregressive Video Generation via Next-Frame \& Scale Prediction (2026). \texttt{arXiv:2601.05966}
+\end{enumerate}
+
+\end{document}

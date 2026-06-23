@@ -1,0 +1,172 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{large language model agents and tool use}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+(judge output unparseable)
+\end{abstract}
+
+\section{From Language Models to Autonomous Agents: A Review of Tool-Augmented LLM Architectures}
+
+While large language models (LLMs) have demonstrated unprecedented capabilities in natural language understanding and generation, they remain inherently limited by their static training data and a lack of direct interaction with the external world. This "closed-world" constraint often results in factual hallucinations and an inability to perform precise computational or real-time tasks that require external verification. The emergence of LLM-based agents represents a fundamental paradigm shift, moving beyond simple text completion toward functional agency. By integrating tool use—the ability to call external APIs, execute code, or navigate web environments—LLMs can transcend their linguistic boundaries to perform complex, multi-step reasoning and ground their outputs in verifiable, real-world data.
+
+This review traces the technological evolution of this field, beginning with its Origins, where initial research focused on basic prompting strategies and rudimentary mechanisms for model-driven tool invocation. We then examine the Key Advances that have refined these capabilities, specifically the development of sophisticated planning architectures, memory management systems, and the refinement of reasoning loops that allow agents to self-correct during task execution. Finally, the review explores the Current Frontier, investigating the cutting edge of autonomous agency, including multi-agent orchestration, long-horizon task execution, and the pursuit of general-purpose digital assistants capable of navigating increasingly complex and open-ended environments.
+
+\subsection{Origins}
+
+The foundational architecture for modern language agents is rooted in the Transformer, which introduced an encoder-decoder configuration relying solely on attention mechanisms to replace recurrence and convolutions \texttt{arXiv:1706.03762}. This architecture proved highly effective for machine translation, achieving BLEU scores of 28.4 on English-to-German and 41.8 on English-to-French tasks \texttt{arXiv:1706.03762}. Subsequent developments expanded these capabilities through bidirectional modeling. BERT, for instance, utilized deep bidirectional representations to condition on both left and right context in all layers, significantly advancing natural language processing tasks such as question answering and language inference \texttt{arXiv:1810.04805}. BERT demonstrated high proficiency in these areas, achieving a SQuAD v1.1 Test F1 of 93.2 and a GLUE score of 80.5\% \texttt{arXiv:1810.04805}.
+
+The evolution toward agentic behavior is marked by a shift from task-specific fine-tuning to general-purpose interaction. GPT-3 introduced an autoregressive architecture with 175 billion parameters, enabling text-based interaction through few-shot demonstrations or simple instructions without requiring gradient updates \texttt{arXiv:2005.14165}. While GPT-3 showed versatility in tasks ranging from 3-digit arithmetic to news article generation, it faced challenges regarding training data methodology and potential societal impacts \texttt{arXiv:2005.14165}. The breadth of such models was further tested by the MMLU benchmark, which evaluated performance across 57 subjects including law and morality; however, these models often exhibited lopsided performance and near-random accuracy on socially significant subjects \texttt{arXiv:2009.03300}.
+
+A critical pivot in the development of agents is the integration of external knowledge and reasoning capabilities. To address the limitations of purely parametric models in accessing and manipulating precise knowledge, Retrieval-Augmented Generation (RAG) was proposed \texttt{arXiv:2005.11401}. RAG combines a pre-trained seq2seq parametric memory with a non-parametric dense vector index of Wikipedia, providing a differentiable access mechanism to explicit memory \texttt{arXiv:2005.11401}. This contrasts with the purely internal knowledge retrieval of models like GPT-3, aiming to improve factuality and specificity in knowledge-intensive tasks \texttt{arXiv:2005.11401}. Furthermore, the need for complex reasoning is highlighted by datasets like HotpotQA, which requires multi-hop question answering and explainable reasoning using Wikipedia-based supporting documents to overcome the limitations of simpler QA datasets \texttt{arXiv:1809.09600}. Finally, the transition from text-only models to embodied interaction is represented by frameworks like ALFWorld, which aligns text with embodied environments to facilitate interactive learning in simulated settings \texttt{arXiv:2010.03768}.
+
+\subsection{Key Advances}
+
+The evolution of Large Language Model (LLM) agents has transitioned from foundational prompting techniques to sophisticated, closed-loop architectures capable of autonomous tool use and multi-agent collaboration. Early advancements centered on eliciting reasoning through Chain-of-Thought (CoT) prompting (\texttt{arXiv:2201.11903}), which demonstrated that generating intermediate reasoning steps could unlock complex problem-solving abilities. However, CoT is limited by a lack of logical guarantees, often producing "fluent but illogical" paths (\texttt{arXiv:2201.11903}). To address this, researchers introduced self-consistency strategies to sample diverse reasoning paths (\texttt{arXiv:2203.11171}) and the "Tree of Thoughts" (ToT) framework, which enables strategic exploration via lookahead and backtracking (\texttt{arXiv:2305.10601}).
+
+A significant leap occurred with the integration of external tools, moving beyond pure text generation to grounded action. Toolformer (\texttt{arXiv:2302.04761}) pioneered self-supervised training to allow models to decide when and how to call APIs. This concept was expanded by the ReAct framework (\texttt{arXiv:2210.03629}), which interleaves reasoning traces with task-specific actions to create a "reason-to-act" synergy. While ReAct significantly improves performance in interactive environments like ALFWorld, it remains susceptible to repetitive reasoning loops and is highly dependent on the quality of external tools (\texttt{arXiv:2210.03629}). Further specialized approaches include Program-Aided Language models (PAL), which offload mathematical and algorithmic reasoning to a Python interpreter (\texttt{arXiv:2211.10435}), and the LATM framework, which utilizes a "tool maker" (a powerful LLM) to craft reusable APIs for a "tool user" (a lightweight LLM) (\texttt{arXiv:2305.17126}).
+
+Recent research has shifted toward autonomous, long-horizon agents. Voyager (\texttt{arXiv:2305.16291}) demonstrates lifelong learning in Minecraft by maintaining an evolving skill library of executable code, achieving significantly higher exploration rates than prior methods. Similarly, the DEPS framework (\texttt{arXiv:2302.01560}) enhances embodied agents through self-explanation of feedback to facilitate error correction. In the realm of multi-agent systems, MetaGPT (\texttt{arXiv:2308.00352}) introduces an assembly line paradigm using Standardized Operating Procedures (SOPs) to mimic human workflows, though it faces challenges with cascading hallucinations (\texttt{arXiv:2308.00352}). Other frameworks, such as ChatDev (\texttt{arXiv:2307.07924}), utilize specialized agents and communicative dehallucination to manage software development phases.
+
+Despite these advances, several challenges persist. Current agents struggle with long-term reasoning and decision-making in complex environments (\texttt{arXiv:2308.03688}), and there remains a performance gap between top commercial models and open-source competitors (\texttt{arXiv:2308.03688}). Furthermore, the difficulty of achieving human-like decision-making and the limitations of learning from trial-and-error without expensive fine-tuning remain central themes in the literature (\texttt{arXiv:2308.11432}, \texttt{arXiv:2303.11366}).
+
+\subsection{Current Frontier}
+
+The frontier of large language model (LLM) agents is characterized by a transition from static tool-use prompting toward sophisticated, self-evolving reasoning architectures. Recent literature suggests a shift in focus from merely identifying architectural components—such as memory and planning—to understanding the underlying cognitive processes that drive agentic behavior [\texttt{arXiv:2601.12538}]. This evolution is increasingly framed through the lens of "Agentic Reasoning," which distinguishes between foundational single-agent reasoning, self-evolving layers involving feedback and adaptation, and collective multi-agent coordination [\texttt{arXiv:2601.12538}].
+
+A primary tension in current research involves the methodology of tool integration. One paradigm emphasizes "plug-and-play" prompting, while more recent approaches advocate for supervised tool learning and reward-driven policy learning [\texttt{arXiv:2604.00835}]. For instance, the ARTIST framework [\texttt{arXiv:2505.01441}] and the AutoTools framework [\texttt{arXiv:2405.16533}] represent advanced methodologies where models do not merely call APIs but transform documentation into executable code or use reinforcement learning to decide when and how to invoke tools. While AutoTools enables the transformation of documentation into callable functions [\texttt{arXiv:2405.16533}], it faces challenges in scaling to large toolsets and requires manual parsing of documentation. In contrast, the AutoTool framework [\texttt{arXiv:2511.14650}] attempts to mitigate high inference costs—a common limitation in frameworks like ReAct—by using a graph-based approach to model tool usage inertia through historical trajectories.
+
+The complexity of agentic tasks has also driven a move toward specialized multi-agent architectures. To overcome the limitations of small LLMs, which often struggle to handle planning, invocation, and summarization simultaneously [\texttt{arXiv:2401.07324}], researchers have proposed modular frameworks that decompose these roles among specialized agents [\texttt{arXiv:2401.07324}, \texttt{arXiv:2403.03031}]. Similarly, the ConAgents framework [\texttt{arXiv:2403.03031}] utilizes specialized agents for tool selection and execution, though it is critiqued for having restricted flexibility in calibrating incorrect actions.
+
+Despite these advancements, significant gaps remain. While recent taxonomies attempt to bridge the gap between prompting and reinforcement learning [\texttt{arXiv:2604.00835}], some frameworks suffer from overlapping definitions, such as blurring the distinction between "in-context" orchestration and "post-training" adaptation [\texttt{arXiv:2601.12538}]. Furthermore, while some studies claim to analyze trade-offs between different optimization paradigms, they often lack the empirical or quantitative data necessary to substantiate these qualitative assertions [\texttt{arXiv:2604.00835}]. Finally, the field continues to struggle with fundamental challenges including verifiable reasoning, long-horizon interaction, and the need for standardized metrics to measure generalizability [\texttt{arXiv:2509.16330}, \texttt{arXiv:2601.12538}].
+
+\subsection{Tensions and Open Problems}
+
+A primary tension in the literature concerns the mechanism by which reasoning is elicited and refined within agentic workflows. On one hand, early approaches focused on prompting-based heuristics, such as the chain-of-thought method described in \texttt{arXiv:2201.11903}, which relies on sequential reasoning steps to improve performance. However, more recent frameworks suggest that simple prompting is insufficient for complex, multi-step tasks. For instance, \texttt{arXiv:2307.16789} argues that specialized tool-use architectures are necessary to master large-scale API ecosystems, moving beyond the basic reasoning patterns established in \texttt{arXiv:2201.11903} and \texttt{arXiv:2210.03629}. This debate is further complicated by the question of whether reasoning should be "zero-shot" or iterative; while \texttt{arXiv:2205.11916} demonstrates that models can reason effectively without explicit examples, \texttt{arXiv:2203.11171} posits that introducing self-consistency through multiple reasoning paths provides a more robust foundation for accuracy.
+
+Another significant disagreement involves the degree of autonomy and "closed-loop" feedback required for effective agency. Some researchers advocate for highly structured, interactive planning frameworks, such as the "Describe, Explain, Plan and Select" approach in \texttt{arXiv:2302.01560}, which emphasizes explicit planning stages to avoid the grounding errors seen in purely linguistic models like \texttt{arXiv:2204.01691}. This perspective critiques more "reflexive" or unstructured methods, such as the verbal reinforcement learning used in \texttt{arXiv:2303.11366} and the simulated social behaviors in \texttt{arXiv:2304.03442}, arguing that without rigorous planning and selection, agents risk drifting into hallucination or suboptimal execution. Conversely, the tension persists regarding whether agents should be built on top of general-purpose foundation models, as seen in the LLaMA architecture (\texttt{arXiv:2302.13971}), or if true agency requires specialized, embodied environments like the open-ended exploration demonstrated in \texttt{arXiv:2305.16291}.
+
+Finally, there is an ongoing debate regarding the scalability and generalizability of agentic frameworks. While many works focus on specialized tool integration, such as the self-teaching mechanisms in \texttt{arXiv:2302.04761} or the massive API mastery in \texttt{arXiv:2307.16789}, critics question if these systems truly generalize to unseen domains. Recent evaluations, such as those in \texttt{arXiv:2509.16330}, suggest that many current agentic methodologies—including the popular survey-based frameworks in \texttt{arXiv:2503.21460} and the reinforcement-based approaches in \texttt{arXiv:2303.11366}—may suffer from a lack of robust generalizability when moved from controlled benchmarks to real-world, unpredictable environments. This raises the question of whether the field is building truly autonomous intelligence or merely highly sophisticated, narrow-domain orchestrators.
+
+\subsubsection{Outlook}
+
+The frontier of the field is rapidly shifting from static prompting toward "agentic reasoning," where the distinction between a language model and an autonomous actor becomes increasingly blurred. As highlighted by recent 2026 perspectives in \texttt{arXiv:2601.12538} and \texttt{arXiv:2601.12560}, the next generation of research will likely focus on formalizing the architectures and taxonomies of agentic AI to move beyond ad-hoc prompting. We are moving toward a paradigm of integrated tool-use and reinforcement learning (\texttt{arXiv:2505.01441}) where agents do not just "use" tools, but actively learn to refine their own cognitive architectures through continuous environmental interaction.
+
+\section*{References}
+\begin{enumerate}\small
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Proximal Policy Optimization Algorithms (2017). \texttt{arXiv:1707.06347}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding (2018). \texttt{arXiv:1810.04805}
+  \item HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question
+  Answering (2018). \texttt{arXiv:1809.09600}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (2020). \texttt{arXiv:2005.11401}
+  \item Measuring Massive Multitask Language Understanding (2020). \texttt{arXiv:2009.03300}
+  \item ALFWorld: Aligning Text and Embodied Environments for Interactive
+  Learning (2020). \texttt{arXiv:2010.03768}
+  \item Evaluating Large Language Models Trained on Code (2021). \texttt{arXiv:2107.03374}
+  \item Training Verifiers to Solve Math Word Problems (2021). \texttt{arXiv:2110.14168}
+  \item Finetuned Language Models Are Zero-Shot Learners (2021). \texttt{arXiv:2109.01652}
+  \item WebGPT: Browser-assisted question-answering with human feedback (2021). \texttt{arXiv:2112.09332}
+  \item Measuring Mathematical Problem Solving With the MATH Dataset (2021). \texttt{arXiv:2103.03874}
+  \item Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (2022). \texttt{arXiv:2201.11903}
+  \item Training language models to follow instructions with human feedback (2022). \texttt{arXiv:2203.02155}
+  \item PaLM: Scaling Language Modeling with Pathways (2022). \texttt{arXiv:2204.02311}
+  \item ReAct: Synergizing Reasoning and Acting in Language Models (2022). \texttt{arXiv:2210.03629}
+  \item Do As I Can, Not As I Say: Grounding Language in Robotic Affordances (2022). \texttt{arXiv:2204.01691}
+  \item Self-Consistency Improves Chain of Thought Reasoning in Language Models (2022). \texttt{arXiv:2203.11171}
+  \item Large Language Models are Zero-Shot Reasoners (2022). \texttt{arXiv:2205.11916}
+  \item Language Models as Zero-Shot Planners: Extracting Actionable Knowledge
+  for Embodied Agents (2022). \texttt{arXiv:2201.07207}
+  \item Inner Monologue: Embodied Reasoning through Planning with Language
+  Models (2022). \texttt{arXiv:2207.05608}
+  \item Emergent Abilities of Large Language Models (2022). \texttt{arXiv:2206.07682}
+  \item PAL: Program-aided Language Models (2022). \texttt{arXiv:2211.10435}
+  \item WebShop: Towards Scalable Real-World Web Interaction with Grounded
+  Language Agents (2022). \texttt{arXiv:2207.01206}
+  \item Self-Instruct: Aligning Language Models with Self-Generated Instructions (2022). \texttt{arXiv:2212.10560}
+  \item TPTU: Large Language Model-based AI Agents for Task Planning and Tool Usage (2023). \texttt{arXiv:2308.03427}
+  \item An In-depth Survey of Large Language Model-based Artificial Intelligence
+  Agents (2023). \texttt{arXiv:2309.14365}
+  \item Large Language Models as Tool Makers (2023). \texttt{arXiv:2305.17126}
+  \item A Survey on Large Language Model based Autonomous Agents (2023). \texttt{arXiv:2308.11432}
+  \item ModelScope-Agent: Building Your Customizable Agent System with
+  Open-source Large Language Models (2023). \texttt{arXiv:2309.00986}
+  \item Agents: An Open-source Framework for Autonomous Language Agents (2023). \texttt{arXiv:2309.07870}
+  \item Agent Instructs Large Language Models to be General Zero-Shot Reasoners (2023). \texttt{arXiv:2310.03710}
+  \item ART: Automatic multi-step reasoning and tool-use for large language
+  models (2023). \texttt{arXiv:2303.09014}
+  \item Enhancing Open-Domain Task-Solving Capability of LLMs via Autonomous Tool Integration from GitHub (2023). \texttt{arXiv:2312.17294}
+  \item Toolformer: Language Models Can Teach Themselves to Use Tools (2023). \texttt{arXiv:2302.04761}
+  \item GPT-4 Technical Report (2023). \texttt{arXiv:2303.08774}
+  \item LLaMA: Open and Efficient Foundation Language Models (2023). \texttt{arXiv:2302.13971}
+  \item Reflexion: Language Agents with Verbal Reinforcement Learning (2023). \texttt{arXiv:2303.11366}
+  \item Generative Agents: Interactive Simulacra of Human Behavior (2023). \texttt{arXiv:2304.03442}
+  \item Tree of Thoughts: Deliberate Problem Solving with Large Language Models (2023). \texttt{arXiv:2305.10601}
+  \item Self-Refine: Iterative Refinement with Self-Feedback (2023). \texttt{arXiv:2303.17651}
+  \item HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging
+  Face (2023). \texttt{arXiv:2303.17580}
+  \item Sparks of Artificial General Intelligence: Early experiments with GPT-4 (2023). \texttt{arXiv:2303.12712}
+  \item ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world
+  APIs (2023). \texttt{arXiv:2307.16789}
+  \item CAMEL: Communicative Agents for "Mind" Exploration of Large Language
+  Model Society (2023). \texttt{arXiv:2303.17760}
+  \item Gorilla: Large Language Model Connected with Massive APIs (2023). \texttt{arXiv:2305.15334}
+  \item Llama 2: Open Foundation and Fine-Tuned Chat Models (2023). \texttt{arXiv:2307.09288}
+  \item MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework (2023). \texttt{arXiv:2308.00352}
+  \item Voyager: An Open-Ended Embodied Agent with Large Language Models (2023). \texttt{arXiv:2305.16291}
+  \item The Rise and Potential of Large Language Model Based Agents: A Survey (2023). \texttt{arXiv:2309.07864}
+  \item ChatDev: Communicative Agents for Software Development (2023). \texttt{arXiv:2307.07924}
+  \item Improving Factuality and Reasoning in Language Models through Multiagent
+  Debate (2023). \texttt{arXiv:2305.14325}
+  \item Language Models can Solve Computer Tasks (2023). \texttt{arXiv:2303.17491}
+  \item Tool Learning with Foundation Models (2023). \texttt{arXiv:2304.08354}
+  \item AgentBench: Evaluating LLMs as Agents (2023). \texttt{arXiv:2308.03688}
+  \item Describe, Explain, Plan and Select: Interactive Planning with Large
+  Language Models Enables Open-World Multi-Task Agents (2023). \texttt{arXiv:2302.01560}
+  \item Tool Learning in the Wild: Empowering Language Models as Automatic Tool
+  Agents (2024). \texttt{arXiv:2405.16533}
+  \item Exploring Large Language Model based Intelligent Agents: Definitions,
+  Methods, and Prospects (2024). \texttt{arXiv:2401.03428}
+  \item Large Language Model based Multi-Agents: A Survey of Progress and
+  Challenges (2024). \texttt{arXiv:2402.01680}
+  \item Large Language Model-Based Agents for Software Engineering: A Survey (2024). \texttt{arXiv:2409.02977}
+  \item Exploring Autonomous Agents through the Lens of Large Language Models: A
+  Review (2024). \texttt{arXiv:2404.04442}
+  \item Creating an LLM-based AI-agent: A high-level methodology towards
+  enhancing LLMs with APIs (2024). \texttt{arXiv:2412.13233}
+  \item Small LLMs Are Weak Tool Learners: A Multi-LLM Agent (2024). \texttt{arXiv:2401.07324}
+  \item Learning to Use Tools via Cooperative and Interactive Agents (2024). \texttt{arXiv:2403.03031}
+  \item LLM With Tools: A Survey (2024). \texttt{arXiv:2409.18807}
+  \item Large Language Model Agent: A Survey on Methodology, Applications and
+  Challenges (2025). \texttt{arXiv:2503.21460}
+  \item From Language to Action: A Review of Large Language Models as Autonomous Agents and Tool Users (2025). \texttt{arXiv:2508.17281}
+  \item AutoTool: Efficient Tool Selection for Large Language Model Agents (2025). \texttt{arXiv:2511.14650}
+  \item Large Language Models for Agent-Based Modelling: Current and possible uses across the modelling cycle (2025). \texttt{arXiv:2507.05723}
+  \item Fundamentals of Building Autonomous LLM Agents (2025). \texttt{arXiv:2510.09244}
+  \item From LLM Reasoning to Autonomous AI Agents: A Comprehensive Review (2025). \texttt{arXiv:2504.19678}
+  \item Agentic Reasoning: A Streamlined Framework for Enhancing LLM Reasoning with Agentic Tools (2025). \texttt{arXiv:2502.04644}
+  \item Agentic Reasoning and Tool Integration for LLMs via Reinforcement
+  Learning (2025). \texttt{arXiv:2505.01441}
+  \item Generalizability of Large Language Model-Based Agents: A Comprehensive Survey (2025). \texttt{arXiv:2509.16330}
+  \item LLM Agents Making Agent Tools (2025). \texttt{arXiv:2502.11705}
+  \item Agentic Tool Use in Large Language Models (2026). \texttt{arXiv:2604.00835}
+  \item Agentic Reasoning for Large Language Models (2026). \texttt{arXiv:2601.12538}
+  \item The Path Ahead for Agentic AI: Challenges and Opportunities (2026). \texttt{arXiv:2601.02749}
+  \item Agentic Artificial Intelligence (AI): Architectures, Taxonomies, and Evaluation of Large Language Model Agents (2026). \texttt{arXiv:2601.12560}
+\end{enumerate}
+
+\end{document}

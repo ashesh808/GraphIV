@@ -1,0 +1,323 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{diffusion models for image generation}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is exceptionally thorough, covering the transition from GANs to Diffusion, the shift to Latent/Transformer architectures, and the recent emergence of Flow Matching and granular control mechanisms.
+\end{abstract}
+
+\section{The Evolution of Generative Synthesis: From Adversarial Networks to Diffusion and Beyond}
+
+The pursuit of generating high-fidelity, diverse imagery that captures the intricate nuances of the real world has been a central challenge in computer vision. For much of the previous decade, the field was defined by the foundations of generative modeling and early GANs, which established the potential for deep learning to synthesize data but often faced significant hurdles regarding training stability and distributional coverage. The need for a more mathematically grounded and stable approach to density estimation catalyzed a paradigm shift, moving the field away from adversarial competition toward the emergence of diffusion and score-based models.
+
+This review traces the trajectory of this technological revolution, beginning with the fundamental shift in sampling mechanisms and moving into the era of scaling latent diffusion. This scaling enabled the unprecedented leap in text-to-image synthesis, transforming generative models from experimental tools into powerful engines of creativity. As these models became more capable, the research focus pivoted from pure generation to the nuances of controllability, editing, and personalization, allowing users to direct the generative process with unprecedented precision.
+
+The scope of the review further expands to examine how these principles have been extended from static images to the more complex temporal and spatial dimensions of video and 3D generation. Finally, we look toward the current frontier of the field, analyzing how flow matching and advanced architectures are currently reshaping the efficiency and mathematical foundations of generative modeling, setting the stage for the next generation of synthetic media.
+
+\subsection{Foundations of Generative Modeling and Early GANs}
+
+The evolution of generative modeling has been largely defined by the tension between adversarial training frameworks and likelihood-based approaches. The foundational shift began with the introduction of Generative Adversarial Networks (GANs), which established a minimax two-player game between a generative model \$G\$ and a discriminative model \$D\$ to estimate generative models [\texttt{arXiv:1406.2661}]. This adversarial paradigm was further refined through architectural constraints, most notably with the introduction of Deep Convolutional GANs (DCGANs) [\texttt{arXiv:1511.06434}]. DCGANs improved unsupervised image generation by utilizing specific architectural constraints that allowed the model to learn a hierarchy of representations, ranging from local object parts to global scenes [\texttt{arXiv:1511.06434}].
+
+As the field progressed, research shifted from basic architectural stability to high-resolution synthesis and feature control. To address stability and quality issues in high-resolution generation, progressive growing was introduced, where generator and discriminator layers are incrementally added from low to high resolutions [\texttt{arXiv:1710.10196}]. This method achieved a significant Inception Score of 8.80 on CIFAR10 [\texttt{arXiv:1710.10196}]. Building upon these advancements, the focus moved toward disentanglement and attribute control. The style-based generator architecture [\texttt{arXiv:1812.04948}] departed from traditional GAN structures by borrowing from style transfer literature to enable the unsupervised separation of high-level attributes and stochastic variation, providing scale-specific control. This architecture was subsequently optimized in subsequent work [\texttt{arXiv:1912.04958}], which redesigned generator normalization, revisited progressive growing, and introduced a path length regularizer to enhance both image quality and invertibility [\texttt{arXiv:1912.04958}].
+
+A critical inflection point in the field occurred with the emergence of Denoising Diffusion Probabilistic Models (DDPMs) [\texttt{arXiv:2006.11239}]. While GANs focus on adversarial competition, DDPMs utilize a diffusion framework inspired by nonequilibrium thermodynamics, training on a weighted variational bound through a connection between diffusion models and denoising score matching with Langevin dynamics [\texttt{arXiv:2006.11239}]. This approach provides a significant mathematical novelty by establishing equivalence via an \$\textbackslash{}epsilon\$-prediction parameterization [\texttt{arXiv:2006.11239}]. Empirically, DDPMs proved to be a formidable alternative to GANs, achieving a state-of-the-art FID of 3.17 and an Inception Score of 9.46 on CIFAR10, with sample quality comparable to GANs on LSUN 256x256 [\texttt{arXiv:2006.11239}]. However, a notable trade-off exists: while DDPMs excel in sample quality, their log-likelihood performance remains uncompetitive compared to other likelihood-based generative models [\texttt{arXiv:2006.11239}]. Despite this, DDPMs serve as the foundational empirical proof that diffusion-based processes are a viable, high-quality alternative to the adversarial frameworks that dominated the previous decade [\texttt{arXiv:2006.11239}].
+
+\subsection{The Emergence of Diffusion and Score-Based Models}
+
+The evolution of generative modeling has been significantly shaped by the transition from thermodynamic-inspired diffusion processes to unified score-based frameworks. The foundational concept of using an iterative forward diffusion process to destroy data structure, followed by a learned reverse process to restore it, was established through the lens of non-equilibrium thermodynamics \texttt{arXiv:1503.03585}. This approach provided a flexible and tractable method for unsupervised learning, setting the stage for subsequent developments in gradient-based modeling.
+
+A pivotal shift occurred with the introduction of score matching, where generative modeling was framed as estimating the gradients of the data distribution \texttt{arXiv:1907.05600}. By applying score matching across multiple levels of Gaussian noise, this method enabled sampling via annealed Langevin dynamics, achieving an Inception score of 8.87 on CIFAR-10 \texttt{arXiv:1907.05600}. This score-based perspective was later unified with diffusion probabilistic modeling through the framework of Stochastic Differential Equations (SDEs) \texttt{arXiv:2011.13456}. This unification provided a continuous-time perspective, introducing a predictor-corrector framework and a neural ODE equivalent for exact likelihood computation, which achieved a FID of 2.20 and a likelihood of 2.99 bits/dim \texttt{arXiv:2011.13456}. Building on this, research demonstrated that specific weighting schemes for score matching losses could upper bound the negative log-likelihood, facilitating approximate maximum likelihood training \texttt{arXiv:2101.09258}.
+
+Despite these theoretical advancements, the slow sampling speed of diffusion models remained a primary bottleneck. Denoising Diffusion Implicit Models (DDIMs) addressed this by generalizing the forward process from Markovian to non-Markovian trajectories \texttt{arXiv:2010.02502}. This innovation allowed for deterministic, implicit generative modeling that could be used with existing pretrained models. While DDIMs achieved a 10× to 50× speedup in wall-clock time and maintained high quality—evidenced by a CIFAR10 FID of 4.16 at 100 steps—the method involves an inherent trade-off between sample quality and computational speed, and it defers the investigation of non-Gaussian forward processes \texttt{arXiv:2010.02502}.
+
+Further refinements focused on optimizing the probabilistic aspects of these models. For instance, improvements to Denoising Diffusion Probabilistic Models (DDPMs) involved learning the variances of the reverse diffusion process, which allowed for sampling with an order of magnitude fewer forward passes while achieving competitive log-likelihoods \texttt{arXiv:2102.09672}. Collectively, these developments represent a progression from discrete thermodynamic steps toward continuous SDE-based frameworks and accelerated, non-Markovian sampling techniques.
+
+\subsection{Scaling Latent Diffusion and Text-to-Image Synthesis}
+
+The evolution of diffusion models has transitioned from pixel-space operations to sophisticated latent-space frameworks to address the computational demands of high-resolution synthesis. Early approaches, such as cascaded diffusion models, achieved high fidelity by employing a pipeline of multiple models—including super-resolution stages—to generate images at increasing resolutions (\texttt{arXiv:2106.15282}). To mitigate compounding errors between these stages, \texttt{arXiv:2106.15282} introduced conditioning augmentation, achieving FID scores as low as 1.48 at 64x64 and 4.88 at 256x256. While effective, these pixel-based methods are computationally intensive. In contrast, Latent Diffusion Models (LDMs) decouple synthesis into a perceptual compression stage via a pretrained autoencoder and a semantic diffusion stage in the latent space (\texttt{arXiv:2112.10752}). This approach significantly improves efficiency; for instance, LDM-8 demonstrates a 38 FID gap over pixel-based LDM-1 after 2M training steps (\texttt{arXiv:2112.10752}). However, the efficacy of LDMs is sensitive to the downsampling factor \$f\$, where excessive compression can lead to information loss and stagnating fidelity (\texttt{arXiv:2112.10752}).
+
+To further optimize the latent space, VQ-Diffusion introduces a vector-quantized (VQ-VAE) framework using a mask-and-replace strategy (\texttt{arXiv:2111.14822}). This method avoids the unidirectional bias of autoregressive models and achieves generation speeds 15x faster than traditional methods (\texttt{arXiv:2111.14822}). As research shifted toward text-to-image synthesis, the focus expanded from spatial efficiency to the complexity of semantic conditioning. One hierarchical approach utilizes a two-stage framework where a prior generates CLIP image embeddings from text, which then condition a diffusion-based decoder (\texttt{arXiv:2204.06125}). This improves diversity and enables zero-shot language-guided manipulations (\texttt{arXiv:2204.06125}).
+
+The sophistication of text alignment has been further driven by the scale of language models. Research indicates that increasing the size of pretrained transformer language models (e.g., T5) boosts sample fidelity and image-text alignment more effectively than simply scaling the image diffusion model (\texttt{arXiv:2205.11487}). This emphasis on deep language understanding is complemented by ensemble methods, such as eDiff-I, which utilizes an ensemble of expert denoisers specialized for different synthesis stages to improve alignment without increasing inference costs (\texttt{arXiv:2211.01324}). Recent scaling efforts, exemplified by SDXL, build upon the LDM foundation by tripling the UNet backbone size, incorporating a second text encoder, and training on multiple aspect ratios to achieve superior high-resolution synthesis (\texttt{arXiv:2307.01952}). Together, these advancements represent a trajectory from managing pixel-level errors to optimizing multi-modal semantic integration within compressed latent representations.
+
+\subsection{Controllability, Editing, and Personalization}
+
+Recent advancements in diffusion models have shifted focus from general text-to-image generation toward precise controllability, subject-driven personalization, and instruction-based editing. Research in this domain can be categorized into three primary approaches: embedding-space manipulation, architectural modifications for spatial control, and fine-tuning for subject identity.
+
+Personalization techniques aim to introduce specific concepts into a frozen model. Textual Inversion (\texttt{arXiv:2208.01618}) achieves this by learning new word embeddings in the existing embedding space using only 3–5 images, representing unique objects or styles as new "words." In contrast, DreamBooth (\texttt{arXiv:2208.12242}) provides a more intensive approach by fine-tuning the entire text-to-image model. While Textual Inversion operates within the existing embedding space, DreamBooth binds a unique identifier to a specific subject through a class-specific prior preservation loss, enabling more robust subject recontextualization.
+
+For image editing, methods vary in how they manipulate the generation process. Prompt-to-Prompt (\texttt{arXiv:2208.01626}) enables localized and global editing by controlling cross-attention layers through text modifications alone, notably removing the need for spatial masks. This differs from Null-text Inversion (\texttt{arXiv:2211.09794}), which focuses on editing real images by optimizing the unconditional textual embedding (NULL-text optimization) and using pivotal inversion. While Prompt-to-Prompt manipulates the attention mechanism, Null-text Inversion modifies the classifier-free guidance process to ensure fidelity to the original image. Moving toward more intuitive interfaces, InstructPix2Pix (\texttt{arXiv:2211.09800}) introduces a conditional diffusion model trained on synthetic data to follow direct human instructions (e.g., "make it a rainy day") in a single forward pass, shifting the paradigm from prompt engineering to direct instruction following.
+
+Finally, achieving granular spatial control has led to the development of specialized architectural adapters. ControlNet (\texttt{arXiv:2302.05543}) introduces a robust framework that locks the pretrained diffusion model and employs zero-initialized convolution layers to add spatial conditioning, such as depth, edges, or human poses, without degrading the original model's performance. T2I-Adapter (\texttt{arXiv:2302.08453}) offers a more lightweight alternative, using adapters to align external control signals (like color or structure) with the model's internal knowledge. While both methods keep the original model frozen to preserve its generative capabilities, ControlNet provides a more heavy-duty structural integration, whereas T2I-Adapter emphasizes composability and lightweight alignment. Together, these works represent a transition from purely text-driven generation to highly nuanced, multi-modal control over image synthesis.
+
+\subsection{From Images to Video and 3D Generation}
+
+The transition from static image generation to video synthesis necessitates the integration of temporal coherence into existing diffusion frameworks. A primary challenge in this transition is the scarcity of paired text-video data. To address this, Make-A-Video (\texttt{arXiv:2209.14792}) adapts pretrained text-to-image (T2I) models by incorporating spatial-temporal U-Net and attention modules, utilizing a pipeline of video decoders, interpolation, and super-resolution models to translate T2I progress to video. Similarly, Tune-A-Video (\texttt{arXiv:2212.11565}) leverages T2I models through a one-shot tuning strategy, employing spatio-temporal attention and DDIM inversion to derive continuous motion from a single text-video pair.
+
+Research trajectories diverge significantly regarding computational efficiency, resolution, and temporal duration. MagicVideo (\texttt{arXiv:2211.11018}) prioritizes efficiency by utilizing a 3D U-Net design with a frame-wise lightweight adaptor and directed temporal attention. By operating within a low-dimensional latent space via a novel VideoVAE, it achieves 64x fewer computations than standard Video Diffusion Models (VDM). In contrast, Align your Latents (\texttt{arXiv:2304.08818}) focuses on high-resolution synthesis, extending image LDMs by introducing a temporal dimension to the latent space. This approach enables high-resolution video synthesis of up to 1280 x 2048. While MagicVideo optimizes for computational economy, other frameworks address the temporal scale of the content. For example, Latent Video Diffusion Models (\texttt{arXiv:2211.13221}) utilizes hierarchical diffusion and a 3D latent space to enable high-fidelity long video generation of over 1,000 frames, specifically implementing mechanisms to mitigate accumulated errors over extended sequences.
+
+The complexity of these models has led to a need for specialized taxonomies, particularly in the niche of Image-to-Video (I2V) generation. A recent survey (\texttt{arXiv:2605.17248}) distinguishes I2V as a standalone subject rather than a mere sub-topic of video generation, distilling the field into four core technical designs: condition encoding, temporal modeling, noise prior design, and spatial-temporal upsampling. This survey provides a highly systematic categorization of conditioning modalities, such as text, motion, and camera inputs. However, while the survey offers a strong theoretical framework through its two-level taxonomy, it lacks original empirical benchmarking or novel architectural proposals to validate the effectiveness of its distilled design components.
+
+\subsection{The Frontier: Flow Matching and Advanced Architectures}
+
+The evolution of generative modeling has moved toward continuous-time frameworks that optimize the trajectories between noise and data. A pivotal development is the introduction of Flow Matching (FM), a simulation-free approach for training Continuous Normalizing Flows (CNFs) [\texttt{arXiv:2210.02747}]. FM distinguishes itself from traditional diffusion by regressing vector fields of fixed conditional probability paths, a method that subsumes standard diffusion paths while allowing for more efficient non-diffusion trajectories, such as Optimal Transport (OT) displacement interpolation [\texttt{arXiv:2210.02747}].
+
+While FM provides a generalized framework for vector field regression, Rectified Flow offers a more specific optimization objective aimed at path simplification. By utilizing nonlinear least squares optimization, Rectified Flow learns straight paths between distributions [\texttt{arXiv:2209.03003}]. This "straightening" of the transport process is a critical distinction; whereas standard diffusion often relies on complex stochastic trajectories, Rectified Flow enables highly efficient simulation with minimal time discretization, making it particularly robust for tasks such as image-to-image translation and domain adaptation [\texttt{arXiv:2209.03003}].
+
+The transition from theoretical path optimization to large-scale application is evidenced by the scaling of these techniques into transformer-based architectures. For instance, \texttt{arXiv:2403.03206} extends the Rectified Flow paradigm to high-resolution text-to-image synthesis. This approach moves beyond simple path learning by introducing a transformer architecture that facilitates bidirectional information flow between image and text tokens. Furthermore, it optimizes the generation process through noise sampling techniques that are specifically biased toward perceptually relevant scales, addressing the practical requirements of high-fidelity synthesis [\texttt{arXiv:2403.03206}].
+
+The relationship between established diffusion models and these emerging flow-based methods is further bridged by the Diff2Flow framework [\texttt{arXiv:2506.02221}]. Rather than requiring training from scratch, Diff2Flow enables the efficient transfer of knowledge from pre-trained diffusion models to flow matching models through techniques such as timestep rescaling, interpolant alignment, and the derivation of FM-compatible velocity fields [\texttt{arXiv:2506.02221}]. This allows the community to leverage existing diffusion-based expertise while adopting the efficiency gains of flow-based modeling. Collectively, these advancements—ranging from the mathematical foundations of ODEs and SDEs [\texttt{arXiv:2506.02070}] to specialized architectural scaling—represent a shift toward more deterministic, straight, and computationally efficient generative trajectories.
+
+\subsection{Tensions and Open Problems}
+
+A fundamental tension persists regarding the optimal architectural paradigm for high-fidelity synthesis: the competition between GAN-based frameworks and discrete or continuous latent representations. While large-scale GAN training strategies, such as those proposed in \texttt{arXiv:1809.11096}, have demonstrated remarkable success in generating high-fidelity natural images, they face significant criticism regarding their scalability and diversity. Specifically, \texttt{arXiv:1906.00446} argues that hierarchical VQ-VAE-2 frameworks provide a more robust foundation for generating diverse, high-fidelity imagery than traditional GANs, which can struggle with mode collapse. This debate extends into the realm of data efficiency, where \texttt{arXiv:2006.06676} suggests that GANs encounter severe stability issues when training data is limited, contrasting with the more scalable, albeit computationally intensive, approaches seen in large-scale GAN architectures.
+
+A second major conflict concerns the methodology for efficient sampling and the mathematical formulation of generative trajectories. The field is currently divided between distillation-based acceleration and direct ODE-based solving. On one hand, \texttt{arXiv:2202.00512} advocates for progressive distillation to rapidly reduce the number of sampling steps in diffusion models. However, this approach is critiqued by \texttt{arXiv:2202.09778}, which suggests that such methods may fail to account for the underlying manifold structure, proposing instead that pseudo-numerical methods on manifolds offer a more mathematically rigorous path to efficiency. This tension is further complicated by the emergence of flow-matching techniques; while \texttt{arXiv:2209.03003} emphasizes the benefits of learning straight and fast paths for data transfer, other researchers in \texttt{arXiv:2206.00364} focus on elucidating the complex design space of diffusion-based models to optimize the trade-off between sampling speed and generative quality.
+
+Finally, there is an ongoing disagreement regarding the efficacy of inversion and editing techniques for real-world image manipulation. Traditional GAN-based inversion, as explored in \texttt{arXiv:2004.00049}, attempts to map real images into the latent space of a pre-trained generator to enable editing. This paradigm is increasingly challenged by diffusion-based approaches. For instance, \texttt{arXiv:2111.14818} argues that GAN-based inversion methods, including those utilizing specialized encoders like in \texttt{arXiv:2102.02766} or \texttt{arXiv:2008.00951}, lack the flexibility required for complex, text-driven edits. Instead, they propose that blended diffusion techniques provide superior control and preservation of identity, a sentiment echoed by the critique in \texttt{arXiv:2212.11565}, which suggests that one-shot tuning of diffusion models offers a more seamless transition from text prompts to image editing than the rigid latent manipulations required by GANs.
+
+\subsection{Outlook}
+
+The frontier of generative modeling is rapidly shifting from static image synthesis toward highly controllable, multi-modal, and temporal dimensions. As highlighted by recent developments in image-to-video diffusion (\texttt{arXiv:2605.17248}) and representation-conditioned models (\texttt{arXiv:2605.27343}), the next generation of research will likely move beyond simple denoising toward a deeper integration of structural control and temporal consistency. We are seeing a convergence of stochastic mechanics (\texttt{arXiv:2605.12993}) and attention-based diffusion architectures (\texttt{arXiv:2604.09560}), suggesting that the future of the field lies in unifying the mathematical rigor of flow-based trajectories with the massive scaling capabilities of transformer-based generative models.
+
+---
+
+\subsection{Key Figures}
+
+\textbf{Denoising Diffusion Probabilistic Models} — \texttt{arXiv:2006.11239} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2006.11239_p1.png}\end{center}
+
+The figure consists of two side-by-side image grids: a 2x2 grid of high-resolution human faces on the left and a large 10x10 grid of diverse, low-resolution objects on the right. It conveys the quality and variety of samples generated by the model on the CelebA-HQ and CIFAR-10 datasets, respectively.
+
+\textbf{High-Resolution Image Synthesis with Latent Diffusion Models} — \texttt{arXiv:2112.10752} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2112.10752_p1.png}\end{center}
+
+The figure presents a comparison of image synthesis quality across three models (ours, DALL-E, and VQGAN) using different spatial downsampling factors (\$f\$). It displays a grid of input images alongside their corresponding reconstructions, labeled with PSNR and R-FID metrics to demonstrate that the proposed method achieves higher fidelity with less aggressive downsampling.
+
+\textbf{Denoising Diffusion Implicit Models} — \texttt{arXiv:2010.02502} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2010.02502_p2.png}\end{center}
+
+The figure displays two sequences of directed nodes labeled \$x\_3, x\_2, x\_1,\$ and \$x\_0\$ connected by arrows. The left model shows a Markovian chain where arrows point sequentially from \$x\_3\$ to \$x\_0\$, while the right model shows a non-Markovian process where arrows from \$x\_3\$ and \$x\_1\$ point to \$x\_2\$, and a dashed line connects \$x\_0\$ back to \$x\_3\$. The diagram conveys the structural difference between standard diffusion inference models and the proposed non-Markovian inference models.
+
+\textbf{Diffusion Models Beat GANs on Image Synthesis} — \texttt{arXiv:2105.05233} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2105.05233_p1.png}\end{center}
+
+This figure consists of a 3x7 grid of diverse, high-resolution images including animals, insects, vehicles, and objects. It conveys the visual quality and variety of samples generated by the authors' best ImageNet 512×512 diffusion model.
+
+\textbf{Learning Transferable Visual Models From Natural Language Supervision} — \texttt{arXiv:2103.00020} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2103.00020_p2.png}\end{center}
+
+The figure illustrates the CLIP framework through three panels: (1) a contrastive pre-training stage showing an image and text being processed by respective encoders to produce a matrix of similarity scores between \$N\$ image and \$N\$ text embeddings; (2) the creation of a dataset classifier by passing label texts through a text encoder; and (3) zero-shot prediction where an image embedding is compared against the text embeddings of various labels. The diagram uses boxes for data inputs and encoders, and arrows to represent the flow of information toward a similarity matrix.
+
+\textbf{Score-Based Generative Modeling through Stochastic Differential Equations} — \texttt{arXiv:2011.13456} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2011.13456_p2.png}\end{center}
+
+The figure consists of two directed arrows connecting three boxes labeled "Data," "SDE," and "Noise distribution." It conveys that a continuous-time Stochastic Differential Equation (SDE) can transform data into a noise distribution, and that this process can be reversed to yield a score-based generative model.
+
+\textbf{Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding} — \texttt{arXiv:2205.11487} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2205.11487_p2.png}\end{center}
+
+Figure 1 displays three side-by-side \$1024 \textbackslash{}times 1024\$ photorealistic images generated by the Imagen model, each accompanied by its corresponding text prompt below. The images depict a brain-shaped rocket heading toward the moon, a dragon fruit wearing a karate belt in the snow, and a strawberry mug filled with white beans.
+
+\textbf{Deep Unsupervised Learning using Nonequilibrium Thermodynamics} — \texttt{arXiv:1503.03585} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/1503.03585_p3.png}\end{center}
+
+The figure consists of a 3x3 grid of plots organized by row and column. The top row shows blue time slices of a 2D Swiss roll undergoing Gaussian diffusion, the middle row shows red data distributions \$p(\textbackslash{}mathbf\{x\}\textasciicircum{}\{(0 \textbackslash{}dots T)\})\$, and the bottom row shows black vector fields representing \$\textbackslash{}mathbf\{f\}\_\{\textbackslash{}mu\}(\textbackslash{}mathbf\{x\}\textasciicircum{}\{(t)\}, t) - \textbackslash{}mathbf\{x\}\textasciicircum{}\{(t)\}\$. The columns represent progressive stages of the diffusion process, conveying how the structured data distribution is transformed into an identity-covariance Gaussian distribution over time.
+
+\textbf{Image-to-Video Diffusion: From Foundations to Open Frontiers} — \texttt{arXiv:2605.17248} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2605.17248_p1.png}\end{center}
+
+The figure presents a schematic diagram of a basic image-to-video (I2V) diffusion model architecture, illustrating the flow from inputs to outputs. It depicts various input components (image, text, audio, motion) passing through conditioning encoders and VAE encoders, which then feed into a spatiotemporal generative backbone composed of spatial blocks, temporal blocks, and cross-attention mechanisms. The process concludes with a VAE decoder that produces the final video output.
+
+\textbf{Towards Controllable Image Generation through Representation-Conditioned Diffusion Models} — \texttt{arXiv:2605.27343} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2605.27343_p1.png}\end{center}
+
+The figure consists of two flowcharts, (a) Distribution Mapping and (b) Image Generation, using boxes, arrows, and probability distribution curves. Part (a) shows an image distribution being mapped through a blue "Pre-Trained DINO" box to a representation distribution, while part (b) illustrates a "Denoising U-Net" receiving a noise distribution and a conditioning signal from the representation distribution to generate an image distribution. The diagram conveys that the model works by first encoding images into a representation space and then using those representations to condition a diffusion process for image generation.
+
+\section*{References}
+\begin{enumerate}\small
+  \item Auto-Encoding Variational Bayes (2013). \texttt{arXiv:1312.6114}
+  \item Microsoft COCO: Common Objects in Context (2014). \texttt{arXiv:1405.0312}
+  \item ImageNet Large Scale Visual Recognition Challenge (2014). \texttt{arXiv:1409.0575}
+  \item Very Deep Convolutional Networks for Large-Scale Image Recognition (2014). \texttt{arXiv:1409.1556}
+  \item Adam: A Method for Stochastic Optimization (2014). \texttt{arXiv:1412.6980}
+  \item Conditional Generative Adversarial Nets (2014). \texttt{arXiv:1411.1784}
+  \item Deep Learning Face Attributes in the Wild (2014). \texttt{arXiv:1411.7766}
+  \item Generative Adversarial Networks (2014). \texttt{arXiv:1406.2661}
+  \item Deep Unsupervised Learning using Nonequilibrium Thermodynamics (2015). \texttt{arXiv:1503.03585}
+  \item Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks (2015). \texttt{arXiv:1511.06434}
+  \item Deep Residual Learning for Image Recognition (2015). \texttt{arXiv:1512.03385}
+  \item Rethinking the Inception Architecture for Computer Vision (2015). \texttt{arXiv:1512.00567}
+  \item LSUN: Construction of a Large-scale Image Dataset using Deep Learning with Humans in the Loop (2015). \texttt{arXiv:1506.03365}
+  \item U-Net: Convolutional Networks for Biomedical Image Segmentation (2015). \texttt{arXiv:1505.04597}
+  \item Improved Techniques for Training GANs (2016). \texttt{arXiv:1606.03498}
+  \item Image-to-Image Translation with Conditional Adversarial Networks (2016). \texttt{arXiv:1611.07004}
+  \item Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network (2016). \texttt{arXiv:1609.04802}
+  \item Perceptual Losses for Real-Time Style Transfer and Super-Resolution (2016). \texttt{arXiv:1603.08155}
+  \item Context Encoders: Feature Learning by Inpainting (2016). \texttt{arXiv:1604.07379}
+  \item StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks (2016). \texttt{arXiv:1612.03242}
+  \item Generative Visual Manipulation on the Natural Image Manifold (2016). \texttt{arXiv:1609.03552}
+  \item Learning Representations for Automatic Colorization (2016). \texttt{arXiv:1603.06668}
+  \item Unsupervised Cross-Domain Image Generation (2016). \texttt{arXiv:1611.02200}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium (2017). \texttt{arXiv:1706.08500}
+  \item Progressive Growing of GANs for Improved Quality, Stability, and Variation (2017). \texttt{arXiv:1710.10196}
+  \item Improved Training of Wasserstein GANs (2017). \texttt{arXiv:1704.00028}
+  \item Decoupled Weight Decay Regularization (2017). \texttt{arXiv:1711.05101}
+  \item Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks (2017). \texttt{arXiv:1703.10593}
+  \item Neural Discrete Representation Learning (2017). \texttt{arXiv:1711.00937}
+  \item Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization (2017). \texttt{arXiv:1703.06868}
+  \item High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs (2017). \texttt{arXiv:1711.11585}
+  \item AttnGAN: Fine-Grained Text to Image Generation with Attentional Generative Adversarial Networks (2017). \texttt{arXiv:1711.10485}
+  \item Large Scale GAN Training for High Fidelity Natural Image Synthesis (2018). \texttt{arXiv:1809.11096}
+  \item A Style-Based Generator Architecture for Generative Adversarial Networks (2018). \texttt{arXiv:1812.04948}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding (2018). \texttt{arXiv:1810.04805}
+  \item Glow: Generative Flow with Invertible 1x1 Convolutions (2018). \texttt{arXiv:1807.03039}
+  \item The Unreasonable Effectiveness of Deep Features as a Perceptual Metric (2018). \texttt{arXiv:1801.03924}
+  \item Which Training Methods for GANs do actually Converge? (2018). \texttt{arXiv:1801.04406}
+  \item Multimodal Unsupervised Image-to-Image Translation (2018). \texttt{arXiv:1804.04732}
+  \item Generative Modeling by Estimating Gradients of the Data Distribution (2019). \texttt{arXiv:1907.05600}
+  \item Analyzing and Improving the Image Quality of StyleGAN (2019). \texttt{arXiv:1912.04958}
+  \item Generating Diverse High-Fidelity Images with VQ-VAE-2 (2019). \texttt{arXiv:1906.00446}
+  \item Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (2019). \texttt{arXiv:1910.10683}
+  \item Improved Precision and Recall Metric for Assessing Generative Models (2019). \texttt{arXiv:1904.06991}
+  \item Semantic Image Synthesis with Spatially-Adaptive Normalization (2019). \texttt{arXiv:1903.07291}
+  \item Image2StyleGAN: How to Embed Images Into the StyleGAN Latent Space? (2019). \texttt{arXiv:1904.03189}
+  \item DM-GAN: Dynamic Memory Generative Adversarial Networks for Text-to-Image Synthesis (2019). \texttt{arXiv:1904.01310}
+  \item StarGAN v2: Diverse Image Synthesis for Multiple Domains (2019). \texttt{arXiv:1912.01865}
+  \item Denoising Diffusion Probabilistic Models (2020). \texttt{arXiv:2006.11239}
+  \item Score-Based Generative Modeling through Stochastic Differential Equations (2020). \texttt{arXiv:2011.13456}
+  \item Denoising Diffusion Implicit Models (2020). \texttt{arXiv:2010.02502}
+  \item Improved Techniques for Training Score-Based Generative Models (2020). \texttt{arXiv:2006.09011}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item DiffWave: A Versatile Diffusion Model for Audio Synthesis (2020). \texttt{arXiv:2009.09761}
+  \item An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (2020). \texttt{arXiv:2010.11929}
+  \item Taming Transformers for High-Resolution Image Synthesis (2020). \texttt{arXiv:2012.09841}
+  \item Training Generative Adversarial Networks with Limited Data (2020). \texttt{arXiv:2006.06676}
+  \item A Simple Framework for Contrastive Learning of Visual Representations (2020). \texttt{arXiv:2002.05709}
+  \item Encoding in Style: a StyleGAN Encoder for Image-to-Image Translation (2020). \texttt{arXiv:2008.00951}
+  \item In-Domain GAN Inversion for Real Image Editing (2020). \texttt{arXiv:2004.00049}
+  \item High-Resolution Image Synthesis with Latent Diffusion Models (2021). \texttt{arXiv:2112.10752}
+  \item Diffusion Models Beat GANs on Image Synthesis (2021). \texttt{arXiv:2105.05233}
+  \item Learning Transferable Visual Models From Natural Language Supervision (2021). \texttt{arXiv:2103.00020}
+  \item Improved Denoising Diffusion Probabilistic Models (2021). \texttt{arXiv:2102.09672}
+  \item GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models (2021). \texttt{arXiv:2112.10741}
+  \item Zero-Shot Text-to-Image Generation (2021). \texttt{arXiv:2102.12092}
+  \item Image Super-Resolution via Iterative Refinement (2021). \texttt{arXiv:2104.07636}
+  \item Cascaded Diffusion Models for High Fidelity Image Generation (2021). \texttt{arXiv:2106.15282}
+  \item SDEdit: Guided Image Synthesis and Editing with Stochastic Differential Equations (2021). \texttt{arXiv:2108.01073}
+  \item Variational Diffusion Models (2021). \texttt{arXiv:2107.00630}
+  \item Palette: Image-to-Image Diffusion Models (2021). \texttt{arXiv:2111.05826}
+  \item Maximum Likelihood Training of Score-Based Diffusion Models (2021). \texttt{arXiv:2101.09258}
+  \item LoRA: Low-Rank Adaptation of Large Language Models (2021). \texttt{arXiv:2106.09685}
+  \item DiffusionCLIP: Text-Guided Diffusion Models for Robust Image Manipulation (2021). \texttt{arXiv:2110.02711}
+  \item Vector Quantized Diffusion Model for Text-to-Image Synthesis (2021). \texttt{arXiv:2111.14822}
+  \item ILVR: Conditioning Method for Denoising Diffusion Probabilistic Models (2021). \texttt{arXiv:2108.02938}
+  \item Blended Diffusion for Text-driven Editing of Natural Images (2021). \texttt{arXiv:2111.14818}
+  \item CLIPScore: A Reference-free Evaluation Metric for Image Captioning (2021). \texttt{arXiv:2104.08718}
+  \item Emerging Properties in Self-Supervised Vision Transformers (2021). \texttt{arXiv:2104.14294}
+  \item Designing an Encoder for StyleGAN Image Manipulation (2021). \texttt{arXiv:2102.02766}
+  \item Generating Images with Sparse Representations (2021). \texttt{arXiv:2103.03841}
+  \item Evaluating a Synthetic Image Dataset Generated with Stable Diffusion (2022). \texttt{arXiv:2211.01777}
+  \item Diffusion Models: A Comprehensive Survey of Methods and Applications (2022). \texttt{arXiv:2209.00796}
+  \item The Status of the Bayes Rule in QBism (2022). \texttt{arXiv:2210.10757}
+  \item A Survey on Generative Diffusion Model (2022). \texttt{arXiv:2209.02646}
+  \item Markup-to-Image Diffusion Models with Scheduled Sampling (2022). \texttt{arXiv:2210.05147}
+  \item On Conditioning the Input Noise for Controlled Image Generation with Diffusion Models (2022). \texttt{arXiv:2205.03859}
+  \item Implementing and Experimenting with Diffusion Models for Text-to-Image Generation (2022). \texttt{arXiv:2209.10948}
+  \item Video Diffusion Models (2022). \texttt{arXiv:2204.03458}
+  \item Hierarchical Text-Conditional Image Generation with CLIP Latents (2022). \texttt{arXiv:2204.06125}
+  \item Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding (2022). \texttt{arXiv:2205.11487}
+  \item Classifier-Free Diffusion Guidance (2022). \texttt{arXiv:2207.12598}
+  \item Flow Matching for Generative Modeling (2022). \texttt{arXiv:2210.02747}
+  \item Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow (2022). \texttt{arXiv:2209.03003}
+  \item Scalable Diffusion Models with Transformers (2022). \texttt{arXiv:2212.09748}
+  \item Elucidating the Design Space of Diffusion-Based Generative Models (2022). \texttt{arXiv:2206.00364}
+  \item DreamBooth: Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation (2022). \texttt{arXiv:2208.12242}
+  \item Imagen Video: High Definition Video Generation with Diffusion Models (2022). \texttt{arXiv:2210.02303}
+  \item Progressive Distillation for Fast Sampling of Diffusion Models (2022). \texttt{arXiv:2202.00512}
+  \item Prompt-to-Prompt Image Editing with Cross Attention Control (2022). \texttt{arXiv:2208.01626}
+  \item Make-A-Video: Text-to-Video Generation without Text-Video Data (2022). \texttt{arXiv:2209.14792}
+  \item LAION-5B: An open large-scale dataset for training next generation image-text models (2022). \texttt{arXiv:2210.08402}
+  \item Scaling Autoregressive Models for Content-Rich Text-to-Image Generation (2022). \texttt{arXiv:2206.10789}
+  \item An Image is Worth One Word: Personalizing Text-to-Image Generation using Textual Inversion (2022). \texttt{arXiv:2208.01618}
+  \item Make-A-Scene: Scene-Based Text-to-Image Generation with Human Priors (2022). \texttt{arXiv:2203.13131}
+  \item DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling in Around 10 Steps (2022). \texttt{arXiv:2206.00927}
+  \item eDiff-I: Text-to-Image Diffusion Models with an Ensemble of Expert Denoisers (2022). \texttt{arXiv:2211.01324}
+  \item InstructPix2Pix: Learning to Follow Image Editing Instructions (2022). \texttt{arXiv:2211.09800}
+  \item Imagic: Text-Based Real Image Editing with Diffusion Models (2022). \texttt{arXiv:2210.09276}
+  \item DreamFusion: Text-to-3D using 2D Diffusion (2022). \texttt{arXiv:2209.14988}
+  \item Pseudo Numerical Methods for Diffusion Models on Manifolds (2022). \texttt{arXiv:2202.09778}
+  \item New features in the differential cross sections measured at the LHC (2022). \texttt{arXiv:2210.02970}
+  \item Tune-A-Video: One-Shot Tuning of Image Diffusion Models for Text-to-Video Generation (2022). \texttt{arXiv:2212.11565}
+  \item Null-text Inversion for Editing Real Images using Guided Diffusion Models (2022). \texttt{arXiv:2211.09794}
+  \item On Distillation of Guided Diffusion Models (2022). \texttt{arXiv:2210.03142}
+  \item Plug-and-Play Diffusion Features for Text-Driven Image-to-Image Translation (2022). \texttt{arXiv:2211.12572}
+  \item MagicVideo: Efficient Video Generation With Latent Diffusion Models (2022). \texttt{arXiv:2211.11018}
+  \item Latent Video Diffusion Models for High-Fidelity Long Video Generation (2022). \texttt{arXiv:2211.13221}
+  \item Analytic-DPM: an Analytic Estimate of the Optimal Reverse Variance in Diffusion Probabilistic Models (2022). \texttt{arXiv:2201.06503}
+  \item Flexible Diffusion Modeling of Long Videos (2022). \texttt{arXiv:2205.11495}
+  \item Understanding and contextualising diffusion models (2023). \texttt{arXiv:2302.01394}
+  \item Diffusion Models in NLP: A Survey (2023). \texttt{arXiv:2303.07576}
+  \item A Survey of Diffusion Based Image Generation Models: Issues and Their Solutions (2023). \texttt{arXiv:2308.13142}
+  \item Diffusion Self-Guidance for Controllable Image Generation (2023). \texttt{arXiv:2306.00986}
+  \item A Differential Datalog Interpreter (2023). \texttt{arXiv:2307.14810}
+  \item Diffusion Cocktail: Mixing Domain-Specific Diffusion Models for Diversified Image Generations (2023). \texttt{arXiv:2312.08873}
+  \item Diffusion Models for Generative Artificial Intelligence: An Introduction for Applied Mathematicians (2023). \texttt{arXiv:2312.14977}
+  \item Context Diffusion: In-Context Aware Image Generation (2023). \texttt{arXiv:2312.03584}
+  \item Adding Conditional Control to Text-to-Image Diffusion Models (2023). \texttt{arXiv:2302.05543}
+  \item SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis (2023). \texttt{arXiv:2307.01952}
+  \item Align your Latents: High-Resolution Video Synthesis with Latent Diffusion Models (2023). \texttt{arXiv:2304.08818}
+  \item T2I-Adapter: Learning Adapters to Dig out More Controllable Ability for Text-to-Image Diffusion Models (2023). \texttt{arXiv:2302.08453}
+  \item PixArt-\$\textbackslash{}alpha\$: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis (2023). \texttt{arXiv:2310.00426}
+  \item DINOv2: Learning Robust Visual Features without Supervision (2023). \texttt{arXiv:2304.07193}
+  \item Step-by-Step Diffusion: An Elementary Tutorial (2024). \texttt{arXiv:2406.08929}
+  \item Tutorial on Diffusion Models for Imaging and Vision (2024). \texttt{arXiv:2403.18103}
+  \item Generative Modeling with Diffusion (2024). \texttt{arXiv:2412.10948}
+  \item An Improved Method for Personalizing Diffusion Models (2024). \texttt{arXiv:2407.05312}
+  \item A Survey on Diffusion Models for Inverse Problems (2024). \texttt{arXiv:2410.00083}
+  \item Theoretical research on generative diffusion models: an overview (2024). \texttt{arXiv:2404.09016}
+  \item Imagen 3 (2024). \texttt{arXiv:2408.07009}
+  \item Diffusion-based image inpainting with internal learning (2024). \texttt{arXiv:2406.04206}
+  \item Scaling Rectified Flow Transformers for High-Resolution Image Synthesis (2024). \texttt{arXiv:2403.03206}
+  \item Diffusion Models in Recommendation Systems: A Survey (2025). \texttt{arXiv:2501.10548}
+  \item Image Editing with Diffusion Models: A Survey (2025). \texttt{arXiv:2504.13226}
+  \item An Introduction to Flow Matching and Diffusion Models (2025). \texttt{arXiv:2506.02070}
+  \item Group Diffusion: Enhancing Image Generation by Unlocking Cross-Sample Collaboration (2025). \texttt{arXiv:2512.10954}
+  \item Diffusion models for inverse problems (2025). \texttt{arXiv:2508.01975}
+  \item TaxaDiffusion: Progressively Trained Diffusion Model for Fine-Grained Species Generation (2025). \texttt{arXiv:2506.01923}
+  \item ImageRAG: Dynamic Image Retrieval for Reference-Guided Image Generation (2025). \texttt{arXiv:2502.09411}
+  \item Diff2Flow: Training Flow Matching Models via Diffusion Model Alignment (2025). \texttt{arXiv:2506.02221}
+  \item The Consistency Correctness in CoPPar Tree (2026). \texttt{arXiv:2603.07884}
+  \item Image-to-Video Diffusion: From Foundations to Open Frontiers (2026). \texttt{arXiv:2605.17248}
+  \item Destruction is a General Strategy to Learn Generation; Diffusion's Strength is to Take it Seriously; Exploration is the Future (2026). \texttt{arXiv:2605.30553}
+  \item Towards Controllable Image Generation through Representation-Conditioned Diffusion Models (2026). \texttt{arXiv:2605.27343}
+  \item Path-Integral Description of Stochastic Mechanics (2026). \texttt{arXiv:2605.12993}
+  \item A simple integral representation of single-event scoring rules (2026). \texttt{arXiv:2603.00750}
+  \item Categorical Flow Maps (2026). \texttt{arXiv:2602.12233}
+  \item The Diffusion-Attention Connection (2026). \texttt{arXiv:2604.09560}
+\end{enumerate}
+
+\end{document}

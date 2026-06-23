@@ -2,5 +2,10 @@
   "effort": "standard",
   "rank": "ppr",
   "no_cluster": false,
-  "no_graph": false
+  "no_graph": false,
+  "recency": 0.4,
+  "max_rounds": 1,
+  "critique_k": 8,
+  "figures": true,
+  "no_frontier_pull": false
 }

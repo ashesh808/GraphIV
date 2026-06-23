@@ -1,0 +1,1266 @@
+{
+ "question": "graph neural networks for drug discovery",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.5,
+ "max_rounds": 3,
+ "rounds_run": 2,
+ "critique_k": 6,
+ "n_critiques": 5,
+ "figures_enabled": true,
+ "no_frontier_pull": false,
+ "n_figures": 13,
+ "figures": {
+  "1609.02907": {
+   "page": 4,
+   "file": "figures/1609.02907_p4.png",
+   "caption": "Figure 1a is a schematic diagram showing an input layer with $C$ channels (nodes $X_1$ through $X_4$) connected by edges, which passes through hidden layers to an output layer with $F$ feature maps (nodes $Z_1$ through $Z_4$) and corresponding labels $Y_1$ through $Y_4$. Figure 1b is a t-SNE visualization of hidden layer activations from a two-layer GCN trained on the Cora dataset, where colored clusters represent different document classes. Together, the figure illustrates the architecture of a Graph Convolutional Network and the resulting feature clustering in the latent space."
+  },
+  "1710.10903": {
+   "page": 4,
+   "file": "figures/1710.10903_p4.png",
+   "caption": "The left panel depicts the attention mechanism as a computational flow where inputs $\\mathbf{W}\\vec{h}_i$ and $\\mathbf{W}\\vec{h}_j$ are processed through a LeakyReLU activation and a softmax function to produce the attention coefficient $\\alpha_{ij}$. The right panel illustrates multi-head attention, showing node $\\vec{h}_1$ receiving inputs from its neighborhood ($\\vec{h}_2$ through $\\vec{h}_6$) via multiple colored, stylized arrows representing independent attention heads. These heads are then combined through concatenation or averaging to produce the updated node representation $\\vec{h}'_1$."
+  },
+  "1706.02216": {
+   "page": 2,
+   "file": "figures/1706.02216_p2.png",
+   "caption": "The figure consists of three sequential diagrams illustrating the GraphSAGE approach, using nodes (circles) and edges (lines) to represent a graph structure. The diagrams show a process of sampling a neighborhood (k=1 and k=2), aggregating feature information from neighbors using labeled blue and green arrows, and finally using that aggregated information to predict graph context."
+  },
+  "1704.01212": {
+   "page": 1,
+   "file": "figures/1704.01212_p1.png",
+   "caption": "The figure consists of a grey circle containing a molecular structure with two arrows pointing to two separate rectangular boxes. The top box, labeled \"DFT,\" indicates a process taking approximately $10^3$ seconds that leads to a \"Targets\" box containing variables like $E$ and $\\omega_0$, while the bottom box, labeled \"Message Passing Neural Net,\" shows a sequence of molecular transformations taking approximately $10^{-2}$ seconds. The diagram conveys that the neural network serves as a significantly faster alternative to computationally expensive DFT calculations for predicting molecular quantum properties."
+  },
+  "1810.00826": {
+   "page": 3,
+   "file": "figures/1810.00826_p3.png",
+   "caption": "The figure illustrates a conceptual framework using three panels connected by arrows: a \"Graph\" on the left, a \"Rooted subtree\" in the center, and a \"GNN aggregation\" on the right. An arrow labeled \"2 WL test iterations\" points from the graph to the rooted subtree, while an arrow labeled \"Captures structures\" points from a \"Multiset\" of nodes toward the subtree. The diagram conveys that if a GNN's aggregation function captures the full multiset of node neighbors, it can capture rooted subtrees recursively and match the power of the Weisfeiler-Lehman (WL) test."
+  },
+  "1412.6980": {
+   "page": 6,
+   "file": "figures/1412.6980_p6.png",
+   "caption": "The figure consists of two line graphs comparing the training cost (negative log likelihood) of different optimization algorithms across two datasets. The left plot shows MNIST Logistic Regression performance for AdaGrad, SGDNesterov, and Adam over 45 iterations, while the right plot shows IMDB BoW feature Logistic Regression performance for Adagrad, RMSProp, SGDNesterov, and Adam (all with dropout) over 160 iterations. In both cases, the Adam optimizer achieves a lower training cost more rapidly than the other methods."
+  },
+  "1606.09375": {
+   "page": 2,
+   "file": "figures/1606.09375_p2.png",
+   "caption": "The figure illustrates a CNN architecture on graphs, showing a sequence of four stages connected by arrows: Input graph signals, Feature extraction (convolutional layers), Classification (fully connected layers), and Output signals. Below the main flow, two sub-diagrams detail the components of a convolutional layer, including a graph signal filtering process (convolution and non-linear activation) and a graph coarsening process (sub-sampling and pooling)."
+  },
+  "1509.09292": {
+   "page": 2,
+   "file": "figures/1509.09292_p2.png",
+   "caption": "The figure consists of two panels: the left panel shows a computational graph with layers of interconnected nodes (red/blue) flowing upward into a row of grey boxes, while the right panel shows a more detailed 3D-style sketch of interconnected nodes and colored edges. The figure conveys how information flows through layers of a graph\u2014representing atoms and bonds\u2014to ultimately produce a fixed-length fingerprint vector."
+  },
+  "2601.17102": {
+   "page": 2,
+   "file": "figures/2601.17102_p2.png",
+   "caption": "Figure 1 illustrates the DAGML framework, consisting of three panels (A, B, and C) that detail the protein-ligand affinity prediction pipeline. Panel A shows a flowchart where ligand and protein inputs are processed through respective encoders, followed by Inter-Domain Modeling and Cross-Modal Multihhead Attention, which feed into an MLP Predictor to output predicted affinity. Panels B and C provide detailed breakdowns of the protein feature processing stage and the specific steps of the Inter-Domain Modeling module, including pairwise distance calculation, adjacency construction, message passing, and gated updates."
+  },
+  "2605.19902": {
+   "page": 3,
+   "file": "figures/2605.19902_p3.png",
+   "caption": "The figure illustrates the HCLBind framework through three panels: (A) shows input data including protein sequences, multi-domain structures, decoy/anchor structures, and ligand SMILES; (B) depicts the pre-training phase where protein and ligand encoders generate embeddings that are processed through Domain-Gated GATs and a \"Fuse & Pool\" module to feed into classifiers; and (C) shows the fine-tuning phase where the same encoders feed into a regressor to predict binding affinity ($\\gamma, v, \\alpha, \\beta$) with an associated uncertainty error. The diagram uses boxes to represent neural network modules (Encoders, GATs, Regressors), arrows to show data flow, and a central \"Pull/Push\" diagram to represent the contrastive learning mechanism."
+  },
+  "2506.06915": {
+   "page": 6,
+   "file": "figures/2506.06915_p6.png",
+   "caption": "The figure is divided into three panels: Panel A displays various molecular representations including SMILES strings, molecular fingerprints, graphs, and voxels; Panel B shows a central \"Graph Neural Network\" node connected via dashed arrows to various GNN-related topics such as Meta GNN, MPNN, and Reinforcement Learning; Panel C outlines an \"AIDD Workflow\" consisting of a vertical sequence of boxes labeled Target Identification, Complex Structure Determination, Virtual Screening/Design, Lead Optimization, and Clinical Research. Overall, the figure conveys the relationship between molecular data formats, specific GNN methodologies, and their application throughout the drug discovery pipeline."
+  },
+  "2509.07887": {
+   "page": 2,
+   "file": "figures/2509.07887_p2.png",
+   "caption": "This figure is a vertical timeline spanning from 2021 to 2023, featuring a central blue axis with colored boxes containing model names and citations. The boxes are arranged chronologically along the axis to convey the publication years of various reviewed Graph Neural Network models in drug discovery."
+  },
+  "2506.01302": {
+   "page": 4,
+   "file": "figures/2506.01302_p4.png",
+   "caption": "The figure displays three distinct molecular representations connected by arrows from a central capsule icon: a 1D representation showing a SMILES string, a 2D representation showing a chemical structure diagram, and a 3D representation showing a ball-and-stick molecular model. Each representation is enclosed in a dashed box with a corresponding label. The figure conveys the different ways molecules can be encoded for computational drug discovery models."
+  }
+ },
+ "config": "standard-ppr-deep3-k6-r0.5",
+ "schema": [
+  [
+   "task_type",
+   "The specific drug discovery application or prediction task."
+  ],
+  [
+   "gnn_architecture",
+   "The specific graph neural network design or mechanism."
+  ],
+  [
+   "input_representation",
+   "How molecular or protein data is modeled as graphs."
+  ],
+  [
+   "research_focus",
+   "The main emphasis, such as explainability or efficiency."
+  ],
+  [
+   "evaluation_method",
+   "The datasets and metrics used for performance validation."
+  ]
+ ],
+ "n_pool": 852,
+ "n_landmarks": 120,
+ "n_edges": 8738,
+ "frontier_year": 2020,
+ "frontier_count": 53,
+ "grounded": [
+  "1312.6203",
+  "1403.6652",
+  "1502.02072",
+  "1509.09292",
+  "1603.00856",
+  "1605.05273",
+  "1606.09375",
+  "1607.00653",
+  "1609.02907",
+  "1610.02415",
+  "1611.07308",
+  "1703.00564",
+  "1703.01925",
+  "1703.06103",
+  "1704.01212",
+  "1705.10843",
+  "1706.02216",
+  "1706.08566",
+  "1710.10903",
+  "1802.03480",
+  "1802.04364",
+  "1802.08773",
+  "1805.11973",
+  "1806.02473",
+  "1806.03536",
+  "1806.08804",
+  "1809.10341",
+  "1810.00826",
+  "1810.05997",
+  "1901.00596",
+  "1902.04166",
+  "1904.01561",
+  "1905.12265",
+  "1906.04817",
+  "2003.00982",
+  "2003.03123",
+  "2005.00687",
+  "2006.05582",
+  "2007.08663",
+  "2009.01411",
+  "2009.05923",
+  "2010.13902",
+  "2012.07397",
+  "2012.09624",
+  "2102.09844",
+  "2107.06099",
+  "2107.10670",
+  "2109.11730",
+  "2110.06241",
+  "2202.05146",
+  "2203.06125",
+  "2208.04852",
+  "2208.13994",
+  "2302.08261",
+  "2309.03907",
+  "2309.12906",
+  "2312.16855",
+  "2404.11568",
+  "2412.18316",
+  "2412.19589",
+  "2506.01302",
+  "2506.06915",
+  "2507.03430",
+  "2507.11757",
+  "2508.18766",
+  "2509.07887",
+  "2509.13476",
+  "2601.17102",
+  "2605.11189",
+  "2605.19902"
+ ],
+ "off_digest": [],
+ "report_chars": 36206,
+ "judge_scores_final": {},
+ "landmarks": [
+  {
+   "arxiv_id": "2605.11189",
+   "title": "Deep Learning for Protein Complex Prediction and Design",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7184928036008635,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.06915",
+   "title": "Graph Neural Networks in Modern AI-aided Drug Discovery",
+   "year": 2025,
+   "category": "q-bio",
+   "score": 0.8865916086401612,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.19589",
+   "title": "ViDTA: Enhanced Drug-Target Affinity Prediction via Virtual Graph Nodes\n  and Attention-based Feature Fusion",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7801584642542069,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.12906",
+   "title": "Building explainable graph neural network by sparse learning for the\n  drug-protein binding prediction",
+   "year": 2023,
+   "category": "q-bio",
+   "score": 0.8067034951126922,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.04852",
+   "title": "Graph neural networks for the prediction of molecular structure-property\n  relationships",
+   "year": 2022,
+   "category": "q-bio",
+   "score": 0.8282757317646021,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2107.04119",
+   "title": "Quantitative Evaluation of Explainable Graph Neural Networks for\n  Molecular Property Prediction",
+   "year": 2021,
+   "category": "q-bio",
+   "score": 0.8200351426074122,
+   "in_degree": 4,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2008.12187",
+   "title": "Graph Neural Network Architecture Search for Molecular Property\n  Prediction",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7937112544521984,
+   "in_degree": 2,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2601.17102",
+   "title": "Domain-Aware Geometric Multimodal Learning for Multi-Domain Protein-Ligand Affinity Prediction",
+   "year": 2026,
+   "category": "q-bio",
+   "score": 0.7054896984498961,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.07887",
+   "title": "A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.871457402233241,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2409.08580",
+   "title": "Molecular Graph Representation Learning via Structural Similarity\n  Information",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7717481485253982,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.16855",
+   "title": "Molecular Property Prediction Based on Graph Structure Learning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7985264986791599,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2209.05582",
+   "title": "Graph Neural Networks for Molecules",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.80210570378138,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2110.06241",
+   "title": "Molecular Graph Generation via Geometric Scattering",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.8035970559572563,
+   "in_degree": 0,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.09624",
+   "title": "Distance-aware Molecule Graph Attention Network for Drug-Target Binding\n  Affinity Prediction",
+   "year": 2020,
+   "category": "q-bio",
+   "score": 0.7910179756697903,
+   "in_degree": 2,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2605.19902",
+   "title": "Hierarchical Contrastive Learning for Multi-Domain Protein-Ligand Binding",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.7042448272251532,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.01302",
+   "title": "Recent Developments in GNNs for Drug Discovery",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8495920519269141,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2411.13688",
+   "title": "Investigating Graph Neural Networks and Classical Feature-Extraction\n  Techniques in Activity-Cliff and Molecular Property Prediction",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7696480919807157,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.08261",
+   "title": "Knowledge-augmented Graph Machine Learning for Drug Discovery: A Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7833922851840606,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.13994",
+   "title": "HiGNN: Hierarchical Informative Graph Neural Networks for Molecular\n  Property Prediction Equipped with Feature-Wise Attention",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.797659292284259,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2107.10670",
+   "title": "Structure-aware Interactive Graph Neural Networks for the Prediction of\n  Protein-Ligand Binding Affinity",
+   "year": 2021,
+   "category": "q-bio",
+   "score": 0.7841650136420137,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.05716",
+   "title": "Utilising Graph Machine Learning within Drug Discovery and Development",
+   "year": 2020,
+   "category": "q-bio",
+   "score": 0.788808019131526,
+   "in_degree": 11,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2509.13476",
+   "title": "A Geometric Graph-Based Deep Learning Model for Drug-Target Affinity Prediction",
+   "year": 2025,
+   "category": "q-bio",
+   "score": 0.7923208211030629,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2404.11568",
+   "title": "On the Scalability of GNNs for Molecular Graphs",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7692079234902987,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.05257",
+   "title": "Comprehensive evaluation of deep and graph learning on drug-drug\n  interactions prediction",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7764350398187032,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2211.03666",
+   "title": "Application of Graph Neural Networks and graph descriptors for graph\n  classification",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7952014348967348,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2107.06099",
+   "title": "Drug-Target Interaction Prediction with Graph Attention networks",
+   "year": 2021,
+   "category": "q-bio",
+   "score": 0.768989686230471,
+   "in_degree": 1,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.07397",
+   "title": "Molecular graph generation with Graph Neural Networks",
+   "year": 2020,
+   "category": "stat",
+   "score": 0.7840985956425078,
+   "in_degree": 1,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2507.03430",
+   "title": "Multi-Level Fusion Graph Neural Network for Molecule Property Prediction",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7851235965188659,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.18316",
+   "title": "Data-Driven Self-Supervised Graph Representation Learning",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7638669900418913,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.03907",
+   "title": "DrugChat: Towards Enabling ChatGPT-Like Capabilities on Drug Molecule\n  Graphs",
+   "year": 2023,
+   "category": "q-bio",
+   "score": 0.775506251941074,
+   "in_degree": 7,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2211.16871",
+   "title": "A Deep Learning Approach to the Prediction of Drug Side-Effects on\n  Molecular Graphs",
+   "year": 2022,
+   "category": "stat",
+   "score": 0.7830146123190201,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2102.07916",
+   "title": "Few-Shot Graph Learning for Molecular Property Prediction",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7664458534016927,
+   "in_degree": 6,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.05923",
+   "title": "Contrastive Self-supervised Learning for Graph Classification",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7657806944212039,
+   "in_degree": 5,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2507.11757",
+   "title": "A Graph-in-Graph Learning Framework for Drug-Target Interaction Prediction",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7832733759263941,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.12143",
+   "title": "Graph Neural Networks for Learning Equivariant Representations of Neural\n  Networks",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7495109230566501,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2301.03424",
+   "title": "An open unified deep graph learning framework for discovering drug leads",
+   "year": 2023,
+   "category": "q-bio",
+   "score": 0.7718508521191183,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2208.14810",
+   "title": "Graph Distance Neural Networks for Predicting Multiple Drug Interactions",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7755795436879735,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2109.11730",
+   "title": "GeomGCL: Geometric Graph Contrastive Learning for Molecular Property\n  Prediction",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7637518027829573,
+   "in_degree": 7,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.09541",
+   "title": "Foundations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.74597765485647,
+   "in_degree": 0,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2508.18766",
+   "title": "Predicting Drug-Drug Interactions Using Heterogeneous Graph Neural Networks: HGNN-DDI",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7678418439192097,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1412.6980",
+   "title": "Adam: A Method for Stochastic Optimization",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.44008643729111396,
+   "in_degree": 166,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1312.6203",
+   "title": "Spectral Networks and Locally Connected Networks on Graphs",
+   "year": 2013,
+   "category": "cs",
+   "score": 0.5940944796503677,
+   "in_degree": 105,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1609.02907",
+   "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6724462796417042,
+   "in_degree": 400,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1403.6652",
+   "title": "DeepWalk: Online Learning of Social Representations",
+   "year": 2014,
+   "category": "cs",
+   "score": 0.5375188282162087,
+   "in_degree": 112,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1509.09292",
+   "title": "Convolutional Networks on Graphs for Learning Molecular Fingerprints",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7396233864860975,
+   "in_degree": 136,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1511.05493",
+   "title": "Gated Graph Sequence Neural Networks",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7036742991535134,
+   "in_degree": 83,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1704.01212",
+   "title": "Neural Message Passing for Quantum Chemistry",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6868611385623266,
+   "in_degree": 248,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1512.03385",
+   "title": "Deep Residual Learning for Image Recognition",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5338018771286475,
+   "in_degree": 71,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5126756012666821,
+   "in_degree": 113,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1606.09375",
+   "title": "Convolutional Neural Networks on Graphs with Fast Localized Spectral\n  Filtering",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6476077156139383,
+   "in_degree": 143,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.02216",
+   "title": "Inductive Representation Learning on Large Graphs",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6334097567018725,
+   "in_degree": 261,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1710.10903",
+   "title": "Graph Attention Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.7525399780329702,
+   "in_degree": 269,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1201.0490",
+   "title": "Scikit-learn: Machine Learning in Python",
+   "year": 2012,
+   "category": "cs",
+   "score": 0.5018543709715879,
+   "in_degree": 26,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1502.02072",
+   "title": "Massively Multitask Networks for Drug Discovery",
+   "year": 2015,
+   "category": "stat",
+   "score": 0.6810449304053082,
+   "in_degree": 12,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.00826",
+   "title": "How Powerful are Graph Neural Networks?",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7404503749343078,
+   "in_degree": 240,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1605.05273",
+   "title": "Learning Convolutional Neural Networks for Graphs",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6911434985625353,
+   "in_degree": 60,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1406.1231",
+   "title": "Multi-task Neural Networks for QSAR Predictions",
+   "year": 2014,
+   "category": "stat",
+   "score": 0.6701213508017919,
+   "in_degree": 9,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1603.00856",
+   "title": "Molecular Graph Convolutions: Moving Beyond Fingerprints",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.7433495730812537,
+   "in_degree": 49,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1312.6114",
+   "title": "Auto-Encoding Variational Bayes",
+   "year": 2013,
+   "category": "stat",
+   "score": 0.4214350824163464,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1607.00653",
+   "title": "node2vec: Scalable Feature Learning for Networks",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.5615123266578296,
+   "in_degree": 78,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1510.02855",
+   "title": "AtomNet: A Deep Convolutional Neural Network for Bioactivity Prediction\n  in Structure-based Drug Discovery",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.7406916682230206,
+   "in_degree": 34,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1610.02415",
+   "title": "Automatic chemical design using a data-driven continuous representation\n  of molecules",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6494741064920599,
+   "in_degree": 51,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1603.08861",
+   "title": "Revisiting Semi-Supervised Learning with Graph Embeddings",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.6890926199038713,
+   "in_degree": 51,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.04805",
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.4835261563716622,
+   "in_degree": 101,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.07308",
+   "title": "Variational Graph Auto-Encoders",
+   "year": 2016,
+   "category": "stat",
+   "score": 0.6087968838076264,
+   "in_degree": 91,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1703.00564",
+   "title": "MoleculeNet: A Benchmark for Molecular Machine Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6249315744914096,
+   "in_degree": 92,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1806.08804",
+   "title": "Hierarchical Graph Representation Learning with Differentiable Pooling",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6416878493612614,
+   "in_degree": 94,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.02428",
+   "title": "Fast Graph Representation Learning with PyTorch Geometric",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5745448864658463,
+   "in_degree": 109,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1511.06391",
+   "title": "Order Matters: Sequence to sequence for sets",
+   "year": 2015,
+   "category": "stat",
+   "score": 0.4709109687212425,
+   "in_degree": 30,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1703.01925",
+   "title": "Grammar Variational Autoencoder",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.5129502075275746,
+   "in_degree": 32,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1901.00596",
+   "title": "A Comprehensive Survey on Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7223981052213313,
+   "in_degree": 114,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1706.08566",
+   "title": "SchNet: A continuous-filter convolutional neural network for modeling\n  quantum interactions",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6136373545174955,
+   "in_degree": 58,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.00687",
+   "title": "Open Graph Benchmark: Datasets for Machine Learning on Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6516285807484015,
+   "in_degree": 107,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1611.08097",
+   "title": "Geometric deep learning: going beyond Euclidean data",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.606310603317797,
+   "in_degree": 63,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1809.10341",
+   "title": "Deep Graph Infomax",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.6206034106435961,
+   "in_degree": 87,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.03536",
+   "title": "Representation Learning on Graphs with Jumping Knowledge Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6465807675319242,
+   "in_degree": 62,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1905.12265",
+   "title": "Strategies for Pre-training Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7003038233015707,
+   "in_degree": 95,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.02244",
+   "title": "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6832984218216804,
+   "in_degree": 90,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1806.01261",
+   "title": "Relational inductive biases, deep learning, and graph networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6239291766262494,
+   "in_degree": 67,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1703.06103",
+   "title": "Modeling Relational Data with Graph Convolutional Networks",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.6125356226524039,
+   "in_degree": 57,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2010.13902",
+   "title": "Graph Contrastive Learning with Augmentations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6813579622522297,
+   "in_degree": 97,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1705.10843",
+   "title": "Objective-Reinforced Generative Adversarial Networks (ORGAN) for\n  Sequence Generation Models",
+   "year": 2017,
+   "category": "stat",
+   "score": 0.49214722817436707,
+   "in_degree": 17,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1802.04364",
+   "title": "Junction Tree Variational Autoencoder for Molecular Graph Generation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6291224218115523,
+   "in_degree": 60,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1908.01000",
+   "title": "InfoGraph: Unsupervised and Semi-supervised Graph-Level Representation\n  Learning via Mutual Information Maximization",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7090489948334264,
+   "in_degree": 83,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1812.08434",
+   "title": "Graph Neural Networks: A Review of Methods and Applications",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7639228135962822,
+   "in_degree": 62,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.03480",
+   "title": "GraphVAE: Towards Generation of Small Graphs Using Variational\n  Autoencoders",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6809544327434479,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.07606",
+   "title": "Deeper Insights into Graph Convolutional Networks for Semi-Supervised\n  Learning",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6282283024646613,
+   "in_degree": 67,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.05582",
+   "title": "Contrastive Multi-View Representation Learning on Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.7177002750792751,
+   "in_degree": 75,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1912.01703",
+   "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5071379750245554,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.03123",
+   "title": "Directional Message Passing for Molecular Graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6364163754037846,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2102.09844",
+   "title": "E(n) Equivariant Graph Neural Networks",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7461642348902476,
+   "in_degree": 53,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.01411",
+   "title": "Learning from Protein Structure with Geometric Vector Perceptrons",
+   "year": 2020,
+   "category": "q-bio",
+   "score": 0.6973899960328999,
+   "in_degree": 48,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1704.00063",
+   "title": "TopologyNet: Topology based deep convolutional neural networks for\n  biomolecular property predictions",
+   "year": 2017,
+   "category": "q-bio",
+   "score": 0.6418274391599558,
+   "in_degree": 11,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1902.07153",
+   "title": "Simplifying Graph Convolutional Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6441256355867865,
+   "in_degree": 64,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1703.10603",
+   "title": "Atomic Convolutional Networks for Predicting Protein-Ligand Binding\n  Affinity",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.6442417789385143,
+   "in_degree": 14,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2202.05146",
+   "title": "EquiBind: Geometric Deep Learning for Drug Binding Structure Prediction",
+   "year": 2022,
+   "category": "q-bio",
+   "score": 0.6769303451220503,
+   "in_degree": 25,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2203.06125",
+   "title": "Protein Representation Learning by Geometric Structure Pretraining",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.010309278350515464,
+   "in_degree": 45,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1806.02473",
+   "title": "Graph Convolutional Policy Network for Goal-Directed Molecular Graph\n  Generation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7573084250379231,
+   "in_degree": 42,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1811.05868",
+   "title": "Pitfalls of Graph Neural Network Evaluation",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6607076656024108,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1704.07555",
+   "title": "Molecular De Novo Design through Deep Reinforcement Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.623967588411438,
+   "in_degree": 23,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1803.03324",
+   "title": "Learning Deep Generative Models of Graphs",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7126502041581572,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1910.10683",
+   "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text\n  Transformer",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5077564635337872,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1802.08773",
+   "title": "GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6736034816681876,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1807.01297",
+   "title": "End-to-End Learning on 3D Protein Structure for Interface Prediction",
+   "year": 2018,
+   "category": "q-bio",
+   "score": 0.6287036039149937,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1904.01561",
+   "title": "Analyzing Learned Molecular Representations for Property Prediction",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7472549293488654,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.08230",
+   "title": "Evaluating Protein Transfer Learning with TAPE",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5163185714930154,
+   "in_degree": 36,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1810.05997",
+   "title": "Predict then Propagate: Graph Neural Networks meet Personalized PageRank",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6521996963610653,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.4876573456976985,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.06252",
+   "title": "Deep convolutional networks for quality assessment of protein folds",
+   "year": 2018,
+   "category": "q-bio",
+   "score": 0.6533244825101935,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1902.04166",
+   "title": "WideDTA: prediction of drug-target binding affinity",
+   "year": 2019,
+   "category": "q-bio",
+   "score": 0.6234600232123686,
+   "in_degree": 12,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2003.00982",
+   "title": "Benchmarking Graph Neural Networks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6790319874782789,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1805.11973",
+   "title": "MolGAN: An implicit generative model for small molecular graphs",
+   "year": 2018,
+   "category": "stat",
+   "score": 0.6677832642316475,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2006.09275",
+   "title": "Hierarchical, rotation-equivariant neural networks to select structural\n  models of protein complexes",
+   "year": 2020,
+   "category": "q-bio",
+   "score": 0.6232639541830695,
+   "in_degree": 7,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.08663",
+   "title": "TUDataset: A collection of benchmark datasets for learning with graphs",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6953717695437537,
+   "in_degree": 48,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2007.02835",
+   "title": "Self-Supervised Graph Transformer on Large-Scale Molecular Data",
+   "year": 2020,
+   "category": "q-bio",
+   "score": 0.7407938130528622,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1503.05140",
+   "title": "ProtVec: A Continuous Distributed Representation of Biological Sequences",
+   "year": 2015,
+   "category": "q-bio",
+   "score": 0.6326917189513389,
+   "in_degree": 13,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1902.00249",
+   "title": "ProteinNet: a standardized data set for machine learning of protein\n  structure",
+   "year": 2019,
+   "category": "q-bio",
+   "score": 0.6292174143477531,
+   "in_degree": 6,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.03894",
+   "title": "GNNExplainer: Generating Explanations for Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.7394008281130813,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1903.02541",
+   "title": "Relational Pooling for Graph Representations",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6613917938663418,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1906.04817",
+   "title": "Position-aware Graph Neural Networks",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6430140747226372,
+   "in_degree": 28,
+   "era": 1
+  }
+ ]
+}

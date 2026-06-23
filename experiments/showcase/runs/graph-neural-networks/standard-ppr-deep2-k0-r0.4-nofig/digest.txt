@@ -1,0 +1,1073 @@
+QUESTION: graph neural networks
+
+SCHEMA FIELDS: ['architecture_type', 'message_passing_mechanism', 'primary_task', 'key_innovation', 'graph_topology_scope', 'theoretical_focus']
+
+ERAS:
+  [0] Origins: 2012-2017
+  [1] Key Advances: 2017-2021
+  [2] Current Frontier: 2021-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1211.0053 (2012) "The Emerging Field of Signal Processing on Graphs: Extending
+  High-Dimensional Data Analysis to Networks and Other Irregular Domains" [cs] (cited-by 42 in-topic, era 0)
+    primary_task: Signal processing on graphs (filtering, translation, modulation, dilation, and downsampling)
+    key_innovation: Merging algebraic and spectral graph theoretic concepts with computational harmonic analysis to generalize classical frequency domain operations to irregular graph domains
+    graph_topology_scope: Weighted graphs (social, energy, transportation, sensor, and neuronal networks)
+    theoretical_focus: Generalizing fundamental signal processing operations and localized, multiscale transforms to irregular graph structures
+    relations: cited-by arXiv:1606.09375; cited-by arXiv:1901.00596; cited-by arXiv:1902.07243; cited-by arXiv:2006.07988
+arXiv:1312.6203 (2013) "Spectral Networks and Locally Connected Networks on Graphs" [cs] (cited-by 155 in-topic, era 0)
+    architecture_type: Spectral Networks and Locally Connected Networks
+    message_passing_mechanism: Hierarchical clustering of the domain and graph Laplacian spectrum
+    primary_task: Generalization of CNNs to signals on non-Euclidean domains
+    key_innovation: Two constructions for graph convolutions: one based on hierarchical clustering and another based on the graph Laplacian spectrum, allowing parameter counts independent of input size
+    graph_topology_scope: Low-dimensional graphs
+    theoretical_focus: Efficiency and parameter independence in deep architectures
+    relations: cited-by arXiv:2502.07500; extended-by arXiv:1506.05163; used-by arXiv:1606.09375; compared-by arXiv:1901.00596; compared-by arXiv:1704.02901; compared-by arXiv:1509.09292
+arXiv:1310.4546 (2013) "Distributed Representations of Words and Phrases and their
+  Compositionality" [cs] (cited-by 40 in-topic, era 0)
+    primary_task: Learning distributed vector representations for words and phrases
+    key_innovation: Subsampling of frequent words and negative sampling
+    theoretical_focus: Compositionality and representation quality
+    relations: cited-by arXiv:1403.6652; used-by arXiv:1503.03578; cited-by arXiv:1603.08861; used-by arXiv:1607.00653; cited-by arXiv:1609.02907; cited-by arXiv:1706.02216
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 173 in-topic, era 0)
+    primary_task: first-order gradient-based optimization of stochastic objective functions
+    key_innovation: adaptive estimates of lower-order moments
+    theoretical_focus: convergence properties and regret bound
+    relations: cited-by arXiv:2310.03399; used-by arXiv:1810.05997; cited-by arXiv:1905.10947; cited-by arXiv:2508.19884; used-by arXiv:1509.09292; cited-by arXiv:1511.05493
+arXiv:1403.6652 (2014) "DeepWalk: Online Learning of Social Representations" [cs] (cited-by 165 in-topic, era 0)
+    message_passing_mechanism: truncated random walks treated as equivalent to sentences
+    primary_task: multi-label network classification
+    key_innovation: generalizing language modeling and unsupervised feature learning from sequences of words to graphs using random walks
+    graph_topology_scope: social networks (e.g., BlogCatalog, Flickr, and YouTube)
+    theoretical_focus: learning latent representations in a continuous vector space
+    relations: cites arXiv:1310.4546; cited-by arXiv:2411.15458; cited-by arXiv:2502.07500; compared-by arXiv:1603.08861; compared-by arXiv:1609.02907; compared-by arXiv:1611.07308; cited-by arXiv:1709.05584
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 34 in-topic, era 0)
+    architecture_type: RNN Encoder-Decoder (two recurrent neural networks)
+    primary_task: Statistical machine translation
+    key_innovation: Using an RNN Encoder-Decoder to compute conditional probabilities of phrase pairs as an additional feature in a log-linear model
+    theoretical_focus: Learning semantically and syntactically meaningful phrase representations
+    relations: extended-by arXiv:1709.05584; extended-by arXiv:1511.05493; cited-by arXiv:1706.03762; cited-by arXiv:1710.10903; used-by arXiv:1806.01261; used-by arXiv:1901.00596
+arXiv:1509.09292 (2015) "Convolutional Networks on Graphs for Learning Molecular Fingerprints" [cs] (cited-by 139 in-topic, era 0)
+    architecture_type: Convolutional neural network (CNN) operating directly on graphs
+    message_passing_mechanism: Generalization of circular fingerprints (neighborhood-based aggregation)
+    primary_task: Molecular fingerprint learning and prediction pipelines
+    key_innovation: End-to-end learning of data-driven molecular features that generalize standard circular fingerprints
+    graph_topology_scope: Graphs of arbitrary size and shape
+    theoretical_focus: Interpretability and predictive performance
+    relations: compares-with arXiv:1312.6203; uses arXiv:1502.03167; uses arXiv:1412.6980; compared-by arXiv:1704.02901; cited-by arXiv:1806.01261; cited-by arXiv:1511.02136; cited-by arXiv:1511.05493; cited-by arXiv:1605.05273; cited-by arXiv:1609.02907
+arXiv:1511.05493 (2015) "Gated Graph Sequence Neural Networks" [cs] (cited-by 127 in-topic, era 0)
+    architecture_type: Gated Graph Sequence Neural Network
+    message_passing_mechanism: Modified Graph Neural Networks using gated recurrent units (GRUs)
+    primary_task: Feature learning for graph-structured inputs and sequence output
+    key_innovation: Integration of gated recurrent units (GRUs) and modern optimization techniques into GNNs, extended to output sequences
+    graph_topology_scope: Simple AI (bAbI) tasks, graph algorithm learning, and program verification subgraphs
+    theoretical_focus: Inductive biases for graph-structured data
+    relations: cites arXiv:1403.6652; cites arXiv:1312.6203; cites arXiv:1509.09292; extends arXiv:1406.1078; cites arXiv:1412.6980; used-by arXiv:2502.00140; used-by arXiv:1901.00596; cited-by arXiv:1903.02428; extended-by arXiv:1711.07553; cited-by arXiv:1605.05273; cited-by arXiv:1606.09375
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 73 in-topic, era 0)
+    architecture_type: Deep residual networks (ResNets)
+    primary_task: Image recognition (classification, detection, localization, and segmentation)
+    key_innovation: Residual learning framework that reformulates layers to learn residual functions with reference to layer inputs
+    theoretical_focus: Ease of optimization and training deeper networks
+    relations: uses arXiv:1502.03167; used-by arXiv:1609.02907; used-by arXiv:2003.00982; used-by arXiv:1711.07553; motivates arXiv:1704.02901; used-by arXiv:1706.03762; compared-by arXiv:1710.10903
+arXiv:1503.03578 (2015) "LINE: Large-scale Information Network Embedding" [cs] (cited-by 57 in-topic, era 0)
+    primary_task: network embedding (for visualization, node classification, and link prediction)
+    key_innovation: An edge-sampling algorithm and an objective function that preserves both local and global network structures.
+    graph_topology_scope: Large-scale real-world networks (millions of nodes and billions of edges; undirected, directed, and/or weighted).
+    theoretical_focus: Scalability and preservation of local and global network structures.
+    relations: compares-with arXiv:1403.6652; uses arXiv:1310.4546; cited-by arXiv:2502.07500; cited-by arXiv:1603.08861; used-by arXiv:1607.00653; cited-by arXiv:1609.02907; compared-by arXiv:1611.07308; cited-by arXiv:1706.02216
+arXiv:1506.05163 (2015) "Deep Convolutional Networks on Graph-Structured Data" [cs] (cited-by 56 in-topic, era 0)
+    architecture_type: Spectral Networks with Graph Estimation
+    primary_task: large-scale classification
+    key_innovation: extension of Spectral Networks that incorporates a Graph Estimation procedure
+    graph_topology_scope: general non-Euclidean domains
+    theoretical_focus: small learning complexity
+    relations: extends arXiv:1312.6203; compared-by arXiv:1901.00596; cited-by arXiv:1511.02136; cited-by arXiv:1605.05273; compared-by arXiv:1606.09375; cited-by arXiv:1710.10903; cited-by arXiv:1711.07553
+arXiv:1502.03167 (2015) "Batch Normalization: Accelerating Deep Network Training by Reducing
+  Internal Covariate Shift" [cs] (cited-by 51 in-topic, era 0)
+    primary_task: Image classification
+    key_innovation: Normalizing layer inputs for each training mini-batch as part of the model architecture to reduce internal covariate shift.
+    theoretical_focus: Reducing internal covariate shift to accelerate training and improve stability.
+    relations: used-by arXiv:2306.05955; used-by arXiv:1512.03385; used-by arXiv:2003.00982; cited-by arXiv:2205.12454; used-by arXiv:1509.09292; used-by arXiv:1704.02901
+arXiv:1511.02136 (2015) "Diffusion-Convolutional Neural Networks" [cs] (cited-by 50 in-topic, era 0)
+    architecture_type: Diffusion-Convolutional Neural Networks (DCNNs)
+    message_passing_mechanism: diffusion-convolution operation
+    primary_task: node classification
+    key_innovation: introduction of a diffusion-convolution operation to learn diffusion-based representations
+    graph_topology_scope: real structured datasets
+    theoretical_focus: isomorphism invariance and polynomial-time prediction/learning
+    relations: cites arXiv:1312.6203; cites arXiv:1506.05163; cites arXiv:1509.09292; compared-by arXiv:1704.02901; used-by arXiv:1901.00596; cited-by arXiv:1905.11136; cited-by arXiv:1609.02907; extended-by arXiv:1710.10903; cited-by arXiv:1803.07294
+arXiv:1609.02907 (2016) "Semi-Supervised Classification with Graph Convolutional Networks" [cs] (cited-by 698 in-topic, era 0)
+    architecture_type: Convolutional Neural Network (GCN) based on a localized first-order approximation of spectral graph convolutions
+    message_passing_mechanism: Localized first-order approximation of spectral graph convolutions
+    primary_task: Semi-supervised classification
+    key_innovation: A scalable convolutional architecture that operates directly on graphs and scales linearly with the number of edges
+    graph_topology_scope: Citation networks and knowledge graphs
+    theoretical_focus: Scalability and encoding of local graph structure and node features
+    relations: uses arXiv:1603.08861; compares-with arXiv:1403.6652; uses arXiv:1512.03385; compares-with arXiv:1312.6203; compares-with arXiv:1606.09375; cites arXiv:1310.4546; compared-by arXiv:2306.11264; cited-by arXiv:2310.03399; used-by arXiv:2407.11361; motivates arXiv:2407.15284; cited-by arXiv:2411.15458; used-by arXiv:2502.00140
+arXiv:1606.09375 (2016) "Convolutional Neural Networks on Graphs with Fast Localized Spectral
+  Filtering" [cs] (cited-by 252 in-topic, era 0)
+    architecture_type: Spectral Graph Convolutional Neural Networks
+    message_passing_mechanism: Fast localized spectral filtering
+    primary_task: Feature learning (classification) on irregular domains
+    key_innovation: Formulation of CNNs using spectral graph theory to achieve linear computational complexity and constant learning complexity while being universal to any graph structure
+    graph_topology_scope: High-dimensional irregular domains (e.g., social networks, brain connectomes, word embeddings)
+    theoretical_focus: Efficient numerical schemes for fast localized convolutional filters
+    relations: cites arXiv:1211.0053; uses arXiv:1312.6203; uses arXiv:1412.6980; cites arXiv:1511.05493; compares-with arXiv:1506.05163; compared-by arXiv:2305.06142; compared-by arXiv:2407.11361; cited-by arXiv:2502.07500; used-by arXiv:1710.10903; cited-by arXiv:1808.03965; used-by arXiv:1901.00596
+arXiv:1603.08861 (2016) "Revisiting Semi-Supervised Learning with Graph Embeddings" [cs] (cited-by 116 in-topic, era 0)
+    primary_task: Semi-supervised learning (text classification, distantly supervised entity extraction, and entity classification)
+    key_innovation: Jointly predicting class labels and neighborhood context via graph embeddings with both transductive and inductive variants
+    relations: compares-with arXiv:1403.6652; cites arXiv:1310.4546; cites arXiv:1503.03578; used-by arXiv:2305.06142; used-by arXiv:2306.11264; used-by arXiv:2310.03399; used-by arXiv:2605.05534; used-by arXiv:1609.02907; used-by arXiv:1710.10903
+arXiv:1607.00653 (2016) "node2vec: Scalable Feature Learning for Networks" [cs] (cited-by 114 in-topic, era 0)
+    message_passing_mechanism: biased random walk procedure
+    primary_task: multi-label classification and link prediction
+    key_innovation: flexible notion of a node's network neighborhood via a biased random walk that generalizes prior rigid neighborhood notions
+    graph_topology_scope: complex networks / real-world networks
+    theoretical_focus: learning continuous feature representations that maximize the likelihood of preserving network neighborhoods
+    relations: extends arXiv:1403.6652; uses arXiv:1503.03578; uses arXiv:1310.4546; cites arXiv:1511.05493; cited-by arXiv:2502.07500; cited-by arXiv:2411.15458; compared-by arXiv:1709.05584; cited-by arXiv:1609.02907; used-by arXiv:1611.07308; critiqued-by arXiv:1706.02216
+arXiv:1611.07308 (2016) "Variational Graph Auto-Encoders" [stat] (cited-by 86 in-topic, era 0)
+    architecture_type: Variational Graph Auto-Encoder (VGAE) using a Graph Convolutional Network (GCN) encoder and an inner product decoder
+    message_passing_mechanism: Graph Convolutional Network (GCN)
+    primary_task: Link prediction
+    key_innovation: Natural incorporation of node features into the unsupervised learning framework for undirected graphs
+    graph_topology_scope: Undirected graphs (specifically citation networks)
+    theoretical_focus: Unsupervised learning of interpretable latent representations
+    relations: compares-with arXiv:1403.6652; compares-with arXiv:1503.03578; uses arXiv:1607.00653; uses arXiv:1412.6980; compares-with arXiv:1609.02907; critiqued-by arXiv:1901.00596; cited-by arXiv:2502.07500; compared-by arXiv:1706.02216; extended-by arXiv:1706.02263; used-by arXiv:1709.05584; cited-by arXiv:1801.10247
+arXiv:1611.08097 (2016) "Geometric deep learning: going beyond Euclidean data" [cs] (cited-by 82 in-topic, era 0)
+    primary_task: Overview of geometric deep learning problems, solutions, and applications
+    key_innovation: Generalizing structured deep neural models to non-Euclidean domains (graphs and manifolds)
+    graph_topology_scope: Non-Euclidean domains including social networks (up to billions of nodes), sensor networks, functional networks, regulatory networks, and meshed surfaces
+    theoretical_focus: Generalization of deep learning to non-Euclidean structures
+    relations: used-by arXiv:2306.11264; compared-by arXiv:1709.05584; cited-by arXiv:1711.07553; cited-by arXiv:1806.01261; used-by arXiv:1806.01973; cited-by arXiv:1806.08804
+arXiv:1605.05273 (2016) "Learning Convolutional Neural Networks for Graphs" [cs] (cited-by 77 in-topic, era 0)
+    architecture_type: Convolutional Neural Networks (CNNs) for graphs
+    message_passing_mechanism: Extraction of locally connected regions from graphs
+    primary_task: Learning feature representations from graph data
+    key_innovation: A general framework for applying convolutional operations to arbitrary graphs (undirected, directed, discrete, or continuous attributes)
+    graph_topology_scope: Arbitrary graphs (undirected, directed, with discrete and continuous node/edge attributes)
+    theoretical_focus: Feature representation learning and computational efficiency
+    relations: cites arXiv:1511.05493; cites arXiv:1312.6203; cites arXiv:1506.05163; cites arXiv:1509.09292; compared-by arXiv:1704.02901; motivates arXiv:1901.00596; cited-by arXiv:1905.11136; cited-by arXiv:1905.12265; cited-by arXiv:2002.09518; cited-by arXiv:1609.02907
+arXiv:1611.08402 (2016) "Geometric deep learning on graphs and manifolds using mixture model CNNs" [cs] (cited-by 77 in-topic, era 0)
+    architecture_type: Mixture model CNNs
+    primary_task: Image, graph, and 3D shape analysis
+    key_innovation: A unified framework to generalize CNN architectures to non-Euclidean domains (graphs and manifolds) to learn local, stationary, and compositional task-specific features
+    graph_topology_scope: Non-Euclidean structured data including graphs and manifolds
+    theoretical_focus: Generalization of CNN architectures to non-Euclidean domains
+    relations: extended-by arXiv:1710.10903; used-by arXiv:2003.00982; cited-by arXiv:2004.05718; cited-by arXiv:1803.07294; cited-by arXiv:2306.05955; cited-by arXiv:1706.02263
+arXiv:1612.00222 (2016) "Interaction Networks for Learning about Objects, Relations and Physics" [cs] (cited-by 37 in-topic, era 0)
+    architecture_type: Interaction Network (object- and relation-centric reasoning)
+    message_passing_mechanism: Analogous to a simulation, performing object- and relation-centric reasoning via deep neural networks
+    primary_task: Dynamical predictions and inference of abstract properties (e.g., energy)
+    key_innovation: First general-purpose, learnable physics engine that generalizes to different numbers and configurations of objects/relations
+    graph_topology_scope: Complex systems involving dozens of objects over thousands of time steps
+    theoretical_focus: Simulating physical trajectories and estimating abstract quantities (e.g., energy)
+    relations: uses arXiv:1511.05493; uses arXiv:1412.6980; cited-by arXiv:1806.01261; cited-by arXiv:2502.07500; cited-by arXiv:1704.01212; cited-by arXiv:1810.00826; cited-by arXiv:2003.00982
+arXiv:1706.02216 (2017) "Inductive Representation Learning on Large Graphs" [cs] (cited-by 490 in-topic, era 0)
+    architecture_type: Inductive framework based on sampling and aggregating local neighborhood features
+    message_passing_mechanism: Sampling and aggregating features from a node's local neighborhood to learn an embedding function
+    primary_task: Inductive node classification
+    key_innovation: Learning a function to generate embeddings for previously unseen nodes/graphs using node feature information rather than training individual embeddings
+    graph_topology_scope: Large graphs, including evolving information graphs (citation and Reddit data) and multi-graph protein-protein interactions
+    theoretical_focus: Inductive generalization to unseen nodes and unseen graphs
+    relations: critiques arXiv:1607.00653; uses arXiv:1403.6652; cites arXiv:1503.03578; uses arXiv:1609.02907; compares-with arXiv:1611.07308; cites arXiv:1603.08861; compared-by arXiv:2305.06142; compared-by arXiv:2306.11264; used-by arXiv:2310.03399; compared-by arXiv:2407.11361; cited-by arXiv:2411.15458; cited-by arXiv:2502.00140
+arXiv:1710.10903 (2017) "Graph Attention Networks" [stat] (cited-by 456 in-topic, era 0)
+    architecture_type: Graph Attention Networks (GATs) using masked self-attentional layers
+    message_passing_mechanism: Nodes attend over their neighborhood's features to implicitly specify different weights to different nodes
+    primary_task: Transductive and inductive graph tasks (e.g., node classification on citation and protein-protein interaction networks)
+    key_innovation: Leveraging masked self-attentional layers to avoid costly matrix operations and dependency on upfront graph structure knowledge
+    graph_topology_scope: Citation networks (Cora, Citeseer, Pubmed) and protein-protein interaction datasets
+    theoretical_focus: Addressing shortcomings of spectral-based GNNs and enabling inductive learning
+    relations: compares-with arXiv:1403.6652; uses arXiv:1603.08861; uses arXiv:1606.09375; extends arXiv:1609.02907; extends arXiv:1611.08402; uses arXiv:1706.02216; compared-by arXiv:2305.06142; used-by arXiv:2407.11361; cited-by arXiv:2411.15458; compared-by arXiv:1803.07294; used-by arXiv:2004.05718; cited-by arXiv:1904.08082
+arXiv:1704.01212 (2017) "Neural Message Passing for Quantum Chemistry" [cs] (cited-by 329 in-topic, era 0)
+    architecture_type: Message Passing Neural Networks (MPNNs)
+    message_passing_mechanism: Learning a message passing algorithm and aggregation procedure to compute a function of the entire input graph
+    primary_task: Molecular property prediction
+    key_innovation: Reformulating existing models into a single common framework (MPNNs) and exploring novel variations within it
+    graph_topology_scope: Molecules (chemical graphs)
+    theoretical_focus: Invariance to molecular symmetries and effectiveness in chemical prediction benchmarks
+    relations: cites arXiv:1312.6203; cites arXiv:1606.09375; motivated-by arXiv:1609.02907; cites arXiv:1612.00222; cites arXiv:1509.09292; compares-with arXiv:1511.05493; cited-by arXiv:2306.05955; cited-by arXiv:2407.11361; cited-by arXiv:2412.08835; cited-by arXiv:2502.00140; extended-by arXiv:1806.01261; used-by arXiv:1812.09902
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 156 in-topic, era 0)
+    architecture_type: Transformer (encoder-decoder configuration based solely on attention mechanisms)
+    message_passing_mechanism: Attention mechanisms (dispensing with recurrence and convolutions)
+    primary_task: Sequence transduction (specifically machine translation and English constituency parsing)
+    key_innovation: The Transformer architecture which relies entirely on attention mechanisms instead of recurrence or convolutions
+    theoretical_focus: Parallelizability and training efficiency
+    relations: cites arXiv:1406.1078; uses arXiv:1512.03385; uses arXiv:1412.6980; compared-by arXiv:2407.11361; cited-by arXiv:2411.15458; used-by arXiv:1806.01261; extended-by arXiv:1710.10903; used-by arXiv:1803.07294; used-by arXiv:1810.04805
+arXiv:1703.06103 (2017) "Modeling Relational Data with Graph Convolutional Networks" [stat] (cited-by 84 in-topic, era 0)
+    architecture_type: Relational Graph Convolutional Networks (R-GCNs)
+    message_passing_mechanism: Aggregation of information across multiple inference steps in a relational graph to accumulate evidence
+    primary_task: Knowledge base completion (Link prediction and entity classification)
+    key_innovation: Extension of GCNs to handle highly multi-relational data through R-GCNs
+    graph_topology_scope: Large-scale knowledge bases (e.g., Yago, DBPedia, Wikidata, FB15k-237)
+    theoretical_focus: Modeling multi-relational data for link prediction and entity classification
+    relations: used-by arXiv:1709.05584; cited-by arXiv:1806.08804; cited-by arXiv:1810.05997; cited-by arXiv:1901.00596; used-by arXiv:1903.02428; motivates arXiv:1905.10947
+arXiv:1709.05584 (2017) "Representation Learning on Graphs: Methods and Applications" [cs] (cited-by 59 in-topic, era 0)
+    primary_task: Representation learning (encoding graph structure into low-dimensional embeddings)
+    key_innovation: Development of a unified framework to describe matrix factorization-based, random-walk based, and graph neural network approaches
+    graph_topology_scope: Individual nodes and entire (sub)graphs
+    relations: compares-with arXiv:1607.00653; cites arXiv:1403.6652; extends arXiv:1406.1078; compares-with arXiv:1611.08097; uses arXiv:1611.07308; uses arXiv:1609.02907; cited-by arXiv:2502.07500; cited-by arXiv:1803.07294; used-by arXiv:1806.01973; cited-by arXiv:1806.08804; cited-by arXiv:1809.10341; cited-by arXiv:1810.00826
+arXiv:1711.07553 (2017) "Residual Gated Graph ConvNets" [cs] (cited-by 59 in-topic, era 0)
+    architecture_type: Residual Gated Graph ConvNets
+    message_passing_mechanism: Gated edges and residuality
+    primary_task: Vertex classification, graph classification, graph regression, and graph generative tasks
+    key_innovation: Natural extension of LSTM and ConvNet to graphs of arbitrary size using gated edges and residuality
+    graph_topology_scope: Graphs with variable length/arbitrary size
+    theoretical_focus: Comparison of graph RNNs and ConvNets regarding accuracy and computational speed
+    relations: uses arXiv:1512.03385; extends arXiv:1511.05493; cites arXiv:1704.01212; cites arXiv:1312.6203; cites arXiv:1506.05163; cites arXiv:1606.09375; used-by arXiv:2003.00982; cited-by arXiv:2004.05718; cited-by arXiv:2012.09699; cited-by arXiv:2106.03893; cited-by arXiv:2106.05234; used-by arXiv:2205.12454
+arXiv:1703.00564 (2017) "MoleculeNet: A Benchmark for Molecular Machine Learning" [cs] (cited-by 57 in-topic, era 0)
+    primary_task: molecular machine learning (predicting molecular properties)
+    key_innovation: introduction of MoleculeNet, a large-scale benchmark curating multiple public datasets and establishing evaluation metrics
+    theoretical_focus: efficacy of molecular machine learning methods and the performance of learnable representations
+    relations: used-by arXiv:2306.05955; compared-by arXiv:1903.02541; used-by arXiv:1905.11136; used-by arXiv:1905.12265; used-by arXiv:2002.09518; used-by arXiv:2005.00687
+arXiv:1704.02901 (2017) "Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on
+  Graphs" [cs] (cited-by 40 in-topic, era 0)
+    architecture_type: Convolutional Neural Networks (CNNs) on graphs
+    message_passing_mechanism: Edge-conditioned filters where weights are conditioned on specific edge labels in the neighborhood of a vertex
+    primary_task: Graph classification and point cloud classification
+    key_innovation: Generalizing the convolution operator to arbitrary graphs via edge-conditioned filters while avoiding the spectral domain
+    graph_topology_scope: Arbitrary graphs of varying size and connectivity, including point clouds
+    theoretical_focus: Generalization of convolution operators to non-regular grids
+    relations: compares-with arXiv:1511.02136; compares-with arXiv:1605.05273; compares-with arXiv:1509.09292; compares-with arXiv:1312.6203; compares-with arXiv:1609.02907; motivated-by arXiv:1512.03385; cited-by arXiv:1905.11136; cited-by arXiv:2002.09518; cited-by arXiv:2306.05955; extended-by arXiv:1806.08804; used-by arXiv:1812.09902; used-by arXiv:1903.02428
+arXiv:1706.02263 (2017) "Graph Convolutional Matrix Completion" [stat] (cited-by 31 in-topic, era 0)
+    architecture_type: graph auto-encoder
+    message_passing_mechanism: differentiable message passing
+    primary_task: matrix completion (link prediction)
+    key_innovation: graph auto-encoder framework based on differentiable message passing on bipartite interaction graphs
+    graph_topology_scope: bipartite user-item graphs
+    theoretical_focus: collaborative filtering performance
+    relations: extends arXiv:1611.07308; extends arXiv:1312.6203; extends arXiv:1509.09292; extends arXiv:1511.05493; extends arXiv:1606.09375; extends arXiv:1609.02907; used-by arXiv:1709.05584; extended-by arXiv:1806.01973; cited-by arXiv:1901.00596; used-by arXiv:1902.07243; cited-by arXiv:1904.08082; critiqued-by arXiv:2005.00687
+arXiv:1708.09056 (2017) "Practical Attacks Against Graph-based Clustering" [cs] (cited-by 9 in-topic, era 0)
+    primary_task: graph-based clustering (adversarial attacks/evasion)
+    key_innovation: design and evaluation of two novel graph attacks against network-level graph-based detection systems in a global feature space
+    graph_topology_scope: network-level graphs
+    theoretical_focus: adversarial robustness/vulnerability of graph-based clustering
+    relations: compares-with arXiv:1607.00653; cites arXiv:1310.4546; cited-by arXiv:1805.07984; cited-by arXiv:1809.01093; critiqued-by arXiv:1902.08412; compared-by arXiv:2003.00653
+arXiv:1810.00826 (2018) "How Powerful are Graph Neural Networks?" [cs] (cited-by 390 in-topic, era 1)
+    architecture_type: Neighborhood aggregation scheme
+    message_passing_mechanism: Recursively aggregating and transforming representation vectors of neighboring nodes
+    primary_task: Graph classification
+    key_innovation: A theoretical framework for analyzing expressive power and a new architecture provably as powerful as the Weisfeiler-Lehman test
+    graph_topology_scope: Simple graph structures
+    theoretical_focus: Expressive power and discriminative power
+    relations: cites arXiv:1806.08804; cites arXiv:1709.05584; cites arXiv:1511.05493; cites arXiv:1706.02216; uses arXiv:1609.02907; cites arXiv:1710.10903; used-by arXiv:2305.06142; used-by arXiv:2306.05955; used-by arXiv:2407.11361; motivates arXiv:2407.15284; cited-by arXiv:2411.15458; cited-by arXiv:2412.08835
+arXiv:1805.07984 (2018) "Adversarial Attacks on Neural Networks for Graph Data" [stat] (cited-by 165 in-topic, era 1)
+    architecture_type: Graph convolutional models
+    primary_task: Node classification
+    key_innovation: Nettack, an efficient algorithm exploiting incremental computations to generate adversarial perturbations targeting both node features and graph structure.
+    graph_topology_scope: Attributed graphs
+    theoretical_focus: Robustness to adversarial attacks (test-time and poisoning/causative attacks)
+    relations: cites arXiv:1607.00653; cites arXiv:1706.02216; uses arXiv:1609.02907; cites arXiv:1611.08402; cites arXiv:1403.6652; cites arXiv:1606.09375; used-by arXiv:2605.05534; compared-by arXiv:2003.00653; used-by arXiv:2005.10203; used-by arXiv:1902.08412; cited-by arXiv:1806.02371; critiqued-by arXiv:1809.01093
+arXiv:1806.03536 (2018) "Representation Learning on Graphs with Jumping Knowledge Networks" [cs] (cited-by 149 in-topic, era 1)
+    architecture_type: Jumping Knowledge (JK) networks
+    message_passing_mechanism: Neighborhood aggregation procedure with flexible leveraging of different neighborhood ranges per node
+    primary_task: Representation learning on graphs
+    key_innovation: A strategy to adapt to local neighborhood properties by allowing nodes to flexibly leverage different neighborhood ranges
+    graph_topology_scope: Social, bioinformatics, and citation networks
+    theoretical_focus: Structure-aware representation and adapting to varying neighborhood ranges
+    relations: cited-by arXiv:2306.11264; cited-by arXiv:2411.15458; used-by arXiv:2003.00982; used-by arXiv:2007.02133; cited-by arXiv:2111.11482; used-by arXiv:1903.02428
+arXiv:1806.02371 (2018) "Adversarial Attack on Graph Structured Data" [cs] (cited-by 143 in-topic, era 1)
+    architecture_type: Graph Neural Network (GNN)
+    primary_task: graph-level and node-level classification
+    key_innovation: reinforcement learning based attack method that learns a generalizable attack policy using only prediction labels
+    graph_topology_scope: synthetic and real-world data
+    theoretical_focus: robustness and adversarial vulnerability
+    relations: cites arXiv:1509.09292; compares-with arXiv:1706.02216; cites arXiv:1609.02907; cites arXiv:1511.05493; cites arXiv:1704.01212; cites arXiv:1805.07984; cited-by arXiv:2003.00653; critiqued-by arXiv:1809.01093; compared-by arXiv:1902.08412; cited-by arXiv:1903.01610; cited-by arXiv:1906.04214; cited-by arXiv:2005.10203
+arXiv:1810.02244 (2018) "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks" [cs] (cited-by 140 in-topic, era 1)
+    architecture_type: k-dimensional Graph Neural Networks (k-GNNs)
+    primary_task: graph classification and regression
+    key_innovation: generalization of GNNs to k-dimensional structures to account for higher-order graph structures at multiple scales
+    graph_topology_scope: social networks and molecule graphs
+    theoretical_focus: expressiveness (relating GNNs to the 1-dimensional Weisfeiler-Leman graph isomorphism heuristic)
+    relations: cited-by arXiv:2306.05955; cited-by arXiv:2412.08835; used-by arXiv:1905.11136; cited-by arXiv:2002.09518; critiqued-by arXiv:2003.04078; used-by arXiv:2110.13197
+arXiv:1806.08804 (2018) "Hierarchical Graph Representation Learning with Differentiable Pooling" [cs] (cited-by 134 in-topic, era 1)
+    architecture_type: Hierarchical Graph Neural Network (GNN) with a differentiable pooling module
+    message_passing_mechanism: Differentiable soft cluster assignment mapping nodes to clusters to form coarsened inputs for subsequent layers
+    primary_task: Graph classification
+    key_innovation: DiffPool, a differentiable graph pooling module that enables end-to-end hierarchical representation learning
+    theoretical_focus: Hierarchical representation learning
+    relations: compares-with arXiv:1704.01212; extends arXiv:1704.02901; uses arXiv:1706.02216; compares-with arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1509.09292; cited-by arXiv:2407.11361; compared-by arXiv:1901.00596; cited-by arXiv:1905.11136; used-by arXiv:2002.09518; cited-by arXiv:2004.05718; cited-by arXiv:2306.05955
+arXiv:1801.07606 (2018) "Deeper Insights into Graph Convolutional Networks for Semi-Supervised
+  Learning" [cs] (cited-by 132 in-topic, era 1)
+    architecture_type: Graph Convolutional Networks (GCNs)
+    message_passing_mechanism: Laplacian smoothing
+    primary_task: Semi-supervised learning
+    key_innovation: Proposing co-training and self-training approaches to overcome over-smoothing and reduce label dependency
+    theoretical_focus: Fundamental limits and the relationship between graph convolution and Laplacian smoothing
+    relations: cited-by arXiv:2305.06142; compared-by arXiv:2502.00140; cited-by arXiv:1901.00596; cited-by arXiv:1907.10903; compared-by arXiv:1810.05997; cited-by arXiv:1902.07153
+arXiv:1810.05997 (2018) "Predict then Propagate: Graph Neural Networks meet Personalized PageRank" [cs] (cited-by 126 in-topic, era 1)
+    architecture_type: Personalized propagation of neural predictions (PPNP) and its fast approximation (APPNP)
+    message_passing_mechanism: Personalized PageRank (PPR) based propagation scheme applied to neural predictions
+    primary_task: Semi-supervised node classification
+    key_innovation: Decoupling feature transformation from propagation by using personalized PageRank to leverage large, adjustable neighborhoods
+    graph_topology_scope: Large, adjustable neighborhoods beyond a few propagation steps
+    theoretical_focus: Improving classification performance by extending the utilized neighborhood size
+    relations: uses arXiv:1412.6980; compares-with arXiv:1710.10903; cites arXiv:1607.00653; cites arXiv:1509.09292; cites arXiv:1605.05273; cites arXiv:1704.01212; compared-by arXiv:2305.06142; compared-by arXiv:2306.11264; compared-by arXiv:2006.07988; used-by arXiv:2007.02133; cited-by arXiv:1811.05868; cited-by arXiv:1902.07153
+arXiv:1806.01973 (2018) "Graph Convolutional Neural Networks for Web-Scale Recommender Systems" [cs] (cited-by 117 in-topic, era 1)
+    architecture_type: Graph Convolutional Network (GCN)
+    message_passing_mechanism: Efficient random walks combined with graph convolutions
+    primary_task: Web-scale recommendation (generating node embeddings)
+    key_innovation: Random walk-based convolution structuring and a training strategy using harder-and-harder training examples
+    graph_topology_scope: 3 billion nodes (pins and boards) and 18 billion edges
+    theoretical_focus: Scalability and data efficiency for web-scale recommendation
+    relations: extends arXiv:1706.02216; uses arXiv:1310.4546; extends arXiv:1609.02907; extends arXiv:1706.02263; uses arXiv:1709.05584; uses arXiv:1611.08097; cited-by arXiv:1809.10341; cited-by arXiv:1810.05997; cited-by arXiv:1901.00596; cited-by arXiv:1902.07243; cited-by arXiv:1905.07953; used-by arXiv:1905.12265
+arXiv:1812.08434 (2018) "Graph Neural Networks: A Review of Methods and Applications" [cs] (cited-by 115 in-topic, era 1)
+    message_passing_mechanism: message passing between the nodes of graphs
+    key_innovation: proposes a general design pipeline for GNN models and systematically categorizes applications
+    relations: cited-by arXiv:2306.05955; cited-by arXiv:2407.11361; cited-by arXiv:1902.07153; cited-by arXiv:1904.08082; cited-by arXiv:2002.09518; cited-by arXiv:2003.00653
+arXiv:1811.05868 (2018) "Pitfalls of Graph Neural Network Evaluation" [cs] (cited-by 104 in-topic, era 1)
+    primary_task: Semi-supervised node classification
+    key_innovation: Identification of shortcomings in GNN evaluation strategies, specifically regarding train/validation/test splits and training procedures (e.g., early stopping).
+    theoretical_focus: Evaluation methodology and fairness in model comparison
+    relations: uses arXiv:1603.08861; uses arXiv:1609.02907; uses arXiv:1611.08402; uses arXiv:1706.02216; uses arXiv:1710.10903; uses arXiv:1412.6980; used-by arXiv:2305.06142; cited-by arXiv:2310.03399; used-by arXiv:2407.11361; extended-by arXiv:2605.05534; used-by arXiv:2105.07264; used-by arXiv:1810.05997
+arXiv:1806.01261 (2018) "Relational inductive biases, deep learning, and graph networks" [cs] (cited-by 93 in-topic, era 1)
+    architecture_type: graph network
+    primary_task: relational reasoning and producing structured behaviors
+    key_innovation: the graph network as a building block with strong relational inductive biases to facilitate combinatorial generalization
+    graph_topology_scope: structured representations of entities, relations, and rules
+    theoretical_focus: combinatorial generalization and relational inductive biases
+    relations: cites arXiv:1509.09292; cites arXiv:1612.00222; uses arXiv:1706.03762; extends arXiv:1704.01212; cites arXiv:1611.08097; cites arXiv:1502.03167; used-by arXiv:2004.05718; cited-by arXiv:1809.10341; cited-by arXiv:1901.00596; cited-by arXiv:1902.07153; cited-by arXiv:1902.08412; cited-by arXiv:1903.02428
+arXiv:1801.10247 (2018) "FastGCN: Fast Learning with Graph Convolutional Networks via Importance
+  Sampling" [cs] (cited-by 78 in-topic, era 1)
+    architecture_type: Graph Convolutional Networks (GCN)
+    message_passing_mechanism: Monte Carlo estimation of graph convolutions interpreted as integral transforms of embedding functions
+    primary_task: Semi-supervised learning
+    key_innovation: FastGCN, a batched training scheme using importance sampling to estimate graph convolutions
+    graph_topology_scope: Large, dense graphs
+    theoretical_focus: Training efficiency and scalability
+    relations: extends arXiv:1706.02216; cites arXiv:1312.6203; cites arXiv:1509.09292; cites arXiv:1511.05493; cites arXiv:1506.05163; cites arXiv:1605.05273; compared-by arXiv:2310.03399; compared-by arXiv:1803.07294; compared-by arXiv:1809.10341; cited-by arXiv:1901.00596; used-by arXiv:1905.07953; cited-by arXiv:2111.06748
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 76 in-topic, era 1)
+    architecture_type: Deep bidirectional Transformer encoder
+    primary_task: Language representation pre-training for downstream tasks (e.g., question answering, language inference)
+    key_innovation: Jointly conditioning on both left and right context in all layers through bidirectional Transformer representations
+    theoretical_focus: Language representation and pre-training effectiveness
+    relations: uses arXiv:1706.03762; cites arXiv:1310.4546; used-by arXiv:2407.11361; used-by arXiv:1905.12265; cited-by arXiv:2012.09699; compared-by arXiv:2106.05234
+arXiv:1812.09902 (2018) "Invariant and Equivariant Graph Networks" [cs] (cited-by 67 in-topic, era 1)
+    architecture_type: Deep neural network framework using permutation invariant and equivariant linear layers
+    message_passing_mechanism: Capable of approximating any message passing neural network
+    primary_task: Approximating message passing neural networks and achieving state-of-the-art results in graph tasks
+    key_innovation: Characterization of all permutation invariant and equivariant linear layers for (hyper-)graph data, providing orthogonal bases with dimensions related to Bell numbers
+    graph_topology_scope: (Hyper-)graph data, including edge-value graphs and multi-graph data
+    theoretical_focus: Expressivity and characterization of invariant/equivariant linear layers
+    relations: uses arXiv:1704.01212; cites arXiv:1506.05163; cites arXiv:1312.6203; cites arXiv:1611.08402; uses arXiv:1806.08804; uses arXiv:1511.02136; cited-by arXiv:2306.05955; extended-by arXiv:2003.00982; extended-by arXiv:1905.11136; extended-by arXiv:2003.04078; cited-by arXiv:1901.00596; cited-by arXiv:1903.02541
+arXiv:1809.01093 (2018) "Adversarial Attacks on Node Embeddings via Graph Poisoning" [cs] (cited-by 63 in-topic, era 1)
+    architecture_type: random walk-based methods
+    primary_task: adversarial vulnerability analysis of node embeddings
+    key_innovation: derivation of efficient adversarial perturbations that poison network structure to degrade embedding quality and downstream task performance
+    theoretical_focus: robustness to adversarial attacks
+    relations: cites arXiv:1403.6652; cites arXiv:1607.00653; critiques arXiv:1805.07984; critiques arXiv:1806.02371; critiques arXiv:1902.08412; cites arXiv:1606.09375; motivates arXiv:2003.00653; cited-by arXiv:1902.08412; cited-by arXiv:1906.04214; cited-by arXiv:2005.10203; cited-by arXiv:2006.08149
+arXiv:1802.09691 (2018) "Link Prediction Based on Graph Neural Networks" [cs] (cited-by 51 in-topic, era 1)
+    abstract: Link prediction is a key problem for network-structured data. Link prediction
+heuristics use some score functions, such as common neighbors and Katz index,
+to measure the likelihood of links. They have obtained wide practical uses due
+to their simplicity, interpretability, and for some of them, scal
+    relations: uses arXiv:1605.05273; uses arXiv:1312.6203; uses arXiv:1509.09292; uses arXiv:1609.02907; cites arXiv:1403.6652; uses arXiv:1607.00653; critiqued-by arXiv:1906.04817; cited-by arXiv:2005.00687; used-by arXiv:2110.13197
+arXiv:1809.10341 (2018) "Deep Graph Infomax" [stat] (cited-by 48 in-topic, era 1)
+    architecture_type: Graph Convolutional Networks (GCNs)
+    message_passing_mechanism: Maximizing mutual information between patch representations and high-level graph summaries
+    primary_task: Unsupervised node representation learning (for downstream node-wise tasks like node classification)
+    key_innovation: Maximizing mutual information between local patch representations and global graph summaries without relying on random walk objectives
+    theoretical_focus: Mutual information maximization
+    relations: uses arXiv:1609.02907; critiques arXiv:1403.6652; uses arXiv:1603.08861; uses arXiv:1706.02216; compares-with arXiv:1801.10247; compares-with arXiv:1803.07294; compared-by arXiv:1902.07153; used-by arXiv:1903.02428; used-by arXiv:1905.12265; cited-by arXiv:2005.00687; cited-by arXiv:2007.02133; cited-by arXiv:2204.05351
+arXiv:1808.03965 (2018) "Large-Scale Learnable Graph Convolutional Networks" [cs] (cited-by 33 in-topic, era 1)
+    architecture_type: Learnable Graph Convolutional Layer (LGCL)
+    message_passing_mechanism: Automatic selection of a fixed number of neighboring nodes based on value ranking to transform graph data into 1-D grid-like structures
+    primary_task: Node classification (transductive and inductive learning)
+    key_innovation: LGCL for transforming generic graphs into 1-D grid-like structures and a sub-graph training method for large-scale efficiency
+    graph_topology_scope: Large-scale graphs (including Cora, Citeseer, Pubmed, and protein-protein interaction networks)
+    theoretical_focus: Scalability and efficiency for large-scale graph convolution
+    relations: cites arXiv:1603.08861; cites arXiv:1403.6652; cites arXiv:1606.09375; compares-with arXiv:1609.02907; compares-with arXiv:1706.02216; compares-with arXiv:1512.03385; cited-by arXiv:1901.00596; motivates arXiv:1907.10903; cited-by arXiv:2002.05287; cited-by arXiv:2204.05351; cited-by arXiv:2210.05382
+arXiv:1803.07294 (2018) "GaAN: Gated Attention Networks for Learning on Large and Spatiotemporal
+  Graphs" [cs] (cited-by 31 in-topic, era 1)
+    architecture_type: Gated Attention Networks (GaAN) and Graph Gated Recurrent Unit (GGRU)
+    message_passing_mechanism: Multi-head attention mechanism controlled by a convolutional sub-network to regulate head importance
+    primary_task: Inductive node classification and traffic speed forecasting
+    key_innovation: Use of a convolutional sub-network to control the importance of each attention head
+    graph_topology_scope: Large and spatiotemporal graphs
+    relations: uses arXiv:1706.02216; compares-with arXiv:1710.10903; compares-with arXiv:1801.10247; cites arXiv:1611.08402; cites arXiv:1709.05584; cites arXiv:1509.09292; compared-by arXiv:1809.10341; cited-by arXiv:1901.00596; cited-by arXiv:1905.07953; cited-by arXiv:2007.02133; compared-by arXiv:1902.07153
+arXiv:1901.00596 (2019) "A Comprehensive Survey on Graph Neural Networks" [cs] (cited-by 177 in-topic, era 1)
+    architecture_type: Taxonomy of four categories: recurrent graph neural networks, convolutional graph neural networks, graph autoencoders, and spatial-temporal graph neural networks
+    primary_task: Survey of GNNs in data mining and machine learning
+    key_innovation: Proposal of a new taxonomy to categorize state-of-the-art GNNs
+    graph_topology_scope: Non-Euclidean domains with complex relationships and interdependency
+    relations: uses arXiv:1511.05493; compares-with arXiv:1312.6203; compares-with arXiv:1506.05163; uses arXiv:1606.09375; uses arXiv:1609.02907; uses arXiv:1511.02136; cited-by arXiv:2305.06142; cited-by arXiv:2306.05955; cited-by arXiv:2407.11361; cited-by arXiv:1902.07153; cited-by arXiv:1905.10947; cited-by arXiv:1907.10903
+arXiv:1902.07153 (2019) "Simplifying Graph Convolutional Networks" [cs] (cited-by 167 in-topic, era 1)
+    architecture_type: Linear model (simplified GCN)
+    message_passing_mechanism: Successively removing nonlinearities and collapsing weight matrices between consecutive layers to form a fixed low-pass filter
+    primary_task: Graph representation learning
+    key_innovation: Reducing complexity by removing nonlinearities and collapsing weight matrices to create a linear model
+    graph_topology_scope: Large datasets
+    theoretical_focus: Complexity reduction and correspondence to a fixed low-pass filter
+    relations: uses arXiv:1609.02907; compares-with arXiv:1710.10903; uses arXiv:1801.10247; compares-with arXiv:1809.10341; compares-with arXiv:1810.00826; compares-with arXiv:1803.07294; used-by arXiv:2305.06142; extended-by arXiv:2407.15284; cited-by arXiv:2411.15458; cited-by arXiv:2605.05534; cited-by arXiv:1903.01610; used-by arXiv:1903.02428
+arXiv:1903.02428 (2019) "Fast Graph Representation Learning with PyTorch Geometric" [cs] (cited-by 144 in-topic, era 1)
+    primary_task: deep learning on irregularly structured input data (graphs, point clouds, and manifolds)
+    key_innovation: high data throughput via sparse GPU acceleration, dedicated CUDA kernels, and efficient mini-batch handling for varying input sizes
+    graph_topology_scope: irregularly structured input data such as graphs, point clouds and manifolds
+    relations: uses arXiv:1806.03536; cites arXiv:1511.05493; uses arXiv:1609.02907; uses arXiv:1710.10903; cites arXiv:1611.08097; uses arXiv:1704.01212; compared-by arXiv:2310.03399; used-by arXiv:2407.11361; cited-by arXiv:2412.08835; cited-by arXiv:2005.00687; cited-by arXiv:1904.08082; used-by arXiv:1905.11136
+arXiv:1903.01610 (2019) "Adversarial Examples on Graph Data: Deep Insights into Attack and
+  Defense" [cs] (cited-by 115 in-topic, era 1)
+    architecture_type: Graph Convolutional Networks (GCN)
+    primary_task: Adversarial attack and defense
+    key_innovation: Using integrated gradients to resolve discreteness in attacks and a statistical inspection approach to recover perturbations for defense
+    theoretical_focus: Robustness against adversarial perturbations
+    relations: compares-with arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1506.05163; compares-with arXiv:1312.6203; uses arXiv:1805.07984; cites arXiv:1806.02371; cited-by arXiv:2605.05534; cited-by arXiv:2003.00653; used-by arXiv:2005.10203; used-by arXiv:2006.08149
+arXiv:1902.08412 (2019) "Adversarial Attacks on Graph Neural Networks via Meta Learning" [cs] (cited-by 94 in-topic, era 1)
+    architecture_type: Graph Convolutional Networks (GCNs)
+    primary_task: Node classification
+    key_innovation: Using meta-gradients to solve the bilevel optimization problem of training-time attacks by treating the graph structure as a hyperparameter.
+    graph_topology_scope: Discrete graph structure perturbations
+    theoretical_focus: Robustness against training-time adversarial attacks
+    relations: uses arXiv:1805.07984; cites arXiv:1611.08402; cites arXiv:1806.01261; uses arXiv:1403.6652; compares-with arXiv:1806.02371; cites arXiv:1810.05997; used-by arXiv:2003.00653; used-by arXiv:2005.10203; critiqued-by arXiv:1809.01093; compared-by arXiv:1906.04214; used-by arXiv:2006.08149
+arXiv:1905.11136 (2019) "Provably Powerful Graph Networks" [cs] (cited-by 90 in-topic, era 1)
+    architecture_type: k-order invariant and equivariant graph neural networks
+    message_passing_mechanism: interleaving applications of standard Multilayer-Perceptron (MLP) on feature dimensions with matrix multiplication (quadratic operation)
+    primary_task: graph classification and regression
+    key_innovation: a reduced 2-order network with a scaled identity operator and a single quadratic operation that achieves provable 3-WL expressiveness
+    theoretical_focus: expressive power (specifically achieving 3-WL expressiveness)
+    relations: uses arXiv:1810.02244; cites arXiv:1605.05273; cites arXiv:1511.02136; cites arXiv:1704.02901; cites arXiv:1806.08804; extends arXiv:1812.09902; cited-by arXiv:2306.05955; motivates arXiv:2407.15284; used-by arXiv:2003.00982; critiqued-by arXiv:2003.04078; used-by arXiv:2110.13197; extended-by arXiv:2009.00142
+arXiv:1906.04214 (2019) "Topology Attack and Defense for Graph Neural Networks: An Optimization
+  Perspective" [cs] (cited-by 84 in-topic, era 1)
+    primary_task: semi-supervised node classification
+    key_innovation: A novel gradient-based attack method for discrete graph data and the first optimization-based adversarial training for GNNs.
+    graph_topology_scope: edge perturbations (addition and deletion)
+    theoretical_focus: adversarial robustness
+    relations: cites arXiv:1806.02371; cites arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1810.00826; cites arXiv:1809.01093; cites arXiv:1805.07984; cited-by arXiv:2605.05534; cited-by arXiv:2003.00653; cited-by arXiv:2006.08149
+arXiv:1907.04931 (2019) "GraphSAINT: Graph Sampling Based Inductive Learning Method" [cs] (cited-by 74 in-topic, era 1)
+    architecture_type: Compatible with various GNN architecture variants (e.g., graph attention, jumping connection)
+    message_passing_mechanism: Constructs minibatches by sampling a subgraph from the training graph, then building a complete GCN on that subgraph
+    primary_task: Inductive learning (node classification)
+    key_innovation: Sampling the training graph to construct minibatches rather than sampling nodes/edges across layers, combined with normalization to eliminate bias and sampling algorithms for variance reduction
+    graph_topology_scope: Large graphs (tested on five large graphs, including PPI and Reddit)
+    theoretical_focus: Training efficiency and accuracy
+    relations: used-by arXiv:2310.03399; used-by arXiv:2005.00687; cited-by arXiv:2006.07988; used-by arXiv:2006.08149; extended-by arXiv:2009.00142
+arXiv:1905.00067 (2019) "MixHop: Higher-Order Graph Convolutional Architectures via Sparsified
+  Neighborhood Mixing" [cs] (cited-by 74 in-topic, era 1)
+    architecture_type: Higher-order graph convolutional architecture
+    message_passing_mechanism: Repeatedly mixing feature representations of neighbors at various distances
+    primary_task: Semi-supervised learning
+    key_innovation: Sparsified neighborhood mixing that can learn various relationships, including difference operators
+    theoretical_focus: Learning general classes of neighborhood mixing relationships
+    relations: cites arXiv:1403.6652; uses arXiv:1603.08861; uses arXiv:1609.02907; critiques arXiv:1606.09375; cites arXiv:1710.10903; critiques arXiv:1312.6203; cited-by arXiv:2306.11264; compared-by arXiv:2310.03399; cited-by arXiv:2006.07988; cited-by arXiv:2007.02133; critiqued-by arXiv:2009.00142; cited-by arXiv:2110.13197
+arXiv:1907.10903 (2019) "DropEdge: Towards Deep Graph Convolutional Networks on Node
+  Classification" [cs] (cited-by 73 in-topic, era 1)
+    architecture_type: General technique applicable to various backbones (e.g., GCN, ResGCN, GraphSAGE, and JKNet)
+    message_passing_mechanism: Message passing reducer via random edge removal at each training epoch
+    primary_task: Node classification
+    key_innovation: DropEdge: a technique that randomly removes a certain number of edges from the input graph during training to act as a data augmenter and message passing reducer
+    graph_topology_scope: Shallow and deep Graph Convolutional Networks (GCNs)
+    theoretical_focus: Alleviating over-fitting and over-smoothing
+    relations: uses arXiv:1905.10947; uses arXiv:1609.02907; cites arXiv:1801.07606; cites arXiv:1403.6652; uses arXiv:1806.03536; cites arXiv:1901.00596; compared-by arXiv:2005.00687; cited-by arXiv:2006.05205; used-by arXiv:2007.02133; cited-by arXiv:2111.06748
+arXiv:1905.07953 (2019) "Cluster-GCN: An Efficient Algorithm for Training Deep and Large Graph
+  Convolutional Networks" [cs] (cited-by 64 in-topic, era 1)
+    architecture_type: Graph Convolutional Network (GCN)
+    message_passing_mechanism: Restricts neighborhood search within a sampled dense subgraph identified by a graph clustering algorithm
+    primary_task: Large-scale GCN training (node classification)
+    key_innovation: Cluster-GCN algorithm that samples blocks of nodes from dense subgraphs to improve memory and computational efficiency
+    graph_topology_scope: Large-scale graphs, specifically tested on Amazon2M (2 million nodes and 61 million edges)
+    theoretical_focus: Scalability, memory efficiency, and computational efficiency for deep GCNs
+    relations: uses arXiv:1609.02907; uses arXiv:1706.02216; uses arXiv:1801.10247; cites arXiv:1803.07294; cites arXiv:1710.10903; cites arXiv:1806.01973; cited-by arXiv:2310.03399; cited-by arXiv:1901.00596; cited-by arXiv:2007.02133; cited-by arXiv:2003.00982; used-by arXiv:2005.00687
+arXiv:1912.01703 (2019) "PyTorch: An Imperative Style, High-Performance Deep Learning Library" [cs] (cited-by 63 in-topic, era 1)
+    key_innovation: imperative and Pythonic programming style compatible with high performance
+    theoretical_focus: usability and speed
+    relations: cited-by arXiv:2005.00687; extended-by arXiv:2003.00982; used-by arXiv:2012.09699
+arXiv:1905.10947 (2019) "Graph Neural Networks Exponentially Lose Expressive Power for Node
+  Classification" [cs] (cited-by 63 in-topic, era 1)
+    architecture_type: Graph Convolutional Network (GCN)
+    message_passing_mechanism: Generalization of forward propagation as a dynamical system based on the spectra of the (augmented) normalized Laplacian
+    primary_task: Node classification
+    key_innovation: Characterization of the asymptotic behavior of GCNs showing exponential loss of expressive power, where outputs approach signals carrying only connected component and node degree information
+    graph_topology_scope: Erdős–Rényi graphs (specifically dense and large graphs)
+    theoretical_focus: Expressive power and asymptotic behavior
+    relations: cites arXiv:1412.6980; compares-with arXiv:1509.09292; compares-with arXiv:1511.05493; uses arXiv:1704.01212; motivated-by arXiv:1706.02216; uses arXiv:1609.02907; used-by arXiv:1907.10903; cited-by arXiv:2006.05205; cited-by arXiv:2006.07988; cited-by arXiv:2007.02133; cited-by arXiv:2205.12454
+arXiv:1909.03211 (2019) "Measuring and Relieving the Over-smoothing Problem for Graph Neural
+  Networks from the Topological View" [cs] (cited-by 61 in-topic, era 1)
+    primary_task: Relieving the over-smoothing issue to improve GNN performance
+    key_innovation: Introduction of MAD and MADGap metrics for quantitative measurement, and two alleviation methods: MADReg (MADGap-based regularizer) and AdaGraph (topology optimization)
+    graph_topology_scope: 7 widely-used graph datasets
+    theoretical_focus: Over-smoothing and the impact of graph topology on the information-to-noise ratio
+    relations: cited-by arXiv:2411.15458; cited-by arXiv:2006.05205
+arXiv:1903.02541 (2019) "Relational Pooling for Graph Representations" [cs] (cited-by 59 in-topic, era 1)
+    architecture_type: General framework compatible with existing GNNs, RNNs, and CNNs
+    message_passing_mechanism: Relational Pooling (RP) based on the theory of finite partial exchangeability
+    primary_task: Graph classification
+    key_innovation: Generalizing GNNs beyond WL-based, Laplacian, and diffusion-based models using finite partial exchangeability to achieve maximal representation power
+    theoretical_focus: Representation power and isomorphism testing
+    relations: uses arXiv:1412.6980; extends arXiv:1509.09292; cites arXiv:1609.02907; cites arXiv:1704.01212; cites arXiv:1706.02216; cites arXiv:1710.10903; used-by arXiv:2306.05955; compared-by arXiv:2412.08835; used-by arXiv:2003.04078; cited-by arXiv:2205.12454; cited-by arXiv:1905.11136; used-by arXiv:2003.00982
+arXiv:1905.12265 (2019) "Strategies for Pre-training Graph Neural Networks" [cs] (cited-by 59 in-topic, era 1)
+    primary_task: Graph classification (specifically molecular property prediction and protein function prediction)
+    key_innovation: Simultaneous pre-training at both the individual node level and the entire graph level to learn local and global representations.
+    theoretical_focus: Generalization and avoiding negative transfer during pre-training
+    relations: cites arXiv:1605.05273; uses arXiv:1810.00826; uses arXiv:1810.04805; uses arXiv:1310.4546; compares-with arXiv:1609.02907; uses arXiv:1706.02216; cited-by arXiv:2407.11361; cited-by arXiv:2412.08835; used-by arXiv:2005.00687; compared-by arXiv:2106.05234; compared-by arXiv:2205.12454
+arXiv:1903.03894 (2019) "GNNExplainer: Generating Explanations for Graph Neural Networks" [cs] (cited-by 54 in-topic, era 1)
+    architecture_type: model-agnostic
+    message_passing_mechanism: recursively passing neural messages along edges
+    primary_task: providing interpretable explanations for GNN predictions
+    key_innovation: formulating explanation as an optimization task that maximizes mutual information between a GNN's prediction and the distribution of possible subgraph structures
+    graph_topology_scope: any graph-based machine learning task (synthetic and real-world graphs)
+    theoretical_focus: interpretability
+    relations: cited-by arXiv:2006.08149; cited-by arXiv:2205.15555; used-by arXiv:2210.03907
+arXiv:1902.07243 (2019) "Graph Neural Networks for Social Recommendation" [cs] (cited-by 54 in-topic, era 1)
+    primary_task: social recommendation
+    key_innovation: GraphRec framework that jointly captures interactions and opinions in the user-item graph while coherently modeling two graphs (user-user social graph and user-item graph) and heterogeneous strengths.
+    graph_topology_scope: user-user social graph and user-item graph
+    relations: uses arXiv:1609.02907; cites arXiv:1706.02216; cites arXiv:1606.09375; uses arXiv:1706.02263; uses arXiv:1607.00653; cites arXiv:1211.0053; cited-by arXiv:2305.06142; cited-by arXiv:2003.04078
+arXiv:1904.08082 (2019) "Self-Attention Graph Pooling" [cs] (cited-by 54 in-topic, era 1)
+    architecture_type: Graph Neural Network (GNN) with self-attention pooling
+    message_passing_mechanism: Graph convolution combined with self-attention to consider node features and graph topology
+    primary_task: Graph classification
+    key_innovation: A graph pooling method based on self-attention that integrates node features and graph topology
+    theoretical_focus: Downsampling (pooling) efficiency and graph classification performance
+    relations: cites arXiv:1606.09375; uses arXiv:1609.02907; cites arXiv:1706.02216; cites arXiv:1710.10903; cites arXiv:1706.03762; uses arXiv:1806.03536; used-by arXiv:2407.11361; cited-by arXiv:2002.09518; cited-by arXiv:1901.00596; cited-by arXiv:2007.02133; motivates arXiv:2111.11482; cited-by arXiv:2205.15555
+arXiv:1906.04817 (2019) "Position-aware Graph Neural Networks" [cs] (cited-by 40 in-topic, era 1)
+    architecture_type: Position-aware Graph Neural Networks (P-GNNs)
+    message_passing_mechanism: Non-linear distance-weighted aggregation over sampled anchor-sets based on distances from a target node
+    primary_task: Link prediction and community detection
+    key_innovation: Sampling anchor nodes and computing distances to target nodes to learn position-aware node embeddings
+    theoretical_focus: Capturing node position/location within the broader graph structure
+    relations: cites arXiv:1709.05584; uses arXiv:1609.02907; cites arXiv:1607.00653; cites arXiv:1806.08804; cites arXiv:1806.01973; cites arXiv:1403.6652; cited-by arXiv:2306.05955; cited-by arXiv:1905.12265; critiqued-by arXiv:2003.00982; used-by arXiv:2004.05718; cited-by arXiv:2005.00687; critiqued-by arXiv:2012.09699
+arXiv:2005.00687 (2020) "Open Graph Benchmark: Datasets for Machine Learning on Graphs" [cs] (cited-by 204 in-topic, era 1)
+    primary_task: multiple important graph ML tasks (e.g., social, information, biological, molecular, AST, and knowledge graphs)
+    key_innovation: The Open Graph Benchmark (OGB), a diverse set of large-scale, realistic benchmark datasets with a unified evaluation protocol and an automated end-to-end graph ML pipeline.
+    graph_topology_scope: large-scale graphs across diverse domains (social, information, biological, molecular, source code ASTs, and knowledge graphs)
+    theoretical_focus: scalability and out-of-distribution generalization
+    relations: cites arXiv:1810.00826; cites arXiv:1912.01703; cites arXiv:1903.02428; uses arXiv:1703.00564; cites arXiv:1611.07308; cites arXiv:1704.01212; cited-by arXiv:2306.05955; used-by arXiv:2310.03399; cited-by arXiv:2507.20127; used-by arXiv:2605.05534; used-by arXiv:2204.05351; used-by arXiv:2003.00982
+arXiv:2003.00982 (2020) "Benchmarking Graph Neural Networks" [cs] (cited-by 115 in-topic, era 1)
+    primary_task: Benchmarking and comparing GNN models
+    key_innovation: An open-source, reproducible benchmark framework for fair model comparison under the same parameter budget
+    graph_topology_scope: Diverse collection of mathematical and real-world graphs, including medium-sized molecular datasets (AQSOL)
+    theoretical_focus: Fair model comparison and exploration of graph positional encoding (PE)
+    relations: uses arXiv:1502.03167; uses arXiv:1512.03385; uses arXiv:1806.03536; uses arXiv:1810.00826; extends arXiv:1812.09902; cites arXiv:1606.09375; cited-by arXiv:2305.06142; cited-by arXiv:2306.05955; compared-by arXiv:2412.08835; used-by arXiv:2012.09699; extended-by arXiv:2106.03893; used-by arXiv:2205.12454
+arXiv:2012.09699 (2020) "A Generalization of Transformer Networks to Graphs" [cs] (cited-by 111 in-topic, era 1)
+    architecture_type: Graph Transformer
+    message_passing_mechanism: Attention mechanism as a function of neighborhood connectivity
+    key_innovation: Neighborhood-based attention, Laplacian eigenvector positional encoding, batch normalization, and edge feature representation
+    graph_topology_scope: Arbitrary graphs
+    theoretical_focus: Generalization of transformer networks to non-fully connected graph structures
+    relations: uses arXiv:2003.00982; cites arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1711.07553; uses arXiv:1706.03762; cites arXiv:1704.01212; cited-by arXiv:2411.15458; extended-by arXiv:2106.03893; extended-by arXiv:2106.05234; cited-by arXiv:2205.12454
+arXiv:2002.05287 (2020) "Geom-GCN: Geometric Graph Convolutional Networks" [cs] (cited-by 94 in-topic, era 1)
+    architecture_type: Geometric Graph Convolutional Networks (Geom-GCN)
+    message_passing_mechanism: A three-module geometric aggregation scheme consisting of node embedding, structural neighborhood, and bi-level aggregation.
+    primary_task: Transductive learning on graphs
+    key_innovation: A geometric aggregation scheme that utilizes a continuous space underlying the graph to capture structural information and long-range dependencies.
+    graph_topology_scope: Disassortative graphs and graphs requiring long-range dependency capture
+    theoretical_focus: Improving representation learning by overcoming loss of structural information and lack of long-range dependency capture
+    relations: cites arXiv:1606.09375; cites arXiv:1511.05493; uses arXiv:1609.02907; cites arXiv:1704.01212; critiques arXiv:1810.00826; cites arXiv:1806.03536; used-by arXiv:2305.06142; cited-by arXiv:2502.00140; cited-by arXiv:2507.20127; used-by arXiv:2006.07988; used-by arXiv:2111.06748; used-by arXiv:2007.02133
+arXiv:2006.05205 (2020) "On the Bottleneck of Graph Neural Networks and its Practical
+  Implications" [cs] (cited-by 88 in-topic, era 1)
+    message_passing_mechanism: aggregation of messages across paths into fixed-size vectors
+    key_innovation: identification of the 'over-squashing' bottleneck where exponentially growing information is compressed into fixed-size vectors
+    graph_topology_scope: long-range interactions/distant nodes
+    theoretical_focus: information propagation and the over-squashing phenomenon
+    relations: cites arXiv:1509.09292; cites arXiv:1706.02216; uses arXiv:1810.00826; cites arXiv:1704.01212; uses arXiv:1511.05493; uses arXiv:1710.10903; cited-by arXiv:2106.03893; used-by arXiv:2205.12454; cited-by arXiv:2205.15555
+arXiv:2005.10203 (2020) "Graph Structure Learning for Robust Graph Neural Networks" [cs] (cited-by 87 in-topic, era 1)
+    architecture_type: Pro-GNN (joint structural graph and robust GNN framework)
+    primary_task: Defense against adversarial attacks on graphs
+    key_innovation: Jointly learning a structural graph and a robust GNN model by leveraging intrinsic graph properties (low-rank, sparsity, and feature similarity)
+    graph_topology_scope: Real-world graphs
+    theoretical_focus: Robustness to adversarial perturbations
+    relations: uses arXiv:1805.07984; uses arXiv:1902.08412; cites arXiv:1806.02371; uses arXiv:1903.01610; compares-with arXiv:1609.02907; compares-with arXiv:1710.10903; cited-by arXiv:2605.05534; cited-by arXiv:2003.00653; cited-by arXiv:2006.08149
+arXiv:2006.11468 (2020) "Beyond Homophily in Graph Neural Networks: Current Limitations and
+  Effective Designs" [cs] (cited-by 82 in-topic, era 1)
+    architecture_type: H2GCN (Graph Neural Network)
+    message_passing_mechanism: Ego- and neighbor-embedding separation, higher-order neighborhoods, and combination of intermediate representations
+    primary_task: Semi-supervised node classification
+    key_innovation: Identification and combination of designs (ego/neighbor separation, higher-order neighborhoods, and intermediate representation combination) to handle heterophily
+    graph_topology_scope: Heterophilous or low-homophily networks (synthetic and real)
+    theoretical_focus: Representation power and accuracy under heterophily
+    relations: compared-by arXiv:2306.11264; cited-by arXiv:2502.00140; compared-by arXiv:2111.06748; critiqued-by arXiv:2006.07988; used-by arXiv:2210.05382
+arXiv:2006.08149 (2020) "GNNGuard: Defending Graph Neural Networks against Adversarial Attacks" [cs] (cited-by 75 in-topic, era 1)
+    architecture_type: General algorithm compatible with any GNN
+    message_passing_mechanism: Robust propagation of neural messages via edge re-weighting (assigning higher weights to similar nodes and pruning edges between unrelated nodes)
+    primary_task: Defending GNNs against training-time adversarial attacks that perturb discrete graph structure
+    key_innovation: Neighbor importance estimation and layer-wise graph memory
+    graph_topology_scope: Includes heterophily graphs and human disease graphs
+    theoretical_focus: Robustness against targeted and non-targeted adversarial attacks
+    relations: uses arXiv:1902.08412; uses arXiv:1609.02907; cites arXiv:1901.00596; cites arXiv:1704.01212; uses arXiv:1810.00826; uses arXiv:1805.07984; cited-by arXiv:2605.05534; cited-by arXiv:2003.00653
+arXiv:2004.05718 (2020) "Principal Neighbourhood Aggregation for Graph Nets" [cs] (cited-by 71 in-topic, era 1)
+    architecture_type: Principal Neighbourhood Aggregation (PNA)
+    message_passing_mechanism: Combining multiple aggregators with degree-scalers
+    primary_task: Predictive tasks on graph-structured data (including isomorphism tasks)
+    key_innovation: Use of multiple aggregation functions and degree-scalers to handle continuous features
+    theoretical_focus: Expressive power (specifically regarding continuous features and isomorphism tasks)
+    relations: extends arXiv:1810.00826; uses arXiv:1806.01261; uses arXiv:1710.10903; uses arXiv:1609.02907; cites arXiv:1806.08804; cites arXiv:1611.08402; used-by arXiv:2605.05534; compared-by arXiv:2106.03893; cited-by arXiv:2106.05234; compared-by arXiv:2205.12454; cited-by arXiv:2306.05955; used-by arXiv:2003.00982
+arXiv:2007.02133 (2020) "Simple and Deep Graph Convolutional Networks" [cs] (cited-by 69 in-topic, era 1)
+    architecture_type: Deep Graph Convolutional Network (GCNII)
+    message_passing_mechanism: Vanilla GCN extension using initial residual and identity mapping
+    primary_task: Semi-supervised and full-supervised tasks
+    key_innovation: Initial residual and Identity mapping to mitigate over-smoothing
+    graph_topology_scope: Real-world datasets
+    theoretical_focus: Mitigating the over-smoothing problem in deep GCNs
+    relations: uses arXiv:1810.05997; uses arXiv:1706.02216; cites arXiv:1803.07294; extends arXiv:1710.10903; uses arXiv:1806.03536; cites arXiv:1905.07953; compared-by arXiv:2305.06142; used-by arXiv:2111.06748; cited-by arXiv:2006.05205
+arXiv:2006.07988 (2020) "Adaptive Universal Generalized PageRank Graph Neural Network" [cs] (cited-by 65 in-topic, era 1)
+    architecture_type: Generalized PageRank (GPR) GNN architecture
+    message_passing_mechanism: Adaptive learning of GPR weights to jointly optimize node feature and topological information extraction
+    primary_task: node-classification
+    key_innovation: Adaptive GPR weights that allow for universality (independence from homophily or heterophily assumptions) and avoidance of feature over-smoothing
+    graph_topology_scope: Homophilic and heterophilic graph structures, including synthetic datasets generated by the contextual stochastic block model
+    theoretical_focus: Universality (independence on homophily/heterophily) and mitigation of feature over-smoothing
+    relations: compares-with arXiv:1810.05997; uses arXiv:2002.05287; cites arXiv:1704.01212; cites arXiv:1806.01261; cites arXiv:1312.6203; compares-with arXiv:1609.02907; used-by arXiv:2305.06142; compared-by arXiv:2306.11264; compared-by arXiv:2507.20127; used-by arXiv:2111.06748; cited-by arXiv:2009.00142; compared-by arXiv:2210.05382
+arXiv:2009.00142 (2020) "Distance Encoding: Design Provably More Powerful Neural Networks for
+  Graph Representation Learning" [cs] (cited-by 52 in-topic, era 1)
+    architecture_type: GNN with Distance Encoding (DE) as extra node features or message aggregation controllers
+    message_passing_mechanism: Message aggregation controlled by distance-based features (DE) or augmented with DE as extra node features
+    primary_task: Node set representation learning (structural role prediction, link prediction, and triangle prediction)
+    key_innovation: Distance Encoding (DE) which captures distances between a node set and other nodes in the graph to exceed 1-WL expressivity
+    graph_topology_scope: Sparse underlying graphs and regular graphs
+    theoretical_focus: Expressive power (exceeding 1-WL test) and computational efficiency/scalability
+    relations: uses arXiv:1609.02907; extends arXiv:1706.02216; extends arXiv:1810.00826; extends arXiv:1905.11136; extends arXiv:1810.02244; cites arXiv:1709.05584; cited-by arXiv:2306.05955; cited-by arXiv:2205.12454; critiqued-by arXiv:2003.00982; cited-by arXiv:2009.03717; cited-by arXiv:2012.09699; cited-by arXiv:2106.03893
+arXiv:2003.00653 (2020) "Adversarial Attacks and Defenses on Graphs: A Review, A Tool and
+  Empirical Studies" [cs] (cited-by 50 in-topic, era 1)
+    primary_task: Review of adversarial attacks and defenses on Graph Neural Networks (GNNs)
+    key_innovation: Categorization of existing attacks/defenses and the development of a repository (DeepRobust) for empirical studies
+    theoretical_focus: Vulnerability and robustness of GNNs to structural perturbations
+    relations: cites arXiv:1906.04214; cites arXiv:1903.01610; compares-with arXiv:1805.07984; uses arXiv:1902.08412; cites arXiv:1806.02371; motivated-by arXiv:1809.01093; cited-by arXiv:2005.10203; cited-by arXiv:2006.08149
+arXiv:2003.04078 (2020) "A Survey on The Expressive Power of Graph Neural Networks" [cs] (cited-by 32 in-topic, era 1)
+    primary_task: Survey of expressive power and provably powerful GNN variants
+    key_innovation: Comprehensive overview of the expressive power of GNNs and their variants
+    theoretical_focus: Expressive power
+    relations: cites arXiv:1706.02216; compares-with arXiv:1810.00826; critiques arXiv:1810.02244; extends arXiv:1812.09902; critiques arXiv:1905.11136; uses arXiv:1903.02541; cited-by arXiv:2412.08835; compared-by arXiv:2210.05382; cited-by arXiv:2004.05718; critiqued-by arXiv:2205.12454; critiqued-by arXiv:2205.15555
+arXiv:2002.09518 (2020) "Memory-Based Graph Networks" [cs] (cited-by 5 in-topic, era 1)
+    architecture_type: Memory-based GNN (MemGNN) and Graph Memory Network (GMN) featuring a hierarchical memory layer
+    message_passing_mechanism: Jointly learning node representations and coarsening the graph via a memory layer
+    primary_task: Graph classification and regression
+    key_innovation: An efficient memory layer that jointly learns node representations and coarsens the graph to learn hierarchical representations
+    graph_topology_scope: Arbitrary topology, including molecular data
+    theoretical_focus: Hierarchical graph representation learning
+    relations: cites arXiv:1605.05273; cites arXiv:1706.02216; cites arXiv:1704.02901; cites arXiv:1810.02244; uses arXiv:1806.08804; cites arXiv:1904.08082; cited-by arXiv:2205.15555
+arXiv:2009.03717 (2020) "Hierarchical Message-Passing Graph Neural Networks" [cs] (cited-by 2 in-topic, era 1)
+    architecture_type: Hierarchical Message-passing Graph Neural Networks (HC-GNN)
+    message_passing_mechanism: Intra- and inter-level propagation manners using multi-level super graphs
+    primary_task: Node classification, link prediction, and community detection
+    key_innovation: Generating a hierarchical structure of multi-level super graphs to create shortcuts for long-range interactions and incorporate meso- and macro-level semantics
+    graph_topology_scope: Graphs requiring long-range information encoding and high-order neighbourhood features
+    theoretical_focus: Capturing long-range information without heavy additional computation complexity
+    relations: cites arXiv:2009.00142; cites arXiv:1801.07606
+arXiv:2106.05234 (2021) "Do Transformers Really Perform Bad for Graph Representation?" [cs] (cited-by 136 in-topic, era 1)
+    architecture_type: Standard Transformer architecture
+    message_passing_mechanism: Structural encoding methods to incorporate graph structure into the Transformer
+    primary_task: Graph representation learning (graph-level prediction)
+    key_innovation: Effective encoding of structural information into the Transformer architecture
+    graph_topology_scope: Large-scale graphs (specifically mentioned OGB Large-Scale Challenge)
+    theoretical_focus: Expressive power
+    relations: compares-with arXiv:1609.02907; uses arXiv:1810.00826; compares-with arXiv:1704.01212; extends arXiv:2012.09699; cites arXiv:2004.05718; cites arXiv:1706.02216; cited-by arXiv:2306.05955; compared-by arXiv:2411.15458; compared-by arXiv:2205.12454; cited-by arXiv:2003.00982
+arXiv:2106.03893 (2021) "Rethinking Graph Transformers with Spectral Attention" [cs] (cited-by 111 in-topic, era 1)
+    architecture_type: Fully-connected Transformer with Learned Positional Encoding (LPE)
+    message_passing_mechanism: Learned positional encoding based on the full Laplacian spectrum added to node features, followed by a fully-connected Transformer architecture
+    primary_task: Graph benchmarks (node/graph representation learning)
+    key_innovation: Spectral Attention Network (SAN) using the full Laplacian spectrum for positional encoding to avoid over-squashing and improve sub-structure detection
+    theoretical_focus: Expressivity (distinguishing graphs) and mitigating over-squashing
+    relations: cites arXiv:1710.10903; extends arXiv:2012.09699; extends arXiv:2003.00982; uses arXiv:2005.00687; cites arXiv:1609.02907; cites arXiv:1706.02216; extended-by arXiv:2106.05234; used-by arXiv:2205.12454; cited-by arXiv:2003.00982
+arXiv:2110.13197 (2021) "Nested Graph Neural Networks" [cs] (cited-by 24 in-topic, era 1)
+    architecture_type: Nested Graph Neural Networks (NGNN) - a plug-and-play framework that applies a base GNN to local subgraphs extracted around each node.
+    message_passing_mechanism: Extracts a local subgraph around each node and applies a base GNN to learn a subgraph representation, which is then pooled for the whole-graph representation.
+    primary_task: Graph classification.
+    key_innovation: Representing graphs with rooted subgraphs instead of rooted subtrees to increase expressiveness.
+    graph_topology_scope: Non-tree graphs, specifically capable of discriminating almost all r-regular graphs.
+    theoretical_focus: Expressivity (strictly more powerful than 1-WL).
+    relations: uses arXiv:1905.11136; uses arXiv:1810.02244; compares-with arXiv:1704.01212; uses arXiv:2009.00142; compares-with arXiv:1511.05493; critiques arXiv:1403.6652; cited-by arXiv:2306.05955
+arXiv:2111.06748 (2021) "Simplifying approach to Node Classification in Graph Neural Networks" [stat] (cited-by 5 in-topic, era 1)
+    architecture_type: Feature Selection Graph Neural Network (FSGNN)
+    message_passing_mechanism: Decoupled node feature aggregation and feature transformation using a softmax 'soft-selector' for features from different hop distances and L2-Normalization over GNN layers.
+    primary_task: Node classification
+    key_innovation: Decoupling aggregation from depth and using softmax as a regularizer/soft-selector to filter less informative aggregated features.
+    graph_topology_scope: Nine benchmark datasets with varying levels of homophily and heterophily.
+    theoretical_focus: Expressiveness and the impact of feature aggregation on prediction performance.
+    relations: cites arXiv:1801.10247; uses arXiv:2006.07988; uses arXiv:2007.02133; uses arXiv:2002.05287; compares-with arXiv:2006.11468; cites arXiv:1704.01212; used-by arXiv:2305.06142; cited-by arXiv:2502.00140
+arXiv:2105.07264 (2021) "Neural Trees for Learning on Graphs" [cs] (cited-by 1 in-topic, era 1)
+    architecture_type: Neural Tree (H-tree)
+    message_passing_mechanism: Message passing on a hierarchical tree-structured graph (H-tree) where nodes represent subgraphs of the input graph.
+    primary_task: Semi-supervised node classification
+    key_innovation: Replacing local message-passing on the input graph with message passing on a constructed hierarchical H-tree to overcome expressive power limitations.
+    graph_topology_scope: Undirected graphs, including 3D scene graphs and citation networks with large treewidth.
+    theoretical_focus: Expressivity (approximating smooth probability distribution functions and continuous G-invariant/equivariant functions).
+    relations: uses arXiv:1811.05868; cites arXiv:1509.09292; cites arXiv:1611.08097; uses arXiv:1810.00826; critiques arXiv:1810.02244; critiques arXiv:1905.11136
+arXiv:2111.11482 (2021) "Graph Neural Networks with Parallel Neighborhood Aggregations for Graph
+  Classification" [cs] (cited-by 0 in-topic, era 1)
+    architecture_type: Parallel Neighborhood Aggregation Graph Neural Network (PA-GNN)
+    message_passing_mechanism: Precomputed node features using a bank of neighborhood aggregation graph operators arranged in parallel
+    primary_task: Graph classification
+    key_innovation: Parallel neighborhood aggregation (PA-GNN) that precomputes node features to reduce training and inference time while maintaining WL-level discriminative power
+    graph_topology_scope: Diverse real-world datasets
+    theoretical_focus: Expressivity (provably as powerful as the Weisfeiler-Lehman graph isomorphism test)
+    relations: cites arXiv:1806.03536; cites arXiv:1611.08097; cites arXiv:1609.02907; compares-with arXiv:1706.02216; motivated-by arXiv:1710.10903; extends arXiv:1810.00826
+arXiv:2205.12454 (2022) "Recipe for a General, Powerful, Scalable Graph Transformer" [cs] (cited-by 84 in-topic, era 2)
+    architecture_type: Graph Transformer (GraphGPS) with decoupled local real-edge aggregation and a fully-connected global attention mechanism
+    message_passing_mechanism: Decoupled local message-passing combined with a global attention mechanism
+    primary_task: Graph representation learning
+    key_innovation: A modular framework (GraphGPS) that achieves linear complexity $O(N+E)$ by decoupling local aggregation from global attention, serving as a universal function approximator
+    graph_topology_scope: Scalable to both small and large graphs (beyond the previous constraint of a few hundred nodes)
+    theoretical_focus: Expressivity (universal function approximator), scalability, and complexity
+    relations: uses arXiv:2003.00982; uses arXiv:2106.03893; cites arXiv:2009.00142; compares-with arXiv:2106.05234; cites arXiv:1609.02907; uses arXiv:1810.00826; cited-by arXiv:2407.11361
+arXiv:2204.05351 (2022) "Graph Ordering Attention Networks" [cs] (cited-by 2 in-topic, era 2)
+    architecture_type: Graph Ordering Attention Networks (GOAT)
+    message_passing_mechanism: Learning local node orderings via an attention mechanism and processing ordered representations using a recurrent neural network aggregator
+    primary_task: Node classification and modeling graph metrics (e.g., betweenness centrality, effective size)
+    key_innovation: Introduction of the GOAT layer which uses an information-theoretic framework to capture synergistic information and interactions among neighbors via permutation-sensitive aggregation while maintaining permutation-equivariance
+    theoretical_focus: Capturing interactions among neighbors and synergistic information
+    relations: uses arXiv:2005.00687; cites arXiv:1605.05273; cites arXiv:1808.03965; uses arXiv:1609.02907; cites arXiv:1704.01212; compares-with arXiv:1810.00826
+arXiv:2210.03907 (2022) "Learning the Network of Graphs for Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: GL-GNN (multi-sub-module architecture with a network of graphs)
+    message_passing_mechanism: Aggregation method over a learned network of graphs
+    primary_task: Graph-structured data analysis (addressing unknown graphs, noisy features, and noisy connections)
+    key_innovation: Simultaneously learning multiple relation graphs and a relation network of graphs to handle unknown topologies and noise
+    graph_topology_scope: Unknown and noisy graph structures across seven datasets (unknown) and two datasets (known)
+    theoretical_focus: Robustness to unknown graphs, noisy features, and noisy connections
+    relations: compares-with arXiv:1403.6652; cites arXiv:1806.01973; uses arXiv:1903.03894; cites arXiv:1606.09375
+arXiv:2210.05382 (2022) "Uplifting Message Passing Neural Network with Graph Original Information" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: INGNN (INformation-enhanced Graph Neural Network)
+    message_passing_mechanism: Leverages graph original information (node features and graph structures) to enhance message passing
+    primary_task: node classification
+    key_innovation: Fully exploiting graph original information to improve expressiveness and generalizability
+    graph_topology_scope: synthetic and real datasets
+    theoretical_focus: expressiveness and generalizability
+    relations: compares-with arXiv:2003.04078; cites arXiv:1706.02216; compares-with arXiv:1710.10903; cites arXiv:1706.03762; compares-with arXiv:2006.07988; uses arXiv:1609.02907
+arXiv:2205.15555 (2022) "Graph-level Neural Networks: Current Progress and Future Directions" [cs] (cited-by 0 in-topic, era 2)
+    primary_task: Graph-level learning (studying a collection of graphs)
+    key_innovation: A systematic taxonomy covering GLNNs based on deep neural networks, graph neural networks, and graph pooling
+    graph_topology_scope: Increasing scale and complexity of graphs
+    relations: cites arXiv:1901.00596; cites arXiv:1810.00826; cites arXiv:1704.01212; cites arXiv:1509.09292; cites arXiv:1605.05273; cites arXiv:1511.02136
+arXiv:2306.05955 (2023) "Path Neural Networks: Expressive and Accurate Graph Neural Networks" [cs] (cited-by 2 in-topic, era 2)
+    architecture_type: Path Neural Networks (PathNNs)
+    message_passing_mechanism: Aggregating paths emanating from nodes (variants include single shortest paths, all shortest paths, and all simple paths of length up to K)
+    primary_task: Graph classification and graph regression
+    key_innovation: Updating node representations by aggregating paths rather than just immediate neighbors to increase expressive power beyond the 1-WL algorithm
+    graph_topology_scope: Non-isomorphic graphs (including those indistinguishable by 1-WL and 3-WL)
+    theoretical_focus: Expressivity (distinguishing power relative to the Weisfeiler-Leman hierarchy)
+    relations: cites arXiv:1812.08434; cites arXiv:1810.02244; uses arXiv:1810.00826; cites arXiv:1812.09902; cites arXiv:1905.11136; cites arXiv:1901.00596
+arXiv:2310.01267 (2023) "Cooperative Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    architecture_type: Cooperative Graph Neural Networks
+    message_passing_mechanism: Dynamic strategy-based mechanism where nodes choose to 'listen', 'broadcast', 'listen and broadcast', or 'isolate'
+    key_innovation: A framework where nodes act as players choosing communication strategies to create a more flexible and dynamic message-passing paradigm
+    theoretical_focus: Message-passing scheme flexibility and exploration of graph topology
+    relations: (none in-topic)
+arXiv:2310.03399 (2023) "GRAPES: Learning to Sample Graphs for Scalable Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    architecture_type: Two-stage GNN (a second GNN used to predict sampling probabilities for a downstream GNN)
+    message_passing_mechanism: Aggregating information from a learned subset of neighboring nodes
+    primary_task: Node classification
+    key_innovation: Adaptive sampling method that trains a second GNN to predict node sampling probabilities by optimizing the downstream task objective
+    graph_topology_scope: Homophilous and heterophilous graphs, including multi-label heterophilous graphs
+    theoretical_focus: Scalability and accuracy through adaptive sampling
+    relations: uses arXiv:1907.04931; compares-with arXiv:1801.10247; cites arXiv:1609.02907; uses arXiv:1706.02216; cites arXiv:1905.07953; uses arXiv:1603.08861
+arXiv:2305.06142 (2023) "Feature Expansion for Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    architecture_type: Spatial and spectral GNN models
+    message_passing_mechanism: Repeated aggregations
+    primary_task: Node classification
+    key_innovation: Feature space expansion via feature subspaces flattening and structural principal components
+    theoretical_focus: Feature space analysis and linear correlation due to repeated aggregations
+    relations: compares-with arXiv:1606.09375; uses arXiv:1810.00826; cites arXiv:1902.07243; cites arXiv:1901.00596; compares-with arXiv:1710.10903; uses arXiv:2006.07988
+arXiv:2306.11264 (2023) "GraphGLOW: Universal and Generalizable Structure Learning for Graph
+  Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    architecture_type: A general framework coordinating a single graph-shared structure learner and multiple graph-specific GNNs.
+    message_passing_mechanism: Adaptive message-passing topology optimized via a probabilistic data-generative structure learner.
+    primary_task: Universal and generalizable graph structure learning.
+    key_innovation: Moving from a closed-world assumption (training per graph) to an open-world setting where a single structure learner generalizes across unseen datasets without fine-tuning.
+    graph_topology_scope: Diverse datasets and various cross-graph generalization protocols.
+    theoretical_focus: Generalizability and computational efficiency in structure learning.
+    relations: uses arXiv:1603.08861; compares-with arXiv:1609.02907; compares-with arXiv:1706.02216; uses arXiv:1611.08097; cites arXiv:1806.03536; cites arXiv:1905.00067
+arXiv:2407.11361 (2024) "Graph Structure Prompt Learning: A Novel Methodology to Improve
+  Performance of Graph Neural Networks" [cs] (cited-by 1 in-topic, era 2)
+    primary_task: node classification, graph classification, and edge prediction
+    key_innovation: Graph structure Prompt Learning (GPL) using task-independent graph structure losses
+    graph_topology_scope: eleven real-world datasets
+    theoretical_focus: capturing intrinsic graph characteristics and alleviating over-smoothing
+    relations: cites arXiv:1704.01212; compares-with arXiv:1706.02216; uses arXiv:1710.10903; uses arXiv:1609.02907; compares-with arXiv:1706.03762; uses arXiv:1903.02428
+arXiv:2403.13849 (2024) "Graphs Unveiled: Graph Neural Networks and Graph Generation" [cs] (cited-by 0 in-topic, era 2)
+    primary_task: survey of GNN applications and graph generation
+    key_innovation: comprehensive overview of GNNs and discussion of graph generation
+    relations: (none in-topic)
+arXiv:2407.15284 (2024) "Revisiting Neighborhood Aggregation in Graph Neural Networks for Node
+  Classification using Statistical Signal Processing" [cs] (cited-by 0 in-topic, era 2)
+    message_passing_mechanism: neighborhood aggregation
+    primary_task: node classification
+    key_innovation: reevaluating neighborhood aggregation from a statistical signal processing perspective to address conceptual flaws under edge-independent node labels
+    theoretical_focus: neighborhood aggregation efficiency and conceptual validity
+    relations: motivated-by arXiv:1609.02907; motivated-by arXiv:1810.00826; motivated-by arXiv:1905.11136; extends arXiv:1902.07153
+arXiv:2412.08835 (2024) "Grothendieck Graph Neural Networks Framework: An Algebraic Platform for Crafting Topology-Aware GNNs" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Grothendieck Graph Neural Networks (GkGNN) framework / Sieve Neural Networks (SNN)
+    message_passing_mechanism: Aggregation over covers rather than neighborhoods, utilizing matrices derived from formal covers (e.g., cover of sieves)
+    primary_task: Graph isomorphism and topology-aware representation learning
+    key_innovation: Replacing the neighborhood primitive with a formal algebraic extension called 'covers' based on category theory
+    graph_topology_scope: Challenging graph isomorphism benchmarks including SRG, CSL, and BREC
+    theoretical_focus: Expressivity (surpassing the Weisfeiler-Lehman test) and topological awareness
+    relations: cites arXiv:2003.04078; cites arXiv:1810.00826; cites arXiv:1704.01212; compares-with arXiv:1903.02541; compares-with arXiv:2003.00982; cites arXiv:1903.02428
+arXiv:2411.15458 (2024) "TANGNN: a Concise, Scalable and Effective Graph Neural Networks with
+  Top-m Attention Mechanism for Graph Representation Learning" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Graph Neural Network (GNN) integrating Top-m attention and neighborhood aggregation
+    message_passing_mechanism: Integration of a Top-m attention mechanism aggregation component and a neighborhood aggregation component to capture local and extended neighborhoods
+    primary_task: Citation sentiment prediction (specifically on the ArXivNet dataset)
+    key_innovation: Top-m attention mechanism aggregation component designed for computational and storage efficiency while capturing long-distance relationships
+    graph_topology_scope: Large graph datasets and complex graph structures
+    theoretical_focus: Computational and storage efficiency and enhanced information aggregation from local and extended neighborhoods
+    relations: cites arXiv:1403.6652; cites arXiv:1609.02907; cites arXiv:1902.07153; cites arXiv:1909.03211; cites arXiv:1706.02216; cites arXiv:1706.03762
+arXiv:2511.11046 (2025) "Enhancing Graph Representations with Neighborhood-Contextualized Message-Passing" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Soft-Isomorphic Neighborhood-Contextualized Graph Convolution Network (SINC-GCN)
+    message_passing_mechanism: Neighborhood-contextualized message-passing (NCMP) that incorporates broader local neighborhood context rather than just individual pair-wise messages
+    primary_task: Graph property prediction
+    key_innovation: The Neighborhood-Contextualized Message-Passing (NCMP) framework and the SINC-GCN model
+    graph_topology_scope: Synthetic and benchmark GNN datasets
+    theoretical_focus: Expressivity and representational power
+    relations: (none in-topic)
+arXiv:2507.20127 (2025) "Aggregation-aware MLP: An Unsupervised Approach for Graph Message-passing" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Aggregation-aware Multilayer Perceptron (AMLP)
+    message_passing_mechanism: Adaptive MLP-based aggregation that shifts from fixed functions (Mean, Max, Sum) to making the MLP adaptive to aggregation via a single-layer network.
+    primary_task: Unsupervised node clustering and classification
+    key_innovation: An unsupervised framework that makes MLPs adaptive to aggregation using a graph reconstruction method for high-order grouping and a single-layer network to encode heterophily.
+    theoretical_focus: Adaptability to varying degrees of heterophily and improving aggregation capacity without labeled data.
+    relations: uses arXiv:1609.02907; compares-with arXiv:2006.07988; uses arXiv:1706.02216; cites arXiv:2005.00687; cites arXiv:2002.05287
+arXiv:2508.19884 (2025) "Parameter-Free Structural-Diversity Message Passing for Graph Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Parameter-free graph neural network (SDGNN)
+    message_passing_mechanism: Unified structural-diversity message passing mechanism combining structure-driven and feature-driven perspectives
+    primary_task: Node classification
+    key_innovation: Introduction of structural diversity theory to design a parameter-free framework that captures neighborhood heterogeneity and feature stability without additional trainable parameters
+    graph_topology_scope: Eight public benchmark datasets and an interdisciplinary PubMed citation network
+    theoretical_focus: Structural diversity as a core signal for improving adaptability and preventing over-smoothing/semantic degradation
+    relations: cites arXiv:1710.10903; cites arXiv:1706.02216; cites arXiv:1609.02907; cites arXiv:1806.03536; cites arXiv:1810.00826; cites arXiv:1412.6980
+arXiv:2502.00140 (2025) "Demystifying MPNNs: Message Passing as Merely Efficient Matrix
+  Multiplication" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Message Passing Neural Networks (MPNNs)
+    message_passing_mechanism: Iterative computation to aggregate k-hop neighborhood information
+    primary_task: Analysis of GNN behavior across structure-feature hybrid and structure-only tasks
+    key_innovation: A theoretical framework establishing that MPNNs function as efficient matrix multiplication and analyzing the impact of loop structures and gradient-related issues
+    graph_topology_scope: Sparse graphs and varying loop structures
+    theoretical_focus: Bridging empirical success and theoretical understanding via neighborhood computation, gradient behavior, and normalization schemes
+    relations: cites arXiv:1810.00826; uses arXiv:1609.02907; compares-with arXiv:1801.07606; uses arXiv:1511.05493; cites arXiv:1706.02216; cites arXiv:2002.05287
+arXiv:2502.07500 (2025) "Unified Graph Networks (UGN): A Deep Neural Framework for Solving Graph
+  Problems" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Hybrid framework leveraging Graph Convolutional Neural Networks (GCN) and 2-dimensional Convolutional Neural Networks (Conv2D)
+    primary_task: Unified graph learning (link prediction, node classification, community detection, graph-to-graph translation, and knowledge graph completion)
+    key_innovation: A generalized, resource-efficient framework (UGN) that unifies diverse graph tasks with minimal task-specific extensions like supernode formation and Mean Target Connectivity Matrix (MTCM)
+    graph_topology_scope: Massive networks (via coarsening/supernodes) and diverse graph-structured datasets
+    theoretical_focus: Generalization capability and scalability
+    relations: cites arXiv:1607.00653; cites arXiv:1503.03578; cites arXiv:1312.6203; cites arXiv:1606.09375; cites arXiv:1609.02907; cites arXiv:1403.6652
+arXiv:2602.23998 (2026) "Invariants in equivariant birational geometry" [math] (cited-by 0 in-topic, era 2)
+    relations: (none in-topic)
+arXiv:2605.05534 (2026) "Adversarial Graph Neural Network Benchmarks: Towards Practical and Fair Evaluation" [cs] (cited-by 0 in-topic, era 2)
+    primary_task: Adversarial robustness evaluation (poisoning and evasion scenarios)
+    key_innovation: A unified benchmark framework for fair, robust, and standardized evaluation of 7 attacks and 8 defenses across 6 datasets via 453,000+ experiments.
+    graph_topology_scope: 6 popular graph datasets
+    theoretical_focus: Evaluation fairness and robustness of adversarial attacks/defenses
+    relations: uses arXiv:2005.00687; cites arXiv:1903.01610; cites arXiv:2005.10203; cites arXiv:1906.04214; cites arXiv:2006.08149; uses arXiv:1805.07984
+arXiv:2604.16715 (2026) "Scalable and Adaptive Parallel Training of Graph Transformer on Large Graphs" [cs] (cited-by 0 in-topic, era 2)
+    architecture_type: Graph Transformer
+    message_passing_mechanism: Sparse graph attention
+    primary_task: Distributed training of graph foundation models
+    key_innovation: A distributed training framework that automatically selects and optimizes parallelization strategies based on graph structure and hardware configuration using distributed sparse operations.
+    graph_topology_scope: Large graphs
+    theoretical_focus: Scalability and memory efficiency
+    relations: (none in-topic)
+arXiv:2604.02861 (2026) "LLM+Graph@VLDB'2025 Workshop Summary" [cs] (cited-by 0 in-topic, era 2)
+    key_innovation: Integration of LLMs with graph-structured data, graph data management, and graph machine learning
+    relations: (none in-topic)
+arXiv:2606.11560 (2026) "LLMs+Graphs: Toward Graph-Native, Synergistic AI Systems" [cs] (cited-by 0 in-topic, era 2)
+    primary_task: Synthesizing integration directions between LLMs and graph computation (retrieval, reasoning, KG construction, and agentic computation)
+    key_innovation: The concept of graph-native, synergistic AI systems through three emerging synergies: LLM augmentation with graph computation, bidirectional LLM-KG integration, and graph-strengthened AI agents
+    graph_topology_scope: Social, biological, financial, transportation, web, and knowledge domains
+    theoretical_focus: Grounded, context-rich inference and synergistic integration of LLMs with graph data management, mining, and ML
+    relations: (none in-topic)
+
+MAIN PATH (oldest -> newest):
+  arXiv:1310.4546 (2013) -> arXiv:1403.6652 (2014) -> arXiv:1503.03578 (2015) -> arXiv:1603.08861 (2016) -> arXiv:1710.10903 (2017) -> arXiv:1803.07294 (2018) -> arXiv:1901.00596 (2019) -> arXiv:2006.05205 (2020) -> arXiv:2106.03893 (2021) -> arXiv:2205.12454 (2022) -> arXiv:2407.11361 (2024)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2003.04078 compares [negative] arXiv:1810.00826
+  arXiv:1808.03965 compares [negative] arXiv:1605.05273
+  arXiv:1904.08082 compares [negative] arXiv:1806.08804
+  arXiv:1809.10341 critiques [negative] arXiv:1403.6652
+  arXiv:1901.00596 critiques [negative] arXiv:1810.00826
+  arXiv:1901.00596 critiques [negative] arXiv:1611.07308
+  arXiv:1905.00067 critiques [negative] arXiv:1606.09375
+  arXiv:2003.04078 critiques [negative] arXiv:1810.02244
+  arXiv:2003.04078 critiques [negative] arXiv:1905.11136
+  arXiv:2205.12454 critiques [negative] arXiv:1810.02244
+  arXiv:1706.02216 critiques [negative] arXiv:1607.00653
+  arXiv:1806.01973 critiques [negative] arXiv:1607.00653
+  arXiv:1806.01973 critiques [negative] arXiv:1403.6652
+  arXiv:1809.01093 critiques [negative] arXiv:1805.07984
+  arXiv:1809.01093 critiques [negative] arXiv:1902.08412
+  arXiv:1809.10341 critiques [negative] arXiv:1704.01212
+  arXiv:1809.10341 critiques [negative] arXiv:1607.00653
+  arXiv:1901.00596 critiques [negative] arXiv:1509.09292
+  arXiv:1902.08412 critiques [negative] arXiv:1708.09056
+  arXiv:1903.02541 critiques [negative] arXiv:1810.02244
+  arXiv:1905.00067 critiques [negative] arXiv:1312.6203
+  arXiv:1905.07953 critiques [negative] arXiv:1512.03385
+  arXiv:1906.04817 critiques [negative] arXiv:1810.00826
+  arXiv:1906.04817 critiques [negative] arXiv:1802.09691
+  arXiv:2002.05287 critiques [negative] arXiv:1810.00826
+  arXiv:2003.00982 critiques [negative] arXiv:1906.04817
+  arXiv:2003.00982 critiques [negative] arXiv:2009.00142
+  arXiv:2003.04078 critiques [negative] arXiv:1605.05273
+  arXiv:2005.00687 critiques [negative] arXiv:2003.00982
+  arXiv:2005.00687 critiques [negative] arXiv:1706.02263
+  arXiv:2006.05205 critiques [negative] arXiv:1406.1078
+  arXiv:2006.07988 critiques [negative] arXiv:2006.11468
+  arXiv:2007.02133 critiques [negative] arXiv:1512.03385
+  arXiv:2009.00142 critiques [negative] arXiv:1905.00067
+  arXiv:2012.09699 critiques [negative] arXiv:1906.04817
+  arXiv:2012.09699 critiques [negative] arXiv:1511.05493
+  arXiv:2105.07264 critiques [negative] arXiv:1810.02244
+  arXiv:2105.07264 critiques [negative] arXiv:1905.11136
+  arXiv:2110.13197 critiques [negative] arXiv:1403.6652
+  arXiv:2111.06748 critiques [negative] arXiv:1902.07153
+  arXiv:2111.06748 critiques [negative] arXiv:1606.09375
+  arXiv:2111.06748 critiques [negative] arXiv:1806.03536
+  arXiv:2205.12454 critiques [negative] arXiv:2003.04078
+  arXiv:2205.12454 critiques [negative] arXiv:1704.01212
+  arXiv:2205.12454 critiques [negative] arXiv:1905.11136
+  arXiv:2205.15555 critiques [negative] arXiv:2003.00982
+  arXiv:2205.15555 critiques [negative] arXiv:1903.02541
+  arXiv:2205.15555 critiques [negative] arXiv:2003.04078
+  arXiv:2205.15555 critiques [negative] arXiv:1806.01261
+  arXiv:2205.15555 critiques [negative] arXiv:2005.00687
+  arXiv:2305.06142 compares [neutral] arXiv:1606.09375
+  arXiv:2305.06142 compares [neutral] arXiv:1710.10903
+  arXiv:2305.06142 compares [neutral] arXiv:2007.02133
+  arXiv:2305.06142 compares [neutral] arXiv:1810.05997
+  arXiv:2305.06142 compares [neutral] arXiv:1706.02216
+  arXiv:2306.11264 compares [neutral] arXiv:1609.02907
+  arXiv:2306.11264 compares [neutral] arXiv:1706.02216
+  arXiv:2306.11264 compares [neutral] arXiv:2006.11468
+  arXiv:2306.11264 compares [neutral] arXiv:2006.07988
+  arXiv:2306.11264 compares [neutral] arXiv:1810.05997
+  arXiv:2310.03399 compares [neutral] arXiv:1801.10247
+  arXiv:2310.03399 compares [neutral] arXiv:1903.02428
+  arXiv:2310.03399 compares [neutral] arXiv:1905.00067
+  arXiv:2407.11361 compares [neutral] arXiv:1706.02216
+  arXiv:2407.11361 compares [neutral] arXiv:1706.03762
+  arXiv:2407.11361 compares [neutral] arXiv:1606.09375
+  arXiv:2411.15458 compares [positive] arXiv:2106.05234
+  arXiv:2412.08835 compares [neutral] arXiv:1903.02541
+  arXiv:2412.08835 compares [neutral] arXiv:2003.00982
+  arXiv:2502.00140 compares [neutral] arXiv:1801.07606
+  arXiv:2507.20127 compares [neutral] arXiv:2006.07988
+  arXiv:1603.08861 compares [neutral] arXiv:1403.6652
+  arXiv:1609.02907 compares [neutral] arXiv:1403.6652
+  arXiv:1611.07308 compares [neutral] arXiv:1403.6652
+  arXiv:1704.02901 compares [neutral] arXiv:1511.02136
+  arXiv:1704.02901 compares [neutral] arXiv:1605.05273
+  arXiv:1704.02901 compares [neutral] arXiv:1509.09292
+  arXiv:1709.05584 compares [neutral] arXiv:1607.00653
+  arXiv:1710.10903 compares [neutral] arXiv:1403.6652
+  arXiv:1803.07294 compares [neutral] arXiv:1710.10903
+  arXiv:1803.07294 compares [neutral] arXiv:1801.10247
+  arXiv:1808.03965 compares [positive] arXiv:1609.02907
+  arXiv:1808.03965 compares [positive] arXiv:1706.02216
+  arXiv:1809.10341 compares [neutral] arXiv:1801.10247
+  arXiv:1809.10341 compares [neutral] arXiv:1803.07294
+  arXiv:1901.00596 compares [neutral] arXiv:1312.6203
+  arXiv:1901.00596 compares [neutral] arXiv:1506.05163
+  arXiv:1901.00596 compares [neutral] arXiv:1806.08804
+  arXiv:2003.00653 compares [neutral] arXiv:1805.07984
+  arXiv:2006.07988 compares [positive] arXiv:1810.05997
+  arXiv:2106.03893 compares [positive] arXiv:2004.05718
+  arXiv:2106.05234 compares [positive] arXiv:1609.02907
+  arXiv:2106.05234 compares [positive] arXiv:1704.01212
+  arXiv:2111.06748 compares [neutral] arXiv:2006.11468
+  arXiv:2205.12454 compares [positive] arXiv:2106.05234
+  arXiv:2205.12454 compares [positive] arXiv:2004.05718
+  arXiv:2210.03907 compares [neutral] arXiv:1403.6652
+  arXiv:2210.05382 compares [positive] arXiv:2003.04078
+  arXiv:1704.02901 compares [neutral] arXiv:1312.6203
+  arXiv:1704.02901 compares [neutral] arXiv:1609.02907
+  arXiv:1810.05997 compares [neutral] arXiv:1710.10903
+  arXiv:1503.03578 compares [neutral] arXiv:1403.6652
+  arXiv:1509.09292 compares [neutral] arXiv:1312.6203
+  arXiv:1606.09375 compares [neutral] arXiv:1506.05163
+  arXiv:1609.02907 compares [neutral] arXiv:1312.6203
+  arXiv:1609.02907 compares [neutral] arXiv:1606.09375
+  arXiv:1611.07308 compares [neutral] arXiv:1503.03578
+  arXiv:1611.07308 compares [positive] arXiv:1609.02907
+  arXiv:1704.01212 compares [positive] arXiv:1511.05493
+  arXiv:1704.02901 compares [positive] arXiv:1606.09375
+  arXiv:1706.02216 compares [neutral] arXiv:1611.07308
+  arXiv:1708.09056 compares [neutral] arXiv:1607.00653
+  arXiv:1709.05584 compares [neutral] arXiv:1611.08097
+  arXiv:1709.05584 compares [neutral] arXiv:1606.09375
+  arXiv:1709.05584 compares [neutral] arXiv:1312.6203
+  arXiv:1710.10903 compares [neutral] arXiv:1512.03385
+  arXiv:1802.09691 compares [neutral] arXiv:1503.03578
+  arXiv:1802.09691 compares [neutral] arXiv:1611.07308
+  arXiv:1806.08804 compares [positive] arXiv:1704.01212
+  arXiv:1806.08804 compares [positive] arXiv:1609.02907
+  arXiv:1806.08804 compares [neutral] arXiv:1606.09375
+  arXiv:1806.08804 compares [positive] arXiv:1502.03167
+  arXiv:1808.03965 compares [positive] arXiv:1512.03385
+  arXiv:1810.00826 compares [neutral] arXiv:1511.02136
+  arXiv:1810.05997 compares [neutral] arXiv:1609.02907
+  arXiv:1810.05997 compares [neutral] arXiv:1801.07606
+  arXiv:1810.05997 compares [neutral] arXiv:1806.03536
+  arXiv:1902.07153 compares [neutral] arXiv:1710.10903
+  arXiv:1902.07153 compares [neutral] arXiv:1809.10341
+  arXiv:1902.07153 compares [neutral] arXiv:1810.00826
+  arXiv:1902.07153 compares [neutral] arXiv:1803.07294
+  arXiv:1902.07153 compares [neutral] arXiv:1706.02216
+  arXiv:1902.07153 compares [neutral] arXiv:1312.6203
+  arXiv:1903.02541 compares [neutral] arXiv:1703.00564
+  arXiv:1905.10947 compares [neutral] arXiv:1509.09292
+  arXiv:1905.10947 compares [neutral] arXiv:1511.05493
+  arXiv:1905.10947 compares [neutral] arXiv:1806.01261
+  arXiv:1905.10947 compares [neutral] arXiv:1710.10903
+  arXiv:1905.10947 compares [neutral] arXiv:1506.05163
+  arXiv:1905.10947 compares [neutral] arXiv:1606.09375
+  arXiv:1905.12265 compares [positive] arXiv:1609.02907
+  arXiv:1905.12265 compares [positive] arXiv:1709.05584
+  arXiv:1905.12265 compares [positive] arXiv:1710.10903
+  arXiv:1906.04214 compares [neutral] arXiv:1902.08412
+  arXiv:2002.05287 compares [neutral] arXiv:1710.10903
+  arXiv:2003.00653 compares [neutral] arXiv:1708.09056
+  arXiv:2004.05718 compares [positive] arXiv:2003.00982
+  arXiv:2004.05718 compares [positive] arXiv:2005.00687
+  arXiv:2005.00687 compares [neutral] arXiv:1603.08861
+  arXiv:2005.00687 compares [positive] arXiv:1806.03536
+  arXiv:2005.00687 compares [positive] arXiv:1907.10903
+  arXiv:2005.00687 compares [positive] arXiv:1810.05997
+  arXiv:2005.10203 compares [neutral] arXiv:1609.02907
+  arXiv:2005.10203 compares [neutral] arXiv:1710.10903
+  arXiv:2006.07988 compares [neutral] arXiv:1609.02907
+  arXiv:2006.07988 compares [neutral] arXiv:1710.10903
+  arXiv:2006.07988 compares [neutral] arXiv:1706.02216
+  arXiv:2006.07988 compares [positive] arXiv:1902.07153
+  arXiv:2006.07988 compares [neutral] arXiv:1806.03536
+  arXiv:2006.07988 compares [neutral] arXiv:1606.09375
+  arXiv:2009.00142 compares [positive] arXiv:1812.09902
+  arXiv:2009.00142 compares [neutral] arXiv:1611.07308
+  arXiv:2210.05382 compares [neutral] arXiv:1710.10903
+  arXiv:2012.09699 compares [neutral] arXiv:1605.05273
+  arXiv:2106.03893 compares [positive] arXiv:1704.01212
+  arXiv:2106.05234 compares [positive] arXiv:1810.04805
+  arXiv:2106.05234 compares [positive] arXiv:1905.12265
+  arXiv:2110.13197 compares [neutral] arXiv:1704.01212
+  arXiv:2110.13197 compares [neutral] arXiv:1511.05493
+  arXiv:2110.13197 compares [neutral] arXiv:2004.05718
+  arXiv:2111.11482 compares [neutral] arXiv:1706.02216
+  arXiv:2111.11482 compares [neutral] arXiv:1806.08804
+  arXiv:2111.11482 compares [neutral] arXiv:1704.02901
+  arXiv:2204.05351 compares [neutral] arXiv:1810.00826
+  arXiv:2204.05351 compares [neutral] arXiv:1706.02216
+  arXiv:2204.05351 compares [neutral] arXiv:2004.05718
+  arXiv:2205.12454 compares [positive] arXiv:1905.12265
+  arXiv:2210.05382 compares [positive] arXiv:2006.07988
+  arXiv:2210.05382 compares [positive] arXiv:1905.00067
+  arXiv:2210.05382 compares [positive] arXiv:1905.11136
+  arXiv:2407.15284 motivates [neutral] arXiv:1609.02907
+  arXiv:2407.15284 motivates [neutral] arXiv:1810.00826
+  arXiv:2407.15284 motivates [neutral] arXiv:1905.11136
+  arXiv:1901.00596 motivates [neutral] arXiv:1605.05273
+  arXiv:1901.00596 motivates [neutral] arXiv:1704.01212
+  arXiv:2003.00653 motivates [neutral] arXiv:1809.01093
+  arXiv:1704.01212 motivates [neutral] arXiv:1609.02907
+  arXiv:1704.02901 motivates [positive] arXiv:1512.03385
+  arXiv:1809.10341 motivates [neutral] arXiv:1710.10903
+  arXiv:1905.10947 motivates [positive] arXiv:1706.02216
+  arXiv:1905.10947 motivates [positive] arXiv:1703.06103
+  arXiv:1905.10947 motivates [positive] arXiv:1810.00826
+  arXiv:1907.10903 motivates [positive] arXiv:1312.6203
+  arXiv:1907.10903 motivates [positive] arXiv:1606.09375
+  arXiv:1907.10903 motivates [positive] arXiv:1506.05163
+  arXiv:1907.10903 motivates [positive] arXiv:1611.08402
+  arXiv:1907.10903 motivates [positive] arXiv:1605.05273
+  arXiv:1907.10903 motivates [positive] arXiv:1808.03965
+  arXiv:1907.10903 motivates [positive] arXiv:1801.10247
+  arXiv:1907.10903 motivates [positive] arXiv:1710.10903
+  arXiv:2111.11482 motivates [neutral] arXiv:1710.10903
+  arXiv:2111.11482 motivates [neutral] arXiv:1904.08082

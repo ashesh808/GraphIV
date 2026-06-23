@@ -1,0 +1,27 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 4
+  },
+  "gaps": [
+   "equivariant graph neural networks for molecular docking",
+   "molecular graph foundation models pre-training",
+   "3D geometric deep learning for protein-ligand interaction",
+   "self-supervised learning on large-scale molecular graphs"
+  ],
+  "assessment": "The review is excellent but lacks explicit coverage of equivariant architectures and the specific mechanics of molecular foundation models."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {},
+  "gaps": [],
+  "assessment": "(judge output unparseable)"
+ }
+]

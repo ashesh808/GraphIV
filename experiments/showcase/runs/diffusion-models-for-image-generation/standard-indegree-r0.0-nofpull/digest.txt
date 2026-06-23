@@ -1,0 +1,615 @@
+QUESTION: diffusion models for image generation
+
+SCHEMA FIELDS: ['model_architecture', 'mathematical_basis', 'sampling_approach', 'operational_space', 'guidance_mechanism', 'primary_contribution']
+
+ERAS:
+  [0] Origins: 2013-2017
+  [1] Key Advances: 2017-2020
+  [2] Current Frontier: 2020-2024
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1312.6114 (2013) "Auto-Encoding Variational Bayes" [stat] (cited-by 116 in-topic, era 0)
+    mathematical_basis: Stochastic variational inference and reparameterization of the variational lower bound
+    primary_contribution: Introduction of a reparameterization trick for the variational lower bound to enable efficient optimization via stochastic gradient methods and the use of a recognition model for posterior inference.
+    relations: cited-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2310.04378; compared-by arXiv:2311.18828; cited-by arXiv:1406.2661; cited-by arXiv:1503.03585
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 77 in-topic, era 0)
+    mathematical_basis: adaptive estimates of lower-order moments
+    primary_contribution: An algorithm for first-order gradient-based optimization of stochastic objective functions using adaptive estimates of lower-order moments.
+    relations: used-by arXiv:1706.03762; used-by arXiv:1706.08500; used-by arXiv:1710.10196; cited-by arXiv:1711.05101; compared-by arXiv:1806.07366; used-by arXiv:1807.03039
+arXiv:1405.0312 (2014) "Microsoft COCO: Common Objects in Context" [cs] (cited-by 62 in-topic, era 0)
+    primary_contribution: A new dataset for object recognition in context, containing 328k images with 2.5 million labeled instances across 91 object types.
+    relations: cited-by arXiv:2307.01952; used-by arXiv:2311.17042; compared-by arXiv:2311.18828; used-by arXiv:2112.10752; used-by arXiv:1512.03385; extended-by arXiv:2102.12092
+arXiv:1411.7766 (2014) "Deep Learning Face Attributes in the Wild" [cs] (cited-by 61 in-topic, era 0)
+    model_architecture: Cascaded CNN framework consisting of LNet (for face localization) and ANet (for attribute prediction)
+    primary_contribution: A cascaded CNN framework that improves face localization and attribute prediction through differentiated pre-training strategies (general objects for LNet and face identities for ANet), enabling localization using only image-level tags.
+    relations: used-by arXiv:1706.08500; used-by arXiv:1710.10196; used-by arXiv:1907.05600; used-by arXiv:2006.09011; used-by arXiv:2007.03898; used-by arXiv:2011.13456
+arXiv:1406.2661 (2014) "Generative Adversarial Networks" [stat] (cited-by 51 in-topic, era 0)
+    model_architecture: Generative Adversarial Network (GAN) consisting of a generative model G and a discriminative model D (multilayer perceptrons)
+    mathematical_basis: Minimax two-player game
+    sampling_approach: Direct generation via G (no Markov chains or unrolled approximate inference)
+    guidance_mechanism: Adversarial process (G maximizes the probability of D making a mistake)
+    primary_contribution: A new framework for estimating generative models via an adversarial process involving simultaneous training of a generator and a discriminator
+    relations: cites arXiv:1312.6114; cited-by arXiv:2310.04378; compared-by arXiv:2311.17042; cited-by arXiv:1710.10196; used-by arXiv:1812.04948; cited-by arXiv:1904.06991; used-by arXiv:1912.04958
+arXiv:1503.03585 (2015) "Deep Unsupervised Learning using Nonequilibrium Thermodynamics" [cs] (cited-by 247 in-topic, era 0)
+    mathematical_basis: non-equilibrium statistical physics
+    sampling_approach: reverse diffusion process
+    primary_contribution: a generative model that achieves both flexibility and tractability by systematically destroying and restoring structure in a data distribution through iterative diffusion processes
+    relations: cites arXiv:1312.6114; cited-by arXiv:2303.01469; used-by arXiv:2307.01952; extended-by arXiv:2310.02279; cited-by arXiv:2311.17042; used-by arXiv:2311.18828; cited-by arXiv:2403.03206
+arXiv:1505.04597 (2015) "U-Net: Convolutional Networks for Biomedical Image Segmentation" [cs] (cited-by 98 in-topic, era 0)
+    model_architecture: U-Net (contracting path and symmetric expanding path)
+    primary_contribution: A network and training strategy using strong data augmentation to enable efficient training from very few annotated samples for biomedical image segmentation.
+    relations: cited-by arXiv:2307.01952; cited-by arXiv:1907.05600; cited-by arXiv:1912.04958; used-by arXiv:2006.11239; used-by arXiv:2010.02502; motivates arXiv:2104.07636
+arXiv:1506.03365 (2015) "LSUN: Construction of a Large-scale Image Dataset using Deep Learning
+  with Humans in the Loop" [cs] (cited-by 74 in-topic, era 0)
+    primary_contribution: Construction of the LSUN dataset using a partially automated labeling scheme with humans in the loop, containing ~1 million labeled images for each of 10 scene and 20 object categories.
+    relations: used-by arXiv:2303.01469; critiqued-by arXiv:2310.04378; cited-by arXiv:2112.10752; used-by arXiv:2206.00927; used-by arXiv:1706.08500; used-by arXiv:1710.10196
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 32 in-topic, era 0)
+    model_architecture: Deep Residual Networks (ResNets)
+    mathematical_basis: Residual learning framework (learning residual functions with reference to layer inputs)
+    primary_contribution: Introduction of a residual learning framework to ease the training of substantially deeper networks (up to 152 layers)
+    relations: uses arXiv:1405.0312; used-by arXiv:1809.11096; used-by arXiv:2012.09841; used-by arXiv:2103.00020; used-by arXiv:1706.03762; cited-by arXiv:1806.07366; cited-by arXiv:1912.04958
+arXiv:1606.03498 (2016) "Improved Techniques for Training GANs" [cs] (cited-by 91 in-topic, era 0)
+    model_architecture: Generative Adversarial Networks (GANs)
+    primary_contribution: New architectural features and training procedures for semi-supervised learning and high-quality image generation
+    relations: used-by arXiv:2303.01469; used-by arXiv:2307.01952; compared-by arXiv:1706.08500; compared-by arXiv:1710.10196; compared-by arXiv:1809.11096; used-by arXiv:1812.04948
+arXiv:1706.08500 (2017) "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash
+  Equilibrium" [cs] (cited-by 209 in-topic, era 0)
+    mathematical_basis: Stochastic approximation theory
+    primary_contribution: Two time-scale update rule (TTUR) for GAN training and the introduction of Fréchet Inception Distance (FID)
+    relations: uses arXiv:1411.7766; uses arXiv:1506.03365; uses arXiv:1412.6980; compares-with arXiv:1606.03498; used-by arXiv:2303.01469; used-by arXiv:2307.01952; used-by arXiv:2311.17042; used-by arXiv:2311.18828; cited-by arXiv:2403.03206; used-by arXiv:2106.00132
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 62 in-topic, era 0)
+    model_architecture: Transformer (encoder-decoder architecture based solely on attention mechanisms)
+    primary_contribution: A new network architecture that dispenses with recurrence and convolutions entirely, relying solely on attention mechanisms to improve parallelization and training efficiency.
+    relations: uses arXiv:1512.03385; uses arXiv:1412.6980; used-by arXiv:2310.02279; cited-by arXiv:1711.05101; used-by arXiv:2006.11239; used-by arXiv:2012.09841; used-by arXiv:2102.12092; used-by arXiv:2103.00020
+arXiv:1710.10196 (2017) "Progressive Growing of GANs for Improved Quality, Stability, and
+  Variation" [cs] (cited-by 53 in-topic, era 0)
+    model_architecture: Generative Adversarial Network (GAN) with progressive layer addition
+    operational_space: Pixel space
+    primary_contribution: Progressive growing of generator and discriminator from low to high resolution to improve stability and quality
+    relations: uses arXiv:1412.6980; compares-with arXiv:1606.03498; cites arXiv:1706.08500; cites arXiv:1312.6114; cites arXiv:1406.2661; uses arXiv:1411.7766; cited-by arXiv:2303.01469; motivates arXiv:2311.18828; used-by arXiv:1912.04958; extended-by arXiv:1812.04948; compared-by arXiv:2006.09011; cited-by arXiv:2006.11239
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 41 in-topic, era 0)
+    mathematical_basis: Decoupling weight decay from the optimization steps taken with respect to the loss function
+    primary_contribution: Proposing a decoupled weight decay regularization that separates the weight decay factor from the learning rate, improving Adam's generalization performance to compete with SGD with momentum.
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; used-by arXiv:2311.18828; used-by arXiv:2403.03206; used-by arXiv:2102.12092; cited-by arXiv:2103.00020; used-by arXiv:2105.05233; used-by arXiv:2107.00630
+arXiv:1812.04948 (2018) "A Style-Based Generator Architecture for Generative Adversarial Networks" [cs] (cited-by 85 in-topic, era 1)
+    model_architecture: Style-based generator architecture
+    guidance_mechanism: Scale-specific control via style transfer literature principles
+    primary_contribution: An alternative generator architecture that enables unsupervised separation of high-level attributes and stochastic variation, providing scale-specific control and improved disentanglement.
+    relations: extends arXiv:1710.10196; uses arXiv:1809.11096; compares-with arXiv:1807.03039; cites arXiv:1506.03365; uses arXiv:1406.2661; cites arXiv:1312.6114; compared-by arXiv:2311.17042; cited-by arXiv:2311.18828; extended-by arXiv:1912.04958; used-by arXiv:1904.06991; used-by arXiv:2006.09011; cited-by arXiv:2006.11239
+arXiv:1809.11096 (2018) "Large Scale GAN Training for High Fidelity Natural Image Synthesis" [cs] (cited-by 83 in-topic, era 1)
+    model_architecture: Generative Adversarial Network (BigGAN)
+    mathematical_basis: Orthogonal regularization
+    sampling_approach: Truncation trick (reducing variance of the Generator's input)
+    guidance_mechanism: Class-conditional synthesis
+    primary_contribution: Scaling GAN training to large scales using orthogonal regularization and the truncation trick to improve fidelity and variety.
+    relations: uses arXiv:1512.03385; compares-with arXiv:1710.10196; compares-with arXiv:1606.03498; cites arXiv:1706.08500; uses arXiv:1412.6980; cited-by arXiv:2303.01469; compared-by arXiv:2311.18828; cited-by arXiv:1907.05600; cited-by arXiv:1912.04958; used-by arXiv:1812.04948; used-by arXiv:1904.06991
+arXiv:1807.03039 (2018) "Glow: Generative Flow with Invertible 1x1 Convolutions" [stat] (cited-by 44 in-topic, era 1)
+    model_architecture: Generative flow using invertible 1x1 convolutions
+    mathematical_basis: Flow-based generative models (exact log-likelihood tractability)
+    primary_contribution: Introduction of invertible 1x1 convolutions to improve log-likelihood and enable efficient realistic-looking synthesis and manipulation of large images
+    relations: cites arXiv:1312.6114; uses arXiv:1412.6980; uses arXiv:1710.10196; compares-with arXiv:1506.03365; cited-by arXiv:2303.01469; compared-by arXiv:1812.04948; used-by arXiv:1904.06991; used-by arXiv:2007.03898; cited-by arXiv:2102.09672; cited-by arXiv:2106.05931
+arXiv:1801.03924 (2018) "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric" [cs] (cited-by 42 in-topic, era 1)
+    primary_contribution: Introduction of a new dataset of human perceptual similarity judgments and the finding that deep features across various architectures and supervision levels (supervised, self-supervised, unsupervised) outperform classic metrics like PSNR and SSIM.
+    relations: used-by arXiv:2303.01469; used-by arXiv:2310.02279; used-by arXiv:2311.18828; used-by arXiv:2012.09841; used-by arXiv:2211.13449; cited-by arXiv:2307.01952
+arXiv:1806.07366 (2018) "Neural Ordinary Differential Equations" [cs] (cited-by 35 in-topic, era 1)
+    model_architecture: Neural Ordinary Differential Equations (continuous-depth models)
+    mathematical_basis: Parameterizing the derivative of the hidden state using a neural network to define an ODE
+    sampling_approach: Black-box differential equation solver
+    primary_contribution: Introduction of continuous-depth models that parameterize the derivative of the hidden state, allowing for constant memory cost and scalable backpropagation through ODE solvers.
+    relations: compares-with arXiv:1412.6980; uses arXiv:1312.6114; cites arXiv:1512.03385; cited-by arXiv:2303.01469; cited-by arXiv:2403.03206; used-by arXiv:2202.00512; used-by arXiv:2210.02747; cited-by arXiv:2006.11239; cited-by arXiv:2010.02502
+arXiv:1907.05600 (2019) "Generative Modeling by Estimating Gradients of the Data Distribution" [cs] (cited-by 186 in-topic, era 1)
+    mathematical_basis: Score matching and Langevin dynamics
+    sampling_approach: Annealed Langevin dynamics using gradients of perturbed data distributions with gradually decreasing noise levels
+    operational_space: Pixel space (implied by application to MNIST, CelebA, and CIFAR-10)
+    primary_contribution: Estimating gradients of the data distribution via score matching on multiple levels of Gaussian noise to handle low-dimensional manifolds
+    relations: cites arXiv:1809.11096; cites arXiv:1710.10196; cites arXiv:1812.04948; cites arXiv:1312.6114; uses arXiv:1411.7766; cites arXiv:1505.04597; used-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2310.04378; motivates arXiv:2311.18828; cited-by arXiv:2403.03206; compared-by arXiv:2107.00630
+arXiv:1912.04958 (2019) "Analyzing and Improving the Image Quality of StyleGAN" [cs] (cited-by 50 in-topic, era 1)
+    model_architecture: Style-based GAN (StyleGAN) with redesigned generator normalization and revisited progressive growing
+    mathematical_basis: Generative Adversarial Networks (GANs) with path length regularization
+    operational_space: Pixel space
+    primary_contribution: Redesign of generator normalization, revisiting progressive growing, and introduction of a path length regularizer to improve image quality and invertibility
+    relations: uses arXiv:1710.10196; cites arXiv:1809.11096; extends arXiv:1812.04948; uses arXiv:1406.2661; cites arXiv:1706.08500; extends arXiv:1904.06991; cited-by arXiv:2303.01469; compared-by arXiv:2311.17042; motivates arXiv:2311.18828; used-by arXiv:2006.11239; used-by arXiv:2105.05233; used-by arXiv:2112.07804
+arXiv:1904.06991 (2019) "Improved Precision and Recall Metric for Assessing Generative Models" [stat] (cited-by 49 in-topic, era 1)
+    mathematical_basis: non-parametric representations of the manifolds of real and generated data
+    primary_contribution: An evaluation metric that separately and reliably measures precision (quality) and recall (coverage) by forming explicit, non-parametric representations of data manifolds.
+    relations: uses arXiv:1812.04948; uses arXiv:1809.11096; uses arXiv:1807.03039; cites arXiv:1710.10196; compares-with arXiv:1706.08500; cites arXiv:1606.03498; used-by arXiv:2303.01469; used-by arXiv:2102.09672; cited-by arXiv:2209.03003; extended-by arXiv:1912.04958; cited-by arXiv:2105.05233; used-by arXiv:2112.07804
+arXiv:2006.11239 (2020) "Denoising Diffusion Probabilistic Models" [cs] (cited-by 335 in-topic, era 1)
+    model_architecture: diffusion probabilistic models
+    mathematical_basis: nonequilibrium thermodynamics, weighted variational bound, and denoising score matching with Langevin dynamics
+    sampling_approach: Langevin dynamics
+    primary_contribution: high quality image synthesis using diffusion probabilistic models via a novel connection between variational bounds and denoising score matching
+    relations: cites arXiv:1809.11096; uses arXiv:1503.03585; compares-with arXiv:2006.09011; compares-with arXiv:1907.05600; cites arXiv:1710.10196; cites arXiv:1812.04948; used-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; used-by arXiv:2311.18828
+arXiv:2011.13456 (2020) "Score-Based Generative Modeling through Stochastic Differential
+  Equations" [cs] (cited-by 290 in-topic, era 1)
+    model_architecture: Score-based generative model using neural networks to estimate time-dependent score functions
+    mathematical_basis: Stochastic Differential Equations (SDEs) and their corresponding reverse-time SDEs
+    sampling_approach: Numerical SDE solvers and a predictor-corrector framework
+    primary_contribution: A unified framework encapsulating score-based and diffusion models via SDEs, introducing a predictor-corrector framework and an equivalent neural ODE for exact likelihood computation
+    relations: extends arXiv:2006.11239; cites arXiv:2009.00713; uses arXiv:1907.05600; cites arXiv:1503.03585; uses arXiv:2006.09011; cites arXiv:2009.09761; used-by arXiv:2303.01469; used-by arXiv:2307.01952; extended-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; used-by arXiv:2311.18828
+arXiv:2010.02502 (2020) "Denoising Diffusion Implicit Models" [cs] (cited-by 249 in-topic, era 1)
+    model_architecture: Denoising Diffusion Implicit Models (DDIMs)
+    mathematical_basis: Non-Markovian diffusion processes
+    sampling_approach: Iterative implicit probabilistic models
+    primary_contribution: Accelerated sampling (10x to 50x faster in wall-clock time) by using non-Markovian processes with the same training objective as DDPMs
+    relations: uses arXiv:2006.11239; compares-with arXiv:2011.13456; cites arXiv:2009.00713; cites arXiv:1912.04958; cites arXiv:1312.6114; uses arXiv:1812.04948; used-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; cited-by arXiv:2311.18828
+arXiv:2009.09761 (2020) "DiffWave: A Versatile Diffusion Model for Audio Synthesis" [eess] (cited-by 95 in-topic, era 1)
+    model_architecture: non-autoregressive diffusion probabilistic model
+    mathematical_basis: variant of variational bound on the data likelihood
+    sampling_approach: Markov chain with a constant number of steps
+    operational_space: waveform space
+    guidance_mechanism: conditional (e.g., mel spectrogram or class-conditional) and unconditional generation
+    primary_contribution: a versatile, non-autoregressive diffusion model for high-fidelity audio synthesis that matches WaveNet quality while being orders of magnitude faster
+    relations: cited-by arXiv:2303.01469; cited-by arXiv:2311.18828; cited-by arXiv:2011.13456; cited-by arXiv:2101.09258; cited-by arXiv:2102.09672; cited-by arXiv:2105.05233
+arXiv:2006.09011 (2020) "Improved Techniques for Training Score-Based Generative Models" [cs] (cited-by 86 in-topic, era 1)
+    model_architecture: score-based generative models
+    mathematical_basis: theoretical analysis of learning and sampling from score models in high dimensional spaces
+    primary_contribution: scaling score-based models to higher resolutions (64x64 to 256x256) via new theoretical analysis and exponential moving average of model weights
+    relations: extends arXiv:1907.05600; uses arXiv:1812.04948; compares-with arXiv:1710.10196; uses arXiv:1706.08500; uses arXiv:1411.7766; uses arXiv:1412.6980; cited-by arXiv:2303.01469; compared-by arXiv:2006.11239; cited-by arXiv:2101.02388; cited-by arXiv:2107.03006; cited-by arXiv:2108.01073; used-by arXiv:2010.02502
+arXiv:2009.00713 (2020) "WaveGrad: Estimating Gradients for Waveform Generation" [eess] (cited-by 73 in-topic, era 1)
+    model_architecture: conditional diffusion model for waveform generation
+    mathematical_basis: score matching and diffusion probabilistic models
+    sampling_approach: gradient-based sampler
+    operational_space: waveform (time domain)
+    guidance_mechanism: conditioned on the mel-spectrogram
+    primary_contribution: a conditional model that estimates gradients of the data density to generate high-fidelity audio with adjustable inference speed (as few as six iterations)
+    relations: cited-by arXiv:2303.01469; cited-by arXiv:2311.18828; cited-by arXiv:2010.02502; cited-by arXiv:2011.13456; cited-by arXiv:2101.09258; cited-by arXiv:2102.09672
+arXiv:2012.09841 (2020) "Taming Transformers for High-Resolution Image Synthesis" [cs] (cited-by 40 in-topic, era 1)
+    model_architecture: Transformer-based autoregressive model utilizing a CNN-learned vocabulary of image constituents
+    sampling_approach: Autoregressive modeling of image constituents
+    operational_space: Latent space (context-rich vocabulary of image constituents)
+    guidance_mechanism: Conditional synthesis using non-spatial (object classes) and spatial (segmentations) information
+    primary_contribution: Combining CNN inductive bias with transformer expressivity to synthesize high-resolution images via a learned vocabulary
+    relations: uses arXiv:1512.03385; uses arXiv:2102.12092; cites arXiv:2006.11239; uses arXiv:1809.11096; uses arXiv:1801.03924; uses arXiv:1706.03762; used-by arXiv:2310.02279; cited-by arXiv:2311.17042; cited-by arXiv:2106.05931; cited-by arXiv:2112.07804; used-by arXiv:2112.10752; cited-by arXiv:2204.06125
+arXiv:2007.03898 (2020) "NVAE: A Deep Hierarchical Variational Autoencoder" [stat] (cited-by 33 in-topic, era 1)
+    model_architecture: Deep hierarchical Variational Autoencoder (NVAE) using depth-wise separable convolutions and batch normalization
+    mathematical_basis: Residual parameterization of Normal distributions and spectral regularization
+    sampling_approach: Fast and tractable sampling via VAE encoding/decoding
+    operational_space: Pixel space (applied to images up to 256x256 pixels)
+    primary_contribution: Designing neural architectures for hierarchical VAEs to achieve state-of-the-art results on natural images (e.g., reducing CIFAR-10 from 2.98 to 2.91 bits per dimension)
+    relations: uses arXiv:1710.10196; uses arXiv:1807.03039; uses arXiv:1312.6114; uses arXiv:1512.03385; uses arXiv:1411.7766; uses arXiv:1812.04948; compared-by arXiv:2101.02388; cited-by arXiv:2102.09672; extended-by arXiv:2106.05931; cited-by arXiv:2107.00630; cited-by arXiv:2112.07068; cited-by arXiv:2112.07804
+arXiv:2105.05233 (2021) "Diffusion Models Beat GANs on Image Synthesis" [cs] (cited-by 238 in-topic, era 2)
+    model_architecture: Diffusion models (architecture optimized via ablations)
+    sampling_approach: 25 forward passes per sample (with upsampling diffusion models)
+    guidance_mechanism: Classifier guidance (using gradients from a classifier)
+    primary_contribution: Achieving superior image sample quality compared to GANs, specifically using classifier guidance to trade off diversity for fidelity.
+    relations: uses arXiv:2006.11239; uses arXiv:2102.09672; uses arXiv:1812.04948; uses arXiv:1912.04958; uses arXiv:1809.11096; compares-with arXiv:2104.07636; used-by arXiv:2303.01469; cited-by arXiv:2307.01952; used-by arXiv:2310.02279; cited-by arXiv:2403.03206; used-by arXiv:2108.01073; extended-by arXiv:2112.10752
+arXiv:2112.10752 (2021) "High-Resolution Image Synthesis with Latent Diffusion Models" [cs] (cited-by 215 in-topic, era 2)
+    model_architecture: Latent Diffusion Models (LDMs) with cross-attention layers
+    mathematical_basis: Denoising autoencoders applied in the latent space of pretrained autoencoders
+    operational_space: Latent space
+    guidance_mechanism: Cross-attention layers for general conditioning inputs (e.g., text or bounding boxes)
+    primary_contribution: Applying diffusion models in the latent space of pretrained autoencoders to reduce computational requirements while maintaining high-resolution synthesis quality.
+    relations: cites arXiv:1503.03585; extends arXiv:2105.05233; uses arXiv:2207.12598; uses arXiv:2104.07636; uses arXiv:1706.08500; uses arXiv:2006.11239; cited-by arXiv:2303.01469; extended-by arXiv:2307.01952; cited-by arXiv:2310.02279; used-by arXiv:2310.04378; used-by arXiv:2311.17042; used-by arXiv:2311.18828
+arXiv:2102.09672 (2021) "Improved Denoising Diffusion Probabilistic Models" [cs] (cited-by 158 in-topic, era 2)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPM)
+    mathematical_basis: Learning variances of the reverse diffusion process
+    sampling_approach: Sampling with an order of magnitude fewer forward passes
+    primary_contribution: Achieving competitive log-likelihoods, improving sampling efficiency via learned variances, and demonstrating scalability with model capacity and compute.
+    relations: cites arXiv:1807.03039; cites arXiv:2007.03898; extends arXiv:2006.11239; cites arXiv:2011.13456; uses arXiv:1904.06991; compares-with arXiv:1809.11096; cited-by arXiv:2310.04378; used-by arXiv:2105.05233; used-by arXiv:2106.15282; used-by arXiv:2107.00630; used-by arXiv:2202.00512; used-by arXiv:2106.03802
+arXiv:2112.10741 (2021) "GLIDE: Towards Photorealistic Image Generation and Editing with
+  Text-Guided Diffusion Models" [cs] (cited-by 88 in-topic, era 2)
+    model_architecture: text-conditional diffusion model
+    guidance_mechanism: CLIP guidance and classifier-free guidance
+    primary_contribution: Exploring text-conditional image synthesis and comparing guidance strategies, finding classifier-free guidance superior, and enabling text-driven image editing via fine-tuning for inpainting.
+    relations: uses arXiv:2108.01073; uses arXiv:2006.11239; uses arXiv:2105.05233; uses arXiv:2102.12092; uses arXiv:1503.03585; uses arXiv:1907.05600; cited-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.04378; used-by arXiv:2112.10752; extended-by arXiv:2204.06125; compared-by arXiv:2205.11487
+arXiv:2107.00630 (2021) "Variational Diffusion Models" [cs] (cited-by 87 in-topic, era 2)
+    mathematical_basis: Variational Lower Bound (VLB) expressed in terms of signal-to-noise ratio (SNR)
+    primary_contribution: Introduction of a family of diffusion models that allow for efficient joint optimization of the noise schedule to achieve state-of-the-art likelihoods.
+    relations: uses arXiv:2011.13456; extends arXiv:2006.11239; compares-with arXiv:1907.05600; uses arXiv:2102.09672; cites arXiv:2007.03898; cites arXiv:1807.03039; used-by arXiv:2311.18828; used-by arXiv:2202.00512; used-by arXiv:2210.02303; cited-by arXiv:2211.01095; cited-by arXiv:2112.07068; critiqued-by arXiv:2112.07804
+arXiv:2101.02388 (2021) "Knowledge Distillation in Iterative Generative Models for Improved
+  Sampling Speed" [cs] (cited-by 82 in-topic, era 2)
+    model_architecture: Denoising Student
+    mathematical_basis: Knowledge distillation of a multi-step denoising process into a single step
+    sampling_approach: Single-step sampling
+    primary_contribution: Distilling a multi-step denoising process into a single step to achieve sampling speeds comparable to single-step generative models without adversarial training
+    relations: compares-with arXiv:2007.03898; cites arXiv:1809.11096; cites arXiv:2006.09011; uses arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:1312.6114; compared-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2311.18828; cited-by arXiv:2112.07068; cited-by arXiv:2112.07804; compared-by arXiv:2202.00512
+arXiv:2106.15282 (2021) "Cascaded Diffusion Models for High Fidelity Image Generation" [cs] (cited-by 74 in-topic, era 2)
+    model_architecture: Cascaded diffusion model (a pipeline of multiple diffusion models including a standard low-resolution model and one or more super-resolution models)
+    sampling_approach: Successive upsampling through a pipeline of diffusion models
+    operational_space: Pixel space
+    guidance_mechanism: Conditioning augmentation (data augmentation of lower resolution conditioning inputs)
+    primary_contribution: Introduction of cascaded diffusion models with conditioning augmentation to prevent compounding error and achieve high-fidelity image generation without auxiliary classifiers
+    relations: uses arXiv:2102.09672; compares-with arXiv:2105.05233; uses arXiv:1809.11096; uses arXiv:2104.07636; uses arXiv:1907.05600; uses arXiv:2006.11239; cited-by arXiv:2207.12598; cited-by arXiv:2212.09748; cited-by arXiv:2111.05826; cited-by arXiv:2112.07068; critiqued-by arXiv:2112.07804; cited-by arXiv:2112.10752
+arXiv:2103.00020 (2021) "Learning Transferable Visual Models From Natural Language Supervision" [cs] (cited-by 70 in-topic, era 2)
+    mathematical_basis: Contrastive learning (predicting which caption goes with which image)
+    guidance_mechanism: Natural language supervision
+    primary_contribution: Learning transferable visual models from raw text via a large-scale pre-training task on 400 million (image, text) pairs to enable zero-shot transfer.
+    relations: uses arXiv:1512.03385; cites arXiv:1412.6980; cites arXiv:1711.05101; cites arXiv:1405.0312; uses arXiv:1706.03762; used-by arXiv:2307.01952; used-by arXiv:2311.17042; used-by arXiv:2311.18828; used-by arXiv:2403.03206; used-by arXiv:2210.08402; used-by arXiv:2102.12092
+arXiv:2106.05931 (2021) "Score-based Generative Modeling in Latent Space" [stat] (cited-by 64 in-topic, era 2)
+    model_architecture: Latent Score-based Generative Model (LSGM) using a variational autoencoder framework
+    mathematical_basis: Score-based generative modeling (SGM) with a new score-matching objective and a novel score function parameterization
+    operational_space: Latent space
+    primary_contribution: Training SGMs in a latent space to enable more expressive models, application to non-continuous data, and faster sampling (outperforming CelebA-HQ-256 sampling time by two orders of magnitude)
+    relations: extends arXiv:2007.03898; extends arXiv:1907.05600; extends arXiv:2006.11239; extends arXiv:2102.09672; extends arXiv:2011.13456; cites arXiv:1807.03039; cited-by arXiv:2303.01469; extended-by arXiv:2112.07068; cited-by arXiv:2107.00630; cited-by arXiv:2112.07804; cited-by arXiv:2202.00512; cited-by arXiv:2211.13449
+arXiv:2101.09258 (2021) "Maximum Likelihood Training of Score-Based Diffusion Models" [stat] (cited-by 61 in-topic, era 2)
+    model_architecture: score-based diffusion models
+    mathematical_basis: connection to continuous normalizing flows and score matching losses
+    sampling_approach: reversing a stochastic process that diffuses data to noise
+    primary_contribution: a specific weighting scheme that enables approximate maximum likelihood training by upper bounding the negative log-likelihood
+    relations: uses arXiv:2011.13456; motivated-by arXiv:1907.05600; motivated-by arXiv:2006.09011; extends arXiv:1503.03585; extends arXiv:2006.11239; cites arXiv:2105.05233; compared-by arXiv:2310.02279; cited-by arXiv:2310.04378; compared-by arXiv:2204.13902; cited-by arXiv:2107.00630; used-by arXiv:2112.07068; critiqued-by arXiv:2112.07804
+arXiv:2105.14080 (2021) "Gotta Go Fast When Generating Data with Score-Based Models" [cs] (cited-by 59 in-topic, era 2)
+    model_architecture: score-based (denoising diffusion) generative models
+    mathematical_basis: Stochastic Differential Equations (SDEs)
+    sampling_approach: adaptive step size SDE solver
+    primary_contribution: An efficient SDE solver with adaptive step sizes that requires only two score function evaluations and generates data 2 to 10 times faster than Euler-Maruyama.
+    relations: cites arXiv:1907.05600; uses arXiv:2006.09011; uses arXiv:2011.13456; cites arXiv:2006.11239; cites arXiv:2009.00713; cites arXiv:2009.09761; cited-by arXiv:2310.04378; used-by arXiv:2112.07068; cited-by arXiv:2112.07804; cited-by arXiv:2202.00512; compared-by arXiv:2204.13902; used-by arXiv:2206.00927
+arXiv:2104.07636 (2021) "Image Super-Resolution via Iterative Refinement" [eess] (cited-by 56 in-topic, era 2)
+    model_architecture: U-Net
+    mathematical_basis: Denoising diffusion probabilistic models
+    sampling_approach: Stochastic denoising process
+    operational_space: Pixel space
+    guidance_mechanism: Conditional image generation
+    primary_contribution: Adapting denoising diffusion probabilistic models for image super-resolution via iterative refinement
+    relations: extends arXiv:2006.11239; extends arXiv:1809.11096; uses arXiv:1710.10196; uses arXiv:1812.04948; uses arXiv:2009.00713; uses arXiv:1503.03585; cited-by arXiv:2403.03206; used-by arXiv:2112.10752; compared-by arXiv:2105.05233; used-by arXiv:2106.15282; used-by arXiv:2210.02747; cited-by arXiv:2105.14080
+arXiv:2112.07804 (2021) "Tackling the Generative Learning Trilemma with Denoising Diffusion GANs" [cs] (cited-by 50 in-topic, era 2)
+    model_architecture: Denoising Diffusion Generative Adversarial Networks (Denoising Diffusion GANs)
+    mathematical_basis: Multimodal conditional GAN modeling of the denoising distribution to replace the Gaussian assumption
+    sampling_approach: Large-step denoising using a multimodal conditional GAN
+    primary_contribution: Reducing sampling cost in diffusion models (up to 2000x faster on CIFAR-10) by modeling denoising steps with a multimodal GAN instead of a Gaussian distribution
+    relations: uses arXiv:2006.11239; cites arXiv:1907.05600; critiques arXiv:2101.09258; uses arXiv:2011.13456; cites arXiv:2106.05931; cites arXiv:2010.02502; cited-by arXiv:2303.01469; used-by arXiv:2311.17042; cited-by arXiv:2311.18828; compared-by arXiv:2209.03003; cited-by arXiv:2211.13449; cited-by arXiv:2206.00927
+arXiv:2108.01073 (2021) "SDEdit: Guided Image Synthesis and Editing with Stochastic Differential
+  Equations" [cs] (cited-by 45 in-topic, era 2)
+    model_architecture: diffusion model generative prior
+    mathematical_basis: stochastic differential equation (SDE)
+    sampling_approach: iteratively denoising through an SDE
+    guidance_mechanism: adding noise to the input image and subsequently denoising
+    primary_contribution: SDEdit, a method for image synthesis and editing that balances realism and faithfulness without task-specific training or inversions
+    relations: uses arXiv:2011.13456; uses arXiv:2105.05233; uses arXiv:1812.04948; uses arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:2010.02502; used-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.02279; used-by arXiv:2112.10741; cited-by arXiv:2111.05826; cited-by arXiv:2112.07068
+arXiv:2107.03006 (2021) "Structured Denoising Diffusion Models in Discrete State-Spaces" [cs] (cited-by 44 in-topic, era 2)
+    model_architecture: Discrete Denoising Diffusion Probabilistic Models (D3PMs)
+    mathematical_basis: Discrete state-space diffusion using transition matrices (including Gaussian-like kernels, nearest neighbors in embedding space, and absorbing states)
+    operational_space: Discrete state-space
+    primary_contribution: Generalization of multinomial diffusion via structured transition matrices and a new loss function combining variational lower bound with auxiliary cross entropy loss
+    relations: cites arXiv:1907.05600; cites arXiv:2006.09011; uses arXiv:1503.03585; uses arXiv:2006.11239; compares-with arXiv:2102.09672; compares-with arXiv:2011.13456; used-by arXiv:2112.07068; critiqued-by arXiv:2112.07804; cited-by arXiv:2111.05826; cited-by arXiv:2202.00512; cited-by arXiv:2202.09778; cited-by arXiv:2204.13902
+arXiv:2106.00132 (2021) "On Fast Sampling of Diffusion Probabilistic Models" [cs] (cited-by 38 in-topic, era 2)
+    mathematical_basis: diffusion probabilistic models
+    sampling_approach: FastDPM (a unified framework for fast sampling)
+    primary_contribution: A unified framework (FastDPM) that generalizes previous fast sampling methods and provides insights on method selection based on data domains, speed-quality trade-offs, and conditional information.
+    relations: uses arXiv:1706.08500; uses arXiv:2006.11239; extends arXiv:2010.02502; cites arXiv:1503.03585; cites arXiv:2011.13456; cites arXiv:2105.05233; extended-by arXiv:2112.07068; compared-by arXiv:2112.07804; cited-by arXiv:2202.00512; cited-by arXiv:2211.13449; cited-by arXiv:2106.03802; cited-by arXiv:2112.10752
+arXiv:2102.12092 (2021) "Zero-Shot Text-to-Image Generation" [cs] (cited-by 38 in-topic, era 2)
+    model_architecture: Transformer that autoregressively models text and image tokens as a single stream
+    sampling_approach: Autoregressive modeling
+    operational_space: Token space
+    primary_contribution: A simple approach for zero-shot text-to-image generation using a single-stream autoregressive transformer for text and image tokens
+    relations: cites arXiv:1406.2661; uses arXiv:1706.03762; uses arXiv:1312.6114; uses arXiv:1412.6980; extends arXiv:1405.0312; compares-with arXiv:1606.03498; cited-by arXiv:2307.01952; cited-by arXiv:2311.18828; used-by arXiv:2012.09841; used-by arXiv:2112.10752; used-by arXiv:2112.10741; used-by arXiv:2204.06125
+arXiv:2112.07068 (2021) "Score-Based Generative Modeling with Critically-Damped Langevin
+  Diffusion" [stat] (cited-by 34 in-topic, era 2)
+    model_architecture: Critically-damped Langevin diffusion (CLD) based score-based generative model
+    mathematical_basis: Statistical mechanics and Hamiltonian dynamics (joint diffusion in an extended space with auxiliary velocity variables)
+    sampling_approach: A novel sampling scheme derived for CLD (outperforming Euler-Maruyama)
+    primary_contribution: Introduction of critically-damped Langevin diffusion (CLD) which simplifies the denoising task by learning the score function of the conditional distribution of velocity given data
+    relations: extends arXiv:2106.05931; extends arXiv:2011.13456; extends arXiv:2006.11239; extends arXiv:1907.05600; uses arXiv:2101.09258; extends arXiv:2010.02502; cited-by arXiv:2403.03206; critiqued-by arXiv:2204.13902; cited-by arXiv:2206.00927; cited-by arXiv:2211.01095
+arXiv:2106.03802 (2021) "Learning to Efficiently Sample from Diffusion Probabilistic Models" [cs] (cited-by 34 in-topic, era 2)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPMs)
+    mathematical_basis: Decomposition of ELBO into separate KL terms and exact dynamic programming
+    sampling_approach: Optimization of discrete inference time schedules via dynamic programming
+    primary_contribution: An exact dynamic programming algorithm to find optimal discrete time schedules for any pre-trained DDPM to maximize training ELBO given a computation budget.
+    relations: extends arXiv:2006.11239; extends arXiv:2011.13456; uses arXiv:2102.09672; cites arXiv:1503.03585; cites arXiv:1907.05600; critiques arXiv:2009.00713; cited-by arXiv:2310.04378; extended-by arXiv:2201.06503; cited-by arXiv:2111.05826; extended-by arXiv:2112.07068; compared-by arXiv:2202.00273; cited-by arXiv:2202.00512
+arXiv:2111.05826 (2021) "Palette: Image-to-Image Diffusion Models" [cs] (cited-by 33 in-topic, era 2)
+    model_architecture: Conditional diffusion models with self-attention
+    mathematical_basis: Denoising diffusion objective (comparing L1 vs. L2 loss)
+    primary_contribution: A unified framework for image-to-image translation (colorization, inpainting, uncropping, and JPEG restoration) that outperforms GAN and regression baselines without task-specific tuning.
+    relations: uses arXiv:2011.13456; uses arXiv:2006.11239; uses arXiv:2104.07636; uses arXiv:2105.05233; uses arXiv:2009.00713; cites arXiv:1406.2661; cited-by arXiv:2310.02279; cited-by arXiv:2403.03206; used-by arXiv:2112.10741; cited-by arXiv:2204.03458; used-by arXiv:2205.11487; cited-by arXiv:2209.14988
+arXiv:2206.00364 (2022) "Elucidating the Design Space of Diffusion-Based Generative Models" [cs] (cited-by 179 in-topic, era 2)
+    primary_contribution: A design space that separates concrete design choices in sampling, training, and preconditioning to improve efficiency and quality (e.g., achieving FID of 1.79 for CIFAR-10 class-conditional and 1.97 unconditional).
+    relations: used-by arXiv:2303.01469; used-by arXiv:2307.01952; used-by arXiv:2310.02279; used-by arXiv:2310.04378; used-by arXiv:2311.18828; used-by arXiv:2403.03206
+arXiv:2202.00512 (2022) "Progressive Distillation for Fast Sampling of Diffusion Models" [cs] (cited-by 139 in-topic, era 2)
+    mathematical_basis: Deterministic diffusion samplers
+    sampling_approach: Progressive distillation (halving the number of sampling steps iteratively)
+    primary_contribution: New parameterizations for stability and a progressive distillation method to reduce sampling steps from 8192 down to 4.
+    relations: cites arXiv:1907.05600; uses arXiv:2102.09672; uses arXiv:2011.13456; uses arXiv:2107.00630; uses arXiv:1806.07366; uses arXiv:2010.02502; used-by arXiv:2303.01469; cited-by arXiv:2307.01952; critiqued-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; compared-by arXiv:2311.18828
+arXiv:2206.00927 (2022) "DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling
+  in Around 10 Steps" [cs] (cited-by 132 in-topic, era 2)
+    mathematical_basis: Diffusion ordinary differential equations (ODEs) and exponentially weighted integrals of the neural network
+    sampling_approach: DPM-Solver, a high-order dedicated ODE solver with convergence order guarantee
+    primary_contribution: An exact formulation of the diffusion ODE solution that analytically computes the linear part, enabling high-quality sampling in only 10 to 20 function evaluations.
+    relations: uses arXiv:2010.02502; uses arXiv:2105.05233; uses arXiv:2006.11239; uses arXiv:2011.13456; uses arXiv:2202.05830; compares-with arXiv:2101.09258; cited-by arXiv:2303.01469; cited-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; cited-by arXiv:2311.18828; used-by arXiv:2211.01095
+arXiv:2204.06125 (2022) "Hierarchical Text-Conditional Image Generation with CLIP Latents" [cs] (cited-by 125 in-topic, era 2)
+    model_architecture: Two-stage model consisting of a prior (autoregressive or diffusion) and a decoder (diffusion)
+    mathematical_basis: CLIP image embeddings and joint embedding space
+    sampling_approach: Diffusion models for the decoder; autoregressive or diffusion models for the prior
+    operational_space: CLIP latent space (image embeddings)
+    guidance_mechanism: Conditioning on CLIP image embeddings generated from text captions
+    primary_contribution: A two-stage hierarchical approach that generates CLIP image embeddings as an intermediate step to improve image diversity and enable zero-shot language-guided manipulations
+    relations: uses arXiv:2102.12092; extends arXiv:2112.10741; uses arXiv:2201.06503; uses arXiv:2102.09672; uses arXiv:2010.02502; uses arXiv:2103.00020; cited-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.04378; compared-by arXiv:2311.17042; compared-by arXiv:2311.18828; cited-by arXiv:2403.03206
+arXiv:2207.12598 (2022) "Classifier-Free Diffusion Guidance" [cs] (cited-by 123 in-topic, era 2)
+    model_architecture: Jointly trained conditional and unconditional diffusion model
+    mathematical_basis: Combination of conditional and unconditional score estimates
+    guidance_mechanism: Classifier-free guidance (combining conditional and unconditional score estimates)
+    primary_contribution: Performing guidance using a pure generative model without the need for a separate image classifier
+    relations: uses arXiv:1809.11096; uses arXiv:2006.11239; compares-with arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:1503.03585; cites arXiv:1907.05600; used-by arXiv:2307.01952; cited-by arXiv:2310.02279; critiqued-by arXiv:2310.04378; cited-by arXiv:2311.17042; used-by arXiv:2311.18828; used-by arXiv:2403.03206
+arXiv:2205.11487 (2022) "Photorealistic Text-to-Image Diffusion Models with Deep Language
+  Understanding" [cs] (cited-by 117 in-topic, era 2)
+    model_architecture: Diffusion model combined with large transformer language models (e.g., T5)
+    primary_contribution: Demonstrating that increasing the size of a pretrained text-only large language model improves image synthesis fidelity and alignment more effectively than increasing the size of the image diffusion model; introduction of the DrawBench benchmark.
+    relations: compares-with arXiv:2102.12092; compares-with arXiv:2112.10741; compares-with arXiv:2204.06125; extends arXiv:2112.10752; compares-with arXiv:1405.0312; critiques arXiv:2103.00020; cited-by arXiv:2303.01469; used-by arXiv:2307.01952; cited-by arXiv:2310.02279; cited-by arXiv:2310.04378; used-by arXiv:2311.17042; compared-by arXiv:2311.18828
+arXiv:2202.09778 (2022) "Pseudo Numerical Methods for Diffusion Models on Manifolds" [cs] (cited-by 80 in-topic, era 2)
+    model_architecture: Pseudo Numerical Methods for Diffusion Models (PNDMs)
+    mathematical_basis: Solving differential equations on manifolds
+    sampling_approach: Pseudo linear multi-step methods
+    primary_contribution: Accelerating DDPM inference by treating them as differential equations on manifolds, specifically using pseudo linear multi-step methods to achieve higher quality with fewer steps (e.g., 50 steps vs 1000-step DDIMs).
+    relations: uses arXiv:2011.13456; uses arXiv:2010.02502; uses arXiv:2006.11239; cites arXiv:1503.03585; cites arXiv:2107.03006; cites arXiv:2009.09761; used-by arXiv:2311.18828; compared-by arXiv:2211.01095; compared-by arXiv:2204.13902; used-by arXiv:2210.08402; compared-by arXiv:2206.00927
+arXiv:2209.03003 (2022) "Flow Straight and Fast: Learning to Generate and Transfer Data with
+  Rectified Flow" [cs] (cited-by 78 in-topic, era 2)
+    model_architecture: Neural Ordinary Differential Equation (ODE) models
+    mathematical_basis: Rectified flow (learning ODEs to follow straight paths between distributions $\pi_0$ and $\pi_1$ via nonlinear least squares optimization)
+    sampling_approach: Euler discretization (can be simulated with a single step due to straight paths)
+    primary_contribution: Introduction of rectified flow, a method to learn straight-path ODEs for efficient distribution transport, enabling high-quality generation and transfer with minimal discretization steps.
+    relations: extends arXiv:2011.13456; cites arXiv:2202.00273; compares-with arXiv:2112.07804; cites arXiv:2101.02388; extends arXiv:2006.11239; cites arXiv:1904.06991; cited-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2310.04378; cited-by arXiv:2311.17042; compared-by arXiv:2311.18828; cited-by arXiv:2403.03206
+arXiv:2204.13902 (2022) "Fast Sampling of Diffusion Models with Exponential Integrator" [cs] (cited-by 72 in-topic, era 2)
+    mathematical_basis: Exponential Integrator for discretizing ordinary differential equations (ODEs) leveraging the semilinear structure of the diffusion process
+    sampling_approach: Diffusion Exponential Integrator Sampler (DEIS)
+    primary_contribution: A fast sampling method (DEIS) that reduces discretization error to enable high-fidelity generation in as few as 10 steps.
+    relations: compares-with arXiv:2101.09258; cites arXiv:2112.10752; compares-with arXiv:2011.13456; cites arXiv:2006.11239; compares-with arXiv:2105.14080; compares-with arXiv:2105.05233; cited-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2311.17042; used-by arXiv:2211.01095; cited-by arXiv:2211.13449; cited-by arXiv:2209.03003
+arXiv:2212.09748 (2022) "Scalable Diffusion Models with Transformers" [cs] (cited-by 68 in-topic, era 2)
+    model_architecture: Diffusion Transformers (DiTs) using a transformer backbone that operates on latent patches
+    operational_space: latent space
+    guidance_mechanism: class-conditional
+    primary_contribution: Replacing the U-Net backbone with a transformer architecture for latent diffusion models to improve scalability and performance
+    relations: uses arXiv:1809.11096; compares-with arXiv:2202.00273; uses arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:2112.10752; uses arXiv:1706.08500; cited-by arXiv:2307.01952; cited-by arXiv:2311.17042; cited-by arXiv:2211.13449
+arXiv:2210.03142 (2022) "On Distillation of Guided Diffusion Models" [cs] (cited-by 67 in-topic, era 2)
+    mathematical_basis: Distillation of classifier-free guided diffusion models
+    sampling_approach: Progressive distillation to reduce sampling steps (as few as 1 to 4 steps)
+    operational_space: Pixel-space and latent-space
+    guidance_mechanism: Classifier-free guidance
+    primary_contribution: A distillation approach that accelerates inference for classifier-free guided diffusion models, achieving up to 256x speedup with minimal loss in quality.
+    relations: cited-by arXiv:2303.01469; cited-by arXiv:2307.01952; critiqued-by arXiv:2310.02279; used-by arXiv:2310.04378; cited-by arXiv:2311.17042; compared-by arXiv:2311.18828
+arXiv:2204.03458 (2022) "Video Diffusion Models" [cs] (cited-by 63 in-topic, era 2)
+    model_architecture: Natural extension of the standard image diffusion architecture
+    sampling_approach: New conditional sampling technique for spatial and temporal video extension
+    guidance_mechanism: Text-conditioned
+    primary_contribution: A diffusion model for video generation that enables joint training from image and video data and introduces a new conditional sampling technique for spatial and temporal extension
+    relations: extends arXiv:2011.13456; cites arXiv:2009.00713; uses arXiv:2107.00630; uses arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:1503.03585; cited-by arXiv:2303.01469; cited-by arXiv:2206.00927; cited-by arXiv:2209.03003; cited-by arXiv:2209.14988; used-by arXiv:2210.02303
+arXiv:2210.02747 (2022) "Flow Matching for Generative Modeling" [cs] (cited-by 63 in-topic, era 2)
+    model_architecture: Continuous Normalizing Flows (CNFs)
+    mathematical_basis: Flow Matching (FM) via regression of vector fields of fixed conditional probability paths
+    sampling_approach: Off-the-shelf numerical ODE solvers
+    primary_contribution: A simulation-free approach for training CNFs that subsumes diffusion paths and allows for more efficient non-diffusion paths like Optimal Transport (OT) displacement interpolation
+    relations: uses arXiv:2104.07636; uses arXiv:1806.07366; compares-with arXiv:2101.09258; compares-with arXiv:2006.11239; uses arXiv:2011.13456; cites arXiv:2204.06125; used-by arXiv:2403.03206
+arXiv:2211.01095 (2022) "DPM-Solver++: Fast Solver for Guided Sampling of Diffusion Probabilistic Models" [cs] (cited-by 54 in-topic, era 2)
+    mathematical_basis: High-order diffusion ODE solver
+    sampling_approach: DPM-Solver++ (high-order solver) and a multistep variant
+    operational_space: Pixel-space and latent-space
+    guidance_mechanism: Guided sampling (with thresholding methods)
+    primary_contribution: DPM-Solver++, a high-order solver designed for stable and fast guided sampling (15 to 20 steps)
+    relations: uses arXiv:2204.13902; uses arXiv:2006.11239; uses arXiv:2102.09672; uses arXiv:2011.13456; compares-with arXiv:2010.02502; compares-with arXiv:2202.09778; used-by arXiv:2310.04378; used-by arXiv:2311.18828; cited-by arXiv:2403.03206
+arXiv:2210.02303 (2022) "Imagen Video: High Definition Video Generation with Diffusion Models" [cs] (cited-by 46 in-topic, era 2)
+    model_architecture: Cascade of video diffusion models (base model followed by interleaved spatial and temporal super-resolution models)
+    mathematical_basis: v-parameterization of diffusion models
+    sampling_approach: Progressive distillation
+    guidance_mechanism: Classifier-free guidance
+    primary_contribution: High definition text-to-video generation using a cascade of spatial and temporal super-resolution models
+    relations: uses arXiv:2107.00630; uses arXiv:2102.09672; uses arXiv:2006.11239; extends arXiv:2202.00512; uses arXiv:1907.05600; extends arXiv:2205.11487; cited-by arXiv:2303.01469; cited-by arXiv:2307.01952; cited-by arXiv:2311.17042; cited-by arXiv:2311.18828; cited-by arXiv:2403.03206
+arXiv:2201.06503 (2022) "Analytic-DPM: an Analytic Estimate of the Optimal Reverse Variance in
+  Diffusion Probabilistic Models" [cs] (cited-by 44 in-topic, era 2)
+    mathematical_basis: Analytic forms of optimal reverse variance and KL divergence with respect to the score function
+    sampling_approach: Monte Carlo method using a pretrained score-based model with variance clipping via derived lower and upper bounds
+    primary_contribution: Analytic-DPM, a training-free inference framework that provides analytic estimates of optimal reverse variance and KL divergence, achieving 20x to 80x speedup and improved log-likelihood.
+    relations: uses arXiv:2006.11239; uses arXiv:2010.02502; uses arXiv:2102.09672; extends arXiv:2106.03802; cites arXiv:1809.11096; cites arXiv:2007.03898; used-by arXiv:2204.06125; compared-by arXiv:2204.13902; used-by arXiv:2206.00927; cited-by arXiv:2209.03003; cited-by arXiv:2211.01095; cited-by arXiv:2211.13449
+arXiv:2209.14988 (2022) "DreamFusion: Text-to-3D using 2D Diffusion" [cs] (cited-by 43 in-topic, era 2)
+    model_architecture: Neural Radiance Field (NeRF) optimized via a pretrained 2D text-to-image diffusion model
+    mathematical_basis: Probability density distillation loss
+    sampling_approach: DeepDream-like procedure using gradient descent
+    operational_space: 2D renderings of a 3D model
+    primary_contribution: Using a pretrained 2D diffusion model as a prior for text-to-3D synthesis via probability density distillation without requiring 3D training data
+    relations: extends arXiv:2112.10741; cites arXiv:2102.12092; extends arXiv:2204.06125; extends arXiv:2205.11487; cites arXiv:2111.05826; cites arXiv:2104.07636; used-by arXiv:2311.17042; compared-by arXiv:2311.18828
+arXiv:2210.08402 (2022) "LAION-5B: An open large-scale dataset for training next generation
+  image-text models" [cs] (cited-by 41 in-topic, era 2)
+    primary_contribution: The presentation of LAION-5B, a dataset consisting of 5.85 billion CLIP-filtered image-text pairs (including 2.32B English pairs) to democratize research on large-scale multi-modal models.
+    relations: uses arXiv:2103.00020; uses arXiv:2202.09778; cites arXiv:2102.12092; uses arXiv:2112.10741; cites arXiv:2205.11487; cites arXiv:2204.06125; used-by arXiv:2310.04378; used-by arXiv:2311.17042; used-by arXiv:2311.18828; critiqued-by arXiv:2209.14988
+arXiv:2211.13449 (2022) "Fast Sampling of Diffusion Models via Operator Learning" [cs] (cited-by 38 in-topic, era 2)
+    model_architecture: Diffusion model sampling with neural operator (DSNO) incorporating temporal convolution layers parameterized in Fourier space
+    mathematical_basis: Neural operators used to solve probability flow differential equations
+    sampling_approach: Parallel decoding via a single model forward pass mapping Gaussian initial conditions to continuous-time solution trajectories
+    primary_contribution: A parallel decoding method that accelerates sampling to a single model evaluation by mapping initial noise to the solution trajectory using neural operators
+    relations: cites arXiv:2101.02388; uses arXiv:2202.00512; cites arXiv:2106.05931; cites arXiv:2202.05830; uses arXiv:2010.02502; cites arXiv:2106.00132; compared-by arXiv:2303.01469; cited-by arXiv:2310.02279; cited-by arXiv:2310.04378; cited-by arXiv:2311.18828
+arXiv:2202.05830 (2022) "Learning Fast Samplers for Diffusion Models by Differentiating Through
+  Sample Quality" [cs] (cited-by 36 in-topic, era 2)
+    model_architecture: Generalized Gaussian Diffusion Models (GGDM)
+    mathematical_basis: Non-Markovian samplers optimized via gradient descent and the reparametrization trick
+    sampling_approach: Differentiable Diffusion Sampler Search (DDSS)
+    primary_contribution: A method to optimize fast samplers for pre-trained diffusion models by differentiating through sample quality scores
+    relations: uses arXiv:2102.09672; uses arXiv:2006.11239; uses arXiv:2010.02502; cites arXiv:2107.00630; cites arXiv:2009.00713; uses arXiv:1706.03762; used-by arXiv:2206.00927; cited-by arXiv:2211.13449; cited-by arXiv:2211.01095
+arXiv:2202.00273 (2022) "StyleGAN-XL: Scaling StyleGAN to Large Diverse Datasets" [cs] (cited-by 34 in-topic, era 2)
+    model_architecture: StyleGAN3 generator
+    mathematical_basis: Projected GAN paradigm
+    operational_space: pixel space
+    primary_contribution: Scaling StyleGAN to large, diverse datasets (ImageNet) using neural network priors and progressive growing to achieve 1024^2 resolution.
+    relations: uses arXiv:2105.05233; cites arXiv:2010.02502; uses arXiv:1710.10196; compares-with arXiv:1606.03498; compares-with arXiv:1706.08500; cites arXiv:1506.03365; cited-by arXiv:2303.01469; used-by arXiv:2310.02279; compared-by arXiv:2311.17042; cited-by arXiv:2209.03003; compared-by arXiv:2212.09748; cited-by arXiv:2311.18828
+arXiv:2303.01469 (2023) "Consistency Models" [cs] (cited-by 44 in-topic, era 2)
+    model_architecture: Consistency models
+    mathematical_basis: Direct mapping of noise to data
+    sampling_approach: One-step or multi-step sampling
+    primary_contribution: A new family of models supporting fast one-step generation by mapping noise directly to data, outperforming existing distillation techniques.
+    relations: uses arXiv:2011.13456; uses arXiv:2206.00364; cites arXiv:1503.03585; uses arXiv:1907.05600; cites arXiv:2006.09011; uses arXiv:2006.11239; critiqued-by arXiv:2310.02279; extended-by arXiv:2310.04378; used-by arXiv:2211.13449
+arXiv:2307.01952 (2023) "SDXL: Improving Latent Diffusion Models for High-Resolution Image
+  Synthesis" [cs] (cited-by 44 in-topic, era 2)
+    model_architecture: Latent Diffusion Model with a 3x larger UNet backbone, more attention blocks, and a second text encoder
+    operational_space: Latent space
+    guidance_mechanism: Multiple novel conditioning schemes and a second text encoder
+    primary_contribution: Scaling the UNet backbone by 3x, utilizing dual text encoders, training on multiple aspect ratios, and introducing a post-hoc refinement model
+    relations: cites arXiv:1405.0312; uses arXiv:2205.11487; cites arXiv:2210.03142; uses arXiv:2207.12598; extends arXiv:2112.10752; uses arXiv:2204.06125; used-by arXiv:2311.17042; cited-by arXiv:2311.18828; extended-by arXiv:2403.03206
+arXiv:2310.14189 (2023) "Improved Techniques for Training Consistency Models" [cs] (cited-by 42 in-topic, era 2)
+    model_architecture: Consistency models
+    mathematical_basis: Consistency training (learning directly from data without distillation) using Pseudo-Huber losses and a lognormal noise schedule
+    sampling_approach: One-step or two-step sampling
+    primary_contribution: Improved consistency training techniques that eliminate distillation and EMA from the teacher model, utilize Pseudo-Huber losses, and implement a lognormal noise schedule to achieve higher sample quality (FID 2.51 on CIFAR-10 and 3.25 on ImageNet 64x64).
+    relations: (none in-topic)
+arXiv:2310.02279 (2023) "Consistency Trajectory Models: Learning Probability Flow ODE Trajectory
+  of Diffusion" [cs] (cited-by 38 in-topic, era 2)
+    model_architecture: Consistency Trajectory Model (CTM)
+    mathematical_basis: Probability Flow Ordinary Differential Equation (ODE)
+    sampling_approach: Single forward pass or long jumps along ODE solution trajectories (deterministic and stochastic)
+    guidance_mechanism: Access to the score function (gradients of log-density)
+    primary_contribution: A generalization of Consistency Models (CM) that enables unrestricted traversal along the Probability Flow ODE, allowing for a trade-off between quality and speed and enabling both score output and likelihood computation.
+    relations: extends arXiv:2011.13456; uses arXiv:2206.00364; uses arXiv:2202.00273; uses arXiv:1801.03924; uses arXiv:2105.05233; cites arXiv:1907.05600; used-by arXiv:2311.17042
+arXiv:2311.18828 (2023) "One-step Diffusion with Distribution Matching Distillation" [cs] (cited-by 36 in-topic, era 2)
+    model_architecture: One-step image generator (distilled from a diffusion model)
+    mathematical_basis: Minimization of an approximate KL divergence expressed as the difference between two score functions
+    sampling_approach: One-step generation
+    primary_contribution: Distribution Matching Distillation (DMD) to transform diffusion models into one-step generators with minimal quality loss (2.62 FID on ImageNet 64x64)
+    relations: compares-with arXiv:2209.14988; compares-with arXiv:2204.06125; uses arXiv:2112.10752; compares-with arXiv:2205.11487; uses arXiv:2011.13456; uses arXiv:2006.11239
+arXiv:2302.04867 (2023) "UniPC: A Unified Predictor-Corrector Framework for Fast Sampling of
+  Diffusion Models" [cs] (cited-by 35 in-topic, era 2)
+    model_architecture: Unified predictor-corrector framework (UniPC)
+    mathematical_basis: Unified predictor (UniP) and unified corrector (UniC) framework
+    sampling_approach: Predictor-corrector method
+    operational_space: Pixel-space and latent-space
+    primary_contribution: A unified predictor-corrector framework (UniPC) that increases accuracy order without extra model evaluations, enabling high-quality sampling in extremely few steps (e.g., 10 evaluations).
+    relations: used-by arXiv:2311.18828
+arXiv:2311.17042 (2023) "Adversarial Diffusion Distillation" [cs] (cited-by 35 in-topic, era 2)
+    mathematical_basis: Score distillation combined with adversarial loss
+    sampling_approach: 1-4 step sampling
+    primary_contribution: Adversarial Diffusion Distillation (ADD) for efficient 1-4 step sampling of large-scale foundational models
+    relations: uses arXiv:2310.04378; uses arXiv:1706.08500; uses arXiv:2210.08402; uses arXiv:1405.0312; uses arXiv:2209.14988; compares-with arXiv:2204.06125; compared-by arXiv:2403.03206
+arXiv:2310.04378 (2023) "Latent Consistency Models: Synthesizing High-Resolution Images with
+  Few-Step Inference" [cs] (cited-by 33 in-topic, era 2)
+    model_architecture: Latent Consistency Models (LCMs)
+    mathematical_basis: Solving an augmented probability flow ODE (PF-ODE)
+    sampling_approach: Directly predicting the solution of the ODE to enable few-step inference (2-4 steps)
+    operational_space: Latent space
+    guidance_mechanism: Classifier-free guidance (distilled from pre-trained models)
+    primary_contribution: Enabling swift, high-fidelity inference with minimal steps on pre-trained LDMs and introducing Latent Consistency Fine-tuning (LCF)
+    relations: uses arXiv:2006.11239; uses arXiv:2010.02502; uses arXiv:2011.13456; uses arXiv:2206.00927; uses arXiv:2206.00364; critiques arXiv:2207.12598; used-by arXiv:2311.17042; used-by arXiv:2311.18828
+arXiv:2403.03206 (2024) "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis" [cs] (cited-by 33 in-topic, era 2)
+    model_architecture: Transformer-based architecture with separate weights for image and text modalities and bidirectional information flow
+    mathematical_basis: Rectified flow
+    sampling_approach: Biased noise sampling towards perceptually relevant scales
+    primary_contribution: Improving rectified flow training via perceptually relevant noise sampling and a novel bidirectional transformer architecture for text-to-image synthesis
+    relations: uses arXiv:2206.00364; uses arXiv:2006.11239; compares-with arXiv:2311.17042; cites arXiv:2209.03003; cites arXiv:2011.13456; cites arXiv:1503.03585
+
+MAIN PATH (oldest -> newest):
+  arXiv:1312.6114 (2013) -> arXiv:1406.2661 (2014) -> arXiv:1710.10196 (2017) -> arXiv:1812.04948 (2018) -> arXiv:1912.04958 (2019) -> arXiv:2006.11239 (2020) -> arXiv:2105.05233 (2021) -> arXiv:2202.00273 (2022) -> arXiv:2311.17042 (2023) -> arXiv:2403.03206 (2024)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2006.09011 compares [negative] arXiv:1710.10196
+  arXiv:2011.13456 compares [negative] arXiv:1812.04948
+  arXiv:2202.00273 compares [negative] arXiv:1606.03498
+  arXiv:2202.00273 compares [negative] arXiv:1706.08500
+  arXiv:2205.11487 compares [negative] arXiv:2207.12598
+  arXiv:2206.00927 compares [negative] arXiv:2202.00512
+  arXiv:2209.03003 compares [negative] arXiv:2206.00364
+  arXiv:2310.02279 critiques [negative] arXiv:2303.01469
+  arXiv:2310.02279 critiques [negative] arXiv:2202.00512
+  arXiv:2310.02279 critiques [negative] arXiv:2210.03142
+  arXiv:2310.04378 critiques [negative] arXiv:2207.12598
+  arXiv:2310.04378 critiques [negative] arXiv:1506.03365
+  arXiv:2112.07804 critiques [negative] arXiv:2101.09258
+  arXiv:2112.07804 critiques [negative] arXiv:2107.00630
+  arXiv:2112.07804 critiques [negative] arXiv:2107.03006
+  arXiv:2112.07804 critiques [negative] arXiv:1807.03039
+  arXiv:2102.09672 critiques [negative] arXiv:1706.08500
+  arXiv:2102.09672 critiques [negative] arXiv:1606.03498
+  arXiv:2106.03802 critiques [negative] arXiv:2009.00713
+  arXiv:2112.07804 critiques [negative] arXiv:1503.03585
+  arXiv:2112.07804 critiques [negative] arXiv:2105.05233
+  arXiv:2112.07804 critiques [negative] arXiv:2106.15282
+  arXiv:2202.09778 critiques [negative] arXiv:2202.00512
+  arXiv:2204.13902 critiques [negative] arXiv:2106.03802
+  arXiv:2204.13902 critiques [negative] arXiv:2112.07068
+  arXiv:2205.11487 critiques [negative] arXiv:2103.00020
+  arXiv:2209.14988 critiques [negative] arXiv:2210.08402
+  arXiv:2303.01469 compares [neutral] arXiv:2101.02388
+  arXiv:2303.01469 compares [neutral] arXiv:2211.13449
+  arXiv:2310.02279 compares [positive] arXiv:2101.09258
+  arXiv:2311.17042 compares [positive] arXiv:2204.06125
+  arXiv:2311.17042 compares [positive] arXiv:1406.2661
+  arXiv:2311.17042 compares [positive] arXiv:1812.04948
+  arXiv:2311.17042 compares [positive] arXiv:1912.04958
+  arXiv:2311.17042 compares [positive] arXiv:2202.00273
+  arXiv:2311.18828 compares [positive] arXiv:2209.14988
+  arXiv:2311.18828 compares [positive] arXiv:2204.06125
+  arXiv:2311.18828 compares [positive] arXiv:2205.11487
+  arXiv:2311.18828 compares [positive] arXiv:1312.6114
+  arXiv:2311.18828 compares [neutral] arXiv:2209.03003
+  arXiv:2311.18828 compares [neutral] arXiv:2202.00512
+  arXiv:2311.18828 compares [neutral] arXiv:2210.03142
+  arXiv:2311.18828 compares [neutral] arXiv:1405.0312
+  arXiv:2311.18828 compares [positive] arXiv:1809.11096
+  arXiv:2403.03206 compares [positive] arXiv:2311.17042
+  arXiv:2107.00630 compares [neutral] arXiv:1907.05600
+  arXiv:1812.04948 compares [positive] arXiv:1807.03039
+  arXiv:2204.13902 compares [positive] arXiv:2101.09258
+  arXiv:2101.02388 compares [positive] arXiv:2007.03898
+  arXiv:2102.09672 compares [neutral] arXiv:1809.11096
+  arXiv:2105.05233 compares [neutral] arXiv:2104.07636
+  arXiv:2106.15282 compares [positive] arXiv:2105.05233
+  arXiv:2107.03006 compares [positive] arXiv:2102.09672
+  arXiv:2107.03006 compares [positive] arXiv:2011.13456
+  arXiv:2211.01095 compares [positive] arXiv:2202.09778
+  arXiv:2112.07804 compares [neutral] arXiv:2106.00132
+  arXiv:2112.07804 compares [neutral] arXiv:1710.10196
+  arXiv:2112.10752 compares [neutral] arXiv:1912.04958
+  arXiv:2202.00512 compares [neutral] arXiv:2101.02388
+  arXiv:2204.13902 compares [neutral] arXiv:2011.13456
+  arXiv:2204.13902 compares [neutral] arXiv:2105.14080
+  arXiv:2204.13902 compares [neutral] arXiv:2105.05233
+  arXiv:2204.13902 compares [neutral] arXiv:2201.06503
+  arXiv:2204.13902 compares [neutral] arXiv:2202.09778
+  arXiv:2205.11487 compares [positive] arXiv:2102.12092
+  arXiv:2205.11487 compares [positive] arXiv:2112.10741
+  arXiv:2205.11487 compares [positive] arXiv:2204.06125
+  arXiv:2206.00927 compares [neutral] arXiv:2101.09258
+  arXiv:2207.12598 compares [positive] arXiv:2105.05233
+  arXiv:2209.03003 compares [positive] arXiv:2112.07804
+  arXiv:2210.02747 compares [neutral] arXiv:2101.09258
+  arXiv:2211.01095 compares [neutral] arXiv:2205.11487
+  arXiv:2211.13449 compares [positive] arXiv:2206.00927
+  arXiv:2212.09748 compares [neutral] arXiv:2202.00273
+  arXiv:1706.08500 compares [positive] arXiv:1606.03498
+  arXiv:1710.10196 compares [neutral] arXiv:1606.03498
+  arXiv:1806.07366 compares [neutral] arXiv:1412.6980
+  arXiv:1807.03039 compares [neutral] arXiv:1506.03365
+  arXiv:1809.11096 compares [neutral] arXiv:1710.10196
+  arXiv:1809.11096 compares [neutral] arXiv:1606.03498
+  arXiv:1812.04948 compares [positive] arXiv:1706.08500
+  arXiv:1904.06991 compares [neutral] arXiv:1706.08500
+  arXiv:1907.05600 compares [neutral] arXiv:1503.03585
+  arXiv:2011.13456 compares [positive] arXiv:1710.10196
+  arXiv:2012.09841 compares [neutral] arXiv:1710.10196
+  arXiv:2012.09841 compares [neutral] arXiv:1807.03039
+  arXiv:2012.09841 compares [neutral] arXiv:2007.03898
+  arXiv:2012.09841 compares [neutral] arXiv:1912.04958
+  arXiv:2101.02388 compares [positive] arXiv:1706.08500
+  arXiv:2101.02388 compares [positive] arXiv:1606.03498
+  arXiv:2101.09258 compares [positive] arXiv:1706.08500
+  arXiv:2101.09258 compares [positive] arXiv:2102.09672
+  arXiv:2101.09258 compares [neutral] arXiv:2007.03898
+  arXiv:2102.12092 compares [neutral] arXiv:1606.03498
+  arXiv:2102.12092 compares [neutral] arXiv:1706.08500
+  arXiv:2104.07636 compares [neutral] arXiv:1512.03385
+  arXiv:2105.14080 compares [neutral] arXiv:1706.08500
+  arXiv:2105.14080 compares [neutral] arXiv:1606.03498
+  arXiv:2106.03802 compares [neutral] arXiv:1406.2661
+  arXiv:2106.03802 compares [positive] arXiv:1706.08500
+  arXiv:2106.15282 compares [positive] arXiv:1506.03365
+  arXiv:2107.03006 compares [neutral] arXiv:1706.08500
+  arXiv:2112.07804 compares [positive] arXiv:1506.03365
+  arXiv:2112.10752 compares [positive] arXiv:2106.05931
+  arXiv:2201.06503 compares [positive] arXiv:1706.08500
+  arXiv:2202.00273 compares [neutral] arXiv:2106.15282
+  arXiv:2202.00273 compares [positive] arXiv:2106.03802
+  arXiv:2202.00512 compares [neutral] arXiv:1706.08500
+  arXiv:2202.05830 compares [neutral] arXiv:1606.03498
+  arXiv:2204.06125 compares [positive] arXiv:2207.12598
+  arXiv:2204.06125 compares [neutral] arXiv:1706.08500
+  arXiv:2204.06125 compares [neutral] arXiv:1405.0312
+  arXiv:2204.13902 compares [neutral] arXiv:2106.00132
+  arXiv:2204.13902 compares [neutral] arXiv:1411.7766
+  arXiv:2204.13902 compares [neutral] arXiv:1506.03365
+  arXiv:2205.11487 compares [positive] arXiv:1405.0312
+  arXiv:2205.11487 compares [positive] arXiv:2104.07636
+  arXiv:2206.00927 compares [neutral] arXiv:1503.03585
+  arXiv:2206.00927 compares [neutral] arXiv:2202.09778
+  arXiv:2206.00927 compares [neutral] arXiv:2106.00132
+  arXiv:2210.02747 compares [neutral] arXiv:1907.05600
+  arXiv:2210.02747 compares [neutral] arXiv:2107.00630
+  arXiv:2210.02747 compares [neutral] arXiv:1706.08500
+  arXiv:2211.01095 compares [neutral] arXiv:1706.08500
+  arXiv:2311.18828 motivates [neutral] arXiv:1710.10196
+  arXiv:2311.18828 motivates [neutral] arXiv:1912.04958
+  arXiv:2311.18828 motivates [neutral] arXiv:1907.05600
+  arXiv:2101.09258 motivates [neutral] arXiv:1907.05600
+  arXiv:2101.09258 motivates [neutral] arXiv:2006.09011
+  arXiv:2104.07636 motivates [neutral] arXiv:1505.04597
+  arXiv:2112.07068 motivates [neutral] arXiv:1503.03585

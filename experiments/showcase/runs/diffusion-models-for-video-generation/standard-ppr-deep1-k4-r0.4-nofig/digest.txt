@@ -1,0 +1,633 @@
+QUESTION: diffusion models for video generation
+
+SCHEMA FIELDS: ['model_architecture', 'generation_task', 'core_innovation', 'temporal_mechanism', 'evaluation_metrics', 'computational_efficiency']
+
+ERAS:
+  [0] Origins: 2012-2017
+  [1] Key Advances: 2017-2021
+  [2] Current Frontier: 2021-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1212.0402 (2012) "UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild" [cs] (cited-by 96 in-topic, era 0)
+    core_innovation: Introduction of UCF101, a large-scale dataset of 101 human action classes containing over 13k clips and 27 hours of video data.
+    evaluation_metrics: Bag of words approach (baseline performance of 44.5%)
+    relations: used-by arXiv:2302.07685; used-by arXiv:2303.08320; compared-by arXiv:2304.08818; used-by arXiv:2309.00398; compared-by arXiv:2311.11325; used-by arXiv:2311.15127
+arXiv:1312.6114 (2013) "Auto-Encoding Variational Bayes" [stat] (cited-by 91 in-topic, era 0)
+    core_innovation: Reparameterization of the variational lower bound to enable stochastic gradient optimization and the introduction of a recognition model for efficient posterior inference.
+    computational_efficiency: Scales to large datasets via stochastic variational inference and efficient posterior inference using a recognition model.
+    relations: used-by arXiv:2302.07685; cited-by arXiv:2304.11603; used-by arXiv:2311.11325; used-by arXiv:2312.04483; cited-by arXiv:2403.07711; cited-by arXiv:2504.12259
+arXiv:1406.2661 (2014) "Generative Adversarial Networks" [stat] (cited-by 44 in-topic, era 0)
+    model_architecture: Minimax two-player game using a generative model G and a discriminative model D (specifically multilayer perceptrons)
+    core_innovation: Estimating generative models via an adversarial process where G and D are trained simultaneously to capture data distribution without Markov chains or unrolled approximate inference
+    evaluation_metrics: Qualitative and quantitative evaluation
+    relations: cites arXiv:1312.6114; cited-by arXiv:2304.11603; cited-by arXiv:2309.00398; used-by arXiv:2311.11325; extended-by arXiv:1808.06601; used-by arXiv:1812.04948; used-by arXiv:1912.04958
+arXiv:1503.03585 (2015) "Deep Unsupervised Learning using Nonequilibrium Thermodynamics" [cs] (cited-by 130 in-topic, era 0)
+    core_innovation: A generative model inspired by non-equilibrium statistical physics that uses an iterative forward diffusion process to destroy data structure and a learned reverse diffusion process to restore it.
+    computational_efficiency: Allows for rapid learning, sampling, and evaluation of probabilities in models with thousands of layers or time steps.
+    relations: cites arXiv:1312.6114; cited-by arXiv:2302.03011; cited-by arXiv:2302.05543; cited-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; used-by arXiv:2304.11603
+arXiv:1505.04597 (2015) "U-Net: Convolutional Networks for Biomedical Image Segmentation" [cs] (cited-by 112 in-topic, era 0)
+    model_architecture: U-Net (contracting path to capture context and a symmetric expanding path for precise localization)
+    core_innovation: A network and training strategy that relies on strong data augmentation to enable efficient training from very few annotated samples.
+    computational_efficiency: Fast; segmentation of a 512x512 image takes less than a second on a recent GPU.
+    relations: cited-by arXiv:2302.03011; used-by arXiv:2302.05543; used-by arXiv:2304.11603; used-by arXiv:2307.04725; used-by arXiv:2311.11325; used-by arXiv:2311.15127
+arXiv:1609.02612 (2016) "Generating Videos with Scene Dynamics" [cs] (cited-by 71 in-topic, era 0)
+    model_architecture: Generative Adversarial Network (GAN) with a spatio-temporal convolutional architecture
+    generation_task: Future prediction (predicting plausible futures of static images)
+    core_innovation: Untangling the scene's foreground from the background using spatio-temporal convolutions
+    temporal_mechanism: Spatio-temporal convolutional architecture
+    relations: compares-with arXiv:1212.0402; cited-by arXiv:2302.03011; cited-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2311.11325; cited-by arXiv:2311.15127
+arXiv:1611.06624 (2016) "Temporal Generative Adversarial Nets with Singular Value Clipping" [cs] (cited-by 59 in-topic, era 0)
+    model_architecture: Temporal Generative Adversarial Nets (TGAN) using a dual-generator structure (temporal generator and image generator) based on Wasserstein GAN.
+    generation_task: Unlabeled video generation from a single latent variable.
+    core_innovation: A two-stage generator architecture (temporal generator for latent sequences and an image generator for frames) combined with Singular Value Clipping for stable end-to-end training.
+    temporal_mechanism: A temporal generator that transforms a single latent variable into a set of latent variables corresponding to individual video frames.
+    relations: extends arXiv:1609.02612; cites arXiv:1212.0402; cited-by arXiv:2302.03011; extended-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2311.11325; cited-by arXiv:2311.15127
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 111 in-topic, era 0)
+    model_architecture: Transformer (encoder-decoder architecture based solely on attention mechanisms)
+    generation_task: Machine translation (English-to-German and English-to-French)
+    core_innovation: Dispensing with recurrence and convolutions entirely in favor of a network based solely on attention mechanisms
+    evaluation_metrics: BLEU score (28.4 for English-to-German; 41.8 for English-to-French)
+    computational_efficiency: More parallelizable; requires significantly less time to train (e.g., 3.5 days on eight GPUs for English-to-French)
+    relations: used-by arXiv:2302.07685; cited-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2307.04725; used-by arXiv:2311.11325; used-by arXiv:2312.06662
+arXiv:1706.08500 (2017) "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash
+  Equilibrium" [cs] (cited-by 92 in-topic, era 0)
+    generation_task: image generation
+    core_innovation: Two time-scale update rule (TTUR) using individual learning rates for the discriminator and generator
+    evaluation_metrics: Fréchet Inception Distance (FID), Inception Score
+    relations: used-by arXiv:2302.05543; used-by arXiv:2304.08818; used-by arXiv:2304.11603; compared-by arXiv:2311.11325; used-by arXiv:2312.06662; cited-by arXiv:2405.03150
+arXiv:1707.04993 (2017) "MoCoGAN: Decomposing Motion and Content for Video Generation" [cs] (cited-by 86 in-topic, era 0)
+    model_architecture: Motion and Content decomposed Generative Adversarial Network (MoCoGAN)
+    generation_task: Sequence of random vectors (decomposed into content and motion parts)
+    core_innovation: Unsupervised decomposition of video into fixed content and stochastic motion components using a dual image and video discriminator adversarial learning scheme
+    temporal_mechanism: Mapping a stochastic motion process to a sequence of video frames while keeping the content part fixed
+    relations: extends arXiv:1609.02612; extends arXiv:1611.06624; extends arXiv:1312.6114; uses arXiv:1212.0402; cited-by arXiv:2302.03011; compared-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.11603; cited-by arXiv:2311.11325; critiqued-by arXiv:2312.09109
+arXiv:1711.00937 (2017) "Neural Discrete Representation Learning" [cs] (cited-by 74 in-topic, era 0)
+    model_architecture: Vector Quantised-Variational AutoEncoder (VQ-VAE)
+    core_innovation: Use of vector quantisation (VQ) to output discrete codes and a learned prior instead of a static one to circumvent posterior collapse.
+    relations: cites arXiv:1312.6114; used-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.11603; cited-by arXiv:2311.11325; cited-by arXiv:2312.06662; cited-by arXiv:2403.14148
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 57 in-topic, era 0)
+    core_innovation: Decoupling weight decay from the optimization steps taken with respect to the loss function to ensure equivalence to L2 regularization in adaptive gradient algorithms.
+    evaluation_metrics: Generalization performance on image classification datasets.
+    relations: cites arXiv:1706.03762; used-by arXiv:2302.07685; used-by arXiv:2311.15127; used-by arXiv:2312.04483; used-by arXiv:2502.12632; used-by arXiv:2005.14165; used-by arXiv:2102.12092
+arXiv:1705.07750 (2017) "Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset" [cs] (cited-by 43 in-topic, era 0)
+    model_architecture: Two-Stream Inflated 3D ConvNet (I3D) based on 2D ConvNet inflation
+    core_innovation: Expanding 2D ConvNet filters and pooling kernels into 3D to leverage ImageNet architecture designs and parameters for video
+    temporal_mechanism: 3D expansion of filters and pooling kernels to learn spatio-temporal feature extractors
+    evaluation_metrics: Action classification accuracy (80.9% on HMDB-51 and 98.0% on UCF-101)
+    relations: cites arXiv:1212.0402; used-by arXiv:2304.08818; cited-by arXiv:2311.15127; used-by arXiv:2403.07711; used-by arXiv:2403.14148; cited-by arXiv:2405.03150; cited-by arXiv:2502.07001
+arXiv:1812.01717 (2018) "Towards Accurate Generative Models of Video: A New Metric & Challenges" [cs] (cited-by 114 in-topic, era 1)
+    core_innovation: Proposal of Fréchet Video Distance (FVD) metric and the StarCraft 2 Videos (SCV) benchmark.
+    evaluation_metrics: Fréchet Video Distance (FVD) and human study qualitative judgment.
+    relations: cites arXiv:1808.06601; cites arXiv:1609.02612; cites arXiv:1611.06624; cites arXiv:1707.04993; extends arXiv:1706.08500; uses arXiv:1705.07750; used-by arXiv:2302.07685; used-by arXiv:2303.08320; extended-by arXiv:2304.08818; used-by arXiv:2309.00398; compared-by arXiv:2311.11325; compared-by arXiv:2312.04483
+arXiv:1801.03924 (2018) "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric" [cs] (cited-by 62 in-topic, era 1)
+    core_innovation: Introduction of a new dataset of human perceptual similarity judgments to evaluate deep features as perceptual metrics.
+    evaluation_metrics: PSNR, SSIM, and deep features (supervised, self-supervised, or unsupervised) compared against a new human perceptual similarity dataset.
+    relations: compared-by arXiv:2302.07685; compared-by arXiv:2311.11325; used-by arXiv:2311.15127; cited-by arXiv:2312.06662; used-by arXiv:2502.12632; used-by arXiv:2504.12259
+arXiv:1812.04948 (2018) "A Style-Based Generator Architecture for Generative Adversarial Networks" [cs] (cited-by 55 in-topic, era 1)
+    model_architecture: Style-based generator architecture for Generative Adversarial Networks (GANs)
+    generation_task: Image synthesis (human faces)
+    core_innovation: Borrowing from style transfer literature to enable unsupervised separation of high-level attributes and stochastic variation, allowing scale-specific control
+    evaluation_metrics: Traditional distribution quality metrics, interpolation quality, and disentanglement (via two new proposed automated methods)
+    relations: uses arXiv:1406.2661; cites arXiv:1312.6114; uses arXiv:1801.03924; compares-with arXiv:1706.08500; cited-by arXiv:2302.05543; cited-by arXiv:2304.08818; cited-by arXiv:2312.06662; cited-by arXiv:2504.12259; cited-by arXiv:2604.15911; extended-by arXiv:1912.04958
+arXiv:1811.09245 (2018) "Train Sparsely, Generate Densely: Memory-efficient Unsupervised Training
+  of High-resolution Temporal GAN" [cs] (cited-by 48 in-topic, era 1)
+    model_architecture: Generator designed as a stack of small sub-generators
+    generation_task: Unsupervised high-resolution video generation
+    core_innovation: Memory-efficient method where computational cost scales linearly with resolution by training sub-generators with specific discriminators and auxiliary subsampling layers
+    temporal_mechanism: Auxiliary subsampling layers introduced between consecutive sub-generators to reduce frame-rate by a certain ratio
+    evaluation_metrics: Inception scores
+    computational_efficiency: Computational cost scales linearly with resolution; requires only a few GPUs
+    relations: uses arXiv:1212.0402; extends arXiv:1808.06601; compares-with arXiv:1812.01717; compared-by arXiv:2302.07685; used-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2309.00398; cited-by arXiv:2311.15127; cited-by arXiv:2405.03150
+arXiv:1808.06601 (2018) "Video-to-Video Synthesis" [cs] (cited-by 21 in-topic, era 1)
+    model_architecture: Generative adversarial learning framework with carefully-designed generator and discriminator architectures
+    generation_task: Mapping input source videos (e.g., semantic segmentation masks, sketches, and poses) to photorealistic videos
+    core_innovation: A spatio-temporal adversarial objective coupled with specialized generator and discriminator architectures
+    temporal_mechanism: Spatio-temporal adversarial objective
+    computational_efficiency: Capable of synthesizing 2K resolution videos up to 30 seconds long
+    relations: extends arXiv:1609.02612; cites arXiv:1611.06624; uses arXiv:1707.04993; extends arXiv:1406.2661; cites arXiv:1706.08500; cites arXiv:1705.07750; cited-by arXiv:2302.03011; cited-by arXiv:1812.01717; extended-by arXiv:1811.09245; cited-by arXiv:2104.10157
+arXiv:1907.05600 (2019) "Generative Modeling by Estimating Gradients of the Data Distribution" [cs] (cited-by 56 in-topic, era 1)
+    model_architecture: Score-based generative model using score matching to estimate gradients of perturbed data distributions
+    generation_task: Image generation (MNIST, CelebA, CIFAR-10)
+    core_innovation: Jointly estimating scores for multiple levels of Gaussian noise to handle low-dimensional manifolds
+    evaluation_metrics: Inception Score (8.87 on CIFAR-10)
+    computational_efficiency: Requires no sampling during training and no adversarial methods
+    relations: cites arXiv:1812.04948; cites arXiv:1312.6114; cites arXiv:1505.04597; uses arXiv:1706.08500; compares-with arXiv:1503.03585; cited-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2312.06662; cited-by arXiv:2405.03150; used-by arXiv:2502.12632
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 55 in-topic, era 1)
+    model_architecture: Unified text-to-text transformer
+    generation_task: text-to-text
+    core_innovation: A unified framework that converts all text-based language problems into a text-to-text format
+    relations: uses arXiv:1706.03762; cited-by arXiv:2302.03011; cited-by arXiv:2307.04725; cited-by arXiv:2311.15127; compared-by arXiv:2312.06662; cited-by arXiv:2503.09926; compared-by arXiv:2504.16081
+arXiv:1912.04958 (2019) "Analyzing and Improving the Image Quality of StyleGAN" [cs] (cited-by 45 in-topic, era 1)
+    model_architecture: Style-based GAN (StyleGAN) with redesigned generator normalization
+    generation_task: unconditional generative image modeling
+    core_innovation: Redesign of generator normalization, revisiting progressive growing, and introduction of a path length regularizer to encourage good conditioning
+    evaluation_metrics: existing distribution quality metrics and perceived image quality
+    relations: extends arXiv:1812.04948; uses arXiv:1406.2661; cites arXiv:1706.08500; uses arXiv:1801.03924; cites arXiv:1505.04597; cited-by arXiv:2304.08818; cited-by arXiv:2403.14148; extended-by arXiv:2502.12632; cited-by arXiv:2504.16081; used-by arXiv:2006.11239; used-by arXiv:2105.05233
+arXiv:1906.02634 (2019) "Scaling Autoregressive Video Models" [cs] (cited-by 38 in-topic, era 1)
+    model_architecture: Autoregressive video generation models based on a three-dimensional self-attention mechanism
+    generation_task: Video continuation
+    core_innovation: Use of conceptually simple autoregressive models with 3D self-attention to achieve competitive results without complex video-specific architectures or adversarial training
+    temporal_mechanism: Three-dimensional self-attention mechanism
+    relations: compares-with arXiv:1812.01717; extends arXiv:1706.03762; critiques arXiv:1609.02612; compares-with arXiv:1705.07750; critiques arXiv:1801.03924; critiques arXiv:1706.08500; cited-by arXiv:2302.07685; cited-by arXiv:2304.08818; used-by arXiv:2304.11603; cited-by arXiv:2311.15127; cited-by arXiv:2401.03048; cited-by arXiv:2403.14148
+arXiv:2006.11239 (2020) "Denoising Diffusion Probabilistic Models" [cs] (cited-by 260 in-topic, era 1)
+    model_architecture: Diffusion probabilistic models (latent variable models)
+    generation_task: Image synthesis
+    core_innovation: Training on a weighted variational bound based on a connection between diffusion probabilistic models and denoising score matching with Langevin dynamics
+    evaluation_metrics: Inception score (9.46 on CIFAR10) and FID score (3.17 on CIFAR10)
+    relations: uses arXiv:1503.03585; compares-with arXiv:1907.05600; cites arXiv:1812.04948; uses arXiv:1912.04958; cites arXiv:1312.6114; uses arXiv:1505.04597; cited-by arXiv:2302.03011; used-by arXiv:2302.07685; used-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2304.11603; cited-by arXiv:2307.04725
+arXiv:2010.02502 (2020) "Denoising Diffusion Implicit Models" [cs] (cited-by 173 in-topic, era 1)
+    model_architecture: Non-Markovian diffusion implicit models (DDIMs)
+    generation_task: Image generation
+    core_innovation: Construction of a class of non-Markovian diffusion processes that share the same training objective as DDPMs but allow for faster sampling via an implicit generative process.
+    computational_efficiency: Produces samples 10x to 50x faster in wall-clock time compared to DDPMs.
+    relations: uses arXiv:2006.11239; compares-with arXiv:2011.13456; cites arXiv:1912.04958; cites arXiv:1312.6114; uses arXiv:1812.04948; uses arXiv:1907.05600; used-by arXiv:2302.03011; motivates arXiv:2302.07685; used-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2307.04725; cited-by arXiv:2311.11325
+arXiv:2011.13456 (2020) "Score-Based Generative Modeling through Stochastic Differential
+  Equations" [cs] (cited-by 119 in-topic, era 1)
+    model_architecture: Score-based generative modeling using Stochastic Differential Equations (SDEs) and neural ODEs
+    generation_task: Image generation (unconditional, class-conditional, inpainting, and colorization)
+    core_innovation: Unified framework using SDEs to connect score-based modeling and diffusion probabilistic modeling, including a predictor-corrector framework and equivalent neural ODEs
+    evaluation_metrics: Inception score (9.89), FID (2.20), and likelihood (2.99 bits/dim)
+    computational_efficiency: Improved sampling efficiency via equivalent neural ODEs
+    relations: extends arXiv:2006.11239; uses arXiv:1907.05600; cites arXiv:1503.03585; compares-with arXiv:1812.04948; uses arXiv:1912.04958; cited-by arXiv:2302.03011; cited-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2311.11325; used-by arXiv:2311.15127
+arXiv:2012.09841 (2020) "Taming Transformers for High-Resolution Image Synthesis" [cs] (cited-by 76 in-topic, era 1)
+    model_architecture: Transformer-based model utilizing a CNN-learned context-rich vocabulary of image constituents (VQ-VAE/VQGAN framework)
+    generation_task: High-resolution image synthesis (including class-conditional and semantically-guided synthesis)
+    core_innovation: Combining CNNs to learn a vocabulary of image constituents with transformers to model their composition
+    relations: uses arXiv:2102.12092; cites arXiv:2006.11239; uses arXiv:1801.03924; uses arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:2010.11929; compared-by arXiv:2302.05543; motivates arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; used-by arXiv:2304.11603; extended-by arXiv:2311.11325
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 52 in-topic, era 1)
+    model_architecture: Autoregressive language model (GPT-3) with 175 billion parameters
+    generation_task: Text (NLP tasks including translation, question-answering, cloze tasks, and news article generation)
+    core_innovation: Scaling up language models to improve task-agnostic, few-shot performance without gradient updates or fine-tuning
+    evaluation_metrics: Human evaluation (for news article generation)
+    relations: uses arXiv:1910.10683; cites arXiv:1706.03762; uses arXiv:1711.05101; used-by arXiv:2302.03011; cited-by arXiv:2302.07685; cited-by arXiv:2504.16081; cited-by arXiv:2505.07344; cited-by arXiv:2010.11929; cited-by arXiv:2012.09841
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 51 in-topic, era 1)
+    model_architecture: Vision Transformer (ViT) applied directly to sequences of image patches
+    core_innovation: Applying a pure transformer architecture directly to sequences of image patches, removing the reliance on convolutional networks
+    evaluation_metrics: Image classification performance on ImageNet, CIFAR-100, and VTAB
+    computational_efficiency: Requires substantially fewer computational resources to train compared to state-of-the-art convolutional networks
+    relations: uses arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:1906.02634; used-by arXiv:2312.06662; used-by arXiv:2401.03048; cited-by arXiv:2403.07711; used-by arXiv:2403.14148; cited-by arXiv:2405.03150; extended-by arXiv:2504.16081
+arXiv:2112.10752 (2021) "High-Resolution Image Synthesis with Latent Diffusion Models" [cs] (cited-by 244 in-topic, era 1)
+    model_architecture: Latent Diffusion Models (LDMs) using a pretrained autoencoder and a denoising autoencoder in the latent space with cross-attention layers.
+    generation_task: Image synthesis (unconditional generation, inpainting, semantic scene synthesis, and super-resolution).
+    core_innovation: Applying diffusion models in the latent space of powerful pretrained autoencoders to balance complexity reduction and detail preservation.
+    computational_efficiency: Significantly reduces computational requirements compared to pixel-based DMs; enables training on limited computational resources.
+    relations: cites arXiv:1503.03585; extends arXiv:2105.05233; uses arXiv:2207.12598; uses arXiv:1706.08500; uses arXiv:2006.11239; uses arXiv:2012.09841; used-by arXiv:2302.03011; used-by arXiv:2302.05543; used-by arXiv:2302.07685; cited-by arXiv:2303.08320; extended-by arXiv:2304.08818; used-by arXiv:2304.11603
+arXiv:2103.00020 (2021) "Learning Transferable Visual Models From Natural Language Supervision" [cs] (cited-by 185 in-topic, era 1)
+    core_innovation: Pre-training on 400 million (image, text) pairs using a contrastive task (predicting which caption goes with which image) to enable zero-shot transfer via natural language.
+    evaluation_metrics: Accuracy on over 30 different computer vision datasets (e.g., OCR, action recognition, geo-localization, fine-grained object classification) and ImageNet zero-shot accuracy.
+    relations: uses arXiv:2010.11929; cites arXiv:1711.05101; cites arXiv:1910.10683; compares-with arXiv:2005.14165; uses arXiv:1706.03762; uses arXiv:1212.0402; used-by arXiv:2302.03011; used-by arXiv:2302.05543; used-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2307.04725; used-by arXiv:2311.11325
+arXiv:2105.05233 (2021) "Diffusion Models Beat GANs on Image Synthesis" [cs] (cited-by 114 in-topic, era 1)
+    model_architecture: Diffusion models (unconditional and conditional with classifier guidance)
+    generation_task: Unconditional and conditional image synthesis
+    core_innovation: Classifier guidance (using gradients from a classifier to trade off diversity for fidelity)
+    evaluation_metrics: FID (2.97 on ImageNet 128x128, 4.59 on ImageNet 256x256, 7.72 on ImageNet 512x512; 3.94 on ImageNet 256x256 and 3.85 on ImageNet 512x512 with upsampling)
+    computational_efficiency: Matches BigGAN-deep with as few as 25 forward passes per sample; classifier guidance is described as compute-efficient
+    relations: uses arXiv:2006.11239; uses arXiv:2102.09672; uses arXiv:1812.04948; uses arXiv:1912.04958; extends arXiv:2010.02502; cites arXiv:2005.14165; cited-by arXiv:2302.05543; used-by arXiv:2302.07685; cited-by arXiv:2303.08320; used-by arXiv:2304.08818; cited-by arXiv:2304.11603; cited-by arXiv:2307.04725
+arXiv:2112.10741 (2021) "GLIDE: Towards Photorealistic Image Generation and Editing with
+  Text-Guided Diffusion Models" [cs] (cited-by 99 in-topic, era 1)
+    model_architecture: Text-conditional diffusion model (3.5 billion parameters)
+    generation_task: Text-to-image synthesis and image editing (inpainting)
+    core_innovation: Comparison and implementation of CLIP guidance vs. classifier-free guidance for text-conditional diffusion
+    evaluation_metrics: Human evaluation (photorealism and caption similarity)
+    relations: uses arXiv:2006.11239; uses arXiv:2105.05233; uses arXiv:2102.12092; uses arXiv:1503.03585; uses arXiv:1907.05600; cites arXiv:1812.04948; cited-by arXiv:2302.03011; compared-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2307.04725; cited-by arXiv:2312.04483
+arXiv:2104.00650 (2021) "Frozen in Time: A Joint Video and Image Encoder for End-to-End Retrieval" [cs] (cited-by 95 in-topic, era 1)
+    model_architecture: Adaptation and extension of ViT and Timesformer architectures with joint spatial and temporal attention.
+    core_innovation: An end-to-end trainable model using a curriculum learning schedule that treats images as 'frozen' snapshots of video before learning temporal context, paired with the WebVid-2M dataset.
+    temporal_mechanism: Attention in both space and time, utilizing a curriculum learning schedule that gradually increases temporal context.
+    computational_efficiency: Achieves state-of-the-art results on benchmarks (MSR-VTT, MSVD, DiDeMo, LSMDC) despite training on datasets an order of magnitude smaller than competitors.
+    relations: compares-with arXiv:2103.00020; cites arXiv:1706.03762; cites arXiv:1705.07750; uses arXiv:2010.11929; used-by arXiv:2303.08320; used-by arXiv:2304.08818; used-by arXiv:2307.04725; used-by arXiv:2309.00398; used-by arXiv:2311.11325; compared-by arXiv:2311.15127
+arXiv:2104.10157 (2021) "VideoGPT: Video Generation using VQ-VAE and Transformers" [cs] (cited-by 91 in-topic, era 1)
+    model_architecture: VQ-VAE with 3D convolutions and axial self-attention combined with a GPT-like autoregressive transformer.
+    generation_task: Natural video generation from discrete latent representations.
+    core_innovation: Scaling likelihood-based generative modeling to natural videos using a combination of VQ-VAE and a GPT-like transformer architecture.
+    temporal_mechanism: Autoregressive modeling of discrete latents using spatio-temporal position encodings.
+    relations: uses arXiv:1711.00937; cites arXiv:1706.03762; cites arXiv:1312.6114; cites arXiv:1812.04948; cites arXiv:2006.11239; cites arXiv:2102.12092; cited-by arXiv:2302.03011; used-by arXiv:2302.07685; compared-by arXiv:2303.08320; cited-by arXiv:2304.08818; used-by arXiv:2304.11603; cited-by arXiv:2311.11325
+arXiv:2102.12092 (2021) "Zero-Shot Text-to-Image Generation" [cs] (cited-by 77 in-topic, era 1)
+    model_architecture: Transformer that autoregressively models text and image tokens as a single stream
+    generation_task: Text-to-image generation
+    core_innovation: Autoregressive modeling of text and image tokens as a single stream of data
+    relations: cites arXiv:1406.2661; uses arXiv:1706.03762; uses arXiv:1711.00937; uses arXiv:1312.6114; uses arXiv:2103.00020; compares-with arXiv:1706.08500; used-by arXiv:2302.03011; cited-by arXiv:2302.05543; cited-by arXiv:2304.08818; cited-by arXiv:2304.11603; cited-by arXiv:2307.04725; motivates arXiv:2312.06662
+arXiv:2102.09672 (2021) "Improved Denoising Diffusion Probabilistic Models" [cs] (cited-by 55 in-topic, era 1)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPM)
+    core_innovation: Learning variances of the reverse diffusion process to improve log-likelihood and sampling speed
+    evaluation_metrics: log-likelihood, precision, and recall
+    computational_efficiency: Sampling with an order of magnitude fewer forward passes
+    relations: extends arXiv:2006.11239; cites arXiv:2011.13456; uses arXiv:1503.03585; uses arXiv:1312.6114; cites arXiv:1907.05600; uses arXiv:2010.02502; cited-by arXiv:2302.03011; cited-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; used-by arXiv:2304.11603; cited-by arXiv:2312.06662
+arXiv:2106.15282 (2021) "Cascaded Diffusion Models for High Fidelity Image Generation" [cs] (cited-by 46 in-topic, era 1)
+    model_architecture: Cascaded diffusion models (a pipeline of multiple diffusion models including a standard low-resolution model and one or more super-resolution models)
+    generation_task: Class-conditional image generation
+    core_innovation: Conditioning augmentation (data augmentation of lower resolution conditioning inputs to super-resolution models)
+    evaluation_metrics: FID scores (1.48 at 64x64, 3.52 at 128x128, 4.88 at 256x256) and classification accuracy (63.02% top-1 and 84.06% top-5 at 256x256)
+    relations: uses arXiv:2102.09672; compares-with arXiv:2105.05233; uses arXiv:1907.05600; uses arXiv:2006.11239; cites arXiv:1503.03585; cites arXiv:1312.6114; cited-by arXiv:2302.03011; extended-by arXiv:2304.08818; cited-by arXiv:2311.11325; cited-by arXiv:2311.15127; cited-by arXiv:2312.04483; used-by arXiv:2312.06662
+arXiv:2209.14792 (2022) "Make-A-Video: Text-to-Video Generation without Text-Video Data" [cs] (cited-by 203 in-topic, era 2)
+    model_architecture: Text-to-Image (T2I) diffusion models augmented with novel spatial-temporal modules (temporal U-Net and attention tensors)
+    generation_task: Text-to-Video (T2V)
+    core_innovation: Translating T2I progress to T2V by learning visual/multimodal representations from text-image data and motion from unsupervised video footage without paired text-video data
+    temporal_mechanism: Decomposition of full temporal U-Net and attention tensors to approximate them in space and time
+    evaluation_metrics: Qualitative and quantitative measures
+    computational_efficiency: Accelerates training by not requiring learning visual and multimodal representations from scratch
+    relations: extends arXiv:2205.15868; cites arXiv:1811.09245; extends arXiv:2204.03458; cites arXiv:2005.14165; cites arXiv:1406.2661; cites arXiv:2102.12092; extended-by arXiv:2302.03011; critiqued-by arXiv:2302.07685; used-by arXiv:2304.08818; cited-by arXiv:2304.11603; cited-by arXiv:2307.04725; used-by arXiv:2309.00398
+arXiv:2210.02303 (2022) "Imagen Video: High Definition Video Generation with Diffusion Models" [cs] (cited-by 192 in-topic, era 2)
+    model_architecture: A cascade of video diffusion models consisting of a base video generation model and a sequence of interleaved spatial and temporal video super-resolution models.
+    generation_task: Text-to-video generation.
+    core_innovation: Scaling up text-to-video generation through a cascade of interleaved spatial and temporal super-resolution models and the use of v-parameterization.
+    temporal_mechanism: Fully-convolutional temporal super-resolution models.
+    computational_efficiency: Progressive distillation with classifier-free guidance for fast sampling.
+    relations: uses arXiv:2102.09672; uses arXiv:2006.11239; uses arXiv:1907.05600; extends arXiv:2205.11487; cites arXiv:2204.06125; cites arXiv:2112.10752; extended-by arXiv:2302.03011; motivates arXiv:2302.07685; compared-by arXiv:2304.08818; cited-by arXiv:2304.11603; cited-by arXiv:2307.04725; used-by arXiv:2309.00398
+arXiv:2204.03458 (2022) "Video Diffusion Models" [cs] (cited-by 182 in-topic, era 2)
+    model_architecture: Natural extension of the standard image diffusion architecture
+    generation_task: Text-conditioned video generation, video prediction, and unconditional video generation
+    core_innovation: Joint training from image and video data and a new conditional sampling technique for spatial and temporal video extension
+    temporal_mechanism: Conditional sampling technique for temporal video extension
+    computational_efficiency: Joint training from image and video data reduces minibatch gradient variance and speeds up optimization
+    relations: uses arXiv:1811.09245; cites arXiv:1707.04993; cites arXiv:2104.10157; cites arXiv:1906.02634; uses arXiv:1812.01717; cites arXiv:1705.07750; extended-by arXiv:2302.03011; extended-by arXiv:2302.07685; compared-by arXiv:2303.08320; extended-by arXiv:2304.08818; cited-by arXiv:2304.11603; used-by arXiv:2307.04725
+arXiv:2204.06125 (2022) "Hierarchical Text-Conditional Image Generation with CLIP Latents" [cs] (cited-by 143 in-topic, era 2)
+    model_architecture: Two-stage model consisting of a prior (autoregressive or diffusion) and a diffusion-based decoder.
+    generation_task: Text-to-image generation via CLIP image embeddings.
+    core_innovation: Hierarchical generation using a prior to generate CLIP image embeddings from text, followed by a decoder to generate images from those embeddings.
+    evaluation_metrics: Image diversity, photorealism, and caption similarity.
+    computational_efficiency: Diffusion models for the prior are noted to be more computationally efficient than autoregressive models.
+    relations: uses arXiv:2102.12092; extends arXiv:2112.10741; uses arXiv:2102.09672; uses arXiv:2010.02502; uses arXiv:2103.00020; cites arXiv:1503.03585; cited-by arXiv:2302.03011; cited-by arXiv:2302.05543; motivates arXiv:2302.07685; extended-by arXiv:2303.08320; cited-by arXiv:2304.08818; cited-by arXiv:2304.11603
+arXiv:2205.11487 (2022) "Photorealistic Text-to-Image Diffusion Models with Deep Language
+  Understanding" [cs] (cited-by 138 in-topic, era 2)
+    model_architecture: Large transformer language models (e.g., T5) combined with diffusion models
+    generation_task: Text-to-image generation
+    core_innovation: Utilizing large, text-only pretrained language models to encode text, finding that increasing language model size boosts fidelity and alignment more than increasing diffusion model size
+    evaluation_metrics: FID score (7.27 on COCO), human raters (sample quality and image-text alignment), and DrawBench benchmark
+    relations: compares-with arXiv:2102.12092; compares-with arXiv:2112.10741; compares-with arXiv:2204.06125; extends arXiv:2112.10752; cites arXiv:1910.10683; critiques arXiv:2103.00020; cited-by arXiv:2302.03011; cited-by arXiv:2302.05543; used-by arXiv:2303.08320; extended-by arXiv:2304.08818; cited-by arXiv:2307.04725; cited-by arXiv:2309.00398
+arXiv:2205.15868 (2022) "CogVideo: Large-scale Pretraining for Text-to-Video Generation via
+  Transformers" [cs] (cited-by 130 in-topic, era 2)
+    model_architecture: 9B-parameter transformer
+    generation_task: text-to-video generation
+    core_innovation: Inheriting a pretrained text-to-image model (CogView2) and a multi-frame-rate hierarchical training strategy
+    temporal_mechanism: multi-frame-rate hierarchical training strategy
+    evaluation_metrics: machine and human evaluations
+    relations: uses arXiv:2104.10157; compares-with arXiv:1811.09245; uses arXiv:1906.02634; uses arXiv:2102.12092; cites arXiv:1707.04993; cites arXiv:1406.2661; extended-by arXiv:2302.03011; used-by arXiv:2303.08320; used-by arXiv:2304.08818; cited-by arXiv:2307.04725; used-by arXiv:2309.00398; cited-by arXiv:2311.11325
+arXiv:2207.12598 (2022) "Classifier-Free Diffusion Guidance" [cs] (cited-by 109 in-topic, era 2)
+    model_architecture: Jointly trained conditional and unconditional diffusion models
+    generation_task: Conditional image generation
+    core_innovation: Classifier-free guidance, which combines conditional and unconditional score estimates to perform guidance without a separate classifier
+    evaluation_metrics: Trade-off between sample quality and diversity
+    relations: uses arXiv:2006.11239; compares-with arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:1503.03585; cites arXiv:1907.05600; uses arXiv:2011.13456; used-by arXiv:2302.03011; cited-by arXiv:2302.05543; cited-by arXiv:2302.07685; cited-by arXiv:2303.08320; cited-by arXiv:2304.08818; used-by arXiv:2311.15127
+arXiv:2304.08818 (2023) "Align your Latents: High-Resolution Video Synthesis with Latent
+  Diffusion Models" [cs] (cited-by 173 in-topic, era 2)
+    model_architecture: Latent Diffusion Models (LDMs) with an introduced temporal dimension to the latent space
+    generation_task: Text-to-video modeling and video super-resolution
+    core_innovation: Applying the LDM paradigm to video by pre-training on images and then fine-tuning with temporal layers on encoded image sequences
+    temporal_mechanism: Introducing a temporal dimension to the latent space diffusion model and training temporal alignment layers
+    computational_efficiency: Avoids excessive compute demands by training in a compressed lower-dimensional latent space; can leverage off-the-shelf pre-trained image LDMs
+    relations: uses arXiv:2010.02502; uses arXiv:1811.09245; cites arXiv:1812.04948; cites arXiv:2011.13456; cites arXiv:1912.04958; cites arXiv:2012.09841; used-by arXiv:2307.04725; cited-by arXiv:2311.11325; used-by arXiv:2311.15127; cited-by arXiv:2312.04483; compared-by arXiv:2312.06662; extended-by arXiv:2312.09109
+arXiv:2307.04725 (2023) "AnimateDiff: Animate Your Personalized Text-to-Image Diffusion Models
+  without Specific Tuning" [cs] (cited-by 126 in-topic, era 2)
+    model_architecture: Plug-and-play motion module integrated into existing text-to-image diffusion models (e.g., Stable Diffusion)
+    generation_task: Text-to-image (T2I) personalization to video animation
+    core_innovation: A trainable, plug-and-play motion module that learns transferable motion priors from real-world videos without requiring model-specific tuning
+    temporal_mechanism: A motion module trained to learn motion priors, supplemented by MotionLoRA for adapting to new motion patterns
+    computational_efficiency: MotionLoRA is described as a lightweight fine-tuning technique with low training and data collection cost
+    relations: cites arXiv:2112.10741; cites arXiv:2204.06125; cites arXiv:2205.11487; uses arXiv:2112.10752; uses arXiv:2104.00650; uses arXiv:1706.03762; cited-by arXiv:2311.11325; used-by arXiv:2311.15127; cited-by arXiv:2312.04483; critiqued-by arXiv:2312.09109; cited-by arXiv:2403.14148; cited-by arXiv:2405.03150
+arXiv:2311.15127 (2023) "Stable Video Diffusion: Scaling Latent Video Diffusion Models to Large
+  Datasets" [cs] (cited-by 117 in-topic, era 2)
+    model_architecture: Latent video diffusion model (LDM) with inserted temporal layers
+    generation_task: Text-to-video and image-to-video generation
+    core_innovation: A three-stage training strategy: text-to-image pretraining, video pretraining, and high-quality video finetuning, combined with systematic data curation (captioning and filtering)
+    temporal_mechanism: Insertion of temporal layers into 2D latent diffusion models
+    computational_efficiency: Outperforms image-based multi-view methods at a fraction of their compute budget
+    relations: uses arXiv:2210.02303; uses arXiv:2006.11239; cites arXiv:2205.11487; uses arXiv:2112.10752; cites arXiv:2204.03458; uses arXiv:2209.14792; compared-by arXiv:2312.04483; critiqued-by arXiv:2312.09109; cited-by arXiv:2405.03150; compared-by arXiv:2406.04277; used-by arXiv:2407.16655; critiqued-by arXiv:2408.13423
+arXiv:2302.05543 (2023) "Adding Conditional Control to Text-to-Image Diffusion Models" [cs] (cited-by 117 in-topic, era 2)
+    model_architecture: Neural network architecture connected to pretrained large diffusion models via 'zero convolutions' (zero-initialized convolution layers).
+    generation_task: Text-to-image diffusion with spatial conditioning controls (e.g., edges, depth, segmentation, human pose).
+    core_innovation: The use of 'zero convolutions' to lock pretrained diffusion models and reuse their encoding layers to learn diverse conditional controls without affecting the original model's stability.
+    computational_efficiency: Robust training demonstrated with small (<50k) and large (>1m) datasets.
+    relations: uses arXiv:2112.10752; uses arXiv:2103.00020; cites arXiv:1812.04948; cites arXiv:2102.09672; cites arXiv:1503.03585; cites arXiv:2105.05233; used-by arXiv:2307.04725; cited-by arXiv:2312.04483; cited-by arXiv:2312.09109; cited-by arXiv:2401.03048; cited-by arXiv:2404.00234; extended-by arXiv:2405.03150
+arXiv:2302.03011 (2023) "Structure and Content-Guided Video Synthesis with Diffusion Models" [cs] (cited-by 100 in-topic, era 2)
+    model_architecture: Diffusion model trained jointly on images and videos
+    generation_task: Video editing based on visual or textual descriptions
+    core_innovation: Training on monocular depth estimates with varying levels of detail to disentangle structure and content
+    temporal_mechanism: A novel guidance method exposed through joint image and video training
+    relations: cites arXiv:2204.06125; uses arXiv:2112.10752; cites arXiv:1609.02612; cites arXiv:1611.06624; cites arXiv:1707.04993; cites arXiv:2104.10157; cited-by arXiv:2304.08818; cited-by arXiv:2307.04725; cited-by arXiv:2309.00398; used-by arXiv:2311.11325; used-by arXiv:2311.15127; cited-by arXiv:2312.04483
+arXiv:2303.08320 (2023) "VideoFusion: Decomposed Diffusion Models for High-Quality Video
+  Generation" [cs] (cited-by 68 in-topic, era 2)
+    model_architecture: Decomposed diffusion probabilistic model (DPM) employing two jointly-learned networks
+    generation_task: Text-conditioned video creation
+    core_innovation: Decomposed diffusion process that resolves per-frame noise into a shared base noise and a time-varying residual noise
+    temporal_mechanism: Noise decomposition into shared base noise and residual noise to leverage content redundancy and temporal correlation
+    relations: uses arXiv:2006.11239; cites arXiv:1907.05600; uses arXiv:2010.02502; cites arXiv:2102.09672; compares-with arXiv:2204.03458; compares-with arXiv:2104.10157; cited-by arXiv:2307.04725; extended-by arXiv:2311.11325; cited-by arXiv:2312.04483; critiqued-by arXiv:2312.09109; extended-by arXiv:2401.03048; compared-by arXiv:2403.14148
+arXiv:2302.07685 (2023) "Video Probabilistic Diffusion Models in Projected Latent Space" [cs] (cited-by 45 in-topic, era 2)
+    model_architecture: Projected Latent Video Diffusion Model (PVDM) consisting of an autoencoder and a specialized diffusion model architecture.
+    generation_task: High-resolution video synthesis.
+    core_innovation: Learning video distributions in a low-dimensional latent space by projecting videos into 2D-shaped latent vectors that factorize the cubic structure of video pixels.
+    evaluation_metrics: FVD score (obtained 639.7 on UCF-101 long video benchmark).
+    computational_efficiency: Efficiently trained with high-resolution videos under limited resources by using a low-dimensional latent space.
+    relations: motivated-by arXiv:2012.09841; extends arXiv:2204.03458; uses arXiv:2105.05233; uses arXiv:2112.10752; cites arXiv:2005.14165; motivated-by arXiv:2210.02303; cited-by arXiv:2311.11325; cited-by arXiv:2312.06662; critiqued-by arXiv:2312.09109; extended-by arXiv:2403.14148; used-by arXiv:2410.03160; used-by arXiv:2502.12632
+arXiv:2312.06662 (2023) "Photorealistic Video Generation with Diffusion Models" [cs] (cited-by 34 in-topic, era 2)
+    model_architecture: Transformer-based diffusion model with a causal encoder and window attention architecture
+    generation_task: Text-to-video generation
+    core_innovation: Unified latent space via a causal encoder for joint image/video compression and a window attention architecture for joint spatial and spatiotemporal modeling
+    temporal_mechanism: Window attention architecture tailored for spatiotemporal generative modeling
+    computational_efficiency: Window attention architecture used for memory and training efficiency; cascade of three models used to generate 512 x 896 resolution at 8 fps
+    relations: compares-with arXiv:2010.02502; uses arXiv:1706.03762; compares-with arXiv:2103.00020; uses arXiv:2010.11929; cites arXiv:1503.03585; cites arXiv:1907.05600; cited-by arXiv:2405.03150; cited-by arXiv:2406.04277; compared-by arXiv:2502.07001; used-by arXiv:2502.12632; cited-by arXiv:2504.16081; cited-by arXiv:2506.01454
+arXiv:2309.00398 (2023) "VideoGen: A Reference-Guided Latent Diffusion Approach for High
+  Definition Text-to-Video Generation" [cs] (cited-by 17 in-topic, era 2)
+    model_architecture: Reference-guided cascaded latent diffusion with an enhanced video decoder
+    generation_task: Text-to-video generation
+    core_innovation: Using a high-quality reference image from an off-the-shelf text-to-image model to guide the latent diffusion module and an enhanced video decoder trained on unlabeled data
+    temporal_mechanism: Flow-based temporal upsampling step
+    evaluation_metrics: Qualitative and quantitative evaluation
+    relations: cites arXiv:2302.03011; cites arXiv:2205.11487; extends arXiv:2112.10752; uses arXiv:2205.15868; uses arXiv:2209.14792; uses arXiv:2210.02303; cited-by arXiv:2311.11325; cited-by arXiv:2312.04483; compared-by arXiv:2403.14148; cited-by arXiv:2501.05484
+arXiv:2312.09109 (2023) "VideoLCM: Video Latent Consistency Model" [cs] (cited-by 13 in-topic, era 2)
+    model_architecture: Latent video diffusion models with consistency distillation
+    generation_task: Video synthesis
+    core_innovation: Leveraging consistency distillation techniques to adapt image-based consistency models for efficient video generation
+    computational_efficiency: Achieves high-fidelity and smooth video synthesis with only four sampling steps
+    relations: critiques arXiv:2209.14792; critiques arXiv:2307.04725; critiques arXiv:2311.15127; extends arXiv:2304.08818; uses arXiv:2112.10752; cites arXiv:2204.06125; cited-by arXiv:2604.15911
+arXiv:2312.04483 (2023) "Hierarchical Spatio-temporal Decoupling for Text-to-Video Generation" [cs] (cited-by 8 in-topic, era 2)
+    model_architecture: Diffusion model-based method using a unified denoiser
+    generation_task: Text-to-video (T2V) generation
+    core_innovation: Hierarchical spatio-temporal decoupling at the structure level (spatial reasoning followed by temporal reasoning) and content level (extracting motion and appearance cues)
+    temporal_mechanism: Decoupling temporal reasoning from spatial reasoning and using motion cues to guide training for temporal stability
+    relations: uses arXiv:2112.10752; compares-with arXiv:1812.01717; uses arXiv:2103.00020; compares-with arXiv:2311.15127; cites arXiv:2302.03011; uses arXiv:2204.03458; cited-by arXiv:2504.16081
+arXiv:2304.11603 (2023) "LaMD: Latent Motion Diffusion for Image-Conditional Video Generation" [cs] (cited-by 4 in-topic, era 2)
+    model_architecture: Latent Motion Diffusion (LaMD) framework consisting of a motion-decomposed video autoencoder and a diffusion-based motion generator.
+    generation_task: Image-conditional video generation.
+    core_innovation: Condensing video generation into a two-step process of latent motion generation followed by video reconstruction.
+    temporal_mechanism: Motion-decomposed video autoencoder that compresses movement patterns into a concise latent motion representation.
+    computational_efficiency: Significantly decreases sampling time; motion generation cost is similar to that of image diffusion models.
+    relations: uses arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:2204.03458; uses arXiv:2104.10157; cites arXiv:2102.12092; uses arXiv:2012.09841
+arXiv:2311.11325 (2023) "MoVideo: Motion-Aware Video Generation with Diffusion Models" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Spatio-temporal diffusion models (one for depth/optical flow generation and another for latent video generation)
+    generation_task: Text-to-video and image-to-video generation
+    core_innovation: Motion-aware framework incorporating video depth (for spatial layouts) and optical flow (for cross-frame correspondences) to guide latent video generation
+    temporal_mechanism: Optical flow-based warped latent video, calculated occlusion masks, and optical flow-based alignment/refinement for decoding
+    relations: cites arXiv:2010.02502; cites arXiv:2011.13456; uses arXiv:1312.6114; extends arXiv:1503.03585; uses arXiv:2006.11239; uses arXiv:1505.04597; cited-by arXiv:2605.17248
+arXiv:2401.03048 (2024) "Latte: Latent Diffusion Transformer for Video Generation" [cs] (cited-by 47 in-topic, era 2)
+    model_architecture: Latent Diffusion Transformer (DiT) using spatio-temporal tokens
+    generation_task: Video generation (including text-to-video extension)
+    core_innovation: Decomposition of spatial and temporal dimensions into four efficient variants to model large numbers of spatio-temporal tokens
+    temporal_mechanism: Temporal positional embedding and spatio-temporal token extraction
+    computational_efficiency: Four efficient variants introduced via spatial and temporal dimension decomposition
+    relations: cites arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:2010.02502; cites arXiv:2112.10752; cites arXiv:2302.05543; cites arXiv:1505.04597; cited-by arXiv:2405.03150; cited-by arXiv:2406.04277; cited-by arXiv:2408.13423; used-by arXiv:2410.03160; extended-by arXiv:2501.05484; used-by arXiv:2502.12632
+arXiv:2406.04277 (2024) "VideoTetris: Towards Compositional Text-to-Video Generation" [cs] (cited-by 10 in-topic, era 2)
+    model_architecture: Spatio-temporal compositional diffusion
+    generation_task: Text-to-video (T2V) generation
+    core_innovation: Spatio-temporal compositional diffusion via manipulation and composition of denoising network attention maps, and enhanced video data preprocessing
+    temporal_mechanism: Reference frame attention mechanism for auto-regressive video generation
+    relations: cites arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:1503.03585; compares-with arXiv:2307.04725; cites arXiv:2401.03048; cites arXiv:2312.06662
+arXiv:2403.14148 (2024) "Efficient Video Diffusion Models via Content-Frame Motion-Latent
+  Decomposition" [cs] (cited-by 8 in-topic, era 2)
+    model_architecture: Content-Motion Latent Diffusion Model (CMD) using a dual-stream approach (pretrained image diffusion model + lightweight motion diffusion model) and a specialized autoencoder.
+    generation_task: Video generation from content frames and motion latents.
+    core_innovation: Content-frame motion-latent decomposition via an autoencoder that separates a video into a single content frame and a low-dimensional motion latent representation.
+    temporal_mechanism: Generation of a low-dimensional motion latent representation to represent underlying motion.
+    evaluation_metrics: FVD score (212.7 on WebVid-10M).
+    computational_efficiency: 7.7x faster sampling than prior approaches; generates 512x1024 resolution, 16-frame video in 3.1 seconds.
+    relations: uses arXiv:2209.14792; uses arXiv:2304.08818; compares-with arXiv:2303.08320; extends arXiv:2302.07685; compares-with arXiv:2309.00398; uses arXiv:2010.02502; cited-by arXiv:2501.05484; motivates arXiv:2502.12632; cited-by arXiv:2604.15911
+arXiv:2407.16655 (2024) "MovieDreamer: Hierarchical Generation for Coherent Long Visual Sequence" [cs] (cited-by 8 in-topic, era 2)
+    model_architecture: Hierarchical framework integrating autoregressive models with diffusion-based rendering
+    generation_task: Long-duration video generation from multimodal scripts
+    core_innovation: Factorizing complex stories into manageable scene capturing using autoregressive visual token prediction followed by diffusion rendering
+    temporal_mechanism: Autoregressive models for global narrative coherence and multimodal scripts with detailed character/style information
+    relations: cites arXiv:2307.04725; cites arXiv:2204.03458; uses arXiv:2311.15127; cites arXiv:2210.02303; uses arXiv:2103.00020; cited-by arXiv:2504.16081
+arXiv:2410.03160 (2024) "Redefining Temporal Modeling in Video Diffusion: The Vectorized Timestep
+  Approach" [cs] (cited-by 3 in-topic, era 2)
+    model_architecture: Frame-aware video diffusion model (FVDM)
+    generation_task: Standard video generation, image-to-video generation, video interpolation, and long video synthesis
+    core_innovation: Introduction of a vectorized timestep variable (VTV) that allows each frame to follow an independent noise schedule
+    temporal_mechanism: Vectorized timestep variable (VTV) to capture fine-grained temporal dependencies
+    relations: compares-with arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:2204.03458; uses arXiv:2401.03048; uses arXiv:2010.02502; cites arXiv:2302.05543; compared-by arXiv:2503.07418; cited-by arXiv:2505.07344
+arXiv:2405.03150 (2024) "Video Diffusion Models: A Survey" [cs] (cited-by 2 in-topic, era 2)
+    generation_task: text prompts, images, videos, and audio signals
+    relations: cites arXiv:2010.02502; uses arXiv:2006.11239; cites arXiv:1503.03585; cites arXiv:1907.05600; cites arXiv:2011.13456; extends arXiv:2112.10752
+arXiv:2408.13423 (2024) "Decoupled Video Generation with Chain of Training-free Diffusion Model
+  Experts" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Chain of off-the-shelf diffusion model experts
+    generation_task: Video generation
+    core_innovation: Decoupling video generation into structure control and spatial-temporal refinement using a chain of experts
+    temporal_mechanism: Coordinated denoising (merging multiple experts' capabilities into a single sampling) and three constraint strategies for long video generation
+    evaluation_metrics: Objective and subjective metrics
+    computational_efficiency: Uses only 10% of the inference cost compared to representative models
+    relations: uses arXiv:2112.10752; cites arXiv:2205.11487; cites arXiv:2204.03458; cites arXiv:2210.02303; cites arXiv:2302.03011; critiques arXiv:2311.15127; extended-by arXiv:2501.05484
+arXiv:2403.07711 (2024) "SSM Meets Video Diffusion Models: Efficient Long-Term Video Generation
+  with Structured State Spaces" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Diffusion models utilizing State-Space Models (SSMs) as temporal feature extractors
+    generation_task: Long-term video generation
+    core_innovation: Replacing quadratic-complexity attention layers with linear-time bidirectional State-Space Models (SSMs) for temporal feature extraction
+    temporal_mechanism: Bidirectional State-Space Models (SSMs)
+    evaluation_metrics: FVD (Fréchet Video Distance)
+    computational_efficiency: Linear-time memory consumption relative to sequence length; for sequences up to 256 frames, SSM-based models require less memory to achieve the same FVD as attention-based models
+    relations: cites arXiv:1312.6114; cites arXiv:2104.10157; cites arXiv:1609.02612; cites arXiv:1707.04993; cites arXiv:1503.03585; cites arXiv:2102.09672
+arXiv:2404.00234 (2024) "Grid Diffusion Models for Text-to-Video Generation" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Grid diffusion (representing video as a grid image without a temporal dimension in the architecture)
+    generation_task: Text-to-video generation
+    core_innovation: Representing video as a grid image to reduce video dimensions to image dimensions, allowing the application of image-based methods to videos
+    evaluation_metrics: Quantitative and qualitative evaluations
+    computational_efficiency: Can generate high-quality video using a fixed amount of GPU memory regardless of the number of frames
+    relations: uses arXiv:2103.00020; uses arXiv:2112.10752; cites arXiv:2102.12092; cites arXiv:2112.10741; extends arXiv:2209.14792; extends arXiv:2204.06125
+arXiv:2504.16081 (2025) "Survey of Video Diffusion Models: Foundations, Implementations, and Applications" [cs] (cited-by 2 in-topic, era 2)
+    core_innovation: A systematic taxonomy of current methodologies, including a special section for evaluation metrics, industry solutions, and training engineering techniques.
+    relations: cites arXiv:1711.00937; cites arXiv:2104.10157; compares-with arXiv:2401.03048; cites arXiv:2006.11239; cites arXiv:2102.09672; cites arXiv:1503.03585; cited-by arXiv:2605.17248
+arXiv:2502.12632 (2025) "MALT Diffusion: Memory-Augmented Latent Transformers for Any-Length Video Generation" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Memory-Augmented Latent Transformers (MALT)
+    generation_task: text-to-video generation
+    core_innovation: Segment-level autoregressive generation using recurrent attention layers that encode multiple segments into a compact memory latent vector.
+    temporal_mechanism: Recurrent attention layers that maintain a memory vector over time to condition generation on long temporal context.
+    evaluation_metrics: FVD score (achieved 220.4 on 128-frame video generation on UCF-101)
+    relations: uses arXiv:1907.05600; cites arXiv:2006.11239; motivated-by arXiv:2105.05233; uses arXiv:2011.13456; compares-with arXiv:2304.08818; uses arXiv:2312.06662
+arXiv:2503.07418 (2025) "AR-Diffusion: Asynchronous Video Generation with Auto-Regressive
+  Diffusion" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Auto-Regressive Diffusion (AR-Diffusion) combining auto-regressive and diffusion models
+    generation_task: Asynchronous video generation
+    core_innovation: Incorporation of a non-decreasing constraint on corruption timesteps of individual frames and two specialized timestep schedulers (FoPP and AD)
+    temporal_mechanism: Temporal causal attention and a non-decreasing corruption timestep constraint
+    relations: uses arXiv:1812.01717; cites arXiv:2104.10157; cites arXiv:2204.03458; cites arXiv:2311.15127; compares-with arXiv:2401.03048; cites arXiv:2205.15868; cited-by arXiv:2505.07344
+arXiv:2501.05484 (2025) "Tuning-Free Long Video Generation via Global-Local Collaborative
+  Diffusion" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: GLC-Diffusion (integrates with existing video diffusion models)
+    generation_task: Long video generation
+    core_innovation: Global-Local Collaborative Denoising (GLC-Diffusion) and Noise Reinitialization strategy (combining local noise shuffling with frequency fusion)
+    temporal_mechanism: Video Motion Consistency Refinement (VMCR) module computing gradients of pixel-wise and frequency-wise losses
+    evaluation_metrics: Quantitative and qualitative evaluations
+    relations: cites arXiv:2006.11239; cites arXiv:2112.10752; cites arXiv:2309.00398; extends arXiv:2401.03048; cites arXiv:2204.03458; cites arXiv:2302.03011
+arXiv:2504.12259 (2025) "VGDFR: Diffusion-based Video Generation with Dynamic Latent Frame Rate" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Diffusion Transformer (DiT)
+    generation_task: Video generation
+    core_innovation: Dynamic Latent Frame Rate (VGDFR), a training-free approach that adaptively adjusts latent space elements based on motion frequency.
+    temporal_mechanism: A dynamic frame rate scheduler and a latent-space frame merging method to align representations before merging redundant low-resolution segments.
+    computational_efficiency: Achieves a speedup of up to 3x for video generation.
+    relations: cites arXiv:2006.11239; cites arXiv:1503.03585; uses arXiv:2112.10752; cites arXiv:2205.11487; cites arXiv:1706.03762; cites arXiv:1812.04948; cited-by arXiv:2605.21042; cited-by arXiv:2604.15911
+arXiv:2505.07344 (2025) "Generative Pre-trained Autoregressive Diffusion Transformer" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Generative Pre-trained Autoregressive Diffusion Transformer (GPDiT) in a continuous latent space
+    generation_task: Long-range video synthesis
+    core_innovation: Unifying diffusion and autoregressive modeling by autoregressively predicting future latent frames using a diffusion loss in a continuous latent space
+    temporal_mechanism: Autoregressive prediction of future latent frames and a lightweight causal attention variant
+    computational_efficiency: Lightweight causal attention variant and a parameter-free rotation-based time-conditioning mechanism
+    relations: cites arXiv:2311.15127; cites arXiv:2304.08818; cites arXiv:2204.03458; cites arXiv:2005.14165; cites arXiv:1706.08500; cites arXiv:2503.07418
+arXiv:2503.09926 (2025) "VideoMerge: Towards Training-free Long Video Generation" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Pretrained text-to-video diffusion models
+    generation_task: Text-to-video generation
+    core_innovation: VideoMerge, a training-free method to merge short videos generated by pretrained models to achieve extended duration and dynamic variation.
+    temporal_mechanism: Orthogonal strategies designed to address smoothness, consistency, and dynamic content through collaborative operation.
+    computational_efficiency: Training-free approach; avoids the expensive data curation and computational resources required for training new diffusion models.
+    relations: cites arXiv:2006.11239; cites arXiv:2311.15127; cites arXiv:1505.04597; critiques arXiv:2204.03458; cites arXiv:2307.04725; cites arXiv:1910.10683
+arXiv:2506.01454 (2025) "DiffuseSlide: Training-Free High Frame Rate Video Generation Diffusion" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Pre-trained diffusion models
+    generation_task: High frame-rate (FPS) video generation from low FPS videos
+    core_innovation: DiffuseSlide: A training-free pipeline using noise re-injection and sliding window latent denoising
+    temporal_mechanism: Sliding window latent denoising and noise re-injection
+    computational_efficiency: Training-free approach; described as computationally efficient
+    relations: cites arXiv:2204.06125; uses arXiv:2104.00650; cites arXiv:2112.10752; cites arXiv:2205.11487; cites arXiv:2204.03458; cites arXiv:2210.02303
+arXiv:2502.07001 (2025) "From Image to Video: An Empirical Study of Diffusion Representations" [cs] (cited-by 0 in-topic, era 2)
+    core_innovation: Systematic comparison of the same model architecture trained for video versus image generation to analyze latent representations for visual understanding tasks.
+    evaluation_metrics: Performance on downstream tasks: image classification, action recognition, depth estimation, and tracking.
+    relations: cites arXiv:2103.00020; cites arXiv:1505.04597; cites arXiv:2006.11239; compares-with arXiv:2312.06662; compares-with arXiv:2311.15127; compares-with arXiv:2112.10752
+arXiv:2509.03794 (2025) "Fitting Image Diffusion Models on Video Datasets" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Standard image diffusion models (requires no architectural modification)
+    generation_task: Video generation (leveraging continuous video frames)
+    core_innovation: A training strategy that leverages temporal inductive bias from continuous video frames to improve diffusion training via regularization that reduces gradient variance
+    temporal_mechanism: Leveraging temporal inductive bias present in continuous video frames during training
+    evaluation_metrics: FID (on training and validation distributions)
+    computational_efficiency: Accelerates convergence by over 2x faster
+    relations: uses arXiv:2006.11239; cites arXiv:2105.05233; cites arXiv:2102.09672; cites arXiv:2302.05543; cites arXiv:2204.03458; uses arXiv:2010.02502
+arXiv:2604.15911 (2026) "Efficient Video Diffusion Models: Advancements and Challenges" [cs] (cited-by 0 in-topic, era 2)
+    generation_task: video synthesis
+    core_innovation: A unified categorization of efficient video diffusion models into four paradigms: step distillation, efficient attention, model compression, and cache/trajectory optimization.
+    computational_efficiency: Focuses on reducing the number of function evaluations and minimizing per-step overhead to address spatial-temporal token growth and iterative denoising bottlenecks.
+    relations: cites arXiv:2010.11929; cites arXiv:2011.13456; cites arXiv:1812.01717; cites arXiv:1801.03924; cites arXiv:2312.09109; cites arXiv:1812.04948
+arXiv:2605.17248 (2026) "Image-to-Video Diffusion: From Foundations to Open Frontiers" [cs] (cited-by 0 in-topic, era 2)
+    generation_task: image-to-video (I2V) generation
+    core_innovation: Provides a dedicated taxonomy and systematic analysis of diffusion-based I2V generation, distilling four core designs: condition encoding, temporal modeling, noise prior design, and spatial-temporal upsampling.
+    relations: cites arXiv:2104.00650; cites arXiv:2311.11325; extends arXiv:1812.01717; extends arXiv:2311.15127; uses arXiv:2312.06662; extends arXiv:2209.14792
+arXiv:2605.21042 (2026) "Dynamic Video Generation: Shaping Video Generation Across Time and Space" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Diffusion models (specifically tested on HunyuanVideo and HunyuanVideo-1.5)
+    generation_task: Video generation
+    core_innovation: DVG (Dynamic Video Generation) framework that jointly allocates computation across time and space by automatically selecting content-aware acceleration strategies.
+    computational_efficiency: Up to 7x speedup on HunyuanVideo and HunyuanVideo-1.5; up to 18x speedup when combined with distillation.
+    relations: cites arXiv:2504.12259; cites arXiv:1503.03585; cites arXiv:2006.11239; cites arXiv:1505.04597; cites arXiv:2010.02502; cites arXiv:2303.08320
+arXiv:2601.05966 (2026) "VideoAR: Autoregressive Video Generation via Next-Frame & Scale Prediction" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Visual Autoregressive (VAR) framework with a 3D multi-scale tokenizer
+    generation_task: Video generation via multi-scale next-frame and scale prediction
+    core_innovation: Disentangling spatial and temporal dependencies by integrating intra-frame VAR modeling with causal next-frame prediction
+    temporal_mechanism: Multi-scale Temporal RoPE, Cross-Frame Error Correction, and Random Frame Mask
+    evaluation_metrics: FVD (UCF-101: 88.6) and VBench (81.74)
+    computational_efficiency: Reduces inference steps by over 10x compared to diffusion models
+    relations: compares-with arXiv:2205.15868; cites arXiv:1711.00937; cites arXiv:2112.10752; uses arXiv:1212.0402
+
+MAIN PATH (oldest -> newest):
+  arXiv:1212.0402 (2012) -> arXiv:1609.02612 (2016) -> arXiv:1707.04993 (2017) -> arXiv:1812.01717 (2018) -> arXiv:1906.02634 (2019) -> arXiv:2010.11929 (2020) -> arXiv:2103.00020 (2021) -> arXiv:2204.06125 (2022) -> arXiv:2302.05543 (2023) -> arXiv:2401.03048 (2024) -> arXiv:2504.16081 (2025) -> arXiv:2605.17248 (2026)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2011.13456 compares [negative] arXiv:1812.04948
+  arXiv:2205.11487 compares [negative] arXiv:2207.12598
+  arXiv:2302.07685 critiques [negative] arXiv:2209.14792
+  arXiv:2312.09109 critiques [negative] arXiv:2209.14792
+  arXiv:2312.09109 critiques [negative] arXiv:2307.04725
+  arXiv:2312.09109 critiques [negative] arXiv:2311.15127
+  arXiv:2312.09109 critiques [negative] arXiv:1707.04993
+  arXiv:2312.09109 critiques [negative] arXiv:2302.07685
+  arXiv:2312.09109 critiques [negative] arXiv:2303.08320
+  arXiv:2312.09109 critiques [negative] arXiv:2302.03011
+  arXiv:2408.13423 critiques [negative] arXiv:2311.15127
+  arXiv:1906.02634 critiques [negative] arXiv:1609.02612
+  arXiv:1906.02634 critiques [negative] arXiv:1801.03924
+  arXiv:1906.02634 critiques [negative] arXiv:1706.08500
+  arXiv:2102.09672 critiques [negative] arXiv:1706.08500
+  arXiv:2205.11487 critiques [negative] arXiv:2103.00020
+  arXiv:2302.05543 compares [neutral] arXiv:2012.09841
+  arXiv:2302.05543 compares [neutral] arXiv:2112.10741
+  arXiv:2302.07685 compares [neutral] arXiv:1811.09245
+  arXiv:2302.07685 compares [neutral] arXiv:1707.04993
+  arXiv:2302.07685 compares [neutral] arXiv:1801.03924
+  arXiv:2303.08320 compares [neutral] arXiv:2104.10157
+  arXiv:2304.08818 compares [positive] arXiv:1212.0402
+  arXiv:2311.11325 compares [positive] arXiv:1212.0402
+  arXiv:2311.11325 compares [neutral] arXiv:1801.03924
+  arXiv:2311.11325 compares [neutral] arXiv:1706.08500
+  arXiv:2311.11325 compares [neutral] arXiv:1812.01717
+  arXiv:2311.15127 compares [neutral] arXiv:2104.00650
+  arXiv:2312.04483 compares [neutral] arXiv:1812.01717
+  arXiv:2312.04483 compares [neutral] arXiv:2311.15127
+  arXiv:2312.04483 compares [neutral] arXiv:2104.00650
+  arXiv:2312.06662 compares [positive] arXiv:2010.02502
+  arXiv:2312.06662 compares [positive] arXiv:2103.00020
+  arXiv:2312.06662 compares [positive] arXiv:1212.0402
+  arXiv:2312.06662 compares [positive] arXiv:2304.08818
+  arXiv:2312.06662 compares [positive] arXiv:1812.01717
+  arXiv:2312.06662 compares [positive] arXiv:1910.10683
+  arXiv:2401.03048 compares [neutral] arXiv:2104.10157
+  arXiv:2401.03048 compares [neutral] arXiv:1707.04993
+  arXiv:2403.14148 compares [neutral] arXiv:2303.08320
+  arXiv:2403.14148 compares [neutral] arXiv:2309.00398
+  arXiv:2403.14148 compares [neutral] arXiv:2205.15868
+  arXiv:2403.14148 compares [neutral] arXiv:2012.09841
+  arXiv:2404.00234 compares [neutral] arXiv:2205.15868
+  arXiv:2405.03150 compares [neutral] arXiv:2204.06125
+  arXiv:2405.03150 compares [neutral] arXiv:1812.01717
+  arXiv:2405.03150 compares [neutral] arXiv:2209.14792
+  arXiv:2405.03150 compares [positive] arXiv:2303.08320
+  arXiv:2406.04277 compares [neutral] arXiv:2307.04725
+  arXiv:2406.04277 compares [positive] arXiv:2311.15127
+  arXiv:2410.03160 compares [positive] arXiv:2006.11239
+  arXiv:2502.07001 compares [positive] arXiv:2312.06662
+  arXiv:2502.07001 compares [neutral] arXiv:2311.15127
+  arXiv:2502.07001 compares [neutral] arXiv:2112.10752
+  arXiv:2502.12632 compares [neutral] arXiv:2304.08818
+  arXiv:2503.07418 compares [neutral] arXiv:2401.03048
+  arXiv:2503.07418 compares [neutral] arXiv:2303.08320
+  arXiv:2503.07418 compares [positive] arXiv:2410.03160
+  arXiv:2504.16081 compares [neutral] arXiv:2401.03048
+  arXiv:2504.16081 compares [neutral] arXiv:1910.10683
+  arXiv:1609.02612 compares [neutral] arXiv:1212.0402
+  arXiv:1906.02634 compares [neutral] arXiv:1812.01717
+  arXiv:2006.11239 compares [positive] arXiv:1907.05600
+  arXiv:2106.15282 compares [positive] arXiv:2105.05233
+  arXiv:2112.10752 compares [neutral] arXiv:2010.02502
+  arXiv:2112.10752 compares [neutral] arXiv:1912.04958
+  arXiv:2205.11487 compares [positive] arXiv:2102.12092
+  arXiv:2205.11487 compares [positive] arXiv:2112.10741
+  arXiv:2205.11487 compares [positive] arXiv:2204.06125
+  arXiv:2205.15868 compares [neutral] arXiv:1811.09245
+  arXiv:2207.12598 compares [positive] arXiv:2105.05233
+  arXiv:2401.03048 compares [neutral] arXiv:2302.07685
+  arXiv:2601.05966 compares [positive] arXiv:2205.15868
+  arXiv:1811.09245 compares [neutral] arXiv:1812.01717
+  arXiv:1812.01717 compares [neutral] arXiv:1801.03924
+  arXiv:1812.04948 compares [positive] arXiv:1706.08500
+  arXiv:1906.02634 compares [neutral] arXiv:1705.07750
+  arXiv:1907.05600 compares [neutral] arXiv:1503.03585
+  arXiv:2010.02502 compares [neutral] arXiv:2011.13456
+  arXiv:2012.09841 compares [neutral] arXiv:1912.04958
+  arXiv:2102.12092 compares [neutral] arXiv:1706.08500
+  arXiv:2103.00020 compares [positive] arXiv:2005.14165
+  arXiv:2104.00650 compares [neutral] arXiv:2103.00020
+  arXiv:2104.10157 compares [neutral] arXiv:1906.02634
+  arXiv:2204.06125 compares [positive] arXiv:2207.12598
+  arXiv:2204.06125 compares [neutral] arXiv:1706.08500
+  arXiv:2302.07685 motivates [neutral] arXiv:2012.09841
+  arXiv:2302.07685 motivates [positive] arXiv:2204.06125
+  arXiv:2302.07685 motivates [positive] arXiv:2010.02502
+  arXiv:2312.06662 motivates [positive] arXiv:2012.09841
+  arXiv:2312.06662 motivates [neutral] arXiv:2102.12092
+  arXiv:2312.06662 motivates [positive] arXiv:2104.10157
+  arXiv:2312.06662 motivates [positive] arXiv:2205.15868
+  arXiv:2502.12632 motivates [positive] arXiv:2105.05233
+  arXiv:2502.12632 motivates [positive] arXiv:2112.10752
+  arXiv:2502.12632 motivates [positive] arXiv:2209.14792
+  arXiv:2502.12632 motivates [positive] arXiv:2403.14148
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2604.15911:
+NOVELTY: First dedicated survey focusing exclusively on video diffusion efficiency, introducing a four-pillar taxonomy: step distillation, efficient attention, model compression, and cache/trajectory optimization.
+STRENGTHS: Provides a rigorous mathematical framework and a deployment-oriented categorization that distinguishes between reducing NFE (sampling depth) and reducing per-step overhead (computational complexity).
+WEAKNESSES: Identifies a critical lack of inherently stable objectives for long-horizon generation, noting that current progress relies heavily on "stability engineering" and "staged training" rather than unified algorithmic solutions.
+RELEVANCE: Directly addresses the review question by mapping the technical landscape of methods used to mitigate the multiplicative costs of spatial resolution, temporal length, and iterative denoising.
+arXiv:2006.11239:
+NOVELTY: Establishes the mathematical equivalence between diffusion models, denoising score matching, and Langevin dynamics via the $\epsilon$-prediction parameterization.
+STRENGTHS: Achieves state-of-the-art image synthesis on CIFAR10 with an FID of 3.17 and IS of 9.46.
+WEAKNESSES: Entirely limited to static image synthesis; provides no framework or methodology for temporal modeling or video data.
+RELEVANCE: Establishes the foundational $\epsilon$-prediction training objective and diffusion framework upon which video generation models are built.
+arXiv:2112.10752:
+NOVELTY: Decoupling perceptual compression (autoencoder) from semantic generation by training diffusion models in a low-dimensional, learned latent space rather than pixel space.
+STRENGTHS: Significant reduction in computational requirements while achieving SOTA results, such as an FID of 5.11 on CelebA-HQ.
+WEAKNESSES: Excessive downsampling ($f$) causes information loss and stagnating fidelity; the model remains constrained by the sequential nature of diffusion sampling.
+RELEVANCE: Establishes the latent-space framework and cross-attention conditioning necessary to scale diffusion models to the high-dimensional complexity of video.

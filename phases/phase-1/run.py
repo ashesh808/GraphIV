@@ -62,14 +62,16 @@ def main() -> None:
 
     from download import Downloader
 
+    # base_path = repo-root data/ (db, json, schema, pdf all hang off it), not phases/phase-1/data
+    base_path = db.parent.parent
     dl = Downloader(
+        base_path=base_path,
         num_threads=int(r.config["threads"]),
         connections_per_batch=int(r.config["connections"]),
     )
-    if metadata_only:
-        dl.update_database()
-    else:
-        dl.download()
+    dl.update_database()  # delta ingest: only new/changed rows are written
+    if not metadata_only:
+        dl.download()  # syncs downloaded flags from disk, then fetches downloaded=0 via aria2c
     print("[phase-1] done")
 
 

@@ -2,8 +2,13 @@
 
 Question in -> grounded, chronological literature report (+ figure gallery on deep) out.
     uv run python phases/phase-6/run.py "<question>" [--set-effort deep] [--set-rank ppr]
-                                        [--include-no-cluster] [--include-no-graph] [--dry-run]
-Config keys: effort {fast,standard,deep}, rank {ppr,frontier,indegree}, no_cluster, no_graph.
+                                        [--set-recency 0.4] [--set-max-rounds 6]
+                                        [--set-critique-k 8] [--include-no-cluster]
+                                        [--include-no-graph] [--dry-run]
+Config keys: effort {fast,standard,deep}, rank {ppr,frontier,indegree}, no_cluster, no_graph,
+recency (0..1 frontier emphasis; the frontier year itself is detected per-topic), max_rounds
+(>1 -> judge-driven deep loop, the judge stops early; this is only the cap), critique_k
+(full-PDF critiques in the deep loop).
 """
 
 from __future__ import annotations
@@ -29,7 +34,8 @@ def _plan(r: Resolved, question: str) -> None:
         f"[phase-6] R1 retrieve: pool={n_pool} drill_target={target} rank={r.config['rank']}"
     )
     print(
-        f"[phase-6]   no_cluster={r.config['no_cluster']} no_graph={r.config['no_graph']}"
+        f"[phase-6]   no_cluster={r.config['no_cluster']} no_graph={r.config['no_graph']} "
+        f"recency={r.config['recency']} (frontier year auto-detected per topic)"
     )
     print(
         f"[phase-6] landmarks m={m} · R2 full-text extraction={'on' if do_extract else 'off'}"
@@ -37,6 +43,12 @@ def _plan(r: Resolved, question: str) -> None:
     print(
         f"[phase-6] R3 compose + figures={'on (top 12)' if effort == 'deep' else 'off'}"
     )
+    max_rounds = int(r.config["max_rounds"])  # pyright: ignore[reportAny]
+    if max_rounds > 1:
+        print(
+            f"[phase-6] DEEP LOOP: judge-driven, cap {max_rounds} rounds, "
+            f"critique_k={r.config['critique_k']}, thinking on -code; emits report.md + report.tex"
+        )
     print(
         f"[phase-6] writes -> {pipeline.OUT}/<slug>/<cfg>/{{report.md,digest.txt,run.json}}"
     )
@@ -44,7 +56,19 @@ def _plan(r: Resolved, question: str) -> None:
 
 def main() -> None:
     r = resolve(
-        _HERE, sys.argv[1:], required=("effort", "rank", "no_cluster", "no_graph")
+        _HERE,
+        sys.argv[1:],
+        required=(
+            "effort",
+            "rank",
+            "no_cluster",
+            "no_graph",
+            "recency",
+            "max_rounds",
+            "critique_k",
+            "figures",
+            "no_frontier_pull",
+        ),
     )
     print_config("phase-6", r)
     if not r.positionals:
@@ -53,12 +77,32 @@ def main() -> None:
     if r.dry_run:
         _plan(r, question)
         return
+    max_rounds = int(r.config["max_rounds"])
+    # max_rounds > 1 -> judge-driven deep loop (PDF critique + md/tex); else the single pass.
+    if max_rounds > 1:
+        import deep_loop  # noqa: PLC0415
+
+        _ = deep_loop.run_deep(
+            question,
+            r.config["effort"],
+            r.config["rank"],
+            bool(r.config["no_cluster"]),
+            bool(r.config["no_graph"]),
+            float(r.config["recency"]),
+            max_rounds,
+            int(r.config["critique_k"]),
+            bool(r.config["figures"]),
+            bool(r.config["no_frontier_pull"]),
+        )
+        return
     _ = pipeline.run(
         question,
         r.config["effort"],
         r.config["rank"],
         bool(r.config["no_cluster"]),
         bool(r.config["no_graph"]),
+        float(r.config["recency"]),
+        bool(r.config["no_frontier_pull"]),
     )
 
 

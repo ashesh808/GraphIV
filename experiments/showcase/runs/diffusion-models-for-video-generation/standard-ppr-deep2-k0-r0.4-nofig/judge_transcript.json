@@ -1,0 +1,38 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "controllable video diffusion models controlnet",
+   "video diffusion editing and style transfer",
+   "text-to-video instruction following",
+   "video diffusion evaluation metrics human perception"
+  ],
+  "assessment": "The review is exceptionally well-structured and current, but could benefit from more explicit coverage of video controllability and editing techniques."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 3
+  },
+  "gaps": [
+   "video diffusion transformer architecture Sora DiT",
+   "LLM-guided video generation planning",
+   "video-to-video diffusion editing",
+   "efficient long-duration video diffusion models"
+  ],
+  "assessment": "The review provides a solid historical foundation and covers many 2023-2024 papers, but misses the critical recent shift from U-Net to Transformer-based diffusion backbones and the role of LLMs in video orchestration."
+ }
+]

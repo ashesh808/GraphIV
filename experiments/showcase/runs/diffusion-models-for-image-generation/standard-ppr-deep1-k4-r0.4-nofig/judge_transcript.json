@@ -1,0 +1,20 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 3,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "diffusion transformer architecture DiT",
+   "spatial conditioning ControlNet T2I-Adapter",
+   "video diffusion models temporal consistency",
+   "rectified flow transformers"
+  ],
+  "assessment": "The review is excellent on theory and speed-up methods but lacks coverage of the dominant transformer-based architectures and spatial control mechanisms central to the 2023+ frontier."
+ }
+]

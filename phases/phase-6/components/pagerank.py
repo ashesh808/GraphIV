@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from recency import age_norm_score, frontier_select  # noqa: E402
 from subgraph import Edge, Landmark, PoolNode  # noqa: E402
 
 
@@ -61,10 +62,13 @@ def rank_landmarks_ppr(
     pool: dict[str, PoolNode],
     edges: list[Edge],
     m: int,
-    recent_year: int = 2023,
-    recent_floor: int = 18,
+    recent_year: int,
+    recent_floor: int,
+    now_year: int,
 ) -> list[Landmark]:
-    """Top-`m` by PPR, with the frontier reservation kept (recent papers by similarity)."""
+    """Top-`m` by PPR, with the topic-adaptive frontier reservation (recent papers by
+    similarity) and an age-normalized tiebreak so near-frontier papers compete in the fill.
+    """
     indeg = _in_degree(edges)
     seed = {a: max(node.score, 0.0) for a, node in pool.items()}
     ppr = personalized_pagerank(list(pool), edges, seed)
@@ -82,16 +86,15 @@ def rank_landmarks_ppr(
     if len(lms) <= m:
         lms.sort(key=lambda lm: ppr.get(lm.arxiv_id, 0.0), reverse=True)
         return lms[:m]
-    recent = sorted(
-        (lm for lm in lms if lm.year is not None and lm.year >= recent_year),
-        key=lambda lm: lm.score,
-        reverse=True,
-    )[:recent_floor]
+    recent = frontier_select(lms, recent_year, recent_floor)
     chosen: list[Landmark] = list(recent)
     chosen_ids: set[str] = {lm.arxiv_id for lm in chosen}
     rest = sorted(
         (lm for lm in lms if lm.arxiv_id not in chosen_ids),
-        key=lambda lm: ppr.get(lm.arxiv_id, 0.0),
+        key=lambda lm: (
+            ppr.get(lm.arxiv_id, 0.0),
+            age_norm_score(lm.in_degree, lm.year, now_year),
+        ),
         reverse=True,
     )
     for lm in rest:

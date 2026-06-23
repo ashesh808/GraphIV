@@ -1,0 +1,31 @@
+{
+ "grounding": {
+  "top_wins": 8,
+  "baseline_wins": 0,
+  "ties": 0,
+  "n": 8,
+  "win_rate": 1.0
+ },
+ "coverage": {
+  "top_wins": 4,
+  "baseline_wins": 0,
+  "ties": 4,
+  "n": 8,
+  "win_rate": 0.5
+ },
+ "lineage": {
+  "top_wins": 6,
+  "baseline_wins": 0,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.75
+ },
+ "overall": {
+  "top_wins": 6,
+  "baseline_wins": 0,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.75
+ },
+ "compare": "after-deep (A) vs before-2023 (B)"
+}

@@ -10,6 +10,20 @@
     },
     { "root": "phases/phase-4", "extraPaths": ["phases", "phases/phase-4/components"] },
     { "root": "phases/phase-5", "extraPaths": ["phases", "phases/phase-5/components"] },
-    { "root": "phases/phase-6", "extraPaths": ["phases", "phases/phase-6/components"] }
+    { "root": "phases/phase-6", "extraPaths": ["phases", "phases/phase-6/components"] },
+    {
+      "root": "experiments",
+      "extraPaths": [
+        "experiments",
+        "phases",
+        "phases/phase-6/components",
+        "experiments/experiment-1-resolver-quality/code",
+        "experiments/experiment-2-labeling-quality/code",
+        "experiments/experiment-3-graph-structure/code",
+        "experiments/experiment-4-clustering-comparison/code",
+        "experiments/experiment-5-topic-tree/code"
+      ],
+      "reportPrivateImportUsage": "none"
+    }
   ]
 }

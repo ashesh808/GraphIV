@@ -7,13 +7,10 @@ component allowed a sys.path bootstrap — it is the bridge to the framework con
 
 from __future__ import annotations
 
-import contextlib
+import os
 import sys
-from collections.abc import Generator
 from pathlib import Path
 from typing import Any
-
-from neo4j import Driver, GraphDatabase
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # phases/ -> _framework
 from _framework import gpath, load_global  # noqa: E402
@@ -21,7 +18,6 @@ from _framework import gpath, load_global  # noqa: E402
 _G: dict[str, Any] = load_global()
 _PATHS: dict[str, str] = _G["paths"]
 _EMB: dict[str, Any] = _G["embeddings"]
-_NEO: dict[str, str] = _G["neo4j"]
 _LLM: dict[str, str] = _G["llm"]
 
 # --- repo / sqlite --------------------------------------------------------
@@ -45,24 +41,10 @@ HTML_DIR = gpath(_PATHS["html_dir"])
 PDF_DIR = gpath(_PATHS["pdf_dir"])
 MAP_MODEL: str = _LLM["map_model"]
 
-# --- postgres -------------------------------------------------------------
-PG_DSN: str = _G["postgres"]["dsn"]
-
-# --- neo4j ----------------------------------------------------------------
-NEO4J_URI: str = _NEO["uri"]
-NEO4J_USER: str = _NEO["user"]
-NEO4J_PASSWORD: str = _NEO["password"]
-NEO4J_HOME = Path(_NEO["home"])
-NEO4J_DB: str = _NEO["db"]
-VECTOR_INDEX: str = _NEO["vector_index"]
-
-# --- neo4j-admin import staging (phase-4 build artifacts) -----------------
-OUT_DIR = DATA_DIR / "neo4j_import"
-NODES_CSV = OUT_DIR / "nodes.csv"
-NODES_HEADER = OUT_DIR / "nodes_header.csv"
-EDGES_CSV = OUT_DIR / "edges.csv"
-EDGES_HEADER = OUT_DIR / "edges_header.csv"
-EMB_IDS_NPY = OUT_DIR / "emb_ids.npy"
+# --- postgres (single project store; flake socket, env-overridable) -------
+PG_DSN: str = os.environ.get(
+    "ARXIVKG_PG_DSN", f"host={REPO_ROOT}/.pg port=5433 dbname=arxivkg"
+)
 
 # --- LLM router (llama.cpp, OpenAI-compatible) ----------------------------
 LLM_BASE_URL: str = _LLM["base_url"]
@@ -83,16 +65,6 @@ INTENT_COLORS: dict[str, str] = {
     "motivates": "#B4A2E8",
     "background": "#8B95A8",
 }
-
-
-@contextlib.contextmanager
-def neo4j_driver() -> Generator[Driver]:
-    """Yield a Neo4j driver, closed on exit."""
-    drv = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-    try:
-        yield drv
-    finally:
-        drv.close()
 
 
 def arxiv_year(arxiv_id: str) -> int | None:

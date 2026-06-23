@@ -1,0 +1,351 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{graph neural networks}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is excellent and well-structured, but misses the significant recent frontier of geometric equivariance and more detailed coverage of heterophily-specific architectures.
+\end{abstract}
+
+\section{The Evolution of Graph Neural Networks: From Local Message Passing to Geometric Deep Learning}
+
+While traditional deep learning architectures have achieved remarkable success on structured Euclidean data, such as images and sequences, they are fundamentally ill-equipped to handle the irregular, non-Euclidean dependencies inherent in real-world relational data. Whether modeling molecular structures, social networks, or biological pathways, the challenge lies in capturing complex topological information without the benefit of a fixed grid. Graph Neural Networks (GNNs) have emerged as the definitive solution to this problem, providing a mathematical framework to learn meaningful representations by leveraging the connectivity and relational inductive biases present in graph-structured domains.
+
+This review traces the historical and conceptual trajectory of the field, beginning with the foundational principles of early embeddings and the subsequent rise of graph convolutional and attention networks that standardized the message-passing paradigm. We then examine the critical theoretical shifts toward understanding expressivity, theory, and the structural limits that define the computational capacity of these models. The narrative progresses from the pursuit of global context through Graph Transformers to the expansion of the field into generative models and graph synthesis. Finally, we explore the current state of the art, focusing on advanced learning paradigms such as self-supervision and prompting, before concluding at the research frontier: the integration of equivariance, generalization, and geometric deep learning.
+
+\subsection{Foundations and Early Embeddings}
+
+The evolution of graph representation learning can be categorized into two distinct trajectories: the development of spectral-based convolutional frameworks and the advancement of stochastic, random-walk-based embedding methods. Early work in spectral graph theory focused on generalizing convolutional neural networks (CNNs) to non-Euclidean domains. \texttt{arXiv:1312.6203} established a foundation by utilizing the spectrum of the graph Laplacian and hierarchical clustering to create convolutional layers where the parameter count remains independent of input size. This spectral approach was later applied to domain-specific tasks, such as learning molecular fingerprints through end-to-end learnable graph convolutional networks (\texttt{arXiv:1509.09292}), which generalized circular fingerprints.
+
+In contrast to these spectral methods, a parallel lineage of research focused on learning latent node representations through local neighborhood information. DeepWalk (\texttt{arXiv:1403.6652}) pioneered this by treating truncated random walks as "sentences" for language modeling, effectively generalizing unsupervised feature learning to graphs. This line of work was significantly expanded by LINE (\texttt{arXiv:1503.03578}), which introduced a scalable objective function capable of preserving both local and global structures across massive networks containing billions of edges. While DeepWalk focused on the language modeling analogy, node2vec (\texttt{arXiv:1607.00653}) introduced a more flexible algorithmic framework by employing a biased random walk procedure to maximize the likelihood of diverse network neighborhoods.
+
+The integration of these embedding techniques into broader machine learning tasks led to sophisticated semi-supervised frameworks. \texttt{arXiv:1603.08861} bridged the gap between embeddings and classification by jointly predicting class labels and neighborhood context, offering both transductive and inductive capabilities. These optimization processes often relied on robust stochastic methods, such as the Adam optimizer (\texttt{arXiv:1412.6980}), which utilizes adaptive estimates of lower-order moments to ensure convergence.
+
+A critical shift in the field occurred with the transition from transductive to inductive learning. While earlier methods like node2vec (\texttt{arXiv:1607.00653}) were primarily transductive, GraphSAGE (\texttt{arXiv:1706.02216}) introduced a general inductive framework. Instead of learning fixed node-specific embeddings, GraphSAGE learns aggregator functions that sample and aggregate features from a node's local neighborhood, allowing for the generation of embeddings for previously unseen nodes. This approach demonstrated significant practical advantages, achieving an average 51\% improvement in supervised F1-scores over raw features and operating approximately 100× faster than transductive baselines during inference. However, the theoretical strength of GraphSAGE regarding structural information learning is constrained by the restrictive assumption that all node features must be distinct (\texttt{arXiv:1706.02216}). Despite this, the shift toward inductive, aggregator-based learning remains a cornerstone for applying GNNs to evolving, large-scale graph structures.
+
+\subsection{The Rise of Graph Convolutional and Attention Networks}
+
+The evolution of graph neural networks was catalyzed by the introduction of a scalable convolutional architecture that utilizes a localized first-order approximation of spectral graph convolutions [\texttt{arXiv:1609.02907}]. By employing a renormalization trick (\$\textbackslash{}tilde\{D\}\textasciicircum{}\{-1/2\} \textbackslash{}tilde\{A\} \textbackslash{}tilde\{D\}\textasciicircum{}\{-1/2\}\$) to ensure numerical stability, this foundational GCN integrates node features and graph structure directly into the architecture [\texttt{arXiv:1609.02907}]. While it achieves \$O(|E|)\$ complexity and superior classification performance—notably reaching 81.5\% accuracy on the Cora dataset [\texttt{arXiv:1609.02907}]—the model faces limitations regarding scalability due to the memory requirements of full-batch gradient descent, and it lacks native support for edge features or directed edges [\texttt{arXiv:1609.02907}].
+
+Subsequent research addressed these structural and computational constraints through various specialized mechanisms. To manage multi-relational data, R-GCNs were developed for knowledge base completion, using an encoder to accumulate evidence over multiple inference steps [\texttt{arXiv:1703.06103}]. To resolve the scalability issues inherent in full-batch training, FastGCN introduced a batched training scheme via Monte Carlo integration and importance sampling, facilitating efficient learning on large, dense graphs [\texttt{arXiv:1801.10247}]. This trajectory of simplification culminated in the discovery that GCNs can be reduced to a linear model—comprising a fixed low-pass filter followed by a linear classifier—which maintains accuracy while offering speedups of up to two orders of magnitude over FastGCN [\texttt{arXiv:1902.07153}].
+
+A major paradigm shift involved moving from static aggregation to dynamic, learned weights. Graph Attention Networks (GATs) introduced masked self-attentional layers, allowing nodes to assign different weights to neighbors without the need for costly matrix operations [\texttt{arXiv:1710.10903}]. Similarly, other attention-based models replaced intermediate fully-connected layers with attention mechanisms to create adaptive local neighborhood summaries, effectively reducing parameter counts while respecting graph structure [\texttt{arXiv:1803.03735}].
+
+Beyond supervised node classification, the utility of these architectures expanded into unsupervised and theoretical domains. Deep Graph Infomax leveraged GCN architectures to maximize mutual information between patch representations and high-level graph summaries, providing a general approach for unsupervised representation learning [\texttt{arXiv:1809.10341}]. Finally, theoretical investigations revealed that GCN convolution functions as a form of Laplacian smoothing; this insight led to the proposal of co-training and self-training approaches designed specifically to mitigate over-smoothing and reduce dependency on labels [\texttt{arXiv:1801.07606}].
+
+\subsection{Expressivity, Theory, and Structural Limits}
+
+The theoretical landscape of Graph Neural Networks (GNNs) is largely defined by the tension between local message-passing mechanisms and the global structural properties they aim to represent. A foundational benchmark in this domain is the Weisfeiler-Lehman (WL) graph isomorphism test, which serves as a primary metric for characterizing GNN discriminative power at the graph level [\texttt{arXiv:1810.00826}]. While [\texttt{arXiv:1810.00826}] established a framework to develop architectures provably as powerful as the WL test, subsequent research has sought to transcend these limits. For instance, [\texttt{arXiv:1905.12560}] introduced the Ring-GNN architecture to distinguish non-isomorphic regular graphs, proving an equivalence between graph isomorphism testing and permutation-invariant function approximation through a sigma-algebra framework.
+
+A significant branch of inquiry focuses on the ability of GNNs to capture topological motifs. [\texttt{arXiv:2002.04025}] provided a rigorous theoretical analysis of how Message Passing Neural Networks (MPNNs) and \$k\$-WL frameworks perform regarding subgraph and induced-subgraph counting, proposing a Local Relational Pooling model to address these tasks. Building on this, [\texttt{arXiv:2006.09252}] developed Graph Substructure Networks (GSN), which utilize a topologically-aware message passing scheme. Unlike the standard WL-based models, GSN is strictly more expressive because it enables the detection and counting of graph substructures while maintaining linear complexity and locality.
+
+However, expressivity is not merely a function of discriminative power; it is also constrained by information propagation dynamics. [\texttt{arXiv:2006.05205}] identified a critical "over-squashing" bottleneck, where the aggregation of exponentially growing information into fixed-size vectors limits a GNN's ability to capture long-range interactions. This structural limitation is further refined by [\texttt{arXiv:2111.14522}], which links the over-squashing phenomenon to edge-level properties, specifically identifying negatively curved edges as the drivers of this bottleneck and proposing curvature-based graph rewiring as a mitigation strategy.
+
+The literature also addresses the fundamental limits of local-information GNNs. [\texttt{arXiv:2002.06157}] demonstrated that local GNNs are inherently limited in representing certain graph properties and provided tighter, data-dependent generalization bounds than traditional VC-dimension approaches. These diverse perspectives—ranging from isomorphism testing [\texttt{arXiv:1905.12560}] and substructure counting [\texttt{arXiv:2002.04025}, \texttt{arXiv:2006.09252}] to the geometric constraints of over-squashing [\texttt{arXiv:2006.05205}, \texttt{arXiv:2111.14522}]—are synthesized in recent surveys [\texttt{arXiv:2401.01626}], which categorize GNN design choices through the lenses of universal approximation, graph isomorphism, and graph moments.
+
+\subsection{Graph Transformers and Global Context}
+
+The evolution of Graph Transformers reflects a fundamental shift from local message-passing to architectures capable of capturing global dependencies and complex structural patterns. Early attempts at integrating Transformer mechanisms focused on node-level representation learning by generating meta-paths. Specifically, Graph Transformer Networks (GTN) utilize a soft selection of edge types and composite relations to end-to-end generate new graph structures from unconnected nodes, bypassing the need for domain-specific preprocessing [\texttt{arXiv:1911.06455}].
+
+Subsequent research moved toward generalizing the Transformer architecture to arbitrary graph topologies. A significant contribution in this direction is the generalization of Transformer networks through the incorporation of neighborhood-based attention, edge feature representation, and Laplacian eigenvector positional encoding [\texttt{arXiv:2012.09699}]. While this approach addresses connectivity, it has been extended by more specialized structural encoding methods. For instance, Graphormer introduces structural encoding methods that allow Transformers to model graph-structured data effectively, positioning many GNN variants as special cases of this architecture [\texttt{arXiv:2106.05234}]. This emphasis on structural awareness is further refined by the Spectral Attention Network (SAN), which utilizes the full Laplacian spectrum for learned positional encoding to mitigate over-squashing and improve graph distinction [\texttt{arXiv:2106.03893}].
+
+A tension exists in the literature regarding how to best integrate structure with global attention. Some approaches, such as the Structure-Aware Transformer (SAT), focus on incorporating subgraph representations rooted at each node directly into the self-attention mechanism to capture structural similarity [\texttt{arXiv:2202.03036}]. In contrast, GraphTrans takes a modular approach for graph classification, applying a permutation-invariant Transformer module after a standard GNN to learn long-range pairwise relationships without explicit structural encoding [\texttt{arXiv:2201.08821}].
+
+Recent advancements attempt to reconcile the power of global attention with the computational demands of large graphs. The GraphGPS framework addresses the scalability issue by decoupling local real-edge aggregation from a fully-connected Transformer. By combining positional/structural encoding, local message-passing, and global attention, GraphGPS achieves \$O(N+E)\$ complexity, providing a scalable recipe for general graph representation learning [\texttt{arXiv:2205.12454}]. This modularity represents a synthesis of the previous research trajectories, integrating the spectral and structural insights of [\texttt{arXiv:2106.03893}] and [\texttt{arXiv:2106.05234}] into a computationally efficient architecture.
+
+\subsection{Generative Models and Graph Synthesis}
+
+The evolution of graph generative modeling has transitioned from low-granularity variational approaches to sophisticated autoregressive and diffusion-based frameworks. Early attempts at graph synthesis focused on the graph level using Variational Autoencoders (VAEs). For instance, GraphVAE (\texttt{arXiv:1802.03480}) sidesteps the complexities of linearization by utilizing a decoder that outputs a probabilistic fully-connected graph of a predefined maximum size. While this approach addresses specific hurdles in small graph generation, it differs fundamentally from node-and-edge level models that prioritize structural dependencies.
+
+A significant shift occurred with the introduction of models operating at the node and edge level to capture finer structural details. \texttt{arXiv:1803.03324} proposed a general approach using graph neural networks (GNNs) to express probabilistic dependencies, capturing both structure and attributes. This work was extended by GraphRNN (\texttt{arXiv:1802.08773}), which utilizes a deep autoregressive model to decompose generation into a sequence of node and edge formations. GraphRNN represents a notable advancement in scalability, approximating graph distributions with minimal structural assumptions and scaling to graphs 50 times larger than previous models, as measured by Maximum Mean Discrepancy (MMD) (\texttt{arXiv:1802.08773}). To further address efficiency, Graph Recurrent Attention Networks (GRANs) (\texttt{arXiv:1910.00760}) introduced block-wise generation using GNNs with attention and a mixture of Bernoulli distributions, enabling scalability to graphs with up to 5K nodes.
+
+More recently, the field has seen a pivot toward diffusion-based paradigms. DiGress (\texttt{arXiv:2209.14734}) introduced discrete denoising diffusion, simplifying graph distribution learning into node and edge classification tasks through a Markovian noise model and graph transformer network. This method demonstrates significant practical utility, achieving up to a 3x improvement in validity on planar graph datasets compared to prior works. Building on these concepts, \texttt{arXiv:2307.08849} introduced an autoregressive diffusion model that operates in discrete graph space via a node-absorbing diffusion process, aiming to improve training efficiency, sampling speed, and the incorporation of constraints.
+
+The theoretical landscape is further refined by \texttt{arXiv:2602.03612}, which proposes a "Generator Matching" paradigm. This framework unifies existing diffusion-based models by using the graph Laplacian and heat kernel to define continuous-time diffusion, treating the Laplacian as an infinitesimal generator. While earlier models like GraphVAE (\texttt{arXiv:1802.03480}) and the autoregressive models (\texttt{arXiv:1802.08773}) focused on sequential or probabilistic reconstruction, the latest diffusion-based approaches (\texttt{arXiv:2209.14734}, \texttt{arXiv:2602.03612}) shift the focus toward denoising and heat-based continuous-time processes, offering more robust mathematical foundations for complex graph synthesis.
+
+\subsection{Advanced Learning Paradigms: Self-Supervision and Prompting}
+
+Recent advancements in graph representation learning have shifted focus toward breaking the expressive limitations of standard architectures and leveraging unsupervised signals to enhance discriminative power. A primary challenge in GNNs is the Weisfeiler-Leman (1-WL) expressiveness barrier, which researchers have addressed through both structural enhancements and stochastic initialization. For instance, \texttt{arXiv:2010.02863} introduces globally consistent anisotropic kernels that embed directions in an unsupervised manner by using Laplacian eigenvectors as a vector field. This approach improves discriminative power beyond the 1-WL test, demonstrating significant performance gains such as a relative error reduction in ZINC datasets ranging from 11\% to 32\% [\texttt{arXiv:2010.02863}]. In contrast, \texttt{arXiv:2010.01179} approaches the expressiveness problem through a different mechanism: random node initialization (RNI). By utilizing RNI, this work proves that GNNs can achieve universality, effectively breaking the 1-WL barrier at the graph level [\texttt{arXiv:2010.01179}]. While the former relies on topological directional flows to refine kernels, the latter utilizes initialization strategies to expand the model's fundamental capacity.
+
+Parallel to these structural improvements, self-supervised paradigms like contrastive learning have emerged to refine node-level representations. \texttt{arXiv:2010.14945} proposes a graph contrastive learning method that utilizes adaptive augmentation to preserve intrinsic structures. Unlike static augmentation techniques, this method incorporates node centrality measures for topology and importance-based noise injection for attributes, specifically targeting unimportant nodes and edges to maintain structural integrity [\texttt{arXiv:2010.14945}]. This contrasts with the approach in \texttt{arXiv:2010.02863}; while both utilize unsupervised mechanisms to improve representations, the former focuses on the stability of augmentation, whereas the latter focuses on the anisotropy of the kernels themselves.
+
+The paradigm is further evolving toward the unification of pre-training and downstream tasks. \texttt{arXiv:2302.08043} introduces GraphPrompt, a framework that moves beyond isolated unsupervised learning by using a common task template and learnable prompts. This allows the model to locate relevant knowledge from a pre-trained model, providing a more cohesive way to adapt graph representations to specific downstream requirements [\texttt{arXiv:2302.08043}].
+
+As these paradigms become increasingly complex, the need for systematic evaluation grows. The OpenGLT benchmark [\texttt{arXiv:2501.00773}] provides a comprehensive framework to categorize GNNs—including self-supervised learning-based models—across various domains and task types. Crucially, this benchmark evaluates models under diverse real-world scenarios, including noisy, imbalanced, and few-shot settings [\texttt{arXiv:2501.00773}], offering a necessary rigor for comparing the practical utility of diverse methods, from the directional kernels of \texttt{arXiv:2010.02863} to the prompting strategies of \texttt{arXiv:2302.08043}.
+
+\subsection{The Frontier: Equivariance, Generalization, and Geometry}
+
+The theoretical landscape of Graph Neural Networks (GNNs) is currently being shaped by rigorous efforts to reconcile expressiveness with stability and generalization. A comprehensive summary of these foundational pillars is provided by \texttt{arXiv:2407.03125}, which synthesizes the core theoretical aspects of graph learning, including expressiveness power, optimization, and the structural challenges of over-smoothing and over-squashing. While \texttt{arXiv:2407.03125} offers this broad foundational overview, \texttt{arXiv:2503.15650} provides a more specialized systematic review specifically targeting the generalization abilities of Message Passing Neural Networks (MPNNs). By analyzing existing methodologies and findings, \texttt{arXiv:2503.15650} narrows the theoretical focus to how these models perform on unseen data, thereby identifying specific future research avenues that complement the broader landscape described in \texttt{arXiv:2407.03125}.
+
+Bridging the gap between theoretical limitations and practical representation learning, \texttt{arXiv:2502.02302} introduces EdgeGFL, an approach that addresses the need for more nuanced structural encoding at both the node and edge granularity levels. Unlike standard node-centric models, EdgeGFL utilizes a multidimensional edge feature matrix to construct multi-channel filters. This core mechanism allows for the integration of edge embeddings directly into the message passing framework, enabling the capture of non-local structural characteristics and fine-grained, high-order node features. This architectural shift provides a practical method for addressing the structural complexities—such as those related to over-squashing—discussed in the theoretical surveys.
+
+The frontier of GNN research also extends into specialized industrial applications, particularly within data management. \texttt{arXiv:2502.12908} shifts the focus from general graph learning to the specific domain of database systems. It introduces a new taxonomy that classifies GNN applications into two distinct categories: Relational Databases and Graph Databases. This survey provides a structured overview of how GNNs can be leveraged for practical tasks such as query optimization, text-to-SQL, performance prediction, and graph similarity computation. Together, these works illustrate a progression from establishing fundamental theoretical bounds (\texttt{arXiv:2407.03125}, \texttt{arXiv:2503.15650}) to developing sophisticated architectural mechanisms (\texttt{arXiv:2502.02302}) and deploying them within critical database infrastructures (\texttt{arXiv:2502.12908}).
+
+\subsection{Tensions and Open Problems}
+
+A primary theoretical tension exists regarding the fundamental limits of graph representation. While the field has long been anchored by the idea that GNN expressivity is bounded by the Weisfeiler-Lehman (WL) isomorphism test, as established in the seminal work of \texttt{arXiv:1810.00826}, more recent surveys suggest this framework may be insufficient for capturing complex relational dynamics. Specifically, \texttt{arXiv:2308.08235} argues that the reliance on WL-based metrics fails to account for the nuances of higher-order interactions, critiquing the scope of \texttt{arXiv:1810.00826} and the interaction-based models in \texttt{arXiv:1612.00222}. This debate is further complicated by the "depth vs. width" problem; while some architectures attempt to increase power through higher-order structures, \texttt{arXiv:1907.03199} highlights that simply increasing the capacity of a network does not necessarily overcome the inherent structural limitations of standard message-passing.
+
+A second tension concerns the scalability and structural awareness of GNNs in non-idealized environments. There is a significant disagreement over how to handle graphs that deviate from the standard homophily assumption. On one hand, traditional models often struggle with large-scale, non-homophilous datasets, a limitation noted by \texttt{arXiv:2110.14446}. To combat this, some researchers propose feature expansion techniques, such as those in \texttt{arXiv:2305.06142}, to enrich node representations. Conversely, other approaches focus on the geometric and positional aspects of the graph. For instance, while \texttt{arXiv:2009.00142} advocates for provably powerful distance encodings to enhance expressivity, \texttt{arXiv:2110.07875} argues for a more flexible approach using learnable structural and positional encodings to capture the nuances that fixed encodings might miss, such as the directional dependencies discussed in \texttt{arXiv:2010.02863}.
+
+Finally, a tension persists in the paradigm of graph pre-training and generalization. The rise of generative pre-training, exemplified by the GPT-GNN framework in \texttt{arXiv:2006.15437}, suggests that large-scale self-supervised learning can provide a robust foundation for downstream tasks. However, this approach has faced criticism from more recent works like \texttt{arXiv:2302.08043}, which argues that existing pre-training strategies—including the contrastive coding methods in \texttt{arXiv:2006.09963} and the general strategies outlined in \texttt{arXiv:1905.12265}—often fail to unify pre-training and downstream task adaptation effectively. This raises an open question: can we move beyond simple contrastive or generative objectives toward a more cohesive "prompt-based" or unified framework that truly captures the underlying graph topology?
+
+\subsection{Outlook}
+
+The frontier of graph learning is shifting from simple message-passing toward a synthesis of generative modeling and structural exploration. As we move toward 2026, the field is moving beyond mere representation to focus on the mechanics of graph generation through processes like heat diffusion (\texttt{arXiv:2602.03612}) and the strategic use of "destruction" as a learning mechanism (\texttt{arXiv:2605.30553}). The next generation of GNNs will likely be defined by their ability to navigate the intersection of generalization theory (\texttt{arXiv:2503.15650}) and complex, large-scale relational databases (\texttt{arXiv:2502.12908}), ultimately evolving from static discriminative tools into dynamic, generative engines capable of exploring and constructing entirely new graph topologies.
+
+\section*{References}
+\begin{enumerate}\small
+  \item The Emerging Field of Signal Processing on Graphs: Extending
+  High-Dimensional Data Analysis to Networks and Other Irregular Domains (2012). \texttt{arXiv:1211.0053}
+  \item Categorical models for equivariant classifying spaces (2012). \texttt{arXiv:1201.5178}
+  \item Spectral Networks and Locally Connected Networks on Graphs (2013). \texttt{arXiv:1312.6203}
+  \item DeepWalk: Online Learning of Social Representations (2014). \texttt{arXiv:1403.6652}
+  \item Adam: A Method for Stochastic Optimization (2014). \texttt{arXiv:1412.6980}
+  \item Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation (2014). \texttt{arXiv:1406.1078}
+  \item Neural Machine Translation by Jointly Learning to Align and Translate (2014). \texttt{arXiv:1409.0473}
+  \item Gated Graph Sequence Neural Networks (2015). \texttt{arXiv:1511.05493}
+  \item Convolutional Networks on Graphs for Learning Molecular Fingerprints (2015). \texttt{arXiv:1509.09292}
+  \item Batch Normalization: Accelerating Deep Network Training by Reducing
+  Internal Covariate Shift (2015). \texttt{arXiv:1502.03167}
+  \item LINE: Large-scale Information Network Embedding (2015). \texttt{arXiv:1503.03578}
+  \item Deep Convolutional Networks on Graph-Structured Data (2015). \texttt{arXiv:1506.05163}
+  \item Deep Residual Learning for Image Recognition (2015). \texttt{arXiv:1512.03385}
+  \item Diffusion-Convolutional Neural Networks (2015). \texttt{arXiv:1511.02136}
+  \item Semi-Supervised Classification with Graph Convolutional Networks (2016). \texttt{arXiv:1609.02907}
+  \item Convolutional Neural Networks on Graphs with Fast Localized Spectral
+  Filtering (2016). \texttt{arXiv:1606.09375}
+  \item Learning Convolutional Neural Networks for Graphs (2016). \texttt{arXiv:1605.05273}
+  \item node2vec: Scalable Feature Learning for Networks (2016). \texttt{arXiv:1607.00653}
+  \item Revisiting Semi-Supervised Learning with Graph Embeddings (2016). \texttt{arXiv:1603.08861}
+  \item Variational Graph Auto-Encoders (2016). \texttt{arXiv:1611.07308}
+  \item Geometric deep learning: going beyond Euclidean data (2016). \texttt{arXiv:1611.08097}
+  \item Geometric deep learning on graphs and manifolds using mixture model CNNs (2016). \texttt{arXiv:1611.08402}
+  \item Interaction Networks for Learning about Objects, Relations and Physics (2016). \texttt{arXiv:1612.00222}
+  \item Categorical Reparameterization with Gumbel-Softmax (2016). \texttt{arXiv:1611.01144}
+  \item Generalised Paley graphs with a product structure (2016). \texttt{arXiv:1612.06609}
+  \item Inductive Representation Learning on Large Graphs (2017). \texttt{arXiv:1706.02216}
+  \item Graph Attention Networks (2017). \texttt{arXiv:1710.10903}
+  \item Neural Message Passing for Quantum Chemistry (2017). \texttt{arXiv:1704.01212}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Representation Learning on Graphs: Methods and Applications (2017). \texttt{arXiv:1709.05584}
+  \item Modeling Relational Data with Graph Convolutional Networks (2017). \texttt{arXiv:1703.06103}
+  \item Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on
+  Graphs (2017). \texttt{arXiv:1704.02901}
+  \item MoleculeNet: A Benchmark for Molecular Machine Learning (2017). \texttt{arXiv:1703.00564}
+  \item struc2vec: Learning Node Representations from Structural Identity (2017). \texttt{arXiv:1704.03165}
+  \item Graph Convolutional Matrix Completion (2017). \texttt{arXiv:1706.02263}
+  \item Residual Gated Graph ConvNets (2017). \texttt{arXiv:1711.07553}
+  \item CayleyNets: Graph Convolutional Neural Networks with Complex Rational
+  Spectral Filters (2017). \texttt{arXiv:1705.07664}
+  \item Equivariant infinite loop space theory, the space level story (2017). \texttt{arXiv:1704.03413}
+  \item Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic
+  Forecasting (2017). \texttt{arXiv:1707.01926}
+  \item GraphGAN: Graph Representation Learning with Generative Adversarial Nets (2017). \texttt{arXiv:1711.08267}
+  \item Paley and the Paley graphs (2017). \texttt{arXiv:1702.00285}
+  \item How Powerful are Graph Neural Networks? (2018). \texttt{arXiv:1810.00826}
+  \item Hierarchical Graph Representation Learning with Differentiable Pooling (2018). \texttt{arXiv:1806.08804}
+  \item Representation Learning on Graphs with Jumping Knowledge Networks (2018). \texttt{arXiv:1806.03536}
+  \item Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks (2018). \texttt{arXiv:1810.02244}
+  \item Graph Convolutional Neural Networks for Web-Scale Recommender Systems (2018). \texttt{arXiv:1806.01973}
+  \item GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models (2018). \texttt{arXiv:1802.08773}
+  \item Deeper Insights into Graph Convolutional Networks for Semi-Supervised
+  Learning (2018). \texttt{arXiv:1801.07606}
+  \item GraphVAE: Towards Generation of Small Graphs Using Variational
+  Autoencoders (2018). \texttt{arXiv:1802.03480}
+  \item Relational inductive biases, deep learning, and graph networks (2018). \texttt{arXiv:1806.01261}
+  \item Graph Neural Networks: A Review of Methods and Applications (2018). \texttt{arXiv:1812.08434}
+  \item Pitfalls of Graph Neural Network Evaluation (2018). \texttt{arXiv:1811.05868}
+  \item FastGCN: Fast Learning with Graph Convolutional Networks via Importance
+  Sampling (2018). \texttt{arXiv:1801.10247}
+  \item Predict then Propagate: Graph Neural Networks meet Personalized PageRank (2018). \texttt{arXiv:1810.05997}
+  \item Learning Deep Generative Models of Graphs (2018). \texttt{arXiv:1803.03324}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding (2018). \texttt{arXiv:1810.04805}
+  \item Invariant and Equivariant Graph Networks (2018). \texttt{arXiv:1812.09902}
+  \item Deep Graph Infomax (2018). \texttt{arXiv:1809.10341}
+  \item Link Prediction Based on Graph Neural Networks (2018). \texttt{arXiv:1802.09691}
+  \item GaAN: Gated Attention Networks for Learning on Large and Spatiotemporal
+  Graphs (2018). \texttt{arXiv:1803.07294}
+  \item Adaptive Sampling Towards Fast Graph Representation Learning (2018). \texttt{arXiv:1809.05343}
+  \item Large-Scale Learnable Graph Convolutional Networks (2018). \texttt{arXiv:1808.03965}
+  \item Janossy Pooling: Learning Deep Permutation-Invariant Functions for
+  Variable-Size Inputs (2018). \texttt{arXiv:1811.01900}
+  \item Deep Learning on Graphs: A Survey (2018). \texttt{arXiv:1812.04202}
+  \item Adaptive Graph Convolutional Neural Networks (2018). \texttt{arXiv:1801.03226}
+  \item Adversarially Regularized Graph Autoencoder for Graph Embedding (2018). \texttt{arXiv:1802.04407}
+  \item GeniePath: Graph Neural Networks with Adaptive Receptive Paths (2018). \texttt{arXiv:1802.00910}
+  \item Attention-based Graph Neural Network for Semi-supervised Learning (2018). \texttt{arXiv:1803.03735}
+  \item N-GCN: Multi-scale Graph Convolution for Semi-supervised Node
+  Classification (2018). \texttt{arXiv:1802.08888}
+  \item A Comprehensive Survey on Graph Neural Networks (2019). \texttt{arXiv:1901.00596}
+  \item Fast Graph Representation Learning with PyTorch Geometric (2019). \texttt{arXiv:1903.02428}
+  \item Simplifying Graph Convolutional Networks (2019). \texttt{arXiv:1902.07153}
+  \item Provably Powerful Graph Networks (2019). \texttt{arXiv:1905.11136}
+  \item PyTorch: An Imperative Style, High-Performance Deep Learning Library (2019). \texttt{arXiv:1912.01703}
+  \item Strategies for Pre-training Graph Neural Networks (2019). \texttt{arXiv:1905.12265}
+  \item GraphSAINT: Graph Sampling Based Inductive Learning Method (2019). \texttt{arXiv:1907.04931}
+  \item DropEdge: Towards Deep Graph Convolutional Networks on Node
+  Classification (2019). \texttt{arXiv:1907.10903}
+  \item Efficient Graph Generation with Graph Recurrent Attention Networks (2019). \texttt{arXiv:1910.00760}
+  \item Relational Pooling for Graph Representations (2019). \texttt{arXiv:1903.02541}
+  \item Cluster-GCN: An Efficient Algorithm for Training Deep and Large Graph
+  Convolutional Networks (2019). \texttt{arXiv:1905.07953}
+  \item GNNExplainer: Generating Explanations for Graph Neural Networks (2019). \texttt{arXiv:1903.03894}
+  \item Graph Neural Networks Exponentially Lose Expressive Power for Node
+  Classification (2019). \texttt{arXiv:1905.10947}
+  \item Position-aware Graph Neural Networks (2019). \texttt{arXiv:1906.04817}
+  \item MixHop: Higher-Order Graph Convolutional Architectures via Sparsified
+  Neighborhood Mixing (2019). \texttt{arXiv:1905.00067}
+  \item Deep Graph Library: A Graph-Centric, Highly-Performant Package for Graph
+  Neural Networks (2019). \texttt{arXiv:1909.01315}
+  \item InfoGraph: Unsupervised and Semi-supervised Graph-Level Representation
+  Learning via Mutual Information Maximization (2019). \texttt{arXiv:1908.01000}
+  \item On the equivalence between graph isomorphism testing and function
+  approximation with GNNs (2019). \texttt{arXiv:1905.12560}
+  \item Multi-scale Attributed Node Embedding (2019). \texttt{arXiv:1909.13021}
+  \item Revisiting Graph Neural Networks: All We Have is Low-Pass Filters (2019). \texttt{arXiv:1905.09550}
+  \item Universal Invariant and Equivariant Graph Neural Networks (2019). \texttt{arXiv:1905.04943}
+  \item Graph Neural Networks for Social Recommendation (2019). \texttt{arXiv:1902.07243}
+  \item A Fair Comparison of Graph Neural Networks for Graph Classification (2019). \texttt{arXiv:1912.09893}
+  \item Heterogeneous Graph Attention Network (2019). \texttt{arXiv:1903.07293}
+  \item Graph Transformer Networks (2019). \texttt{arXiv:1911.06455}
+  \item Graph U-Nets (2019). \texttt{arXiv:1905.05178}
+  \item On the Universality of Invariant Networks (2019). \texttt{arXiv:1901.09342}
+  \item Self-Attention Graph Pooling (2019). \texttt{arXiv:1904.08082}
+  \item What graph neural networks cannot learn: depth vs width (2019). \texttt{arXiv:1907.03199}
+  \item DeepGCNs: Can GCNs Go as Deep as CNNs? (2019). \texttt{arXiv:1904.03751}
+  \item Measuring and Relieving the Over-smoothing Problem for Graph Neural
+  Networks from the Topological View (2019). \texttt{arXiv:1909.03211}
+  \item Weisfeiler and Leman go sparse: Towards scalable higher-order graph
+  embeddings (2019). \texttt{arXiv:1904.01543}
+  \item LanczosNet: Multi-Scale Deep Graph Convolutional Networks (2019). \texttt{arXiv:1901.01484}
+  \item Approximation Ratios of Graph Neural Networks for Combinatorial Problems (2019). \texttt{arXiv:1905.10261}
+  \item Understanding Attention and Generalization in Graph Neural Networks (2019). \texttt{arXiv:1905.02850}
+  \item PairNorm: Tackling Oversmoothing in GNNs (2019). \texttt{arXiv:1909.12223}
+  \item Explainability Techniques for Graph Convolutional Networks (2019). \texttt{arXiv:1905.13686}
+  \item Memory-Based Graph Networks (2020). \texttt{arXiv:2002.09518}
+  \item A Survey on The Expressive Power of Graph Neural Networks (2020). \texttt{arXiv:2003.04078}
+  \item Generalization and Representational Limits of Graph Neural Networks (2020). \texttt{arXiv:2002.06157}
+  \item Geom-GCN: Geometric Graph Convolutional Networks (2020). \texttt{arXiv:2002.05287}
+  \item Open Graph Benchmark: Datasets for Machine Learning on Graphs (2020). \texttt{arXiv:2005.00687}
+  \item Benchmarking Graph Neural Networks (2020). \texttt{arXiv:2003.00982}
+  \item A Generalization of Transformer Networks to Graphs (2020). \texttt{arXiv:2012.09699}
+  \item Principal Neighbourhood Aggregation for Graph Nets (2020). \texttt{arXiv:2004.05718}
+  \item Graph Contrastive Learning with Augmentations (2020). \texttt{arXiv:2010.13902}
+  \item Beyond Homophily in Graph Neural Networks: Current Limitations and
+  Effective Designs (2020). \texttt{arXiv:2006.11468}
+  \item TUDataset: A collection of benchmark datasets for learning with graphs (2020). \texttt{arXiv:2007.08663}
+  \item How to build a cross-impact model from first principles: Theoretical
+  requirements and empirical results (2020). \texttt{arXiv:2004.01624}
+  \item On the Bottleneck of Graph Neural Networks and its Practical
+  Implications (2020). \texttt{arXiv:2006.05205}
+  \item Distance Encoding: Design Provably More Powerful Neural Networks for
+  Graph Representation Learning (2020). \texttt{arXiv:2009.00142}
+  \item Permutation Invariant Graph Generation via Score-Based Generative
+  Modeling (2020). \texttt{arXiv:2003.00638}
+  \item Improving Graph Neural Network Expressivity via Subgraph Isomorphism
+  Counting (2020). \texttt{arXiv:2006.09252}
+  \item Can Graph Neural Networks Count Substructures? (2020). \texttt{arXiv:2002.04025}
+  \item Simple and Deep Graph Convolutional Networks (2020). \texttt{arXiv:2007.02133}
+  \item Deep Graph Contrastive Representation Learning (2020). \texttt{arXiv:2006.04131}
+  \item GCC: Graph Contrastive Coding for Graph Neural Network Pre-Training (2020). \texttt{arXiv:2006.09963}
+  \item Contrastive Multi-View Representation Learning on Graphs (2020). \texttt{arXiv:2006.05582}
+  \item Adaptive Universal Generalized PageRank Graph Neural Network (2020). \texttt{arXiv:2006.07988}
+  \item Directional Graph Networks (2020). \texttt{arXiv:2010.02863}
+  \item Random Features Strengthen Graph Neural Networks (2020). \texttt{arXiv:2002.03155}
+  \item GPT-GNN: Generative Pre-Training of Graph Neural Networks (2020). \texttt{arXiv:2006.15437}
+  \item Graph-Bert: Only Attention is Needed for Learning Graph Representations (2020). \texttt{arXiv:2001.05140}
+  \item Parameterized Explainer for Graph Neural Network (2020). \texttt{arXiv:2011.04573}
+  \item Graph Contrastive Learning with Adaptive Augmentation (2020). \texttt{arXiv:2010.14945}
+  \item Machine Learning on Graphs: A Model and Comprehensive Taxonomy (2020). \texttt{arXiv:2005.03675}
+  \item The Surprising Power of Graph Neural Networks with Random Node
+  Initialization (2020). \texttt{arXiv:2010.01179}
+  \item Building powerful and equivariant graph neural networks with structural
+  message-passing (2020). \texttt{arXiv:2006.15107}
+  \item Explainability in Graph Neural Networks: A Taxonomic Survey (2020). \texttt{arXiv:2012.15445}
+  \item SIGN: Scalable Inception Graph Neural Networks (2020). \texttt{arXiv:2004.11198}
+  \item XGNN: Towards Model-Level Explanations of Graph Neural Networks (2020). \texttt{arXiv:2006.02587}
+  \item DeeperGCN: All You Need to Train Deeper GCNs (2020). \texttt{arXiv:2006.07739}
+  \item Non-Local Graph Neural Networks (2020). \texttt{arXiv:2005.14612}
+  \item Heterogeneous Graph Transformer (2020). \texttt{arXiv:2003.01332}
+  \item Self-supervised Learning on Graphs: Deep Insights and New Direction (2020). \texttt{arXiv:2006.10141}
+  \item Scaling Graph Neural Networks with Approximate PageRank (2020). \texttt{arXiv:2007.01570}
+  \item Wiki-CS: A Wikipedia-Based Benchmark for Graph Neural Networks (2020). \texttt{arXiv:2007.02901}
+  \item Graph Neural Networks with Parallel Neighborhood Aggregations for Graph
+  Classification (2021). \texttt{arXiv:2111.11482}
+  \item Graph Neural Networks: Methods, Applications, and Opportunities (2021). \texttt{arXiv:2108.10733}
+  \item Graph Feature Gating Networks (2021). \texttt{arXiv:2105.04493}
+  \item Learning Graph Representations (2021). \texttt{arXiv:2102.02026}
+  \item Neural Trees for Learning on Graphs (2021). \texttt{arXiv:2105.07264}
+  \item Do Transformers Really Perform Bad for Graph Representation? (2021). \texttt{arXiv:2106.05234}
+  \item Rethinking Graph Transformers with Spectral Attention (2021). \texttt{arXiv:2106.03893}
+  \item A characterisation of cross-impact kernels (2021). \texttt{arXiv:2107.08684}
+  \item GraphiT: Encoding Graph Structure in Transformers (2021). \texttt{arXiv:2106.05667}
+  \item Graph Neural Networks with Learnable Structural and Positional
+  Representations (2021). \texttt{arXiv:2110.07875}
+  \item Equivariant Burnside groups: structure and operations (2021). \texttt{arXiv:2105.02929}
+  \item How Attentive are Graph Attention Networks? (2021). \texttt{arXiv:2105.14491}
+  \item Understanding over-squashing and bottlenecks on graphs via curvature (2021). \texttt{arXiv:2111.14522}
+  \item Beyond Low-frequency Information in Graph Convolutional Networks (2021). \texttt{arXiv:2101.00797}
+  \item Identity-aware Graph Neural Networks (2021). \texttt{arXiv:2101.10320}
+  \item From Stars to Subgraphs: Uplifting Any GNN with Local Structure
+  Awareness (2021). \texttt{arXiv:2110.03753}
+  \item The Logic of Graph Neural Networks (2021). \texttt{arXiv:2104.14624}
+  \item Equivariant Subgraph Aggregation Networks (2021). \texttt{arXiv:2110.02910}
+  \item Nested Graph Neural Networks (2021). \texttt{arXiv:2110.13197}
+  \item Large Scale Learning on Non-Homophilous Graphs: New Benchmarks and
+  Strong Simple Methods (2021). \texttt{arXiv:2110.14446}
+  \item Graph-level Neural Networks: Current Progress and Future Directions (2022). \texttt{arXiv:2205.15555}
+  \item Theory of Graph Neural Networks: Representation and Learning (2022). \texttt{arXiv:2204.07697}
+  \item Graph Neural Networks Designed for Different Graph Types: A Survey (2022). \texttt{arXiv:2204.03080}
+  \item Graph Representation Learning with Individualization and Refinement (2022). \texttt{arXiv:2203.09141}
+  \item Learning the Network of Graphs for Graph Neural Networks (2022). \texttt{arXiv:2210.03907}
+  \item DiGress: Discrete Denoising diffusion for graph generation (2022). \texttt{arXiv:2209.14734}
+  \item Recipe for a General, Powerful, Scalable Graph Transformer (2022). \texttt{arXiv:2205.12454}
+  \item Diffusion Models: A Comprehensive Survey of Methods and Applications (2022). \texttt{arXiv:2209.00796}
+  \item Structure-Aware Transformer for Graph Representation Learning (2022). \texttt{arXiv:2202.03036}
+  \item SPECTRE: Spectral Conditioning Helps to Overcome the Expressivity Limits
+  of One-shot Graph Generators (2022). \texttt{arXiv:2204.01613}
+  \item Representing Long-Range Context for Graph Neural Networks with Global
+  Attention (2022). \texttt{arXiv:2201.08821}
+  \item A Survey on Generative Diffusion Model (2022). \texttt{arXiv:2209.02646}
+  \item Long Range Graph Benchmark (2022). \texttt{arXiv:2206.08164}
+  \item Cooperative Graph Neural Networks (2023). \texttt{arXiv:2310.01267}
+  \item Path Neural Networks: Expressive and Accurate Graph Neural Networks (2023). \texttt{arXiv:2306.05955}
+  \item Feature Expansion for Graph Neural Networks (2023). \texttt{arXiv:2305.06142}
+  \item Graph Rewriting for Graph Neural Networks (2023). \texttt{arXiv:2305.18632}
+  \item The Expressive Power of Graph Neural Networks: A Survey (2023). \texttt{arXiv:2308.08235}
+  \item GraphPrompt: Unifying Pre-Training and Downstream Tasks for Graph Neural
+  Networks (2023). \texttt{arXiv:2302.08043}
+  \item Equivariant birational geometry of linear actions (2023). \texttt{arXiv:2302.02296}
+  \item Autoregressive Diffusion Model for Graph Generation (2023). \texttt{arXiv:2307.08849}
+  \item Graphs Unveiled: Graph Neural Networks and Graph Generation (2024). \texttt{arXiv:2403.13849}
+  \item On the Expressive Power of Graph Neural Networks (2024). \texttt{arXiv:2401.01626}
+  \item Generalization of Graph Neural Networks through the Lens of Homomorphism (2024). \texttt{arXiv:2403.06079}
+  \item Foundations and Frontiers of Graph Learning Theory (2024). \texttt{arXiv:2407.03125}
+  \item Learning From Graph-Structured Data: Addressing Design Issues and
+  Exploring Practical Applications in Graph Representation Learning (2024). \texttt{arXiv:2411.07269}
+  \item OpenGLT: A Comprehensive Benchmark of Graph Neural Networks for Graph-Level Tasks (2025). \texttt{arXiv:2501.00773}
+  \item Survey on Generalization Theory for Graph Neural Networks (2025). \texttt{arXiv:2503.15650}
+  \item Enhancing Graph Representations with Neighborhood-Contextualized Message-Passing (2025). \texttt{arXiv:2511.11046}
+  \item EdgeGFL: Rethinking Edge Information in Graph Feature Preference
+  Learning (2025). \texttt{arXiv:2502.02302}
+  \item Graph Neural Networks for Databases: A Survey (2025). \texttt{arXiv:2502.12908}
+  \item Invariants in equivariant birational geometry (2026). \texttt{arXiv:2602.23998}
+  \item Destruction is a General Strategy to Learn Generation; Diffusion's Strength is to Take it Seriously; Exploration is the Future (2026). \texttt{arXiv:2605.30553}
+  \item Generator-based Graph Generation via Heat Diffusion (2026). \texttt{arXiv:2602.03612}
+\end{enumerate}
+
+\end{document}

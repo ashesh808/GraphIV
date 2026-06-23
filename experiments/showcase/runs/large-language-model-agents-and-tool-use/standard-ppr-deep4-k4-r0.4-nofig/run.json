@@ -1,0 +1,1546 @@
+{
+ "question": "large language model agents and tool use",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 4,
+ "rounds_run": 3,
+ "critique_k": 4,
+ "n_critiques": 4,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep4-k4-r0.4-nofig",
+ "schema": [
+  [
+   "methodology",
+   "Core approach for tool selection, usage, or generation."
+  ],
+  [
+   "tool_interaction_type",
+   "How the agent interacts with or creates tools."
+  ],
+  [
+   "reasoning_framework",
+   "Logic or prompting strategy used for agentic decisions."
+  ],
+  [
+   "evaluation_benchmark",
+   "Datasets or metrics used to assess performance."
+  ],
+  [
+   "tool_categories",
+   "Specific types of tools utilized by the agent."
+  ],
+  [
+   "key_contribution",
+   "The main novelty or advancement presented."
+  ]
+ ],
+ "n_pool": 601,
+ "n_landmarks": 160,
+ "n_edges": 6730,
+ "frontier_year": 2023,
+ "frontier_count": 129,
+ "grounded": [
+  "1706.03762",
+  "1810.04805",
+  "2005.11401",
+  "2005.14165",
+  "2112.09332",
+  "2201.11903",
+  "2203.02155",
+  "2203.11171",
+  "2206.10498",
+  "2207.01206",
+  "2210.03629",
+  "2211.10435",
+  "2211.12588",
+  "2302.01560",
+  "2302.04761",
+  "2302.06706",
+  "2303.08774",
+  "2303.11366",
+  "2303.16434",
+  "2303.17651",
+  "2303.17760",
+  "2304.05376",
+  "2304.09842",
+  "2304.11477",
+  "2305.15771",
+  "2307.07924",
+  "2307.12856",
+  "2307.16789",
+  "2308.00352",
+  "2308.03688",
+  "2308.08155",
+  "2310.06770",
+  "2310.08560",
+  "2311.08152",
+  "2311.12983",
+  "2312.13771",
+  "2401.07324",
+  "2401.13649",
+  "2402.01622",
+  "2402.01680",
+  "2405.15793",
+  "2406.12045",
+  "2407.21783",
+  "2409.02977",
+  "2501.12948",
+  "2502.11705",
+  "2511.14650",
+  "2512.13278",
+  "2512.19458",
+  "2601.12538",
+  "2603.22862",
+  "2604.00835"
+ ],
+ "off_digest": [],
+ "report_chars": 23731,
+ "judge_scores_final": {},
+ "landmarks": [
+  {
+   "arxiv_id": "2604.00835",
+   "title": "Agentic Tool Use in Large Language Models",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.8231695331724223,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2511.14650",
+   "title": "AutoTool: Efficient Tool Selection for Large Language Model Agents",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8399173420965284,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.16533",
+   "title": "Tool Learning in the Wild: Empowering Language Models as Automatic Tool\n  Agents",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8457087088103497,
+   "in_degree": 10,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.17126",
+   "title": "Large Language Models as Tool Makers",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.830190651643648,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2601.12538",
+   "title": "Agentic Reasoning for Large Language Models",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.8209783586941416,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.21460",
+   "title": "Large Language Model Agent: A Survey on Methodology, Applications and\n  Challenges",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8308146769334614,
+   "in_degree": 8,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2402.01680",
+   "title": "Large Language Model based Multi-Agents: A Survey of Progress and\n  Challenges",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8262202740869823,
+   "in_degree": 54,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2308.03427",
+   "title": "TPTU: Large Language Model-based AI Agents for Task Planning and Tool Usage",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.819961055700078,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2603.22862",
+   "title": "The Evolution of Tool Use in LLM Agents: From Single-Tool Call to Multi-Tool Orchestration",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.8057597555056927,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2508.17281",
+   "title": "From Language to Action: A Review of Large Language Models as Autonomous Agents and Tool Users",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.820405665088872,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.07324",
+   "title": "Small LLMs Are Weak Tool Learners: A Multi-LLM Agent",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8248356712421875,
+   "in_degree": 10,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2308.11432",
+   "title": "A Survey on Large Language Model based Autonomous Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8092506834460478,
+   "in_degree": 107,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2603.29936",
+   "title": "Do Papers with Titles Ending in a Question Mark Usually Have the Answer \"No\"?",
+   "year": 2026,
+   "category": "astro-ph",
+   "score": 0.7241441627599198,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.19678",
+   "title": "From LLM Reasoning to Autonomous AI Agents: A Comprehensive Review",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8118767713381893,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2409.18807",
+   "title": "LLM With Tools: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8210841278358296,
+   "in_degree": 11,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.17294",
+   "title": "Enhancing Open-Domain Task-Solving Capability of LLMs via Autonomous Tool Integration from GitHub",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.805340079476773,
+   "in_degree": 1,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2510.09244",
+   "title": "Fundamentals of Building Autonomous LLM Agents",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8094979463627929,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2404.04442",
+   "title": "Exploring Autonomous Agents through the Lens of Large Language Models: A\n  Review",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8210218417095609,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.14365",
+   "title": "An In-depth Survey of Large Language Model-based Artificial Intelligence\n  Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7988526076133,
+   "in_degree": 3,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2502.11705",
+   "title": "LLM Agents Making Agent Tools",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8071801288337151,
+   "in_degree": 4,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.03031",
+   "title": "Learning to Use Tools via Cooperative and Interactive Agents",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8151366163567536,
+   "in_degree": 11,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.08152",
+   "title": "Towards Reasoning in Large Language Models via Multi-Agent Peer Review\n  Collaboration",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7945111373492832,
+   "in_degree": 2,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2512.13278",
+   "title": "AutoTool: Dynamic Tool Selection and Integration for Agentic Reasoning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8053752024558459,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.03428",
+   "title": "Exploring Large Language Model based Intelligent Agents: Definitions,\n  Methods, and Prospects",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8132383451183028,
+   "in_degree": 16,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.13884",
+   "title": "Controlling Large Language Model-based Agents for Large-Scale\n  Decision-Making: An Actor-Critic Approach",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7939038397529232,
+   "in_degree": 2,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2512.19458",
+   "title": "An Agentic Framework for Autonomous Materials Computation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8009943785403868,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2409.02977",
+   "title": "Large Language Model-Based Agents for Software Engineering: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8105693116205953,
+   "in_degree": 7,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.09014",
+   "title": "ART: Automatic multi-step reasoning and tool-use for large language\n  models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.793333343283685,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2503.19213",
+   "title": "A Survey of Large Language Model Agents for Question Answering",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8006432360396843,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.17935",
+   "title": "Tool Learning with Large Language Models: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8097031718344594,
+   "in_degree": 34,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.07870",
+   "title": "Agents: An Open-source Framework for Autonomous Language Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7932471055850895,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2506.00886",
+   "title": "Position: Agent Should Invoke External Tools ONLY When Epistemically Necessary",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8001906418315473,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.504643959249259,
+   "in_degree": 42,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6341905726859001,
+   "in_degree": 142,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1810.04805",
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language\n  Understanding",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5769833965498847,
+   "in_degree": 54,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2201.11903",
+   "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6320145606237064,
+   "in_degree": 213,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2107.03374",
+   "title": "Evaluating Large Language Models Trained on Code",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6022681109900783,
+   "in_degree": 90,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2005.11401",
+   "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6146190480443217,
+   "in_degree": 55,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2203.02155",
+   "title": "Training language models to follow instructions with human feedback",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6045408305741345,
+   "in_degree": 101,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.14168",
+   "title": "Training Verifiers to Solve Math Word Problems",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5799141378517351,
+   "in_degree": 84,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.02311",
+   "title": "PaLM: Scaling Language Modeling with Pathways",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6545172243690136,
+   "in_degree": 65,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2210.03629",
+   "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6978551051092085,
+   "in_degree": 208,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2112.09332",
+   "title": "WebGPT: Browser-assisted question-answering with human feedback",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.580470220369654,
+   "in_degree": 81,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.01691",
+   "title": "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6487426689927654,
+   "in_degree": 74,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.11171",
+   "title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6000196441633242,
+   "in_degree": 73,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2103.03874",
+   "title": "Measuring Mathematical Problem Solving With the MATH Dataset",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5654450494098362,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1707.06347",
+   "title": "Proximal Policy Optimization Algorithms",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5024163563209603,
+   "in_degree": 38,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2302.04761",
+   "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7427569064440485,
+   "in_degree": 149,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.11916",
+   "title": "Large Language Models are Zero-Shot Reasoners",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.691626805840418,
+   "in_degree": 65,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2201.07207",
+   "title": "Language Models as Zero-Shot Planners: Extracting Actionable Knowledge\n  for Embodied Agents",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6941260012531634,
+   "in_degree": 63,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.03300",
+   "title": "Measuring Massive Multitask Language Understanding",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6212529765973643,
+   "in_degree": 43,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2303.08774",
+   "title": "GPT-4 Technical Report",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5538744082893792,
+   "in_degree": 135,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2207.05608",
+   "title": "Inner Monologue: Embodied Reasoning through Planning with Language\n  Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6937138977464612,
+   "in_degree": 50,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.13971",
+   "title": "LLaMA: Open and Efficient Foundation Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6076187318274672,
+   "in_degree": 74,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.11366",
+   "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7180605618204998,
+   "in_degree": 119,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.07682",
+   "title": "Emergent Abilities of Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6662808686437626,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.03442",
+   "title": "Generative Agents: Interactive Simulacra of Human Behavior",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6134552221631208,
+   "in_degree": 100,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.10601",
+   "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6835309549293418,
+   "in_degree": 103,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.16789",
+   "title": "ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world\n  APIs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7803730115978654,
+   "in_degree": 116,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2010.03768",
+   "title": "ALFWorld: Aligning Text and Embodied Environments for Interactive\n  Learning",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5746178606526934,
+   "in_degree": 50,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2303.12712",
+   "title": "Sparks of Artificial General Intelligence: Early experiments with GPT-4",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6612840327219124,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.17580",
+   "title": "HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging\n  Face",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6827631558916643,
+   "in_degree": 89,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2211.10435",
+   "title": "PAL: Program-aided Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7047373289889344,
+   "in_degree": 46,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.17651",
+   "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6421287295566135,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.15334",
+   "title": "Gorilla: Large Language Model Connected with Massive APIs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7199579298514914,
+   "in_degree": 84,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1809.09600",
+   "title": "HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question\n  Answering",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5336738023235182,
+   "in_degree": 42,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2207.01206",
+   "title": "WebShop: Towards Scalable Real-World Web Interaction with Grounded\n  Language Agents",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6449933593072527,
+   "in_degree": 67,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.09288",
+   "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6603531786771618,
+   "in_degree": 74,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.17760",
+   "title": "CAMEL: Communicative Agents for \"Mind\" Exploration of Large Language\n  Model Society",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6966349743728043,
+   "in_degree": 61,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.00352",
+   "title": "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6819908345859395,
+   "in_degree": 80,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.16291",
+   "title": "Voyager: An Open-Ended Embodied Agent with Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6316410845630233,
+   "in_degree": 77,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.07924",
+   "title": "ChatDev: Communicative Agents for Software Development",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6652201217005344,
+   "in_degree": 66,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2212.10560",
+   "title": "Self-Instruct: Aligning Language Models with Self-Generated Instructions",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5814757464665345,
+   "in_degree": 36,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2309.07864",
+   "title": "The Rise and Potential of Large Language Model Based Agents: A Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7751870884641725,
+   "in_degree": 76,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.14325",
+   "title": "Improving Factuality and Reasoning in Language Models through Multiagent\n  Debate",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.742749867557931,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.08354",
+   "title": "Tool Learning with Foundation Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7172953695187902,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.17491",
+   "title": "Language Models can Solve Computer Tasks",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7343014401821711,
+   "in_degree": 41,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.01560",
+   "title": "Describe, Explain, Plan and Select: Interactive Planning with Large\n  Language Models Enables Open-World Multi-Task Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6944774471326032,
+   "in_degree": 40,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.03688",
+   "title": "AgentBench: Evaluating LLMs as Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7645557847771307,
+   "in_degree": 62,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.08244",
+   "title": "API-Bank: A Comprehensive Benchmark for Tool-Augmented LLMs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7561410167898445,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.13854",
+   "title": "WebArena: A Realistic Web Environment for Building Autonomous Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.680954315314236,
+   "in_degree": 58,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.05128",
+   "title": "Teaching Large Language Models to Self-Debug",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6458330951069332,
+   "in_degree": 26,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.08155",
+   "title": "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6891126502231657,
+   "in_degree": 59,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.07842",
+   "title": "Augmented Language Models: a Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7333936804180361,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2211.12588",
+   "title": "Program of Thoughts Prompting: Disentangling Computation from Reasoning\n  for Numerical Reasoning Tasks",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.594774313206797,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.12255",
+   "title": "TALM: Tool Augmented Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7106182561808242,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.04671",
+   "title": "Visual ChatGPT: Talking, Drawing and Editing with Visual Foundation\n  Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5955054808607856,
+   "in_degree": 34,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2209.11302",
+   "title": "ProgPrompt: Generating Situated Robot Task Plans using Large Language\n  Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6335834757530143,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.19118",
+   "title": "Encouraging Divergent Thinking in Large Language Models through\n  Multi-Agent Debate",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7017106253792909,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.09685",
+   "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5959883069127726,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.14992",
+   "title": "Reasoning with Language Model is Planning with World Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.736529232152541,
+   "in_degree": 43,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.11554",
+   "title": "ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via\n  Tool Embeddings",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7353021993527397,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.09842",
+   "title": "Chameleon: Plug-and-Play Compositional Reasoning with Large Language\n  Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6924243382524496,
+   "in_degree": 42,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.05301",
+   "title": "ToolAlpaca: Generalized Tool Learning for Language Models with 3000\n  Simulated Cases",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7395422956345452,
+   "in_degree": 42,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.11477",
+   "title": "LLM+P: Empowering Large Language Models with Optimal Planning\n  Proficiency",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7142183621844449,
+   "in_degree": 35,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.16434",
+   "title": "TaskMatrix.AI: Completing Tasks by Connecting Foundation Models with\n  Millions of APIs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6148524020535773,
+   "in_degree": 24,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2501.12948",
+   "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.6416599711685764,
+   "in_degree": 35,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.06070",
+   "title": "Mind2Web: Towards a Generalist Agent for the Web",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6799282161614664,
+   "in_degree": 47,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.18223",
+   "title": "A Survey of Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7319955088849806,
+   "in_degree": 31,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.12950",
+   "title": "Code Llama: Open Foundation Models for Code",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5965481882718191,
+   "in_degree": 31,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.03378",
+   "title": "PaLM-E: An Embodied Multimodal Language Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6491248391887128,
+   "in_degree": 31,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.10848",
+   "title": "AgentVerse: Facilitating Multi-Agent Collaboration and Exploring\n  Emergent Behaviors",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6972955917157284,
+   "in_degree": 36,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.05685",
+   "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6394161582944026,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.09687",
+   "title": "Graph of Thoughts: Solving Elaborate Problems with Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6823695020369014,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2407.21783",
+   "title": "The Llama 3 Herd of Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6518953604677747,
+   "in_degree": 30,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2306.06624",
+   "title": "RestGPT: Connecting Large Language Models with Real-World RESTful APIs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.731054269424574,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.16504",
+   "title": "On the Tool Manipulation Capability of Open-source Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7518965620263338,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.04091",
+   "title": "Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning\n  by Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6475465138021577,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.17144",
+   "title": "Ghost in the Minecraft: Generally Capable Agents for Open-World\n  Environments via Large Language Models with Text-based Knowledge and Memory",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6430321560420093,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.03314",
+   "title": "Multi-Agent Collaboration: Harnessing the Power of Intelligent LLM\n  Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7693824968065324,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.07201",
+   "title": "ChatEval: Towards Better LLM-based Evaluators through Multi-Agent Debate",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6823643515559119,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.11738",
+   "title": "CRITIC: Large Language Models Can Self-Correct with Tool-Interactive\n  Critiquing",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7058480393659338,
+   "in_degree": 30,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.03300",
+   "title": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open\n  Language Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.622299437226512,
+   "in_degree": 21,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.18752",
+   "title": "GPT4Tools: Teaching Large Language Model to Use Tools via\n  Self-instruction",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7216589338843091,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2306.13304",
+   "title": "ToolQA: A Dataset for LLM Question Answering with External Tools",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7467495685826161,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.14318",
+   "title": "CREATOR: Tool Creation for Disentangling Abstract and Concrete Reasoning\n  of Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.75178120867161,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.12856",
+   "title": "A Real-World WebAgent with Planning, Long Context Understanding, and\n  Program Synthesis",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7087558409404034,
+   "in_degree": 27,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.02716",
+   "title": "Understanding the planning of LLM agents: A survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7683999907643652,
+   "in_degree": 33,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.02427",
+   "title": "Cognitive Architectures for Language Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7300286698037709,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2304.05376",
+   "title": "ChemCrow: Augmenting large-language models with chemistry tools",
+   "year": 2023,
+   "category": "physics",
+   "score": 0.6743204015763902,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2311.12983",
+   "title": "GAIA: a benchmark for General AI Assistants",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6146390720057243,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.10144",
+   "title": "ExpeL: LLM Agents Are Experiential Learners",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7400157776502777,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.12823",
+   "title": "AgentTuning: Enabling Generalized Agent Abilities for LLMs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7389213326905665,
+   "in_degree": 32,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2212.04088",
+   "title": "LLM-Planner: Few-Shot Grounded Planning for Embodied Agents with Large\n  Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7287615370465269,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.01030",
+   "title": "Executable Code Actions Elicit Better LLM Agents",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7274561895848596,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.10250",
+   "title": "MemoryBank: Enhancing Large Language Models with Long-Term Memory",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6566833302791157,
+   "in_degree": 25,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.10634",
+   "title": "OpenAgents: An Open Platform for Language Agents in the Wild",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7464633856160833,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.18290",
+   "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward\n  Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6015694810024732,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2312.10997",
+   "title": "Retrieval-Augmented Generation for Large Language Models: A Survey",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7002723729243927,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.10498",
+   "title": "PlanBench: An Extensible Benchmark for Evaluating Large Language Models\n  on Planning and Reasoning about Change",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6821331964347631,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2405.15793",
+   "title": "SWE-agent: Agent-Computer Interfaces Enable Automated Software\n  Engineering",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7051719833568204,
+   "in_degree": 19,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.11805",
+   "title": "Gemini: A Family of Highly Capable Multimodal Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5813788508879507,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.05960",
+   "title": "BOLAA: Benchmarking and Orchestrating LLM-augmented Autonomous Agents",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7384514814909844,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.06825",
+   "title": "Mistral 7B",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6015298076041002,
+   "in_degree": 23,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2406.12045",
+   "title": "$\\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World\n  Domains",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6692720555737701,
+   "in_degree": 19,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.08560",
+   "title": "MemGPT: Towards LLMs as Operating Systems",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6754263605128807,
+   "in_degree": 22,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2404.13501",
+   "title": "A Survey on the Memory Mechanism of Large Language Model based Agents",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.742479597693489,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.03128",
+   "title": "MetaTool Benchmark for Large Language Models: Deciding Whether to Use\n  Tools and Which to Use",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7691997264985823,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.01622",
+   "title": "TravelPlanner: A Benchmark for Real-World Planning with Language Agents",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7115852521145849,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.06322",
+   "title": "Multi-Agent Collaboration Mechanisms: A Survey of LLMs",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7447239932251268,
+   "in_degree": 9,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.17288",
+   "title": "AutoAgents: A Framework for Automatic Agent Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7529380579943739,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2401.06201",
+   "title": "EASYTOOL: Enhancing LLM-based Agents with Concise Tool Instruction",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7494633925993596,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.13771",
+   "title": "AppAgent: Multimodal Agents as Smartphone Users",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.728987968163173,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.06770",
+   "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6497822377058086,
+   "in_degree": 21,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.02170",
+   "title": "A Dynamic LLM-Powered Agent Network for Task-Oriented Agent\n  Collaboration",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7293463845311023,
+   "in_degree": 17,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.06706",
+   "title": "On the Planning Abilities of Large Language Models (A Critical\n  Investigation with a Proposed Benchmark)",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7544689433543437,
+   "in_degree": 8,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2404.04834",
+   "title": "LLM-Based Multi-Agent Systems for Software Engineering: Literature Review, Vision and the Road Ahead",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8007695717171899,
+   "in_degree": 7,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.10691",
+   "title": "MINT: Evaluating LLMs in Multi-turn Interaction with Tools and Language\n  Feedback",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6799696981400862,
+   "in_degree": 20,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2401.13649",
+   "title": "VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web\n  Tasks",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6838779063831293,
+   "in_degree": 21,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2310.04406",
+   "title": "Language Agent Tree Search Unifies Reasoning Acting and Planning in\n  Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7621941290333882,
+   "in_degree": 18,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2308.02151",
+   "title": "Retroformer: Retrospective Large Language Agents with Policy Gradient\n  Optimization",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7177633288550389,
+   "in_degree": 16,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2310.05915",
+   "title": "FireAct: Toward Language Agent Fine-tuning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7007104649230134,
+   "in_degree": 19,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2401.13919",
+   "title": "WebVoyager: Building an End-to-End Web Agent with Large Multimodal\n  Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6962079720544201,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2308.04030",
+   "title": "Gentopia: A Collaborative Platform for Tool-Augmented LLMs",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7151304411414937,
+   "in_degree": 11,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2404.07972",
+   "title": "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real\n  Computer Environments",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6518583293885543,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2402.16823",
+   "title": "Language Agents as Optimizable Graphs",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7341215894175667,
+   "in_degree": 12,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2402.04253",
+   "title": "AnyTool: Self-Reflective, Hierarchical Agents for Large-Scale API Calls",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7418389290611124,
+   "in_degree": 13,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.15771",
+   "title": "On the Planning Abilities of Large Language Models : A Critical\n  Investigation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7535496741923217,
+   "in_degree": 11,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.17453",
+   "title": "DS-Agent: Automated Data Science by Empowering Large Language Models\n  with Case-Based Reasoning",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7444146070951699,
+   "in_degree": 9,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2304.05332",
+   "title": "Emergent autonomous scientific research capabilities of large language\n  models",
+   "year": 2023,
+   "category": "physics",
+   "score": 0.7576562349597247,
+   "in_degree": 9,
+   "era": 1
+  }
+ ]
+}

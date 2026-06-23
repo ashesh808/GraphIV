@@ -1,0 +1,31 @@
+{
+ "grounding": {
+  "top_wins": 5,
+  "baseline_wins": 1,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.62
+ },
+ "coverage": {
+  "top_wins": 2,
+  "baseline_wins": 1,
+  "ties": 5,
+  "n": 8,
+  "win_rate": 0.25
+ },
+ "lineage": {
+  "top_wins": 5,
+  "baseline_wins": 1,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.62
+ },
+ "overall": {
+  "top_wins": 5,
+  "baseline_wins": 1,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.62
+ },
+ "compare": "rounds-6 (A) vs rounds-1 (B)"
+}

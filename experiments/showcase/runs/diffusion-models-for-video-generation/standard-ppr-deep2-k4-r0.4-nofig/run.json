@@ -1,0 +1,837 @@
+{
+ "question": "diffusion models for video generation",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 2,
+ "rounds_run": 1,
+ "critique_k": 4,
+ "n_critiques": 4,
+ "figures_enabled": false,
+ "no_frontier_pull": false,
+ "n_figures": 0,
+ "figures": {},
+ "config": "standard-ppr-deep2-k4-r0.4-nofig",
+ "schema": [
+  [
+   "paper_type",
+   "Classification as survey, review, or novel method."
+  ],
+  [
+   "generation_task",
+   "Input modality like text-to-video or image-to-video."
+  ],
+  [
+   "diffusion_framework",
+   "Underlying diffusion type, such as latent or pixel-space."
+  ],
+  [
+   "temporal_mechanism",
+   "Method for maintaining consistency across video frames."
+  ],
+  [
+   "key_contribution",
+   "The main technical novelty or advancement presented."
+  ],
+  [
+   "optimization_approach",
+   "Focus on efficiency, speed, or training-free methods."
+  ]
+ ],
+ "n_pool": 418,
+ "n_landmarks": 80,
+ "n_edges": 10305,
+ "frontier_year": 2023,
+ "frontier_count": 35,
+ "grounded": [
+  "1212.0402",
+  "1312.6114",
+  "1406.2661",
+  "1503.03585",
+  "1609.02612",
+  "1611.06624",
+  "1706.08500",
+  "1707.04993",
+  "1711.00937",
+  "1801.03924",
+  "1811.09245",
+  "1812.04948",
+  "1907.05600",
+  "1907.06571",
+  "2006.11239",
+  "2010.02502",
+  "2011.13456",
+  "2102.09672",
+  "2104.10157",
+  "2105.05233",
+  "2111.12417",
+  "2112.10752",
+  "2204.03458",
+  "2205.11487",
+  "2209.14792",
+  "2210.02303",
+  "2211.11018",
+  "2212.11565",
+  "2302.07685",
+  "2303.08320",
+  "2304.08818",
+  "2307.04725",
+  "2311.11325",
+  "2311.15127",
+  "2312.04483",
+  "2401.12945",
+  "2403.07711",
+  "2403.14148",
+  "2404.00234",
+  "2405.03150",
+  "2405.11473",
+  "2406.04277",
+  "2408.13423",
+  "2410.03160",
+  "2501.02741",
+  "2501.05484",
+  "2501.07563",
+  "2501.08994",
+  "2502.07001",
+  "2503.09926",
+  "2503.18386",
+  "2504.12259",
+  "2504.16081",
+  "2506.01454",
+  "2603.17398",
+  "2604.15911",
+  "2605.17248"
+ ],
+ "off_digest": [],
+ "report_chars": 23700,
+ "judge_scores_final": {
+  "grounding": 5,
+  "coverage": 5,
+  "lineage": 5,
+  "coherence": 5,
+  "frontier": 5
+ },
+ "landmarks": [
+  {
+   "arxiv_id": "2605.17248",
+   "title": "Image-to-Video Diffusion: From Foundations to Open Frontiers",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.8281908135194129,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.16081",
+   "title": "Survey of Video Diffusion Models: Foundations, Implementations, and Applications",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8317318713594782,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.03150",
+   "title": "Video Diffusion Models: A Survey",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8615898583197591,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2309.00398",
+   "title": "VideoGen: A Reference-Guided Latent Diffusion Approach for High\n  Definition Text-to-Video Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8561531445076085,
+   "in_degree": 19,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2604.15911",
+   "title": "Efficient Video Diffusion Models: Advancements and Challenges",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.827885915252288,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.01454",
+   "title": "DiffuseSlide: Training-Free High Frame Rate Video Generation Diffusion",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8227032104322269,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2406.04277",
+   "title": "VideoTetris: Towards Compositional Text-to-Video Generation",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8432879921993712,
+   "in_degree": 11,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.11325",
+   "title": "MoVideo: Motion-Aware Video Generation with Diffusion Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8526361502123929,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2603.17398",
+   "title": "Motion-Adaptive Temporal Attention for Lightweight Video Generation with Stable Diffusion",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.813577769971999,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.05484",
+   "title": "Tuning-Free Long Video Generation via Global-Local Collaborative\n  Diffusion",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8214901925928043,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.14148",
+   "title": "Efficient Video Diffusion Models via Content-Frame Motion-Latent\n  Decomposition",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8395868872357688,
+   "in_degree": 8,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2312.04483",
+   "title": "Hierarchical Spatio-temporal Decoupling for Text-to-Video Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8421080647676389,
+   "in_degree": 10,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.07563",
+   "title": "Training-Free Motion-Guided Video Generation with Enhanced Temporal\n  Consistency Using Motion Consistency Loss",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8187477656203476,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2404.00234",
+   "title": "Grid Diffusion Models for Text-to-Video Generation",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8219496897113769,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.15127",
+   "title": "Stable Video Diffusion: Scaling Latent Video Diffusion Models to Large\n  Datasets",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8338703080769355,
+   "in_degree": 115,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.12259",
+   "title": "VGDFR: Diffusion-based Video Generation with Dynamic Latent Frame Rate",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.815247256878163,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2410.03160",
+   "title": "Redefining Temporal Modeling in Video Diffusion: The Vectorized Timestep\n  Approach",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8198151240480748,
+   "in_degree": 4,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2304.08818",
+   "title": "Align your Latents: High-Resolution Video Synthesis with Latent\n  Diffusion Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8332778074241353,
+   "in_degree": 189,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.09926",
+   "title": "VideoMerge: Towards Training-free Long Video Generation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8142477318427251,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.09047",
+   "title": "VideoCrafter2: Overcoming Data Limitations for High-Quality Video\n  Diffusion Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.817247708764317,
+   "in_degree": 58,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.08320",
+   "title": "VideoFusion: Decomposed Diffusion Models for High-Quality Video\n  Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8276743742263412,
+   "in_degree": 78,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.07001",
+   "title": "From Image to Video: An Empirical Study of Diffusion Representations",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8098591847850443,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2405.11473",
+   "title": "FIFO-Diffusion: Generating Infinite Videos from Text without Training",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8166267580709069,
+   "in_degree": 20,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.07685",
+   "title": "Video Probabilistic Diffusion Models in Projected Latent Space",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8254555638013512,
+   "in_degree": 44,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.02741",
+   "title": "Brick-Diffusion: Generating Long Videos with Brick-to-Wall Denoising",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8084967964031278,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2403.07711",
+   "title": "SSM Meets Video Diffusion Models: Efficient Long-Term Video Generation\n  with Structured State Spaces",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8145361834988528,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2304.11603",
+   "title": "LaMD: Latent Motion Diffusion for Image-Conditional Video Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8232681359165029,
+   "in_degree": 6,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.08994",
+   "title": "RepVideo: Rethinking Cross-Layer Representation for Video Generation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8083603037350849,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2408.13423",
+   "title": "Decoupled Video Generation with Chain of Training-free Diffusion Model\n  Experts",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8109008098910814,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.10874",
+   "title": "Swap Attention in Spatiotemporal Diffusions for Text-to-Video Generation",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.8231581748731059,
+   "in_degree": 40,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.18386",
+   "title": "Resource-Efficient Motion Control for Video Generation via Dynamic Mask\n  Guidance",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8064318515699296,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2401.12945",
+   "title": "Lumiere: A Space-Time Diffusion Model for Video Generation",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.8106894218876929,
+   "in_degree": 34,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1312.6114",
+   "title": "Auto-Encoding Variational Bayes",
+   "year": 2013,
+   "category": "stat",
+   "score": 0.47576412664597967,
+   "in_degree": 92,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5258183440809335,
+   "in_degree": 106,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1212.0402",
+   "title": "UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild",
+   "year": 2012,
+   "category": "cs",
+   "score": 0.5270891257524469,
+   "in_degree": 97,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1706.08500",
+   "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash\n  Equilibrium",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5863433989865798,
+   "in_degree": 87,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2006.11239",
+   "title": "Denoising Diffusion Probabilistic Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6753836627031569,
+   "in_degree": 267,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1503.03585",
+   "title": "Deep Unsupervised Learning using Nonequilibrium Thermodynamics",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.568778092201918,
+   "in_degree": 131,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1812.04948",
+   "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5676112115745537,
+   "in_degree": 50,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2103.00020",
+   "title": "Learning Transferable Visual Models From Natural Language Supervision",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5779530817894556,
+   "in_degree": 201,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1505.04597",
+   "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
+   "year": 2015,
+   "category": "cs",
+   "score": 0.5238885364189646,
+   "in_degree": 110,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1907.05600",
+   "title": "Generative Modeling by Estimating Gradients of the Data Distribution",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5743703282523456,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2112.10752",
+   "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7741869221750087,
+   "in_degree": 258,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1609.02612",
+   "title": "Generating Videos with Scene Dynamics",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.7409215001824199,
+   "in_degree": 63,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2010.02502",
+   "title": "Denoising Diffusion Implicit Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6718506103942512,
+   "in_degree": 184,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2011.13456",
+   "title": "Score-Based Generative Modeling through Stochastic Differential\n  Equations",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5914849733849835,
+   "in_degree": 121,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1801.03924",
+   "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.5559163346477461,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1912.04958",
+   "title": "Analyzing and Improving the Image Quality of StyleGAN",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.5595216931105126,
+   "in_degree": 45,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2105.05233",
+   "title": "Diffusion Models Beat GANs on Image Synthesis",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.689554796910218,
+   "in_degree": 114,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1406.2661",
+   "title": "Generative Adversarial Networks",
+   "year": 2014,
+   "category": "stat",
+   "score": 0.5178155851823278,
+   "in_degree": 44,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2112.10741",
+   "title": "GLIDE: Towards Photorealistic Image Generation and Editing with\n  Text-Guided Diffusion Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6703587997053497,
+   "in_degree": 109,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1711.05101",
+   "title": "Decoupled Weight Decay Regularization",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5175998627846632,
+   "in_degree": 58,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2102.12092",
+   "title": "Zero-Shot Text-to-Image Generation",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5990554148894341,
+   "in_degree": 77,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1711.00937",
+   "title": "Neural Discrete Representation Learning",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5512550041403114,
+   "in_degree": 68,
+   "era": 0
+  },
+  {
+   "arxiv_id": "1812.01717",
+   "title": "Towards Accurate Generative Models of Video: A New Metric & Challenges",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.7440209751725771,
+   "in_degree": 111,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2209.14792",
+   "title": "Make-A-Video: Text-to-Video Generation without Text-Video Data",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.7601762329032483,
+   "in_degree": 216,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2204.06125",
+   "title": "Hierarchical Text-Conditional Image Generation with CLIP Latents",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6642422598499134,
+   "in_degree": 153,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2205.11487",
+   "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language\n  Understanding",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6899873928944501,
+   "in_degree": 146,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1611.06624",
+   "title": "Temporal Generative Adversarial Nets with Singular Value Clipping",
+   "year": 2016,
+   "category": "cs",
+   "score": 0.70056000912907,
+   "in_degree": 52,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2010.11929",
+   "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at\n  Scale",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.4930104729916709,
+   "in_degree": 52,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.03458",
+   "title": "Video Diffusion Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.016666666666666666,
+   "in_degree": 189,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1707.04993",
+   "title": "MoCoGAN: Decomposing Motion and Content for Video Generation",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.7068710662854583,
+   "in_degree": 74,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2207.12598",
+   "title": "Classifier-Free Diffusion Guidance",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5670956844110375,
+   "in_degree": 117,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2210.02303",
+   "title": "Imagen Video: High Definition Video Generation with Diffusion Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.030330882352941176,
+   "in_degree": 203,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2102.09672",
+   "title": "Improved Denoising Diffusion Probabilistic Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6318009125200232,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.15868",
+   "title": "CogVideo: Large-scale Pretraining for Text-to-Video Generation via\n  Transformers",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6965729352573458,
+   "in_degree": 138,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1910.10683",
+   "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text\n  Transformer",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.529937815548394,
+   "in_degree": 57,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2106.15282",
+   "title": "Cascaded Diffusion Models for High Fidelity Image Generation",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6646631687645376,
+   "in_degree": 45,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2012.09841",
+   "title": "Taming Transformers for High-Resolution Image Synthesis",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6225543658247855,
+   "in_degree": 70,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.10157",
+   "title": "VideoGPT: Video Generation using VQ-VAE and Transformers",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7008750115504488,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2104.00650",
+   "title": "Frozen in Time: A Joint Video and Image Encoder for End-to-End Retrieval",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.7112894794375118,
+   "in_degree": 109,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.05543",
+   "title": "Adding Conditional Control to Text-to-Image Diffusion Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.634096368238479,
+   "in_degree": 132,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1811.09245",
+   "title": "Train Sparsely, Generate Densely: Memory-efficient Unsupervised Training\n  of High-resolution Temporal GAN",
+   "year": 2018,
+   "category": "cs",
+   "score": 0.6766597709709568,
+   "in_degree": 44,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2108.01073",
+   "title": "SDEdit: Guided Image Synthesis and Editing with Stochastic Differential\n  Equations",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5654763909247563,
+   "in_degree": 70,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2307.04725",
+   "title": "AnimateDiff: Animate Your Personalized Text-to-Image Diffusion Models\n  without Specific Tuning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7061725825791314,
+   "in_degree": 140,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2302.03011",
+   "title": "Structure and Content-Guided Video Synthesis with Diffusion Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.7984453401026034,
+   "in_degree": 107,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2211.11018",
+   "title": "MagicVideo: Efficient Video Generation With Latent Diffusion Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.019237849779086894,
+   "in_degree": 138,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2212.11565",
+   "title": "Tune-A-Video: One-Shot Tuning of Image Diffusion Models for\n  Text-to-Video Generation",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.0136986301369863,
+   "in_degree": 131,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1907.06571",
+   "title": "Adversarial Video Generation on Complex Datasets",
+   "year": 2019,
+   "category": "cs",
+   "score": 0.6875048514333211,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2111.12417",
+   "title": "N\\\"UWA: Visual Synthesis Pre-training for Neural visUal World creAtion",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6448471225388795,
+   "in_degree": 60,
+   "era": 1
+  }
+ ]
+}

@@ -1,0 +1,571 @@
+QUESTION: test-time compute and reasoning in large language models
+
+SCHEMA FIELDS: ['scaling_mechanism', 'reasoning_domain', 'search_strategy', 'scaling_behavior', 'evaluation_metric', 'scaling_bottlenecks']
+
+ERAS:
+  [0] Origins: 2017-2020
+  [1] Key Advances: 2020-2023
+  [2] Current Frontier: 2023-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1707.06347 (2017) "Proximal Policy Optimization Algorithms" [cs] (cited-by 73 in-topic, era 0)
+    reasoning_domain: simulated robotic locomotion and Atari game playing
+    search_strategy: stochastic gradient ascent
+    evaluation_metric: sample complexity, simplicity, and wall-time
+    relations: used-by arXiv:2305.18290; cited-by arXiv:2309.12284; used-by arXiv:2309.17179; used-by arXiv:2402.03300; used-by arXiv:2506.13102; cited-by arXiv:2307.09288
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 54 in-topic, era 0)
+    reasoning_domain: machine translation (English-to-German, English-to-French) and English constituency parsing
+    evaluation_metric: BLEU score
+    relations: used-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2309.06180; used-by arXiv:2502.05171; used-by arXiv:2502.07154; cited-by arXiv:2502.12521
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 106 in-topic, era 0)
+    scaling_mechanism: scaling up model parameters (up to 175 billion)
+    reasoning_domain: on-the-fly reasoning (unscrambling words, using novel words, 3-digit arithmetic)
+    scaling_behavior: scaling up language models greatly improves task-agnostic, few-shot performance
+    scaling_bottlenecks: certain datasets where few-shot learning struggles and methodological issues related to training on large web corpora
+    relations: uses arXiv:2001.08361; cites arXiv:1706.03762; used-by arXiv:2302.13971; critiqued-by arXiv:2303.08774; cited-by arXiv:2303.17651; cited-by arXiv:2305.10601; cited-by arXiv:2305.14992; cited-by arXiv:2305.18290
+arXiv:2001.08361 (2020) "Scaling Laws for Neural Language Models" [cs] (cited-by 71 in-topic, era 0)
+    scaling_behavior: cross-entropy loss scales as a power-law with model size, dataset size, and compute used for training
+    evaluation_metric: cross-entropy loss
+    relations: uses arXiv:1706.03762; cited-by arXiv:2302.13971; cited-by arXiv:2303.08774; cited-by arXiv:2307.09288; cited-by arXiv:2407.21787; used-by arXiv:2408.00724; cited-by arXiv:2502.05171
+arXiv:2009.03300 (2020) "Measuring Massive Multitask Language Understanding" [cs] (cited-by 56 in-topic, era 0)
+    reasoning_domain: 57 tasks including elementary mathematics, US history, computer science, law, morality, and more
+    scaling_behavior: GPT-3 improves over random chance by almost 20 percentage points on average compared to most recent models
+    evaluation_metric: multitask accuracy
+    scaling_bottlenecks: models still need substantial improvements to reach expert-level accuracy; near-random accuracy on socially important subjects
+    relations: uses arXiv:2005.14165; cites arXiv:2001.08361; cited-by arXiv:2302.13971; used-by arXiv:2303.08774; cited-by arXiv:2307.09288; cited-by arXiv:2311.12022; used-by arXiv:2402.03300; compared-by arXiv:2412.16720
+arXiv:2009.01325 (2020) "Learning to summarize from human feedback" [cs] (cited-by 33 in-topic, era 0)
+    reasoning_domain: summarization
+    evaluation_metric: human preferences
+    scaling_bottlenecks: data and metrics used for a particular task
+    relations: uses arXiv:1706.03762; uses arXiv:1707.06347; uses arXiv:2005.14165; compared-by arXiv:2303.17651; cited-by arXiv:2305.20050; used-by arXiv:2307.09288; cited-by arXiv:2503.19877; used-by arXiv:2204.05862; cited-by arXiv:2107.03374
+arXiv:2110.14168 (2021) "Training Verifiers to Solve Math Word Problems" [cs] (cited-by 217 in-topic, era 1)
+    scaling_mechanism: training verifiers to judge the correctness of model completions and selecting the highest-ranked candidate at test time
+    reasoning_domain: multi-step mathematical reasoning (grade school math word problems)
+    search_strategy: generating many candidate solutions and selecting the one ranked highest by the verifier
+    scaling_behavior: verification scales more effectively with increased data than a finetuning baseline
+    relations: compares-with arXiv:2005.14165; cites arXiv:2001.08361; cites arXiv:2103.03874; uses arXiv:1706.03762; compared-by arXiv:2302.13971; used-by arXiv:2303.17651; compared-by arXiv:2305.14992; used-by arXiv:2305.20050; compared-by arXiv:2307.09288; used-by arXiv:2309.12284
+arXiv:2103.03874 (2021) "Measuring Mathematical Problem Solving With the MATH Dataset" [cs] (cited-by 189 in-topic, era 1)
+    scaling_mechanism: increasing budgets and model parameter counts
+    reasoning_domain: mathematical problem solving
+    scaling_behavior: accuracy remains relatively low and scaling is not currently solving MATH
+    evaluation_metric: accuracy
+    scaling_bottlenecks: simply increasing budgets and model parameter counts will be impractical
+    relations: cites arXiv:1706.03762; cites arXiv:2001.08361; cites arXiv:2107.03374; cites arXiv:2108.07732; cites arXiv:2009.03300; uses arXiv:2005.14165; compared-by arXiv:2302.13971; compared-by arXiv:2305.20050; compared-by arXiv:2307.09288; used-by arXiv:2309.12284; used-by arXiv:2312.08935; used-by arXiv:2402.03300
+arXiv:2107.03374 (2021) "Evaluating Large Language Models Trained on Code" [cs] (cited-by 83 in-topic, era 1)
+    scaling_mechanism: repeated sampling from the model
+    reasoning_domain: Python code-writing (synthesizing programs from docstrings)
+    scaling_behavior: 70.2% success rate with 100 samples per problem
+    evaluation_metric: functional correctness on HumanEval
+    scaling_bottlenecks: difficulty with docstrings describing long chains of operations and binding operations to variables
+    relations: cites arXiv:1706.03762; compares-with arXiv:2005.14165; compares-with arXiv:2001.08361; cites arXiv:2009.01325; compared-by arXiv:2302.13971; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; compared-by arXiv:2303.17651; cited-by arXiv:2307.09288; cited-by arXiv:2309.06180
+arXiv:2112.00114 (2021) "Show Your Work: Scratchpads for Intermediate Computation with Language
+  Models" [cs] (cited-by 38 in-topic, era 1)
+    scaling_mechanism: emitting intermediate computation steps into a 'scratchpad'
+    reasoning_domain: multi-step computations (e.g., long addition, executing arbitrary programs)
+    relations: uses arXiv:2108.07732; motivated-by arXiv:2005.14165; cites arXiv:2107.03374; cited-by arXiv:2305.20050; cited-by arXiv:2408.00724; cited-by arXiv:2505.05408; cited-by arXiv:2205.11916; cited-by arXiv:2201.11903; used-by arXiv:2203.14465
+arXiv:2108.07732 (2021) "Program Synthesis with Large Language Models" [cs] (cited-by 37 in-topic, era 1)
+    reasoning_domain: program synthesis (synthesizing Python programs from natural language descriptions)
+    scaling_behavior: synthesis performance scales log-linearly with model size
+    evaluation_metric: accuracy (percentage of problems solved)
+    scaling_bottlenecks: inability to predict the output of a program given a specific input
+    relations: uses arXiv:2005.14165; compares-with arXiv:2107.03374; uses arXiv:1706.03762; compared-by arXiv:2302.13971; used-by arXiv:2303.11366; cited-by arXiv:2307.09288; used-by arXiv:2402.03300; used-by arXiv:2502.05171; cited-by arXiv:2506.05566
+arXiv:2201.11903 (2022) "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" [cs] (cited-by 260 in-topic, era 1)
+    scaling_mechanism: chain of thought prompting (providing a few chain of thought demonstrations as exemplars)
+    reasoning_domain: arithmetic, commonsense, and symbolic reasoning tasks
+    scaling_behavior: reasoning abilities emerge naturally in sufficiently large language models
+    evaluation_metric: accuracy (e.g., on GSM8K benchmark)
+    relations: compares-with arXiv:2110.14168; uses arXiv:2107.03374; cites arXiv:2108.07732; cites arXiv:2112.00114; uses arXiv:2005.14165; cites arXiv:2001.08361; cited-by arXiv:2303.08774; used-by arXiv:2303.11366; cited-by arXiv:2305.10601; compared-by arXiv:2305.14992; cited-by arXiv:2305.20050; cited-by arXiv:2307.09288
+arXiv:2203.11171 (2022) "Self-Consistency Improves Chain of Thought Reasoning in Language Models" [cs] (cited-by 212 in-topic, era 1)
+    scaling_mechanism: sampling a diverse set of reasoning paths and selecting the most consistent answer via marginalization
+    reasoning_domain: arithmetic and commonsense reasoning
+    search_strategy: self-consistency (marginalizing out sampled reasoning paths)
+    evaluation_metric: accuracy (implied by percentage improvements on benchmarks)
+    relations: extends arXiv:2201.11903; uses arXiv:2110.14168; cites arXiv:2205.11916; uses arXiv:2005.14165; uses arXiv:2107.03374; compared-by arXiv:2302.13971; compared-by arXiv:2305.10601; compared-by arXiv:2305.14992; compared-by arXiv:2305.20050; used-by arXiv:2309.12284; compared-by arXiv:2309.17179
+arXiv:2203.02155 (2022) "Training language models to follow instructions with human feedback" [cs] (cited-by 93 in-topic, era 1)
+    evaluation_metric: human evaluations (preference)
+    relations: uses arXiv:2005.14165; extends arXiv:2009.01325; uses arXiv:1707.06347; cites arXiv:2107.03374; used-by arXiv:2303.08774; compared-by arXiv:2303.17651; cited-by arXiv:2305.18290; cited-by arXiv:2305.20050; used-by arXiv:2307.09288; cited-by arXiv:2309.12284
+arXiv:2205.11916 (2022) "Large Language Models are Zero-Shot Reasoners" [cs] (cited-by 79 in-topic, era 1)
+    scaling_mechanism: Zero-shot Chain of Thought (CoT) prompting via the phrase 'Let's think step by step'
+    reasoning_domain: Arithmetics (MultiArith, GSM8K, AQUA-RAT, SVAMP), symbolic reasoning (Last Letter, Coin Flip), and logical reasoning (Date Understanding, Tracking Shuffled Objects)
+    evaluation_metric: Accuracy
+    relations: uses arXiv:2201.11903; compares-with arXiv:2203.11171; uses arXiv:2005.14165; cites arXiv:2110.14168; cites arXiv:2203.14465; cites arXiv:2112.00114; cited-by arXiv:2303.08774; cited-by arXiv:2305.14992; cited-by arXiv:2305.20050; cited-by arXiv:2309.17179; compared-by arXiv:2311.12022; cited-by arXiv:2408.00724
+arXiv:2211.14275 (2022) "Solving math word problems with process- and outcome-based feedback" [cs] (cited-by 75 in-topic, era 1)
+    reasoning_domain: math word problems (GSM8K)
+    evaluation_metric: final-answer error rate and reasoning error rate
+    relations: compares-with arXiv:2203.11171; compares-with arXiv:2201.11903; uses arXiv:2206.14858; uses arXiv:2206.02336; cites arXiv:2205.11916; uses arXiv:2110.14168; compared-by arXiv:2305.20050; used-by arXiv:2309.17179; compared-by arXiv:2312.08935; cited-by arXiv:2408.00724; critiqued-by arXiv:2408.03314; cited-by arXiv:2501.12948
+arXiv:2203.14465 (2022) "STaR: Bootstrapping Reasoning With Reasoning" [cs] (cited-by 59 in-topic, era 1)
+    scaling_mechanism: Iterative fine-tuning on self-generated rationales that lead to correct answers (bootstrapping)
+    reasoning_domain: Mathematics and commonsense question-answering
+    search_strategy: Generating rationales given the correct answer when initial attempts fail
+    scaling_behavior: Successively more complex reasoning through iterative self-improvement
+    evaluation_metric: Accuracy (performance on multiple datasets)
+    relations: uses arXiv:2201.11903; uses arXiv:2112.00114; uses arXiv:2110.14168; cites arXiv:2005.14165; cites arXiv:1707.06347; cites arXiv:2203.11171; cited-by arXiv:2305.20050; cited-by arXiv:2309.17179; used-by arXiv:2412.21187; cited-by arXiv:2502.06703; cited-by arXiv:2502.07154; cited-by arXiv:2504.00294
+arXiv:2206.14858 (2022) "Solving Quantitative Reasoning Problems with Language Models" [cs] (cited-by 52 in-topic, era 1)
+    reasoning_domain: quantitative reasoning (mathematics, science, and engineering problems at the college level)
+    evaluation_metric: correctly answer rate (nearly a third of 200+ problems)
+    relations: uses arXiv:2201.11903; compares-with arXiv:2203.11171; uses arXiv:2103.03874; cites arXiv:2203.15556; cites arXiv:2005.14165; uses arXiv:2110.14168; used-by arXiv:2302.13971; used-by arXiv:2305.20050; cited-by arXiv:2309.17179; compared-by arXiv:2402.03300; used-by arXiv:2407.21787; cited-by arXiv:2408.00724
+arXiv:2205.10625 (2022) "Least-to-Most Prompting Enables Complex Reasoning in Large Language
+  Models" [cs] (cited-by 51 in-topic, era 1)
+    scaling_mechanism: least-to-most prompting (breaking complex problems into a series of simpler subproblems solved in sequence)
+    reasoning_domain: symbolic manipulation, compositional generalization, and math reasoning
+    scaling_behavior: enables generalization to more difficult problems than those seen in prompts (e.g., SCAN length split accuracy increased from 16% with CoT to at least 99% with least-to-most using 14 exemplars)
+    evaluation_metric: accuracy
+    relations: uses arXiv:2201.11903; uses arXiv:2110.14168; cites arXiv:2005.14165; cites arXiv:2203.11171; cited-by arXiv:2305.10601; compared-by arXiv:2305.14992; cited-by arXiv:2309.12284; cited-by arXiv:2309.17179; cited-by arXiv:2502.12521; cited-by arXiv:2511.14772
+arXiv:2206.02336 (2022) "Making Large Language Models Better Reasoners with Step-Aware Verifier" [cs] (cited-by 42 in-topic, era 1)
+    scaling_mechanism: Generating diverse prompts to explore different reasoning paths and using a step-aware verifier with a weighted voting scheme.
+    reasoning_domain: Arithmetic problems (GSM8K) and other reasoning benchmarks.
+    search_strategy: Exploring different reasoning paths via diverse prompts and filtering via a step-by-step verifier.
+    evaluation_metric: Problem-solving rate (e.g., GSM8K accuracy).
+    relations: uses arXiv:2110.14168; uses arXiv:2203.11171; uses arXiv:2201.11903; cites arXiv:2005.14165; cites arXiv:2205.10625; cites arXiv:2205.11916; compared-by arXiv:2305.20050; used-by arXiv:2312.08935; used-by arXiv:2408.03314; cited-by arXiv:2412.21187; cited-by arXiv:2504.00294; cited-by arXiv:2507.05557
+arXiv:2203.15556 (2022) "Training Compute-Optimal Large Language Models" [cs] (cited-by 40 in-topic, era 1)
+    scaling_mechanism: Scaling model size and number of training tokens equally (doubling both for every doubling of compute)
+    scaling_behavior: For compute-optimal training, model size and number of training tokens should be scaled equally
+    evaluation_metric: Average accuracy on MMLU benchmark (67.5%)
+    scaling_bottlenecks: Undertraining caused by scaling model size while keeping training data constant
+    relations: uses arXiv:2001.08361; cites arXiv:2005.14165; compares-with arXiv:2009.03300; cites arXiv:1706.03762; used-by arXiv:2302.13971; used-by arXiv:2303.08774; cited-by arXiv:2307.09288; cited-by arXiv:2407.21787; cited-by arXiv:2408.00724; used-by arXiv:2408.03314
+arXiv:2210.03629 (2022) "ReAct: Synergizing Reasoning and Acting in Language Models" [cs] (cited-by 34 in-topic, era 1)
+    reasoning_domain: question answering (HotpotQA), fact verification (Fever), and interactive decision making (ALFWorld and WebShop)
+    search_strategy: interleaved generation of reasoning traces and task-specific actions
+    evaluation_metric: absolute success rate
+    relations: cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2005.14165; uses arXiv:2203.14465; cites arXiv:2205.10625; cites arXiv:2205.11916; used-by arXiv:2303.11366; cited-by arXiv:2305.10601; cited-by arXiv:2407.21787; cited-by arXiv:2509.25420; cited-by arXiv:2211.10435
+arXiv:2204.05862 (2022) "Training a Helpful and Harmless Assistant with Reinforcement Learning
+  from Human Feedback" [cs] (cited-by 29 in-topic, era 1)
+    evaluation_metric: RL reward
+    relations: uses arXiv:2009.01325; compares-with arXiv:2203.02155; compares-with arXiv:2005.14165; uses arXiv:2009.03300; uses arXiv:2107.03374; motivated-by arXiv:2001.08361; cited-by arXiv:2303.17651; cited-by arXiv:2307.09288; cited-by arXiv:2503.19877; cited-by arXiv:2303.08774
+arXiv:2211.10435 (2022) "PAL: Program-aided Language Models" [cs] (cited-by 27 in-topic, era 1)
+    reasoning_domain: mathematical, symbolic, and algorithmic reasoning tasks
+    evaluation_metric: top-1 accuracy
+    relations: uses arXiv:2201.11903; uses arXiv:2203.11171; uses arXiv:2206.14858; cites arXiv:2110.14168; cites arXiv:2210.03629; uses arXiv:2005.14165; used-by arXiv:2303.17651; cited-by arXiv:2305.10601; cited-by arXiv:2408.03314; cited-by arXiv:2502.06703
+arXiv:2305.10601 (2023) "Tree of Thoughts: Deliberate Problem Solving with Large Language Models" [cs] (cited-by 147 in-topic, era 1)
+    scaling_mechanism: Exploration over coherent units of text (thoughts) via multiple reasoning paths, self-evaluation, lookahead, and backtracking.
+    reasoning_domain: Non-trivial planning or search tasks (Game of 24, Creative Writing, and Mini Crosswords).
+    search_strategy: Tree exploration involving multiple reasoning paths, self-evaluation of choices, lookahead, and backtracking.
+    evaluation_metric: Success rate (e.g., 74% for Game of 24 using ToT vs 4% using CoT).
+    relations: uses arXiv:2303.08774; cites arXiv:2005.14165; cites arXiv:2201.11903; compares-with arXiv:2203.11171; cites arXiv:2210.03629; cites arXiv:2305.14992; cited-by arXiv:2305.14992; used-by arXiv:2309.17179; cited-by arXiv:2402.03300; cited-by arXiv:2407.21787; cited-by arXiv:2408.00724; used-by arXiv:2408.03314
+arXiv:2303.17651 (2023) "Self-Refine: Iterative Refinement with Self-Feedback" [cs] (cited-by 106 in-topic, era 1)
+    scaling_mechanism: iterative feedback and refinement using a single LLM as generator, refiner, and feedback provider
+    reasoning_domain: 7 diverse tasks including dialog response generation and mathematical reasoning
+    scaling_behavior: improving by ~20% absolute on average in task performance compared to one-step generation
+    evaluation_metric: human preference and automatic metrics
+    relations: compares-with arXiv:2203.02155; cites arXiv:2005.14165; compares-with arXiv:2303.08774; compares-with arXiv:2107.03374; uses arXiv:2110.14168; cites arXiv:2204.05862; cited-by arXiv:2303.11366; cited-by arXiv:2305.10601; cited-by arXiv:2307.09288; cited-by arXiv:2309.17179; cited-by arXiv:2407.21787; cited-by arXiv:2408.03314
+arXiv:2312.08935 (2023) "Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human
+  Annotations" [cs] (cited-by 93 in-topic, era 1)
+    scaling_mechanism: Verification (reranking) and Reinforcement Learning (step-by-step PPO)
+    reasoning_domain: Mathematics
+    scaling_behavior: Accuracy improvement via PPO (Mistral-7B: 77.9% to 84.1% on GSM8K; 28.6% to 33.0% on MATH) and verification (up to 89.1% on GSM8K and 43.5% on MATH)
+    evaluation_metric: Accuracy
+    scaling_bottlenecks: Heavy reliance on manual annotation
+    relations: uses arXiv:2206.02336; uses arXiv:2305.20050; uses arXiv:2309.12284; cites arXiv:2201.11903; cites arXiv:2203.11171; compares-with arXiv:2211.14275; used-by arXiv:2402.03300; used-by arXiv:2408.00724; used-by arXiv:2408.03314; cited-by arXiv:2501.12948; used-by arXiv:2502.06703; used-by arXiv:2503.19877
+arXiv:2303.08774 (2023) "GPT-4 Technical Report" [cs] (cited-by 91 in-topic, era 1)
+    reasoning_domain: professional and academic benchmarks (e.g., simulated bar exam)
+    scaling_behavior: performance can be predicted based on models trained with no more than 1/1,000th the compute of GPT-4
+    evaluation_metric: score (e.g., top 10% on simulated bar exam)
+    relations: uses arXiv:2203.15556; cites arXiv:2001.08361; critiques arXiv:2005.14165; cites arXiv:2201.11903; cites arXiv:2205.11916; cites arXiv:2302.13971; compared-by arXiv:2303.11366; compared-by arXiv:2303.17651; used-by arXiv:2305.10601; compared-by arXiv:2305.14992; used-by arXiv:2305.20050; compared-by arXiv:2307.09288
+arXiv:2305.20050 (2023) "Let's Verify Step by Step" [cs] (cited-by 87 in-topic, era 1)
+    reasoning_domain: multi-step mathematical reasoning (MATH dataset)
+    evaluation_metric: accuracy (78% on a representative subset of the MATH test set)
+    relations: cites arXiv:2112.00114; cites arXiv:2201.11903; cites arXiv:2205.11916; cites arXiv:2009.01325; cites arXiv:2203.02155; uses arXiv:2110.14168; cited-by arXiv:2309.12284; cited-by arXiv:2309.17179; used-by arXiv:2312.08935; cited-by arXiv:2402.03300; cited-by arXiv:2408.00724; cited-by arXiv:2501.12948
+arXiv:2311.12022 (2023) "GPQA: A Graduate-Level Google-Proof Q&A Benchmark" [cs] (cited-by 87 in-topic, era 1)
+    reasoning_domain: biology, physics, and chemistry
+    evaluation_metric: accuracy
+    relations: compares-with arXiv:2307.09288; compares-with arXiv:2205.11916; cites arXiv:2009.03300; cited-by arXiv:2412.21187; used-by arXiv:2501.12948; used-by arXiv:2503.19877; cited-by arXiv:2504.00294; used-by arXiv:2504.00869; used-by arXiv:2505.18404
+arXiv:2309.06180 (2023) "Efficient Memory Management for Large Language Model Serving with
+  PagedAttention" [cs] (cited-by 69 in-topic, era 1)
+    evaluation_metric: throughput
+    scaling_bottlenecks: KV cache memory fragmentation and redundant duplication
+    relations: extends arXiv:2005.14165; cites arXiv:2107.03374; cites arXiv:1706.03762; cites arXiv:2303.08774; extends arXiv:2302.13971; cited-by arXiv:2312.08935; cited-by arXiv:2402.03300; used-by arXiv:2502.07154; used-by arXiv:2505.18404; used-by arXiv:2506.05566; cited-by arXiv:2509.19645
+arXiv:2309.17179 (2023) "Alphazero-like Tree-Search can Guide Large Language Model Decoding and
+  Training" [cs] (cited-by 64 in-topic, era 1)
+    scaling_mechanism: AlphaZero-like tree-search with a learned value function used during both inference and training
+    reasoning_domain: reasoning, planning, alignment, and decision-making tasks
+    search_strategy: AlphaZero-like tree-search
+    scaling_behavior: can handle trees with a depth of 64
+    relations: cites arXiv:2303.08774; cites arXiv:2302.13971; cites arXiv:2201.11903; cites arXiv:2205.10625; cites arXiv:2206.14858; cites arXiv:2305.18290; used-by arXiv:2408.03314; cited-by arXiv:2412.21187; cited-by arXiv:2501.12948; cited-by arXiv:2502.06703; cited-by arXiv:2507.05557; cited-by arXiv:2508.00890
+arXiv:2305.14992 (2023) "Reasoning with Language Model is Planning with World Model" [cs] (cited-by 58 in-topic, era 1)
+    scaling_mechanism: Incremental building of a reasoning tree using a principled planning algorithm
+    reasoning_domain: Plan generation, math reasoning, and logical inference
+    search_strategy: Monte Carlo Tree Search (MCTS)
+    relations: compares-with arXiv:2303.08774; cites arXiv:2005.14165; compares-with arXiv:2201.11903; compares-with arXiv:2205.10625; compares-with arXiv:2110.14168; cites arXiv:2205.11916; cited-by arXiv:2305.10601; used-by arXiv:2309.17179; cited-by arXiv:2502.12521; cited-by arXiv:2504.00294; compared-by arXiv:2507.05557; cited-by arXiv:2508.00890
+arXiv:2305.18290 (2023) "Direct Preference Optimization: Your Language Model is Secretly a Reward
+  Model" [cs] (cited-by 57 in-topic, era 1)
+    reasoning_domain: sentiment control, summarization, and single-turn dialogue
+    relations: cites arXiv:2005.14165; cites arXiv:2302.13971; cites arXiv:2203.02155; uses arXiv:1707.06347; cited-by arXiv:2309.17179; used-by arXiv:2402.03300; cited-by arXiv:2412.21187
+arXiv:2303.11366 (2023) "Reflexion: Language Agents with Verbal Reinforcement Learning" [cs] (cited-by 48 in-topic, era 1)
+    scaling_mechanism: linguistic feedback and episodic memory buffer
+    reasoning_domain: sequential decision-making, coding, and language reasoning
+    evaluation_metric: pass@1 accuracy
+    relations: uses arXiv:2210.03629; uses arXiv:2107.03374; cites arXiv:2303.17651; uses arXiv:2201.11903; uses arXiv:2108.07732; compares-with arXiv:2303.08774; compared-by arXiv:2303.17651; cited-by arXiv:2305.14992; cited-by arXiv:2309.17179; cited-by arXiv:2502.07154; cited-by arXiv:2504.00294; cited-by arXiv:2506.15882
+arXiv:2307.09288 (2023) "Llama 2: Open Foundation and Fine-Tuned Chat Models" [cs] (cited-by 47 in-topic, era 1)
+    evaluation_metric: human evaluations for helpfulness and safety
+    relations: compares-with arXiv:2110.14168; compares-with arXiv:2103.03874; extends arXiv:2302.13971; cites arXiv:2005.14165; cites arXiv:2203.15556; cites arXiv:2009.03300; cited-by arXiv:2305.14992; used-by arXiv:2309.12284; used-by arXiv:2309.17179; compared-by arXiv:2311.12022; used-by arXiv:2312.08935; cited-by arXiv:2402.03300
+arXiv:2302.13971 (2023) "LLaMA: Open and Efficient Foundation Language Models" [cs] (cited-by 43 in-topic, era 1)
+    relations: uses arXiv:2005.14165; compares-with arXiv:2103.03874; compares-with arXiv:2110.14168; cites arXiv:2001.08361; uses arXiv:2203.15556; uses arXiv:2206.14858; cited-by arXiv:2303.08774; used-by arXiv:2303.17651; cited-by arXiv:2305.10601; compared-by arXiv:2305.14992; cited-by arXiv:2305.18290; extended-by arXiv:2307.09288
+arXiv:2309.12284 (2023) "MetaMath: Bootstrap Your Own Mathematical Questions for Large Language
+  Models" [cs] (cited-by 37 in-topic, era 1)
+    reasoning_domain: mathematical reasoning
+    evaluation_metric: accuracy
+    relations: cites arXiv:2005.14165; cites arXiv:2203.02155; cites arXiv:2107.03374; uses arXiv:2307.09288; compares-with arXiv:2302.13971; compares-with arXiv:2201.11903; used-by arXiv:2312.08935; cited-by arXiv:2402.03300; used-by arXiv:2408.00724; cited-by arXiv:2502.05171; used-by arXiv:2502.06703; compared-by arXiv:2505.05408
+arXiv:2408.03314 (2024) "Scaling LLM Test-Time Compute Optimally can be More Effective than
+  Scaling Model Parameters" [cs] (cited-by 216 in-topic, era 2)
+    scaling_mechanism: (1) searching against dense, process-based verifier reward models; (2) updating the model's distribution over a response adaptively
+    search_strategy: searching against dense, process-based verifier reward models
+    scaling_behavior: test-time compute can outperform a 14x larger model in FLOPs-matched evaluation; compute-optimal strategy improves efficiency by >4x compared to best-of-N
+    scaling_bottlenecks: effectiveness critically varies depending on the difficulty of the prompt
+    relations: uses arXiv:2312.08935; uses arXiv:2206.02336; cites arXiv:2201.11903; cites arXiv:2303.17651; uses arXiv:2305.10601; cites arXiv:2110.14168; cited-by arXiv:2501.12948; used-by arXiv:2502.06703; cited-by arXiv:2502.07154; compared-by arXiv:2502.12521; used-by arXiv:2503.19877; cited-by arXiv:2504.00294
+arXiv:2407.21787 (2024) "Large Language Monkeys: Scaling Inference Compute with Repeated Sampling" [cs] (cited-by 123 in-topic, era 2)
+    scaling_mechanism: repeatedly sampling candidate solutions
+    reasoning_domain: coding and formal proofs
+    search_strategy: majority voting and reward models
+    scaling_behavior: coverage scales with the number of samples over four orders of magnitude, often following a log-linear relationship modeled with an exponentiated power law
+    evaluation_metric: coverage (the fraction of problems that are solved by any generated sample)
+    scaling_bottlenecks: majority voting and reward models plateau beyond several hundred samples and fail to fully scale with the sample budget
+    relations: cites arXiv:2005.14165; cites arXiv:2201.11903; cites arXiv:2203.11171; cites arXiv:2103.03874; uses arXiv:2107.03374; cites arXiv:2001.08361; critiqued-by arXiv:2502.06703; cited-by arXiv:2502.07154; cited-by arXiv:2504.00294; cited-by arXiv:2505.05408; cited-by arXiv:2505.20522; cited-by arXiv:2507.02076
+arXiv:2407.21783 (2024) "The Llama 3 Herd of Models" [cs] (cited-by 114 in-topic, era 2)
+    reasoning_domain: multilinguality, coding, reasoning, and tool usage
+    relations: compared-by arXiv:2501.12948; used-by arXiv:2502.06703; used-by arXiv:2502.07154; used-by arXiv:2503.19877; cited-by arXiv:2505.05408; cited-by arXiv:2505.18404
+arXiv:2402.03300 (2024) "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open
+  Language Models" [cs] (cited-by 107 in-topic, era 2)
+    reasoning_domain: mathematical reasoning
+    search_strategy: self-consistency over 64 samples
+    evaluation_metric: MATH benchmark score
+    relations: uses arXiv:2103.03874; cites arXiv:2303.08774; uses arXiv:2009.03300; uses arXiv:2110.14168; compares-with arXiv:2206.14858; uses arXiv:2201.11903; cited-by arXiv:2408.03314; used-by arXiv:2501.12948; cited-by arXiv:2502.05171; cited-by arXiv:2502.06703; cited-by arXiv:2502.07154; compared-by arXiv:2503.19877
+arXiv:2412.16720 (2024) "OpenAI o1 System Card" [cs] (cited-by 102 in-topic, era 2)
+    scaling_mechanism: large-scale reinforcement learning to reason using chain of thought
+    reasoning_domain: safety policies, generating illicit advice, choosing stereotyped responses, and succumbing to known jailbreaks
+    relations: compares-with arXiv:2009.03300; cited-by arXiv:2503.19877; compared-by arXiv:2504.00294; used-by arXiv:2504.00869; cited-by arXiv:2505.05408; cited-by arXiv:2506.12928; cited-by arXiv:2506.13102
+arXiv:2412.15115 (2024) "Qwen2.5 Technical Report" [cs] (cited-by 89 in-topic, era 2)
+    reasoning_domain: common sense, expert knowledge, mathematics, coding, and structural data analysis
+    relations: used-by arXiv:2502.06703; used-by arXiv:2504.00869; used-by arXiv:2505.05408; cited-by arXiv:2505.18404; used-by arXiv:2506.13102; used-by arXiv:2507.05557
+arXiv:2408.00724 (2024) "Inference Scaling Laws: An Empirical Analysis of Compute-Optimal
+  Inference for Problem-Solving with Language Models" [cs] (cited-by 83 in-topic, era 2)
+    scaling_mechanism: generating additional tokens with different inference strategies (greedy search, majority voting, best-of-n, weighted voting, and tree search algorithms)
+    reasoning_domain: mathematical problem-solving (MATH benchmark)
+    search_strategy: greedy search, majority voting, best-of-n, weighted voting, and two different tree search algorithms
+    scaling_behavior: scaling inference compute with inference strategies can be more computationally efficient than scaling model parameters; smaller models with advanced algorithms can outperform larger models (e.g., Llemma-7B with tree search outperforms Llemma-34B)
+    evaluation_metric: performance on the MATH benchmark
+    relations: uses arXiv:2001.08361; cites arXiv:2203.15556; cites arXiv:2112.00114; cites arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2211.14275; cited-by arXiv:2502.06703; cited-by arXiv:2504.00294; cited-by arXiv:2505.05408; cited-by arXiv:2505.20522; cited-by arXiv:2506.12928; cited-by arXiv:2507.05557
+arXiv:2412.21187 (2024) "Do NOT Think That Much for 2+3=? On the Overthinking of o1-Like LLMs" [cs] (cited-by 73 in-topic, era 2)
+    scaling_mechanism: extended chain-of-thought (CoT) processes
+    reasoning_domain: mathematical and scientific reasoning (GSM8K, MATH500, GPQA, and AIME)
+    search_strategy: exploring multiple strategies via CoT
+    scaling_behavior: overthinking (excessive computational resources allocated for simple problems with minimal benefit)
+    evaluation_metric: novel efficiency metrics from both outcome and process perspectives
+    scaling_bottlenecks: overthinking (inefficient allocation of resources for simple problems)
+    relations: cites arXiv:2110.14168; cites arXiv:2103.03874; uses arXiv:2203.14465; cites arXiv:2305.18290; cites arXiv:2311.12022; cites arXiv:2203.11171; cited-by arXiv:2505.05408; cited-by arXiv:2505.18404; cited-by arXiv:2506.15882; cited-by arXiv:2507.02076
+arXiv:2501.12948 (2025) "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" [cs] (cited-by 217 in-topic, era 2)
+    scaling_mechanism: pure reinforcement learning (RL)
+    reasoning_domain: mathematics, coding competitions, and STEM fields
+    relations: cites arXiv:2211.14275; cites arXiv:2305.20050; cites arXiv:2312.08935; cites arXiv:2309.17179; uses arXiv:2402.03300; compares-with arXiv:2407.21783; compared-by arXiv:2502.05171; used-by arXiv:2502.06703; cited-by arXiv:2502.07154; cited-by arXiv:2502.12521; cited-by arXiv:2503.19877; cited-by arXiv:2504.00294
+arXiv:2501.19393 (2025) "s1: Simple test-time scaling" [cs] (cited-by 128 in-topic, era 2)
+    scaling_mechanism: budget forcing (forcefully terminating the thinking process or appending 'Wait' to lengthen it)
+    reasoning_domain: competition math (MATH and AIME24)
+    scaling_behavior: allows extrapolating beyond performance without test-time intervention (e.g., 50% to 57% on AIME24)
+    evaluation_metric: accuracy (percentage on MATH and AIME24)
+    relations: cited-by arXiv:2503.19877; cited-by arXiv:2504.00294; used-by arXiv:2504.00869; extended-by arXiv:2505.05408; used-by arXiv:2505.18404; motivates arXiv:2506.05566
+arXiv:2502.06703 (2025) "Can 1B LLM Surpass 405B LLM? Rethinking Compute-Optimal Test-Time
+  Scaling" [cs] (cited-by 35 in-topic, era 2)
+    scaling_mechanism: Test-Time Scaling (TTS) using additional computation during the inference phase
+    reasoning_domain: Mathematical reasoning (MATH-500 and AIME24 tasks)
+    scaling_behavior: Compute-optimal TTS allows smaller models to outperform larger ones (e.g., 1B LLM exceeding 405B LLM on MATH-500)
+    relations: cites arXiv:2303.08774; uses arXiv:2501.12948; cites arXiv:2408.00724; uses arXiv:2408.03314; critiques arXiv:2407.21787; uses arXiv:2103.03874; cited-by arXiv:2506.12928; cited-by arXiv:2507.02076; cited-by arXiv:2508.00890; cited-by arXiv:2510.02611; cited-by arXiv:2602.01485
+arXiv:2503.24235 (2025) "A Survey on Test-Time Scaling in Large Language Models: What, How,
+  Where, and How Well?" [cs] (cited-by 33 in-topic, era 2)
+    scaling_mechanism: test-time scaling (TTS) / test-time computing
+    reasoning_domain: mathematics, coding, and general tasks like open-ended Q&A
+    relations: cited-by arXiv:2505.20522; cited-by arXiv:2507.02076; cited-by arXiv:2509.06861; cited-by arXiv:2603.07159
+arXiv:2502.05171 (2025) "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth
+  Approach" [cs] (cited-by 22 in-topic, era 2)
+    scaling_mechanism: iterating a recurrent block (unrolling to arbitrary depth in latent space)
+    scaling_behavior: performance improves up to a computation load equivalent to 50 billion parameters
+    relations: uses arXiv:2110.14168; cites arXiv:2203.02155; cites arXiv:2402.03300; cites arXiv:2001.08361; compares-with arXiv:2501.12948; uses arXiv:1706.03762
+arXiv:2501.11651 (2025) "T1: Advancing Language Model Reasoning through Reinforcement Learning and Inference Scaling" [cs] (cited-by 8 in-topic, era 2)
+    scaling_mechanism: increased inference budgets (increased sampling/inference-time computation)
+    reasoning_domain: math reasoning
+    search_strategy: oversampling to promote increased sampling diversity
+    scaling_behavior: increased inference budgets directly lead to better performance
+    relations: cited-by arXiv:2505.05408
+arXiv:2502.12521 (2025) "Inference-Time Computations for LLM Reasoning and Planning: A Benchmark
+  and Insights" [cs] (cited-by 5 in-topic, era 2)
+    scaling_mechanism: exploring intermediate steps during inference
+    reasoning_domain: arithmetic reasoning, logical reasoning, common sense reasoning, algorithmic reasoning, and planning
+    scaling_behavior: simply scaling inference-time computation has limitations; no single technique consistently performs well across all tasks
+    scaling_bottlenecks: no single inference-time technique consistently performs well across all reasoning and planning tasks
+    relations: cites arXiv:2005.14165; cites arXiv:1706.03762; compares-with arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2110.14168; cites arXiv:2205.10625
+arXiv:2504.00294 (2025) "Inference-Time Scaling for Complex Tasks: Where We Stand and What Lies
+  Ahead" [cs] (cited-by 4 in-topic, era 2)
+    scaling_mechanism: lengthening generated scratchpads, repeated model calls (independently or sequentially with feedback)
+    reasoning_domain: math, STEM reasoning, calendar planning, NP-hard problems, navigation, and spatial reasoning
+    scaling_behavior: advantages vary across tasks and diminish as problem complexity increases; more tokens do not necessarily translate to higher accuracy in challenging regimes
+    evaluation_metric: accuracy
+    scaling_bottlenecks: diminishing advantages as problem complexity increases; performance gaps in certain tasks even in high scaling regimes
+    relations: cites arXiv:2203.14465; compares-with arXiv:2412.16720; cites arXiv:2501.12948; cites arXiv:2312.08935; cites arXiv:2203.11171; cites arXiv:2201.11903; cited-by arXiv:2506.13102
+arXiv:2502.07154 (2025) "Rethinking Fine-Tuning when Scaling Test-Time Compute: Limiting Confidence Improves Mathematical Reasoning" [cs] (cited-by 4 in-topic, era 2)
+    scaling_mechanism: pass@N (searching for a correct answer in N independent samples)
+    reasoning_domain: mathematical reasoning (MATH and MiniF2F benchmarks)
+    search_strategy: independent sampling and searching over proof trees of varying shapes
+    scaling_behavior: pass@N accuracy decreases with longer training when using standard cross-entropy loss due to model overconfidence
+    evaluation_metric: pass@N
+    scaling_bottlenecks: model overconfidence induced by cross-entropy (CE) loss
+    relations: cites arXiv:2408.03314; cites arXiv:2201.11903; cites arXiv:2305.10601; cites arXiv:2203.11171; cites arXiv:2303.11366; cites arXiv:2501.12948
+arXiv:2505.20522 (2025) "Scaling over Scaling: Exploring Test-Time Scaling Plateau in Large Reasoning Models" [cs] (cited-by 3 in-topic, era 2)
+    scaling_mechanism: parallel scaling and sequential scaling
+    reasoning_domain: mathematical and scientific reasoning (AIME, MATH-500, and GPQA)
+    scaling_behavior: diminishing returns beyond a saturation point/threshold
+    scaling_bottlenecks: saturation point on the scaling budget
+    relations: cites arXiv:2501.12948; cites arXiv:2203.11171; cites arXiv:2503.24235; cites arXiv:2311.12022; cites arXiv:2408.00724; cites arXiv:2407.21787
+arXiv:2504.00869 (2025) "m1: Unleash the Potential of Test-Time Scaling for Medical Reasoning with Large Language Models" [cs] (cited-by 3 in-topic, era 2)
+    scaling_mechanism: Increasing inference-time computation (test-time scaling) and budget forcing via iterative prompts
+    reasoning_domain: Medical reasoning (Medical QA)
+    scaling_behavior: Consistent enhancement of medical reasoning; lightweight models (<10B) achieve new SOTA, while 32B models rival 70B-scale models
+    scaling_bottlenecks: Optimal reasoning token budget of ~4K (performance degrades due to overthinking) and insufficient medical knowledge
+    relations: cites arXiv:2303.08774; uses arXiv:2412.16720; uses arXiv:2501.19393; cites arXiv:2201.11903; uses arXiv:2412.15115; uses arXiv:2501.12948; extended-by arXiv:2506.13102
+arXiv:2506.12928 (2025) "Scaling Test-time Compute for LLM Agents" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: parallel sampling algorithms, sequential revision strategies, verifiers and merging methods, and diversifying rollouts
+    reasoning_domain: language agents
+    scaling_behavior: Scaling test time compute could improve the performance of agents
+    relations: cites arXiv:2408.00724; cites arXiv:2502.06703; cites arXiv:2412.16720; cites arXiv:2501.12948; cites arXiv:2408.03314
+arXiv:2509.09864 (2025) "Latency and Token-Aware Test-Time Compute" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Generating multiple candidate responses (best-of-N) and incremental decoding methods (beam search)
+    reasoning_domain: Reasoning benchmarks
+    search_strategy: Dynamic compute allocation and method selection (best-of-N and beam search)
+    scaling_behavior: Achieves favorable accuracy-cost trade-offs compared to static strategies
+    evaluation_metric: Accuracy, token cost, and wall-clock latency
+    relations: cites arXiv:2408.03314; cites arXiv:2305.10601; cites arXiv:2303.11366; cites arXiv:2412.16720; cites arXiv:2407.21787; cites arXiv:2501.12948
+arXiv:2503.19877 (2025) "Scaling Evaluation-time Compute with Reasoning Models as Evaluators" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Increasing reasoning tokens via reasoning models and employing process evaluation (assessing each step separately) versus outcome evaluation.
+    reasoning_domain: Evaluation capability (assessing LM response quality).
+    search_strategy: Reranking multiple generations using the evaluator.
+    scaling_behavior: Monotonic improvement in evaluator performance when generating more reasoning tokens.
+    relations: cites arXiv:2501.12948; uses arXiv:2407.21783; compares-with arXiv:2110.14168; cites arXiv:2211.14275; cites arXiv:2412.16720; cites arXiv:2501.19393
+arXiv:2505.05408 (2025) "Crosslingual Reasoning through Test-Time Scaling" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: scaling up inference compute (test-time scaling) via long chain-of-thoughts (CoTs)
+    reasoning_domain: multilingual mathematical reasoning and cultural commonsense knowledge
+    scaling_behavior: improves multilingual mathematical reasoning across many languages, outperforming models twice their size
+    scaling_bottlenecks: poor out-of-domain reasoning generalization (STEM to cultural commonsense knowledge) and difficulty in low-resource languages
+    relations: uses arXiv:2408.03314; cites arXiv:2407.21787; cites arXiv:2408.00724; uses arXiv:2501.12948; cites arXiv:2412.16720; extends arXiv:2501.19393
+arXiv:2508.00890 (2025) "AgentTTS: Large Language Model Agent for Test-time Compute-optimal Scaling Strategy in Complex Tasks" [cs] (cited-by 2 in-topic, era 2)
+    scaling_mechanism: Allocating additional compute resources during inference by selecting suitable models and budgets per subtask.
+    reasoning_domain: Multi-stage complex tasks composed of a sequence of heterogeneous subtasks.
+    search_strategy: LLM-agent-based framework using iterative feedback-driven interactions with the execution environment.
+    evaluation_metric: Overall performance (maximized through compute-optimal allocation).
+    scaling_bottlenecks: Combinatorial search space of model and budget allocations and the interdependence of optimal allocations across subtasks.
+    relations: uses arXiv:2407.21787; uses arXiv:2408.00724; cites arXiv:2408.03314; cites arXiv:2502.06703; cites arXiv:2501.19393; cites arXiv:2303.17651
+arXiv:2509.06861 (2025) "Test-Time Scaling in Reasoning Models Is Not Effective for Knowledge-Intensive Tasks Yet" [cs] (cited-by 1 in-topic, era 2)
+    scaling_mechanism: allowing models to generate long reasoning chains
+    reasoning_domain: knowledge-intensive tasks
+    scaling_behavior: increasing test-time computation does not consistently improve accuracy and often increases hallucinations
+    evaluation_metric: accuracy
+    scaling_bottlenecks: cannot increase information about the ground-truth answer beyond what is already encoded in the model (information-theoretic limit)
+    relations: cites arXiv:2311.12022; extends arXiv:2501.12948; extends arXiv:2501.19393; cites arXiv:2503.24235; cites arXiv:2407.21787; cites arXiv:2408.03314
+arXiv:2507.05557 (2025) "Enhancing Test-Time Scaling of Large Language Models with Hierarchical Retrieval-Augmented MCTS" [cs] (cited-by 1 in-topic, era 2)
+    scaling_mechanism: Hierarchical retrieval-augmented in-context learning (coarse-level abstract templates and fine-level intermediate solution steps) integrated with Monte Carlo Tree Search (MCTS) and a Process Reward Model (PRM).
+    reasoning_domain: Complex mathematical reasoning (evaluated on MATH500, GSM8K, and OlympiadBench-TO).
+    search_strategy: Monte Carlo Tree Search (MCTS) with step-wise refinement using a Process Reward Model (PRM).
+    scaling_behavior: Achieved up to 16% relative improvement using LLaMA-3.1-8B compared to baselines.
+    relations: uses arXiv:2501.12948; compares-with arXiv:2205.11916; compares-with arXiv:2201.11903; compares-with arXiv:2203.11171; compares-with arXiv:2305.10601; compares-with arXiv:2305.14992
+arXiv:2512.02008 (2025) "The Art of Scaling Test-Time Compute for Large Language Models" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Test-time scaling (TTS) / dynamic allocation of compute during inference
+    reasoning_domain: reasoning tasks across four datasets
+    scaling_behavior: optimal TTS performance scales monotonically with compute budget
+    relations: (none in-topic)
+arXiv:2505.14733 (2025) "The Energy Cost of Reasoning: Analyzing Energy Usage in LLMs with Test-time Compute" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: test-time compute (TTC)
+    reasoning_domain: complex reasoning
+    scaling_behavior: TTC surpasses traditional model scaling in accuracy/energy efficiency
+    evaluation_metric: accuracy-energy trade-offs
+    scaling_bottlenecks: output sequence length
+    relations: (none in-topic)
+arXiv:2507.02076 (2025) "Reasoning on a Budget: A Survey of Adaptive and Controllable Test-Time Compute in LLMs" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: L1-controllability (fixed compute budgets) and L2-adaptiveness (dynamic scaling based on input difficulty or model confidence)
+    reasoning_domain: General-purpose reasoning tasks
+    evaluation_metric: Reasoning performance vs. token usage
+    relations: cites arXiv:2407.21787; cites arXiv:2408.03314; cites arXiv:2305.10601; cites arXiv:2501.19393; cites arXiv:1706.03762; cites arXiv:2005.14165
+arXiv:2509.19645 (2025) "Are We Scaling the Right Thing? A System Perspective on Test-Time Scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Test-time scaling (TTS) including optimizations like tensor parallelism and speculative decoding
+    scaling_behavior: Relationship between compute and practical metrics (latency and cost-per-token)
+    evaluation_metric: Latency and cost-per-token
+    scaling_bottlenecks: Current methods focus on compute-optimal Pareto-frontier rather than system-optimal performance
+    relations: cites arXiv:2201.11903; cites arXiv:2305.10601; uses arXiv:2501.12948; cites arXiv:1706.03762; cites arXiv:2307.09288; cites arXiv:2302.13971
+arXiv:2506.13102 (2025) "Rethinking Test-Time Scaling for Medical AI: Model and Task-Aware Strategies for LLMs and VLMs" [cs] (cited-by 0 in-topic, era 2)
+    reasoning_domain: medical domain
+    relations: cites arXiv:2005.14165; cites arXiv:2303.08774; cites arXiv:2307.09288; cites arXiv:2412.16720; uses arXiv:2407.21783; uses arXiv:2501.12948
+arXiv:2510.02611 (2025) "On the Role of Temperature Sampling in Test-Time Scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: test-time scaling (TTS) via increasing sample number K and scaling along the temperature dimension
+    reasoning_domain: mathematical reasoning, coding, and theory of mind (AIME 2024/2025, MATH500, LiveCodeBench, Hi-ToM)
+    search_strategy: multiple reasoning trace generation and selection (voting)
+    scaling_behavior: accuracy improves with increasing K but plateaus at large K; temperature scaling yields an additional 7.3 points over single-temperature TTS
+    evaluation_metric: accuracy
+    scaling_bottlenecks: plateau at large K where further scaling yields no gains and certain hard questions remain unsolved
+    relations: critiques arXiv:2407.21787; uses arXiv:2309.06180; cites arXiv:2201.11903; cites arXiv:2501.12948; cites arXiv:2408.03314; uses arXiv:2103.03874
+arXiv:2510.09599 (2025) "Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Prompting Test-Time Scaling (P-TTS) via systematic variation of exemplar augmentation through principled instruction prompting intensities to synthesize diverse reasoning trajectory contexts for finetuning.
+    reasoning_domain: Mathematical reasoning (AIME2024 & 25, MATH500, GPQA-Diamond, Gaokao, Kaoyan, OlympiadBench, AMC23, GradeSchoolMath, and Minerva).
+    scaling_behavior: Enhances reasoning through finetuning on synthesized data; P-TTS-7B and 32B models outperform S1 and S1.1 baselines (e.g., +26.66% and +30.00% accuracy gains on AIME'24 for 7B).
+    evaluation_metric: Absolute accuracy.
+    relations: uses arXiv:2501.19393; cites arXiv:2412.15115; uses arXiv:2501.12948; uses arXiv:2303.08774; cites arXiv:2203.11171; cites arXiv:2309.12284
+arXiv:2511.14772 (2025) "Test-time Scaling of LLMs: A Survey from A Subproblem Structure Perspective" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: allocating additional compute at inference time (e.g., Chain-of-Thought, Branch-Solve-Merge, Tree-of-Thought)
+    search_strategy: topological organization of subproblems (sequential, parallel, or tree-structured)
+    evaluation_metric: predictive accuracy
+    relations: cites arXiv:2305.10601; cites arXiv:2205.10625; cites arXiv:2407.21787; cites arXiv:2408.00724; cites arXiv:2501.12948; cites arXiv:2201.11903
+arXiv:2512.11109 (2025) "Limits and Gains of Test-Time Scaling in Vision-Language Reasoning" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: structured reasoning, iterative Self-Refinement, and external verification
+    reasoning_domain: multi-step reasoning tasks and perception-focused benchmarks
+    scaling_behavior: closed-source models consistently benefit, while open-source VLMs show inconsistent behavior (external verification provides gains, iterative refinement often degrades performance)
+    scaling_bottlenecks: effectiveness is dataset-dependent and task-dependent (limited gains on perception-focused benchmarks)
+    relations: (none in-topic)
+arXiv:2509.25420 (2025) "Adaptive Test-Time Reasoning via Reward-Guided Dual-Phase Search" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Dual-phase test-time scaling framework that separates reasoning into planning and execution phases with a dynamic budget allocation mechanism.
+    reasoning_domain: Mathematical reasoning and code generation.
+    search_strategy: Reward-guided dual-phase search involving separate exploration and pruning of plans and executions.
+    scaling_behavior: Improves accuracy while reducing redundant computation through adaptive redistribution of sampling effort.
+    evaluation_metric: Accuracy.
+    relations: cites arXiv:2210.03629; cites arXiv:2201.11903; cites arXiv:2203.11171; uses arXiv:2312.08935; uses arXiv:2107.03374; cites arXiv:2408.03314
+arXiv:2505.18404 (2025) "Thought calibration: Efficient and confident test-time scaling" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: thought calibration (dynamic termination of thinking based on lightweight probes of hidden representations)
+    search_strategy: identifying the point at which novel reasoning plateaus within nested reasoning trees
+    scaling_behavior: preserves model performance with up to a 60% reduction in thinking tokens (in-distribution) and up to 20% (out-of-distribution)
+    relations: uses arXiv:2501.19393; uses arXiv:2309.06180; cites arXiv:2001.08361; cites arXiv:2201.11903; uses arXiv:2501.12948; cites arXiv:2412.21187
+arXiv:2506.05566 (2025) "ScaleRTL: Scaling LLMs with Reasoning Data and Test-Time Compute for Accurate RTL Code Generation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: iteratively reflecting on and self-correcting previous reasoning steps
+    reasoning_domain: RTL code generation (Verilog)
+    search_strategy: iterative reflection and self-correction
+    scaling_behavior: scales up both high-quality reasoning data and test-time compute
+    evaluation_metric: performance on VerilogEval and RTLLM
+    relations: cites arXiv:2203.15556; cites arXiv:2303.08774; uses arXiv:2501.12948; cites arXiv:2107.03374; cites arXiv:2108.07732; cites arXiv:2001.08361
+arXiv:2506.15882 (2025) "Fractional Reasoning via Latent Steering Vectors Improves Inference Time Compute" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Fractional Reasoning (extracting latent steering vectors associated with deeper reasoning and reapplying them with a tunable scaling factor)
+    reasoning_domain: Mathematical and scientific reasoning (GSM8K, MATH500, and GPQA)
+    search_strategy: Breadth-based (Best-of-N, majority voting) and depth-based (self-reflection) strategies
+    scaling_behavior: Continuous control over reasoning intensity allows for improved output quality and correctness
+    relations: cites arXiv:2303.08774; uses arXiv:2501.12948; cites arXiv:2412.21187; motivated-by arXiv:1706.03762; cites arXiv:2110.14168; compares-with arXiv:2103.03874
+arXiv:2605.10344 (2026) "TMAS: Scaling Test-Time Compute via Multi-Agent Synergy" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Multi-agent synergy involving specialized agents, hierarchical memories (experience bank and guideline bank), and refinement iterations.
+    reasoning_domain: Challenging reasoning benchmarks (specific tasks not named in abstract).
+    search_strategy: Collaborative process across trajectories and refinement iterations using hierarchical memories to balance exploration and exploitation.
+    scaling_behavior: Achieves stronger iterative scaling compared to existing test-time scaling baselines; hybrid reward training improves scaling effectiveness and stability.
+    scaling_bottlenecks: Weak coordination of parallel reasoning trajectories and reliance on noisy historical information in existing methods.
+    relations: (none in-topic)
+arXiv:2603.07159 (2026) "Improving reasoning at inference time via uncertainty minimisation" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: thought-level self-certainty maximization (selecting continuations that maximize the model's internal predictive certainty)
+    reasoning_domain: mathematical reasoning (MATH500 and GSM8K)
+    search_strategy: selecting the continuation at each reasoning step that maximizes the model's self-certainty
+    scaling_behavior: achieves significant improvement with a small number of samples; outperforms greedy decoding and matches/exceeds self-consistency under comparable token budgets
+    evaluation_metric: accuracy
+    relations: uses arXiv:2305.20050; uses arXiv:2110.14168; uses arXiv:2203.11171; cites arXiv:2412.15115; cites arXiv:2407.21783; cites arXiv:2402.03300
+arXiv:2602.01485 (2026) "Predicting and improving test-time scaling laws via reward tail-guided search" [cs] (cited-by 0 in-topic, era 2)
+    scaling_mechanism: Scaling-Law Guided (SLG) Search (dynamic compute allocation to identify/exploit intermediate states)
+    search_strategy: Tail-guided search (estimating the tail distribution of rewards)
+    scaling_behavior: SLG achieves expected rewards requiring polynomially smaller compute budgets compared to Best-of-N
+    evaluation_metric: Reward yields
+    relations: cites arXiv:2408.03314; cites arXiv:2407.21787; cites arXiv:2501.12948; cites arXiv:2001.08361; cites arXiv:2203.15556; cites arXiv:2408.00724
+
+MAIN PATH (oldest -> newest):
+  arXiv:1706.03762 (2017) -> arXiv:2001.08361 (2020) -> arXiv:2103.03874 (2021) -> arXiv:2206.14858 (2022) -> arXiv:2305.20050 (2023) -> arXiv:2402.03300 (2024) -> arXiv:2501.12948 (2025) -> arXiv:2602.01485 (2026)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2503.19877 compares [negative] arXiv:2402.03300
+  arXiv:2204.05862 compares [negative] arXiv:2203.02155
+  arXiv:2205.11916 compares [negative] arXiv:2203.11171
+  arXiv:2108.07732 compares [negative] arXiv:2107.03374
+  arXiv:2303.08774 critiques [negative] arXiv:2005.14165
+  arXiv:2502.06703 critiques [negative] arXiv:2407.21787
+  arXiv:2510.02611 critiques [negative] arXiv:2407.21787
+  arXiv:2302.13971 compares [neutral] arXiv:2103.03874
+  arXiv:2302.13971 compares [neutral] arXiv:2110.14168
+  arXiv:2302.13971 compares [neutral] arXiv:2203.11171
+  arXiv:2302.13971 compares [neutral] arXiv:2107.03374
+  arXiv:2302.13971 compares [neutral] arXiv:2108.07732
+  arXiv:2303.11366 compares [neutral] arXiv:2303.08774
+  arXiv:2303.17651 compares [positive] arXiv:2203.02155
+  arXiv:2303.17651 compares [positive] arXiv:2303.08774
+  arXiv:2303.17651 compares [positive] arXiv:2107.03374
+  arXiv:2303.17651 compares [neutral] arXiv:2009.01325
+  arXiv:2303.17651 compares [positive] arXiv:2303.11366
+  arXiv:2305.10601 compares [positive] arXiv:2203.11171
+  arXiv:2305.14992 compares [neutral] arXiv:2303.08774
+  arXiv:2305.14992 compares [neutral] arXiv:2201.11903
+  arXiv:2305.14992 compares [neutral] arXiv:2205.10625
+  arXiv:2305.14992 compares [positive] arXiv:2110.14168
+  arXiv:2305.14992 compares [neutral] arXiv:2203.11171
+  arXiv:2305.14992 compares [neutral] arXiv:2302.13971
+  arXiv:2305.20050 compares [neutral] arXiv:2203.11171
+  arXiv:2305.20050 compares [neutral] arXiv:2211.14275
+  arXiv:2305.20050 compares [neutral] arXiv:2103.03874
+  arXiv:2305.20050 compares [neutral] arXiv:2206.02336
+  arXiv:2307.09288 compares [neutral] arXiv:2110.14168
+  arXiv:2307.09288 compares [neutral] arXiv:2103.03874
+  arXiv:2307.09288 compares [positive] arXiv:2303.08774
+  arXiv:2309.12284 compares [neutral] arXiv:2302.13971
+  arXiv:2309.12284 compares [neutral] arXiv:2201.11903
+  arXiv:2309.17179 compares [neutral] arXiv:2203.11171
+  arXiv:2311.12022 compares [neutral] arXiv:2307.09288
+  arXiv:2311.12022 compares [neutral] arXiv:2205.11916
+  arXiv:2312.08935 compares [positive] arXiv:2211.14275
+  arXiv:2402.03300 compares [positive] arXiv:2206.14858
+  arXiv:2412.16720 compares [neutral] arXiv:2009.03300
+  arXiv:2501.12948 compares [positive] arXiv:2407.21783
+  arXiv:2502.05171 compares [neutral] arXiv:2501.12948
+  arXiv:2502.12521 compares [positive] arXiv:2201.11903
+  arXiv:2503.19877 compares [neutral] arXiv:2110.14168
+  arXiv:2504.00294 compares [neutral] arXiv:2412.16720
+  arXiv:2505.05408 compares [positive] arXiv:2309.12284
+  arXiv:2506.05566 compares [neutral] arXiv:2407.21783
+  arXiv:2506.15882 compares [neutral] arXiv:2103.03874
+  arXiv:2506.15882 compares [neutral] arXiv:2311.12022
+  arXiv:2506.15882 compares [neutral] arXiv:2407.21783
+  arXiv:2507.02076 compares [neutral] arXiv:2103.03874
+  arXiv:2507.05557 compares [neutral] arXiv:2205.11916
+  arXiv:2507.05557 compares [neutral] arXiv:2201.11903
+  arXiv:2507.05557 compares [neutral] arXiv:2203.11171
+  arXiv:2507.05557 compares [neutral] arXiv:2305.10601
+  arXiv:2507.05557 compares [neutral] arXiv:2305.14992
+  arXiv:2507.05557 compares [neutral] arXiv:2103.03874
+  arXiv:2507.05557 compares [neutral] arXiv:2110.14168
+  arXiv:2201.11903 compares [neutral] arXiv:2110.14168
+  arXiv:2203.15556 compares [positive] arXiv:2009.03300
+  arXiv:2204.05862 compares [neutral] arXiv:2005.14165
+  arXiv:2206.14858 compares [positive] arXiv:2203.11171
+  arXiv:2211.14275 compares [positive] arXiv:2203.11171
+  arXiv:2211.14275 compares [positive] arXiv:2201.11903
+  arXiv:2509.25420 compares [neutral] arXiv:2407.21783
+  arXiv:2509.25420 compares [neutral] arXiv:2402.03300
+  arXiv:2107.03374 compares [positive] arXiv:2005.14165
+  arXiv:2107.03374 compares [neutral] arXiv:2001.08361
+  arXiv:2110.14168 compares [neutral] arXiv:2005.14165
+  arXiv:2211.10435 compares [positive] arXiv:2107.03374
+  arXiv:2506.05566 motivates [neutral] arXiv:2501.19393
+  arXiv:2506.05566 motivates [neutral] arXiv:2205.11916
+  arXiv:2506.05566 motivates [neutral] arXiv:2303.17651
+  arXiv:2506.15882 motivates [neutral] arXiv:1706.03762
+  arXiv:2112.00114 motivates [neutral] arXiv:2005.14165
+  arXiv:2204.05862 motivates [neutral] arXiv:2001.08361
+  arXiv:2206.02336 motivates [neutral] arXiv:2203.14465
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2110.14168:
+NOVELTY: Introduces GSM8K, a high-diversity grade school math dataset, and a verification framework that uses a separate model to rank multiple sampled completions.
+
+STRENGTHS: Demonstrates that verification scales more efficiently with data than fine-tuning, providing a performance boost equivalent to a 30x increase in model size.
+
+WEAKNESSES: Test-time compute benefits are non-monotonic; increasing the number of completions beyond 400 leads to performance degradation due to the risk of finding adversarial solutions that fool the verifier.
+
+RELEVANCE: Establishes a foundational method for improving reasoning via test-time search and ranking, directly addressing the limitations of autoregressive generation in multi-step tasks.
+arXiv:2603.07159:
+NOVELTY: Shifts uncertainty-driven selection from token-level or full-trajectory sampling to the granularity of "thoughts" (intermediate reasoning steps).
+STRENGTHS: Demonstrates that self-certainty maximization matches or exceeds self-consistency under equivalent token budgets and that optimizing only the first 1–5 steps yields peak accuracy.
+WEAKNESSES: The method's reliance on predefined reasoning delimiters (e.g., double line breaks) to segment thoughts may not generalize to models without structured CoT formatting.
+RELEVANCE: Advances test-time compute research by identifying an efficient, model-internal scaling strategy that prioritizes early-stage reasoning decisions.
+arXiv:2605.10344:
+NOVELTY: Introduction of hierarchical memory (Experience vs. Guideline banks) and a hybrid reward RL scheme that explicitly incentivizes experience utilization and strategy novelty.
+STRENGTHS: Significant performance gains on IMO-AnswerBench, specifically increasing Qwen3-4B-Thinking-2507 Pass@1 from 53.5% to 73.5%.
+WEAKNESSES: Heavy reliance on a "cold-start" dataset distilled from a teacher model (DeepSeek-V3.2) and high computational overhead from running multiple specialized agents and verification passes across many iterations.
+RELEVANCE: Advances the review by demonstrating how structured multi-agent coordination and memory management can optimize the efficiency of test-time compute scaling.
+arXiv:2201.11903:
+NOVELTY: Introduces "chain-of-thought prompting," a method to elicit multi-step reasoning by providing ⟨input, reasoning step, output⟩ triples in few-shot exemplars, rather than just input-output pairs.
+
+STRENGTHS: Demonstrates that CoT is an emergent ability of scale, showing that PaLM 540B achieves new state-of-the-art performance on the GSM8K benchmark, surpassing fine-tuned models.
+
+WEAKNESSES: The method's efficacy is strictly tied to large model scales (~100B+ parameters), as smaller models produce fluent but illogical reasoning paths that fail to improve performance.
+
+RELEVANCE: Establishes that increasing test-time compute (via intermediate token generation) can unlock reasoning capabilities that are otherwise inaccessible through standard prompting.

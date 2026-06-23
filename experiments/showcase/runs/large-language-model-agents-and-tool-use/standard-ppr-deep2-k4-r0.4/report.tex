@@ -1,0 +1,347 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{large language model agents and tool use}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A high-caliber review that captures the frontier but could be strengthened by addressing the critical challenges in agent evaluation and memory management.
+\end{abstract}
+
+\section{From Textual Prediction to Autonomous Agency: A Review of LLM-Based Tool Use and Agentic Systems}
+
+The rapid evolution of large language models has shifted the focus from simple text generation to the pursuit of functional autonomy. While the \textit{Foundations of Language Modeling and Reasoning} established the capacity for sophisticated linguistic pattern matching, these models inherently suffer from a lack of grounding in external reality and an inability to perform precise, non-linguistic tasks. To bridge this gap, the paradigm has shifted toward agentic behavior, where models are no longer mere predictors but active participants capable of interacting with external environments. This transition is critical because the utility of artificial intelligence is increasingly measured by its ability to execute complex, multi-step workflows that require more than just internal knowledge.
+
+This review traces the trajectory of this evolution, beginning with the transition from static models to \textit{Early Tool Integration and Augmented Language Models} that first allowed for external API and software interaction. We then examine the scaling of these capabilities, moving \textit{From Single-Task Agents to Multi-Agent Systems} where collaborative intelligence becomes a central theme. The scope extends further into the physical realm through the study of \textit{Embodied Agents and Real-World Interaction}, representing the move from digital interfaces to physical environments. After synthesizing current *
+
+\subsection{Foundations of Language Modeling and Reasoning}
+
+The evolution of large language model (LLM) capabilities is rooted in the transition from specialized architectural designs to massive-scale autoregressive models capable of emergent reasoning. The foundational shift began with the introduction of the Transformer architecture (\texttt{arXiv:1706.03762}), which replaced recurrence and convolutions with attention mechanisms. This encoder-decoder configuration established the structural basis for subsequent advancements in machine translation, achieving BLEU scores of 28.4 on WMT 2014 English-to-German (\texttt{arXiv:1706.03762}). While the Transformer provided the mechanism, BERT (\texttt{arXiv:1810.04805}) expanded this by introducing deep bidirectional representations, conditioning on both left and right context. This bidirectional approach significantly improved performance on natural language understanding tasks, such as achieving a 93.2 F1 score on SQuAD v1.1 (\texttt{arXiv:1810.04805}).
+
+A critical divergence in the literature occurs between bidirectional understanding and autoregressive generation. GPT-3 (\texttt{arXiv:2005.14165}) shifted the focus toward massive-scale autoregressive modeling with 175 billion parameters, demonstrating that tasks could be performed via text-based interaction and few-shot demonstrations without gradient updates. While GPT-3 proved the utility of scale across translation and arithmetic tasks (\texttt{arXiv:2005.14165}), later work by InstructGPT (\texttt{arXiv:2203.02155}) addressed the alignment of these models with user intent. By utilizing a two-stage fine-tuning process—supervised learning followed by reinforcement learning from human feedback (RLHF)—InstructGPT moved beyond mere next-token prediction to better follow specific instructions (\texttt{arXiv:2203.02155}).
+
+The ability of these models to perform complex reasoning represents a more recent frontier. Chain-of-Thought (CoT) prompting (\texttt{arXiv:2201.11903}) introduced a novel planning strategy where models generate intermediate natural language reasoning steps. This method leverages the emergent abilities of scale, such as the 540B-parameter PaLM model, to achieve state-of-the-art accuracy on the GSM8K math benchmark (\texttt{arXiv:2201.11903}). However, CoT prompting possesses inherent limitations: it relies on the manual composition of exemplars and offers no formal guarantee of logical correctness in the generated paths (\texttt{arXiv:2201.11903}). Despite these weaknesses, CoT provides an interpretable mechanism essential for decomposing multi-step tasks. This trajectory toward multimodal and high-performance reasoning culminates in GPT-4 (\texttt{arXiv:2303.08774}), a Transformer-based multimodal model that integrates image and text inputs to achieve human-level performance on professional benchmarks, such as passing the simulated bar exam in the top 10\% of test takers (\texttt{arXiv:2303.08774}).
+
+\subsection{Early Tool Integration and Augmented Language Models}
+
+The evolution of language models from static parametric systems to interactive agents is marked by a transition from simple retrieval-augmented generation to complex, multi-step tool orchestration. Early efforts focused on augmenting the model's internal knowledge through non-parametric memory. For instance, \texttt{arXiv:2005.11401} introduced a framework combining a pre-trained seq2seq model with a dense vector index of Wikipedia, allowing the model to access external information via a neural retriever to improve factuality in knowledge-intensive tasks.
+
+As the field progressed, research shifted toward integrating reasoning with active environmental interaction. ReAct (\texttt{arXiv:2210.03629}) advanced this by interleaving verbal reasoning traces with task-specific actions, creating a "reason-to-act" and "act-to-reason" synergy. This closed-loop approach allows models to update plans based on external feedback, such as Wikipedia API results. While ReAct demonstrates significant few-shot advantages—outperforming baselines by 34\% in ALFWorld and 10\% in WebShop—it remains vulnerable to repetitive reasoning loops and is highly dependent on tool quality, with 23\% of errors in HotpotQA attributed to non-informative search results (\texttt{arXiv:2210.03629}).
+
+A parallel development focused on specialized symbolic reasoning through programmatic tools. PAL (\texttt{arXiv:2211.10435}) utilizes a hybrid architecture where the LLM decomposes natural language problems into Python code, which is then executed by a symbolic interpreter. This approach yields a 15\% top-1 improvement on GSM8K compared to PaLM-540B, demonstrating the strength of offloading mathematical and algorithmic logic to deterministic executors.
+
+Further sophistication is seen in the transition from manual prompting to self-supervised and controller-based architectures. Toolformer (\texttt{arXiv:2302.04761}) represents a shift toward autonomy, where models are trained via self-supervised learning to decide when and how to call APIs, passing arguments and incorporating results directly into token prediction. This contrasts with the controller-based paradigm of HuggingGPT (\texttt{arXiv:2303.17580}), which uses an LLM to manage a diverse ecosystem of existing AI models (vision, speech, etc.) by decomposing user requests into subtasks and selecting models based on Hugging Face function descriptions.
+
+Finally, the scale of tool integration has expanded to encompass massive API libraries. Gorilla (\texttt{arXiv:2305.15334}) addresses the challenge of vast API documentation by combining a fine-tuned LLaMA-based model with a document retriever. Unlike the specialized focus of PAL on Python execution, Gorilla utilizes retrieval-augmented generation to navigate complex API ecosystems like HuggingFace and TorchHub, providing a scalable method for connecting LLMs to diverse, large-scale external software interfaces.
+
+\subsection{From Single-Task Agents to Multi-Agent Systems}
+
+The evolution of large language model (LLM) research has shifted from isolated agent execution toward complex multi-agent systems (MAS) designed to mimic human social and professional dynamics. Early foundational work, such as CAMEL, introduced a communicative framework based on role-playing and "inception prompting" to guide agents through autonomous cooperation [\texttt{arXiv:2303.17760}]. By establishing a communicative interaction loop between agents, CAMEL focuses on maintaining consistency with human intentions through structured role-play [\texttt{arXiv:2303.17760}]. This concept of role-based interaction serves as a precursor to more specialized frameworks that move beyond general conversation toward structured task execution.
+
+While CAMEL emphasizes communicative exploration, MetaGPT introduces a more rigid, professionalized architecture by incorporating Standardized Operating Procedures (SOPs) into prompt sequences [\texttt{arXiv:2308.00352}]. Unlike the open-ended role-playing in CAMEL, MetaGPT utilizes an "assembly line paradigm" where diverse agents with domain expertise work together to break down complex tasks into subtasks [\texttt{arXiv:2308.00352}]. This approach prioritizes the reduction of errors through human-like verification of intermediate results, making it particularly effective for collaborative software engineering [\texttt{arXiv:2308.00352}]. In contrast to MetaGPT's structured SOPs, AutoGen offers a more flexible alternative, enabling customizable, conversable agents that can be programmed via natural language or computer code [\texttt{arXiv:2308.08155}]. AutoGen expands the interaction loop by allowing agents to combine LLMs with human inputs and tools, supporting a wide array of domains including mathematics, coding, and operations research [\texttt{arXiv:2308.08155}].
+
+Other research explores the emergent properties and specific cognitive strategies within these systems. AgentVerse moves away from fixed roles to focus on human-like group dynamics, allowing for a framework that can dynamically adjust its composition to achieve a "greater-than-the-sum-of-its-parts" effect [\texttt{arXiv:2308.10848}]. This contrasts with the more predefined structures of MetaGPT or the programmed patterns of AutoGen by emphasizing emergent social behaviors [\texttt{arXiv:2308.10848}]. Furthermore, specialized collaboration strategies have been developed for reasoning tasks; for instance, one approach emulates the academic peer review process, where agents independently construct solutions, assign confidence levels, and revise their work based on peer feedback [\texttt{arXiv:2311.08152}]. This iterative loop of construction and review provides a structured mechanism for improving accuracy in complex reasoning [\texttt{arXiv:2311.08152}]. Collectively, these developments represent a transition from simple instruction-following [\texttt{arXiv:2303.17760}] to sophisticated, multi-faceted systems capable of complex problem-solving and world simulation [\texttt{arXiv:2402.01680}].
+
+\subsection{Embodied Agents and Real-World Interaction}
+
+The integration of Large Language Models (LLMs) into embodied agents has evolved from high-level semantic planning to sophisticated, closed-loop control and lifelong learning. Early approaches focused on bridging the gap between abstract language and physical feasibility. For instance, \texttt{arXiv:2204.01691} proposed a hybrid architecture where an LLM provides high-level semantic knowledge to decompose complex instructions, but these proposals are constrained by pretrained low-level skills and value functions to ensure physical grounding. This contrasts with more recent multimodal approaches like PaLM-E (\texttt{arXiv:2303.03378}), which moves away from hybrid modularity toward a single, unified embodied multimodal model. PaLM-E interleaves visual, continuous state estimation, and textual encodings to perform sequential robotic manipulation planning, effectively integrating perception and reasoning into a single model.
+
+A critical dimension in this evolution is the transition from open-loop prompting to closed-loop interaction. While \texttt{arXiv:2204.01691} uses the robot as the "hands and eyes" for the LLM, \texttt{arXiv:2207.05608} introduces the "Inner Monologue" framework, which emphasizes a continuous reasoning loop. This framework processes environmental feedback—such as scene descriptions and success detection—to adjust planning dynamically. A similar emphasis on reactive control is found in "Code as Policies" (\texttt{arXiv:2209.07753}), which utilizes Language Model Programs (LMPs) to synthesize Python code. Unlike purely semantic planners, this method uses code to process perception outputs (e.g., object detectors) to parameterize control APIs, achieving a 39.8\% success rate on the HumanEval benchmark.
+
+The complexity of interaction also extends to digital and open-ended environments. In the digital realm, WebArena (\texttt{arXiv:2307.13854}) provides a realistic environment for web-based tasks, evaluating agents on functional correctness in e-commerce and software development, noting a significant performance gap between GPT-4 (14.41\%) and humans (78.24\%). In contrast, for open-ended exploration in Minecraft, Voyager (\texttt{arXiv:2305.16291}) demonstrates a shift toward lifelong learning. Voyager utilizes an automatic curriculum and an ever-growing skill library of executable code, employing an iterative prompting mechanism to incorporate execution errors and self-verification. This allows for significant improvements in exploration efficiency, such as unlocking tech tree milestones up to 15.3x faster than baseline methods.
+
+While these advancements show progress, the methods differ significantly in their handling of "tools." Some architectures, like \texttt{arXiv:2209.07753}, treat API calls as programmable components, whereas Voyager (\texttt{arXiv:2305.16291}) treats previously written code as a retrievable skill library. This distinction highlights a move from immediate task execution toward the accumulation of long-term, reusable embodied intelligence.
+
+\subsection{Comprehensive Surveys and Methodological Frameworks}
+
+The literature regarding large language model (LLM) agents has evolved from establishing foundational structural definitions to developing highly specialized methodological paradigms. Early survey work established a broad tripartite architecture comprising the brain, perception, and action components [\texttt{arXiv:2309.07864}], covering a wide range of application domains including single-agent, multi-agent, and human-agent cooperation [\texttt{arXiv:2309.07864}]. This foundational framework was subsequently refined by [\texttt{arXiv:2401.03428}], which introduced more granular multi-agent dynamics, such as multi-role collaboration and message passing, while emphasizing an interaction loop driven by tool utilization and environmental feedback.
+
+A significant shift in the literature is the transition from general structural components toward specific, role-based cognitive frameworks. While earlier works provided a high-level overview of agent components, [\texttt{arXiv:2406.05804}] offers a more specialized paradigm centered on LLM-profiled roles (LMPRs). This approach categorizes agents into distinct functional entities, such as policy models, evaluators, and dynamic models, and focuses on the integration of tool use (including RAG), planning, and feedback learning. This role-based granularity contrasts with the broader cognitive mechanism approach presented in [\texttt{arXiv:2508.17281}], which organizes agent capabilities around reasoning, planning, and memory to manage sequential tasks and adapt through feedback.
+
+Methodological emphasis also varies across the surveys, particularly regarding the technical drivers of autonomy. [\texttt{arXiv:2404.04442}] highlights the importance of prompting, reasoning, tool utilization, and in-context learning as the core techniques enabling agentic behavior. In contrast, [\texttt{arXiv:2401.03428}] focuses on the breadth of application domains, ranging from coding and social interactions to economic sectors. The scope of these applications also demonstrates divergence; for instance, [\texttt{arXiv:2404.04442}] identifies specialized utility in healthcare and customer service, whereas [\texttt{arXiv:2309.07864}] maintains a more generalized focus on agent scenarios.
+
+Finally, the literature shows a progression toward more rigorous and diverse evaluation methodologies. [\texttt{arXiv:2404.04442}] identifies specific, established platforms for assessment, such as AgentBench, WebArena, and ToolLLM. This is complemented by the extensive analysis in [\texttt{arXiv:2508.17281}], which provides a much broader empirical foundation by evaluating 68 publicly available datasets and current assessment protocols. Collectively, these works demonstrate a clear trajectory in the field: moving from defining the basic anatomy of an agent [\texttt{arXiv:2309.07864}] to detailing the complex, role-driven workflows [\texttt{arXiv:2406.05804}] and the comprehensive benchmarks required to validate them [\texttt{arXiv:2508.17281}].
+
+\subsection{The Frontier: Advanced Agentic Reasoning and Orchestration}
+
+Recent advancements in large language model (LLM) agents represent a shift from simple tool invocation toward sophisticated multi-tool orchestration and complex reasoning paradigms [\texttt{arXiv:2603.22862}]. A foundational contribution to this evolution is the establishment of a unified "Agentic Reasoning" paradigm, which organizes agentic behavior into three hierarchical layers: foundational (single-agent planning and tool use), self-evolving (feedback and memory), and collective (multi-agent coordination) [\texttt{arXiv:2601.12538}]. This paradigm is strengthened by a rigorous mathematical formalization using a POMDP framework, which explicitly factorizes the agent's policy into internal reasoning (\$\textbackslash{}pi\_\{reason\}\$) and external execution (\$\textbackslash{}pi\_\{exec\}\$) [\texttt{arXiv:2601.12538}]. However, the framework's taxonomy is not without flaws; the distinction between "in-context" and "post-training" mechanisms is occasionally blurred, particularly where "Self-evolving" layers overlap with "Parametric Adaptation" [\texttt{arXiv:2601.12538}].
+
+To manage the computational overhead of these advanced reasoning processes, research has diverged into two primary optimization strategies: structural tool selection and adaptive reasoning escalation. AutoTool optimizes efficiency by utilizing a graph-based framework that models tool usage inertia through directed graphs constructed from historical trajectories [\texttt{arXiv:2511.14650}]. By traversing these graphs to select tools and parameters, it bypasses repeated LLM invocations, reducing inference costs by up to 30\% [\texttt{arXiv:2511.14650}]. Conversely, AgentCollab approaches efficiency through a difficulty-aware cumulative escalation strategy within a two-level small-large model setting [\texttt{arXiv:2603.26034}]. Rather than relying on historical transition probabilities, AgentCollab uses an agent's own self-reflection signals to trigger the escalation of reasoning budgets to stronger models only when failure signals are detected, aiming to optimize the accuracy-efficiency Pareto frontier [\texttt{arXiv:2603.26034}].
+
+Planning methodologies are also evolving from discrete action selection toward more continuous and reward-driven trajectory modeling. One approach scales autonomous agents by employing an automatically learned reward model to evaluate action trajectories, providing heuristics for task planning in domains such as scientific reasoning, mathematics, and online shopping [\texttt{arXiv:2502.12130}]. This discrete, reward-scored approach contrasts sharply with FlowAgent, which reconceptualizes tool chaining as a continuous flow [\texttt{arXiv:2605.07339}]. Instead of selecting discrete steps, FlowAgent uses conditional flow matching to generate continuous latent trajectories within a semantic space, offering a global planning perspective for long-horizon reasoning in dynamic, real-world environments [\texttt{arXiv:2605.07339}]. Together, these developments illustrate a trajectory moving from reactive tool use toward proactive, mathematically formalized, and computationally efficient cognitive orchestration.
+
+\subsection{Tensions and Open Problems}
+
+A fundamental debate persists regarding the optimal mechanism for eliciting complex reasoning within language models. One school of thought emphasizes the importance of sampling multiple reasoning paths to find a consensus, as demonstrated by the self-consistency approach in \texttt{arXiv:2203.11171}. However, this is challenged by the notion that reasoning can be more effectively prompted through explicit instruction, where the model is guided to "think step by step" without necessarily requiring multiple samples, a concept explored in \texttt{arXiv:2205.11916}. This tension extends into the domain of computational execution: while some argue for the necessity of disentangling linguistic reasoning from mathematical computation via specialized prompting strategies like Program of Thoughts (\texttt{arXiv:2211.12588}), others advocate for a more integrated approach where the model directly generates executable code to solve problems, as seen in the Program-aided Language Models (\texttt{arXiv:2211.10435}) framework.
+
+Another significant tension lies in the architecture of agentic planning and interaction. Current research is divided between models that rely on high-level, autonomous decision-making and those that require more structured, interactive feedback loops. For instance, the "Describe, Explain, Plan and Select" framework in \texttt{arXiv:2302.01560} argues that existing agents often lack the necessary interactive depth, critiquing the relatively static nature of generative agents in \texttt{arXiv:2304.03442} and the verbal reinforcement loops in \texttt{arXiv:2303.11366}. This critique is furthered by the observation that purely linguistic planning can be insufficient for complex tasks; while some models attempt to ground language in robotic actions (\texttt{arXiv:2204.01691}), others suggest that true reliability requires marrying LLM reasoning with optimal, formal planning algorithms, as proposed in the LLM+P paradigm (\texttt{arXiv:2304.11477}).
+
+Finally, the field faces a critical disagreement concerning the scalability and sophistication of tool use. Early approaches focused on browser-assisted question answering through human feedback (\texttt{arXiv:2112.09332}), but more recent work suggests that models should instead learn to teach themselves to use tools through self-supervised learning (\texttt{arXiv:2302.04761}). This evolution has led to a conflict between the use of specialized, narrow tool-learning benchmarks like API-Bank (\texttt{arXiv:2304.08244}) or ToolAlpaca (\texttt{arXiv:2306.05301}) and the need for massive, diverse tool ecosystems. As argued in \texttt{arXiv:2307.16789}, existing benchmarks often fail to capture the true breadth of tool mastery required for real-world application, necessitating a move toward more comprehensive and scalable tool-augmented architectures.
+
+\subsection{Outlook}
+
+The frontier of the field is rapidly shifting from isolated reasoning tasks toward the development of holistic "Agentic AI" (\texttt{arXiv:2601.12560}). We are moving beyond simple single-tool calls toward complex multi-tool orchestration (\texttt{arXiv:2603.22862}) and the integration of tools as continuous flows that evolve alongside agentic reasoning (\texttt{arXiv:2605.07339}). As the focus transitions toward edge intelligence (\texttt{arXiv:2604.09607}) and personalized interoperability (\texttt{arXiv:2605.18067}), the next generation of research will likely prioritize self-evaluating collaborative paradigms (\texttt{arXiv:2603.26034}) that allow agents to operate autonomously within increasingly complex, real-world environments.
+
+---
+
+\subsection{Key Figures}
+
+\textbf{Chain-of-Thought Prompting Elicits Reasoning in Large Language Models} — \texttt{arXiv:2201.11903} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2201.11903_p1.png}\end{center}
+
+The figure compares "Standard Prompting" and "Chain-of-Thought Prompting" through two side-by-side examples of model inputs and outputs. Each example uses text boxes to display a question (Q) and an answer (A), with the Chain-of-Thought version featuring a blue highlighted reasoning process that leads to a correct answer (marked with a green check), whereas the Standard Prompting version shows an incorrect answer (marked with a red X).
+
+\textbf{ReAct: Synergizing Reasoning and Acting in Language Models} — \texttt{arXiv:2210.03629} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2210.03629_p2.png}\end{center}
+
+The figure presents two panels comparing different prompting methods for language models. The top panel compares "Standard" and "Chain-of-thought" approaches for a HotpotQA question, while the bottom panel compares "Act-only" and "ReAct (Reason + Act)" approaches for an AlfWorld task, using text boxes to display the model's thoughts, actions, observations, and final answers. The figure conveys that the ReAct method, which interleaves reasoning traces with task-specific actions, achieves a correct answer (indicated by a green checkmark) where the Act-only method fails (indicated by a red X).
+
+\textbf{Language Models are Few-Shot Learners} — \texttt{arXiv:2005.14165} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2005.14165_p3.png}\end{center}
+
+The figure uses a hierarchical diagram with brackets to illustrate the relationship between an "outer loop" of unsupervised pre-training via SGD and an "inner loop" of in-context learning. The outer loop is represented by a long purple arrow, while the inner loop consists of three separate light-blue boxes labeled "sequence \#1," "\#2," and "\#3," each containing a series of task demonstrations (arithmetic, translation, etc.) followed by a vertical "in-context learning" label. The diagram conveys that pre-training enables the model to perform rapid adaptation to new tasks within a single sequence at inference time.
+
+\textbf{GPT-4 Technical Report} — \texttt{arXiv:2303.08774} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2303.08774_p3.png}\end{center}
+
+This scatter plot shows the relationship between compute (x-axis, log scale) and bits per word (y-axis) for next-word prediction on an OpenAI codebase. Gray dots represent observed performance for smaller models, a dashed line shows a power law fit to those observations, and a single green dot represents GPT-4's performance. The figure conveys that GPT-4's loss aligns with the scaling trends predicted by smaller models.
+
+\textbf{Toolformer: Language Models Can Teach Themselves to Use Tools} — \texttt{arXiv:2302.04761} p.1
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2302.04761_p1.png}\end{center}
+
+The figure displays several text blocks containing model-generated sentences interspersed with bracketed API calls and their corresponding outputs. These calls, shown in colored text, include examples of a question-answering system, a calculator, a machine translation system, and a Wikipedia search engine used to complete the surrounding text.
+
+\textbf{Reflexion: Language Agents with Verbal Reinforcement Learning} — \texttt{arXiv:2303.11366} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2303.11366_p3.png}\end{center}
+
+The figure is a flowchart consisting of five horizontal layers labeled (a) Task, (b) Trajectory, (c) Evaluation, (d) Reflection, and (e) Next Trajectory, organized into three vertical columns representing "1. Decision making," "2. Programming," and "3. Reasoning." It uses boxes to represent specific text inputs, actions, and reasoning steps, connected by vertical arrows to convey a cyclical process where an agent performs a task, receives feedback, reflects on its errors, and generates a new trajectory.
+
+\textbf{A Survey on Large Language Model based Autonomous Agents} — \texttt{arXiv:2308.11432} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2308.11432_p2.png}\end{center}
+
+This figure is a line graph showing the cumulative number of papers published over time from January 2021 to August 2023, categorized by different agent types (General, Tool, Simulation, Embodied, Game, Web, and Assistant agents) represented by colored shaded areas. Various rectangular callout boxes containing screenshots or labels are placed along the timeline to highlight specific representative studies, such as AutoGPT, AgentGPT, and ToolLLaMA, corresponding to their respective publication periods.
+
+\textbf{Training language models to follow instructions with human feedback} — \texttt{arXiv:2203.02155} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2203.02155_p2.png}\end{center}
+
+This line graph plots the "Win rate against SFT 175B" on the y-axis against "Model size" (1.3B, 6B, and 175B) on a logarithmic x-axis. It compares the performance of five models—PPO-ptx, PPO, SFT, GPT (prompted), and GPT—using colored lines with error bars representing 95\% confidence intervals. The figure conveys that the InstructGPT models (PPO-ptx and PPO) achieve higher win rates across all model sizes compared to the GPT baselines.
+
+\textbf{Agentic Reasoning for Large Language Models} — \texttt{arXiv:2601.12538} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2601.12538_p2.png}\end{center}
+
+The figure uses a hierarchical flowchart with boxes, arrows, and icons to illustrate the progression from LLM reasoning to agentic reasoning. The top panel shows a user proposing a task for an agent to solve, while the middle and bottom panels detail "Foundational Agentic Reasoning" (involving complex planning and tool use) and "Collective Multi-agent Reasoning" (involving role assigning and collaboration).
+
+\textbf{Agentic Tool Use in Large Language Models} — \texttt{arXiv:2604.00835} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2604.00835_p2.png}\end{center}
+
+The provided text does not contain a figure, only a paragraph of text describing the paper's contributions and a summary of methodological paradigms. Therefore, there is no figure to describe.
+
+\textbf{The Evolution of Tool Use in LLM Agents: From Single-Tool Call to Multi-Tool Orchestration} — \texttt{arXiv:2603.22862} p.3
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2603.22862_p3.png}\end{center}
+
+The figure depicts a paradigm shift from "Linear Reasoning" to "Multi-Tool Orchestration" via a large central arrow. The left panel shows a vertical flowchart of a single-tool call process involving input, API search, thought updates, and code interpretation to reach a final answer. The right panel illustrates a complex "Multi-Tool Agent System" containing an inference-time paradigm (graph planning, state-space search, and tool evaluation) integrated with tuning paradigms, trajectory synthesis, and toolset expansion.
+
+\textbf{Tools as Continuous Flow for Evolving Agentic Reasoning} — \texttt{arXiv:2605.07339} p.2
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2605.07339_p2.png}\end{center}
+
+The figure consists of four panels (a-d) illustrating the limitations of step-wise tool use and comparing it to a proposed continuous flow approach. Panels (a) through (c) use diagrams of tool icons, decision paths, and similarity spaces to conceptually demonstrate how local tool selection leads to a lack of global perspective, error propagation in long-horizon tasks, and poor adaptation to unseen tools. Panel (d) presents a radar chart comparing RAG, ToolRL, and the proposed method ("Ours") across axes for Tool EM, Retail Success, Overall Success, and Unseen Tool performance on the "Qwen2.5-7B" benchmark.
+
+\textbf{AgentCollab: A Self-Evaluation-Driven Collaboration Paradigm for Efficient LLM Agents} — \texttt{arXiv:2603.26034} p.4
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2603.26034_p4.png}\end{center}
+
+The figure presents a flowchart consisting of four sequential stages—(a) Warm-up, (b) Low-latency Routine, (d) Model Escalation, and (e) De-escalation—connected by arrows to illustrate the AgentCollab framework. Each stage contains text boxes representing "think" processes and "reason" evaluations, showing how a system transitions between a Large Model and a Small Model based on self-evaluation-driven progress checks. The diagram conveys a workflow where a small model handles routine tasks but escalates to a large model when stagnation is detected, before returning to the small model.
+
+\textbf{Agentic Artificial Intelligence (AI): Architectures, Taxonomies, and Evaluation of Large Language Model Agents} — \texttt{arXiv:2601.12560} p.5
+
+\begin{center}\includegraphics[width=0.75\textwidth,height=0.4\textheight,keepaspectratio]{figures/2601.12560_p5.png}\end{center}
+
+This hierarchical diagram features a central "Agentic AI Taxonomy" box that branches into six primary dimensions: Core Components, Cognitive Architecture, Learning, Multi-Agent Systems, Environments \& Domains, and Evaluation \& Safety. Each dimension further subdivides into specific sub-categories (e.g., Perception, Planning, Topology, or Security) which are connected via arrows to granular functional elements (e.g., Text, ReAct, Chain, or Prompt Injection). The figure conveys a structured classification of the agentic AI ecosystem, organizing various technical capabilities and research areas into a cohesive taxonomy.
+
+\section*{References}
+\begin{enumerate}\small
+  \item Fog Computing: Focusing on Mobile Users at the Edge (2015). \texttt{arXiv:1502.01815}
+  \item Challenges and Opportunities in Edge Computing (2016). \texttt{arXiv:1609.01967}
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Proximal Policy Optimization Algorithms (2017). \texttt{arXiv:1707.06347}
+  \item A Comprehensive Survey on Fog Computing: State-of-the-art and Research
+  Challenges (2017). \texttt{arXiv:1710.11001}
+  \item BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding (2018). \texttt{arXiv:1810.04805}
+  \item In-Edge AI: Intelligentizing Mobile Edge Computing, Caching and
+  Communication by Federated Learning (2018). \texttt{arXiv:1809.07857}
+  \item HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question
+  Answering (2018). \texttt{arXiv:1809.09600}
+  \item Reinforcement Learning on Web Interfaces Using Workflow-Guided
+  Exploration (2018). \texttt{arXiv:1802.08802}
+  \item Edge Intelligence: Paving the Last Mile of Artificial Intelligence with
+  Edge Computing (2019). \texttt{arXiv:1905.10083}
+  \item Convergence of Edge Computing and Deep Learning: A Comprehensive Survey (2019). \texttt{arXiv:1907.08349}
+  \item Edge Intelligence: The Confluence of Edge Computing and Artificial
+  Intelligence (2019). \texttt{arXiv:1909.00560}
+  \item OpenEI: An Open Framework for Edge Intelligence (2019). \texttt{arXiv:1906.01864}
+  \item Towards Edge-assisted Internet of Things: From Security and Efficiency
+  Perspectives (2019). \texttt{arXiv:1902.07094}
+  \item A Survey on Edge Computing Systems and Tools (2019). \texttt{arXiv:1911.02794}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (2020). \texttt{arXiv:2005.11401}
+  \item Measuring Massive Multitask Language Understanding (2020). \texttt{arXiv:2009.03300}
+  \item ALFWorld: Aligning Text and Embodied Environments for Interactive
+  Learning (2020). \texttt{arXiv:2010.03768}
+  \item Evaluating Large Language Models Trained on Code (2021). \texttt{arXiv:2107.03374}
+  \item Training Verifiers to Solve Math Word Problems (2021). \texttt{arXiv:2110.14168}
+  \item WebGPT: Browser-assisted question-answering with human feedback (2021). \texttt{arXiv:2112.09332}
+  \item Measuring Mathematical Problem Solving With the MATH Dataset (2021). \texttt{arXiv:2103.03874}
+  \item LoRA: Low-Rank Adaptation of Large Language Models (2021). \texttt{arXiv:2106.09685}
+  \item Revisiting the Arguments for Edge Computing Research (2021). \texttt{arXiv:2106.12224}
+  \item Roadmap for Edge AI: A Dagstuhl Perspective (2021). \texttt{arXiv:2112.00616}
+  \item Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (2022). \texttt{arXiv:2201.11903}
+  \item Training language models to follow instructions with human feedback (2022). \texttt{arXiv:2203.02155}
+  \item PaLM: Scaling Language Modeling with Pathways (2022). \texttt{arXiv:2204.02311}
+  \item ReAct: Synergizing Reasoning and Acting in Language Models (2022). \texttt{arXiv:2210.03629}
+  \item Self-Consistency Improves Chain of Thought Reasoning in Language Models (2022). \texttt{arXiv:2203.11171}
+  \item Do As I Can, Not As I Say: Grounding Language in Robotic Affordances (2022). \texttt{arXiv:2204.01691}
+  \item Large Language Models are Zero-Shot Reasoners (2022). \texttt{arXiv:2205.11916}
+  \item Language Models as Zero-Shot Planners: Extracting Actionable Knowledge
+  for Embodied Agents (2022). \texttt{arXiv:2201.07207}
+  \item Inner Monologue: Embodied Reasoning through Planning with Language
+  Models (2022). \texttt{arXiv:2207.05608}
+  \item WebShop: Towards Scalable Real-World Web Interaction with Grounded
+  Language Agents (2022). \texttt{arXiv:2207.01206}
+  \item PAL: Program-aided Language Models (2022). \texttt{arXiv:2211.10435}
+  \item Self-Instruct: Aligning Language Models with Self-Generated Instructions (2022). \texttt{arXiv:2212.10560}
+  \item Least-to-Most Prompting Enables Complex Reasoning in Large Language
+  Models (2022). \texttt{arXiv:2205.10625}
+  \item Program of Thoughts Prompting: Disentangling Computation from Reasoning
+  for Numerical Reasoning Tasks (2022). \texttt{arXiv:2211.12588}
+  \item ProgPrompt: Generating Situated Robot Task Plans using Large Language
+  Models (2022). \texttt{arXiv:2209.11302}
+  \item TALM: Tool Augmented Language Models (2022). \texttt{arXiv:2205.12255}
+  \item Code as Policies: Language Model Programs for Embodied Control (2022). \texttt{arXiv:2209.07753}
+  \item TPTU: Large Language Model-based AI Agents for Task Planning and Tool Usage (2023). \texttt{arXiv:2308.03427}
+  \item Large Language Models as Tool Makers (2023). \texttt{arXiv:2305.17126}
+  \item Towards Reasoning in Large Language Models via Multi-Agent Peer Review
+  Collaboration (2023). \texttt{arXiv:2311.08152}
+  \item ART: Automatic multi-step reasoning and tool-use for large language
+  models (2023). \texttt{arXiv:2303.09014}
+  \item Agent Instructs Large Language Models to be General Zero-Shot Reasoners (2023). \texttt{arXiv:2310.03710}
+  \item Controlling Large Language Model-based Agents for Large-Scale
+  Decision-Making: An Actor-Critic Approach (2023). \texttt{arXiv:2311.13884}
+  \item An In-depth Survey of Large Language Model-based Artificial Intelligence
+  Agents (2023). \texttt{arXiv:2309.14365}
+  \item A Survey on Large Language Model based Autonomous Agents (2023). \texttt{arXiv:2308.11432}
+  \item GPT-4 Technical Report (2023). \texttt{arXiv:2303.08774}
+  \item Toolformer: Language Models Can Teach Themselves to Use Tools (2023). \texttt{arXiv:2302.04761}
+  \item LLaMA: Open and Efficient Foundation Language Models (2023). \texttt{arXiv:2302.13971}
+  \item Reflexion: Language Agents with Verbal Reinforcement Learning (2023). \texttt{arXiv:2303.11366}
+  \item Generative Agents: Interactive Simulacra of Human Behavior (2023). \texttt{arXiv:2304.03442}
+  \item Tree of Thoughts: Deliberate Problem Solving with Large Language Models (2023). \texttt{arXiv:2305.10601}
+  \item Llama 2: Open Foundation and Fine-Tuned Chat Models (2023). \texttt{arXiv:2307.09288}
+  \item Sparks of Artificial General Intelligence: Early experiments with GPT-4 (2023). \texttt{arXiv:2303.12712}
+  \item HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging
+  Face (2023). \texttt{arXiv:2303.17580}
+  \item Self-Refine: Iterative Refinement with Self-Feedback (2023). \texttt{arXiv:2303.17651}
+  \item ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world
+  APIs (2023). \texttt{arXiv:2307.16789}
+  \item Gorilla: Large Language Model Connected with Massive APIs (2023). \texttt{arXiv:2305.15334}
+  \item CAMEL: Communicative Agents for "Mind" Exploration of Large Language
+  Model Society (2023). \texttt{arXiv:2303.17760}
+  \item MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework (2023). \texttt{arXiv:2308.00352}
+  \item Voyager: An Open-Ended Embodied Agent with Large Language Models (2023). \texttt{arXiv:2305.16291}
+  \item ChatDev: Communicative Agents for Software Development (2023). \texttt{arXiv:2307.07924}
+  \item The Rise and Potential of Large Language Model Based Agents: A Survey (2023). \texttt{arXiv:2309.07864}
+  \item WebArena: A Realistic Web Environment for Building Autonomous Agents (2023). \texttt{arXiv:2307.13854}
+  \item Language Models can Solve Computer Tasks (2023). \texttt{arXiv:2303.17491}
+  \item AgentBench: Evaluating LLMs as Agents (2023). \texttt{arXiv:2308.03688}
+  \item Describe, Explain, Plan and Select: Interactive Planning with Large
+  Language Models Enables Open-World Multi-Task Agents (2023). \texttt{arXiv:2302.01560}
+  \item Improving Factuality and Reasoning in Language Models through Multiagent
+  Debate (2023). \texttt{arXiv:2305.14325}
+  \item Tool Learning with Foundation Models (2023). \texttt{arXiv:2304.08354}
+  \item API-Bank: A Comprehensive Benchmark for Tool-Augmented LLMs (2023). \texttt{arXiv:2304.08244}
+  \item Reasoning with Language Model is Planning with World Model (2023). \texttt{arXiv:2305.14992}
+  \item AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation (2023). \texttt{arXiv:2308.08155}
+  \item Augmented Language Models: a Survey (2023). \texttt{arXiv:2302.07842}
+  \item Encouraging Divergent Thinking in Large Language Models through
+  Multi-Agent Debate (2023). \texttt{arXiv:2305.19118}
+  \item Visual ChatGPT: Talking, Drawing and Editing with Visual Foundation
+  Models (2023). \texttt{arXiv:2303.04671}
+  \item Mind2Web: Towards a Generalist Agent for the Web (2023). \texttt{arXiv:2306.06070}
+  \item LLM+P: Empowering Large Language Models with Optimal Planning
+  Proficiency (2023). \texttt{arXiv:2304.11477}
+  \item Chameleon: Plug-and-Play Compositional Reasoning with Large Language
+  Models (2023). \texttt{arXiv:2304.09842}
+  \item A Survey of Large Language Models (2023). \texttt{arXiv:2303.18223}
+  \item TaskMatrix.AI: Completing Tasks by Connecting Foundation Models with
+  Millions of APIs (2023). \texttt{arXiv:2303.16434}
+  \item ToolAlpaca: Generalized Tool Learning for Language Models with 3000
+  Simulated Cases (2023). \texttt{arXiv:2306.05301}
+  \item AgentVerse: Facilitating Multi-Agent Collaboration and Exploring
+  Emergent Behaviors (2023). \texttt{arXiv:2308.10848}
+  \item ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via
+  Tool Embeddings (2023). \texttt{arXiv:2305.11554}
+  \item PaLM-E: An Embodied Multimodal Language Model (2023). \texttt{arXiv:2303.03378}
+  \item Ghost in the Minecraft: Generally Capable Agents for Open-World
+  Environments via Large Language Models with Text-based Knowledge and Memory (2023). \texttt{arXiv:2305.17144}
+  \item Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning
+  by Large Language Models (2023). \texttt{arXiv:2305.04091}
+  \item Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (2023). \texttt{arXiv:2306.05685}
+  \item ChatEval: Towards Better LLM-based Evaluators through Multi-Agent Debate (2023). \texttt{arXiv:2308.07201}
+  \item On the Tool Manipulation Capability of Open-source Large Language Models (2023). \texttt{arXiv:2305.16504}
+  \item Large Language Model based Multi-Agents: A Survey of Progress and
+  Challenges (2024). \texttt{arXiv:2402.01680}
+  \item Tool Learning in the Wild: Empowering Language Models as Automatic Tool
+  Agents (2024). \texttt{arXiv:2405.16533}
+  \item Small LLMs Are Weak Tool Learners: A Multi-LLM Agent (2024). \texttt{arXiv:2401.07324}
+  \item Exploring Large Language Model based Intelligent Agents: Definitions,
+  Methods, and Prospects (2024). \texttt{arXiv:2401.03428}
+  \item Exploring Autonomous Agents through the Lens of Large Language Models: A
+  Review (2024). \texttt{arXiv:2404.04442}
+  \item Large Language Model-Based Agents for Software Engineering: A Survey (2024). \texttt{arXiv:2409.02977}
+  \item A Review of Prominent Paradigms for LLM-Based Agents: Tool Use
+  (Including RAG), Planning, and Feedback Learning (2024). \texttt{arXiv:2406.05804}
+  \item Agent Q: Advanced Reasoning and Learning for Autonomous AI Agents (2024). \texttt{arXiv:2408.07199}
+  \item The Llama 3 Herd of Models (2024). \texttt{arXiv:2407.21783}
+  \item AutoTool: Efficient Tool Selection for Large Language Model Agents (2025). \texttt{arXiv:2511.14650}
+  \item Large Language Model Agent: A Survey on Methodology, Applications and
+  Challenges (2025). \texttt{arXiv:2503.21460}
+  \item From Language to Action: A Review of Large Language Models as Autonomous Agents and Tool Users (2025). \texttt{arXiv:2508.17281}
+  \item LLM-based Agentic Reasoning Frameworks: A Survey from Methods to Scenarios (2025). \texttt{arXiv:2508.17692}
+  \item Fundamentals of Building Autonomous LLM Agents (2025). \texttt{arXiv:2510.09244}
+  \item From LLM Reasoning to Autonomous AI Agents: A Comprehensive Review (2025). \texttt{arXiv:2504.19678}
+  \item Scaling Autonomous Agents via Automatic Reward Modeling And Planning (2025). \texttt{arXiv:2502.12130}
+  \item Agentic Reasoning: A Streamlined Framework for Enhancing LLM Reasoning with Agentic Tools (2025). \texttt{arXiv:2502.04644}
+  \item DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning (2025). \texttt{arXiv:2501.12948}
+  \item Agentic Reasoning for Large Language Models (2026). \texttt{arXiv:2601.12538}
+  \item Agentic Tool Use in Large Language Models (2026). \texttt{arXiv:2604.00835}
+  \item The Evolution of Tool Use in LLM Agents: From Single-Tool Call to Multi-Tool Orchestration (2026). \texttt{arXiv:2603.22862}
+  \item Tools as Continuous Flow for Evolving Agentic Reasoning (2026). \texttt{arXiv:2605.07339}
+  \item AgentCollab: A Self-Evaluation-Driven Collaboration Paradigm for Efficient LLM Agents (2026). \texttt{arXiv:2603.26034}
+  \item Agentic Artificial Intelligence (AI): Architectures, Taxonomies, and Evaluation of Large Language Model Agents (2026). \texttt{arXiv:2601.12560}
+  \item LLM-assisted Agentic Edge Intelligence Framework (2026). \texttt{arXiv:2604.09607}
+  \item PPAI: Enabling Personalized LLM Agent Interoperability for Collaborative Edge Intelligence (2026). \texttt{arXiv:2605.18067}
+\end{enumerate}
+
+\end{document}

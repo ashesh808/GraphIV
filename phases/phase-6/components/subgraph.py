@@ -13,11 +13,10 @@ No LLM and no embedding model here — callers pass a pre-computed query vector
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, LiteralString, cast
+from typing import TYPE_CHECKING
 
-from neo4j import Session
-
-from _common import VECTOR_INDEX  # noqa: E402
+if TYPE_CHECKING:
+    from store import Store
 
 # Strongest-signal-first; used to collapse parallel edges to one intent and to
 # pick the "tension" edges. extends/uses = builds-on; compares/critiques/motivates
@@ -74,32 +73,9 @@ class Era:
 # Step 2 — topical pool (vector)
 
 
-def topical_pool(
-    session: Session, qvec: list[float], n_pool: int
-) -> dict[str, PoolNode]:
+def topical_pool(store: Store, qvec: list[float], n_pool: int) -> dict[str, PoolNode]:
     """Top-`n_pool` papers by cosine sim to the query, keyed by arxiv_id."""
-    cypher = (
-        f"CALL db.index.vector.queryNodes('{VECTOR_INDEX}', $n, $qvec) YIELD node, score "
-        "RETURN node.arxiv_id AS arxiv_id, node.title AS title, node.year AS year, "
-        "node.primary_category AS category, score ORDER BY score DESC"
-    )
-    pool: dict[str, PoolNode] = {}
-    # cast: query is an f-string over internal constants, not user input
-    rows = session.run(cast(LiteralString, cypher), n=n_pool, qvec=qvec)
-    for rec in rows:
-        row: dict[str, Any] = dict(rec)
-        axid = str(row["arxiv_id"])  # pyright: ignore[reportAny]
-        year_raw: Any = row["year"]  # pyright: ignore[reportAny]
-        pool[axid] = PoolNode(
-            arxiv_id=axid,
-            title=str(row["title"] or ""),  # pyright: ignore[reportAny]
-            year=int(year_raw) if year_raw is not None else None,
-            category=(
-                str(row["category"]) if row["category"] is not None else None
-            ),  # pyright: ignore[reportAny]
-            score=float(row["score"]),  # pyright: ignore[reportAny]
-        )
-    return pool
+    return store.vector_pool(qvec, n_pool)
 
 
 # ---------------------------------------------------------------------------
@@ -113,7 +89,7 @@ def topical_pool(
 
 
 def augment_with_ancestors(
-    session: Session,
+    store: Store,
     pool: dict[str, PoolNode],
     qvec: list[float],
     max_add: int = 150,
@@ -122,53 +98,17 @@ def augment_with_ancestors(
 ) -> int:
     """Add the pool's most-cited ancestors to `pool` (mutates). Returns # added.
 
-    Ranked by how many distinct pool papers cite each ancestor; scored by true
-    cosine sim to the query (both vectors are L2-normalized, so dot == cosine).
-    If `category_prefix` is given, only ancestors in that arXiv category group are
-    added (prevents famous cross-field papers — string theory, entropic gravity —
-    from hijacking a polysemous query's pool).
+    Ranked by how many distinct pool papers cite each ancestor; scored by true cosine sim to the
+    query. If `category_prefix` is given, only ancestors in that arXiv category group are added
+    (prevents famous cross-field papers from hijacking a polysemous query's pool).
     """
     if not pool:
         return 0
-    cat_clause = " AND b.primary_category STARTS WITH $cat" if category_prefix else ""
-    cypher = (
-        "MATCH (a:Paper)-[:CITES]->(b:Paper) "
-        f"WHERE a.arxiv_id IN $pool{cat_clause} "
-        "WITH b, count(DISTINCT a) AS pc "
-        "WHERE pc >= $min_citers "
-        "RETURN b.arxiv_id AS id, b.title AS title, b.year AS year, "
-        "b.primary_category AS category, b.embedding AS emb, pc "
-        "ORDER BY pc DESC LIMIT $max_add"
-    )
-    params: dict[str, Any] = {
-        "pool": list(pool),
-        "min_citers": min_citers,
-        "max_add": max_add,
-    }
-    if category_prefix:
-        params["cat"] = category_prefix
     added = 0
-    for rec in session.run(cypher, **params):  # pyright: ignore[reportArgumentType]
-        row: dict[str, Any] = dict(rec)
-        axid = str(row["id"])  # pyright: ignore[reportAny]
-        if axid in pool:
+    for n in store.ancestors(list(pool), qvec, max_add, min_citers, category_prefix):
+        if n.arxiv_id in pool:
             continue
-        emb: Any = row["emb"]  # pyright: ignore[reportAny]
-        sim = (
-            sum(a * b for a, b in zip(qvec, emb))  # pyright: ignore[reportAny]
-            if emb is not None
-            else 0.0
-        )
-        year_raw: Any = row["year"]  # pyright: ignore[reportAny]
-        pool[axid] = PoolNode(
-            arxiv_id=axid,
-            title=str(row["title"] or ""),  # pyright: ignore[reportAny]
-            year=int(year_raw) if year_raw is not None else None,
-            category=(
-                str(row["category"]) if row["category"] is not None else None
-            ),  # pyright: ignore[reportAny]
-            score=float(sim),
-        )
+        pool[n.arxiv_id] = n
         added += 1
     return added
 
@@ -177,31 +117,18 @@ def augment_with_ancestors(
 # Step 3 — induce the citation subgraph (graph)
 
 
-def induce_subgraph(session: Session, pool_ids: list[str]) -> list[Edge]:
+def induce_subgraph(store: Store, pool_ids: list[str]) -> list[Edge]:
     """All CITES edges with both endpoints in the pool, parallel edges collapsed.
 
     Multiple (src,dst) citation occurrences collapse to one edge carrying the
     strongest-signal intent (INTENT_PRIORITY) and that edge's polarity.
     """
-    cypher = (
-        "MATCH (a:Paper)-[c:CITES]->(b:Paper) "
-        "WHERE a.arxiv_id IN $pool AND b.arxiv_id IN $pool "
-        "RETURN a.arxiv_id AS src, b.arxiv_id AS dst, "
-        "c.intent AS intent, c.polarity AS polarity"
-    )
     best: dict[tuple[str, str], Edge] = {}
-    for rec in session.run(cypher, pool=pool_ids):
-        row: dict[str, Any] = dict(rec)
-        src = str(row["src"])  # pyright: ignore[reportAny]
-        dst = str(row["dst"])  # pyright: ignore[reportAny]
+    for src, dst, intent_raw, polarity_raw in store.edges_among(pool_ids):
         if src == dst:
             continue
-        intent = (
-            str(row["intent"]) if row["intent"] is not None else None
-        )  # pyright: ignore[reportAny]
-        polarity = (
-            str(row["polarity"]) if row["polarity"] is not None else None
-        )  # pyright: ignore[reportAny]
+        intent = str(intent_raw) if intent_raw is not None else None
+        polarity = str(polarity_raw) if polarity_raw is not None else None
         key = (src, dst)
         prev = best.get(key)
         if prev is None or _intent_rank(intent) < _intent_rank(prev.intent):

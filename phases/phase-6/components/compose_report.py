@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 
 
-from llm import chat  # noqa: E402
+from llm import NO_THINK, THINK, chat  # noqa: E402
 from narrate import _relations, check_citations  # noqa: E402
 from schema import Schema  # noqa: E402
 from subgraph import Edge, Era, Landmark  # noqa: E402
@@ -99,10 +99,15 @@ def compose(
     digest: str,
     pool_ids: set[str],
     max_tokens: int = 9000,
+    think: bool = False,
 ) -> tuple[str, list[str], list[str]]:
-    """Narrate the digest -> (report markdown, grounded ids, off-digest ids)."""
+    """Narrate the digest -> (report markdown, grounded ids, off-digest ids).
+
+    `think` enables the -code model's reasoning channel (deep path); the single-pass path
+    keeps it off, since Gemma-4 otherwise burns the budget reasoning and returns empty —
+    so the deep path pairs think=True with a larger `max_tokens`.
+    """
     user = f"Write the literature review answering: {question}\n\nDIGEST:\n{digest}"
-    # thinking-off: Gemma-4 otherwise burns the long budget reasoning and returns empty.
     report, _, _ = asyncio.run(
         chat(
             NARRATOR,
@@ -110,7 +115,7 @@ def compose(
             user,
             0.4,
             max_tokens,
-            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+            extra_body=THINK if think else NO_THINK,
         )
     )
     grounded, off_digest = check_citations(report, pool_ids)

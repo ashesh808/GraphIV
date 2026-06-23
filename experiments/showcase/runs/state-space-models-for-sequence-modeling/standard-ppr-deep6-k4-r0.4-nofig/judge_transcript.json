@@ -1,0 +1,33 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "scaling laws for state space models vs transformers",
+   "Vision Mamba and SSMs for image sequence modeling",
+   "hardware-aware kernel fusion for parallel scans in SSMs",
+   "SSM performance on long-context retrieval benchmarks"
+  ],
+  "assessment": "An excellent, high-frontier review that captures the core theoretical tensions but could benefit from more explicit coverage of scaling laws and vision-based SSM applications."
+ },
+ {
+  "round": 2,
+  "saturated": true,
+  "scores": {
+   "grounding": 5,
+   "coverage": 5,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [],
+  "assessment": "An outstanding, high-fidelity review that masterfully connects historical recurrence to the most recent 2025 theoretical unifications."
+ }
+]

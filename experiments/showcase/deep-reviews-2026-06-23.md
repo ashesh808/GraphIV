@@ -1,0 +1,43 @@
+# Deep-review showcase — all 27 research questions
+
+Highest-quality phase-6 runs (`--set-effort deep --set-rank ppr --set-max-rounds 6 --set-critique-k 8`):
+judge-driven deep loop + per-paper full-PDF critique + sectioned long-compose + vision figure gallery + LaTeX.
+Generated 2026-06-23 (single 3090, 4 h 57 m, 27/27 rc=0). Each links to the markdown review, the
+`report.tex`, and the figure gallery. **Note:** `phases/phase-6/output/` is gitignored — these are local
+browse links; a tracked sample is copied under `showcase/sample/` for the repo.
+
+| # | topic | review | tex | chars | figs |
+|--:|---|---|---|--:|--:|
+| | **Foundational (broad)** | | | | |
+| 1 | diffusion models for image generation | [md](../../phases/phase-6/output/research/diffusion-models-for-image-generation/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/diffusion-models-for-image-generation/deep-ppr-deep6/report.tex) | 31,891 | 13 |
+| 2 | test-time compute and reasoning in large language models | [md](../../phases/phase-6/output/research/test-time-compute-and-reasoning-in-large-languag/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/test-time-compute-and-reasoning-in-large-languag/deep-ppr-deep6/report.tex) | 30,963 | 14 |
+| 3 | transformer attention models for language | [md](../../phases/phase-6/output/research/transformer-attention-models-for-language/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformer-attention-models-for-language/deep-ppr-deep6/report.tex) | 35,134 | 13 |
+| 4 | graph neural networks | [md](../../phases/phase-6/output/research/graph-neural-networks/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/graph-neural-networks/deep-ppr-deep6/report.tex) | 32,479 | 12 |
+| 5 | deep reinforcement learning | [md](../../phases/phase-6/output/research/deep-reinforcement-learning/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/deep-reinforcement-learning/deep-ppr-deep6/report.tex) | 30,113 | 10 |
+| 6 | contrastive self-supervised representation learning | [md](../../phases/phase-6/output/research/contrastive-self-supervised-representation-learn/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/contrastive-self-supervised-representation-learn/deep-ppr-deep6/report.tex) | 32,313 | 9 |
+| 7 | mixture-of-experts models for scaling neural networks | [md](../../phases/phase-6/output/research/mixture-of-experts-models-for-scaling-neural-net/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/mixture-of-experts-models-for-scaling-neural-net/deep-ppr-deep6/report.tex) | 31,731 | 14 |
+| 8 | state space models for sequence modeling | [md](../../phases/phase-6/output/research/state-space-models-for-sequence-modeling/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/state-space-models-for-sequence-modeling/deep-ppr-deep6/report.tex) | 33,234 | 13 |
+| | **Frontier (recent)** | | | | |
+| 9 | large language model agents and tool use | [md](../../phases/phase-6/output/research/large-language-model-agents-and-tool-use/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/large-language-model-agents-and-tool-use/deep-ppr-deep6/report.tex) | 31,557 | 13 |
+| 10 | preference optimization and RLHF for language models | [md](../../phases/phase-6/output/research/preference-optimization-and-rlhf-for-language-mo/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/preference-optimization-and-rlhf-for-language-mo/deep-ppr-deep6/report.tex) | 29,036 | 9 |
+| 11 | long-context methods for transformers | [md](../../phases/phase-6/output/research/long-context-methods-for-transformers/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/long-context-methods-for-transformers/deep-ppr-deep6/report.tex) | 30,554 | 13 |
+| 12 | speculative decoding for faster LLM inference | [md](../../phases/phase-6/output/research/speculative-decoding-for-faster-llm-inference/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/speculative-decoding-for-faster-llm-inference/deep-ppr-deep6/report.tex) | 30,208 | 12 |
+| 13 | retrieval-augmented generation | [md](../../phases/phase-6/output/research/retrieval-augmented-generation/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/retrieval-augmented-generation/deep-ppr-deep6/report.tex) | 35,624 | 14 |
+| | **A fixed, B varies (compositional)** | | | | |
+| 14 | diffusion models for video generation | [md](../../phases/phase-6/output/research/diffusion-models-for-video-generation/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/diffusion-models-for-video-generation/deep-ppr-deep6/report.tex) | 35,978 | 14 |
+| 15 | diffusion models for audio and speech synthesis | [md](../../phases/phase-6/output/research/diffusion-models-for-audio-and-speech-synthesis/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/diffusion-models-for-audio-and-speech-synthesis/deep-ppr-deep6/report.tex) | 31,185 | 13 |
+| 16 | diffusion models for molecular generation | [md](../../phases/phase-6/output/research/diffusion-models-for-molecular-generation/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/diffusion-models-for-molecular-generation/deep-ppr-deep6/report.tex) | 30,361 | 11 |
+| 17 | transformers for time series forecasting | [md](../../phases/phase-6/output/research/transformers-for-time-series-forecasting/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformers-for-time-series-forecasting/deep-ppr-deep6/report.tex) | 30,732 | 12 |
+| 18 | transformer models for code generation | [md](../../phases/phase-6/output/research/transformer-models-for-code-generation/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformer-models-for-code-generation/deep-ppr-deep6/report.tex) | 30,905 | 9 |
+| 19 | transformers for protein structure prediction | [md](../../phases/phase-6/output/research/transformers-for-protein-structure-prediction/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformers-for-protein-structure-prediction/deep-ppr-deep6/report.tex) | 29,514 | 11 |
+| 20 | graph neural networks for drug discovery | [md](../../phases/phase-6/output/research/graph-neural-networks-for-drug-discovery/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/graph-neural-networks-for-drug-discovery/deep-ppr-deep6/report.tex) | 34,514 | 12 |
+| 21 | graph neural networks for recommendation systems | [md](../../phases/phase-6/output/research/graph-neural-networks-for-recommendation-systems/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/graph-neural-networks-for-recommendation-systems/deep-ppr-deep6/report.tex) | 30,459 | 11 |
+| 22 | graph neural networks for combinatorial optimization | [md](../../phases/phase-6/output/research/graph-neural-networks-for-combinatorial-optimiza/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/graph-neural-networks-for-combinatorial-optimiza/deep-ppr-deep6/report.tex) | 30,268 | 11 |
+| | **B fixed, A varies (compositional)** | | | | |
+| 23 | diffusion models for autonomous driving | [md](../../phases/phase-6/output/research/diffusion-models-for-autonomous-driving/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/diffusion-models-for-autonomous-driving/deep-ppr-deep6/report.tex) | 32,210 | 13 |
+| 24 | reinforcement learning for autonomous driving | [md](../../phases/phase-6/output/research/reinforcement-learning-for-autonomous-driving/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/reinforcement-learning-for-autonomous-driving/deep-ppr-deep6/report.tex) | 33,638 | 11 |
+| 25 | transformer models for autonomous driving perception | [md](../../phases/phase-6/output/research/transformer-models-for-autonomous-driving-percep/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformer-models-for-autonomous-driving-percep/deep-ppr-deep6/report.tex) | 30,703 | 13 |
+| 26 | transformers for program synthesis | [md](../../phases/phase-6/output/research/transformers-for-program-synthesis/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/transformers-for-program-synthesis/deep-ppr-deep6/report.tex) | 29,273 | 13 |
+| 27 | reinforcement learning for automated theorem proving | [md](../../phases/phase-6/output/research/reinforcement-learning-for-automated-theorem-pro/deep-ppr-deep6/report.md) | [tex](../../phases/phase-6/output/research/reinforcement-learning-for-automated-theorem-pro/deep-ppr-deep6/report.tex) | 30,369 | 12 |
+
+**Total:** 27 reviews · 854,946 chars.

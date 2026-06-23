@@ -1,0 +1,219 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{test-time compute and reasoning in large language models}
+\author{arXiv GraphRAG --- phase-6 deep research}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The review is highly sophisticated, providing a masterfully synthesized account of both foundational scaling and the cutting-edge 2025 research on test-time compute allocation and its inherent tensions.
+\end{abstract}
+
+\section{Scaling Inference: A Review of Test-Time Compute and Reasoning in Large Language Models}
+
+The evolution of large language models (LLMs) has historically been dominated by scaling laws centered on pre-training compute and parameter counts. However, a fundamental limitation of the standard autoregressive inference process is its reliance on a fixed amount of computation per token, regardless of the complexity of the underlying task. This "one-pass" approach often fails when models encounter multi-step reasoning problems that require deliberation, verification, or the ability to backtrack from errors. As the field moves beyond simple linguistic pattern matching toward complex problem-solving, the ability to dynamically allocate computational resources during inference—commonly referred to as test-time compute—has emerged as a critical mechanism for enhancing model intelligence and reliability.
+
+This review traces the trajectory of this paradigm shift, beginning with its Origins, where early prompting techniques and basic heuristic-driven approaches first suggested that structured output could simulate cognitive processes. We then examine the Key Advances that transformed this field, specifically the integration of search algorithms, verifier-guided decoding, and self-correction mechanisms that allow models to explore multiple reasoning paths before arriving at a final answer. Finally, we explore the Current Frontier, where research is shifting toward formalizing inference-time scaling laws and developing autonomous "System 2" architectures that treat test-time computation as a scalable resource comparable to pre-training.
+
+\subsection{Origins}
+
+The foundational architecture for modern reasoning capabilities stems from the introduction of the Transformer, which replaced recurrent and convolutional structures with attention mechanisms [\texttt{arXiv:1706.03762}]. This shift allowed for significant performance gains in linguistic tasks, such as achieving 28.4 BLEU on English-to-German and 41.8 BLEU on English-to-French translation [\texttt{arXiv:1706.03762}]. While the Transformer established the structural basis for large-scale modeling, subsequent research shifted focus toward the relationship between scale and emergent capabilities.
+
+The paradigm of scaling was formalized by identifying that cross-entropy loss follows a power-law relationship with model size, dataset size, and training compute [\texttt{arXiv:2001.08361}]. This provided a mathematical framework for the optimal allocation of compute budgets [\texttt{arXiv:2001.08361}]. Building upon these scaling laws, the development of massive language models demonstrated that increasing scale significantly improves task-agnostic, few-shot performance [\texttt{arXiv:2005.14165}]. For instance, larger models showed improved competency in reasoning benchmarks such as 3-digit arithmetic and word unscrambling [\texttt{arXiv:2005.14165}]. The breadth of these capabilities was further quantified through massive multitask evaluations, where models like GPT-3 outperformed random chance by nearly 20 percentage points across 57 diverse tasks, including mathematics, law, and computer science [\texttt{arXiv:2009.03300}].
+
+However, the evolution of reasoning is not merely a product of scale, but also of alignment and optimization strategies. While scaling laws focus on the efficiency of training compute [\texttt{arXiv:2001.08361}], reinforcement learning from human feedback (RLHF) introduces a different optimization dimension by using reward models trained on human preference comparisons [\texttt{arXiv:2009.01325}]. This approach, which utilizes Proximal Policy Optimization (PPO) to optimize surrogate objective functions via stochastic gradient ascent [\texttt{arXiv:1707.06347}], has proven capable of producing summaries that outperform human references and larger models fine-tuned solely through supervised learning [\texttt{arXiv:2009.01325}].
+
+A critical tension exists between these developmental paths. While the scaling-centric view [\texttt{arXiv:2001.08361}, \texttt{arXiv:2005.14165}] suggests that reasoning is an emergent property of increased parameters and data, the alignment-centric view [\texttt{arXiv:2009.01325}] suggests that human-centric optimization is necessary to refine these capabilities for practical utility. This distinction is vital for understanding the transition from raw predictive power to controlled, reasoning-oriented behavior. Furthermore, while the Transformer [\texttt{arXiv:1706.03762}] provided the necessary mechanism for processing long-range dependencies, the subsequent integration of scaling laws [\texttt{arXiv:2001.08361}] and human feedback [\texttt{arXiv:2009.01325}] created the dual-track progression of model size and qualitative alignment that defines the current landscape.
+
+\subsection{Key Advances}
+
+Recent literature demonstrates that reasoning capabilities in large language models (LLMs) can be significantly enhanced by shifting computational focus from model training to test-time optimization. This transition is characterized by several distinct strategies: eliciting latent reasoning through prompting, employing search-based decoding, and implementing verification mechanisms.
+
+A foundational advancement is the use of Chain-of-Thought (CoT) prompting, which elicits multi-step reasoning by providing intermediate natural language steps in few-shot exemplars [\texttt{arXiv:2201.11903}]. This method allows reasoning abilities to emerge naturally in sufficiently large models, such as PaLM 540B, achieving state-of-the-art accuracy on the GSM8K benchmark [\texttt{arXiv:2201.11903}]. While CoT can be automated through zero-shot prompting by adding "Let's think step by step" [\texttt{arXiv:2205.11916}] or through Auto-CoT, which samples diverse questions to construct demonstrations [\texttt{arXiv:2210.03493}], the method has notable limitations. Specifically, it relies on manual exemplar construction and does not guarantee logical correctness, which can lead to "correct" answers derived from flawed reasoning [\texttt{arXiv:2201.11903}].
+
+To address these reliability issues, researchers have explored various test-time search and sampling strategies. Self-consistency improves reasoning by sampling diverse paths and selecting the most consistent answer via marginalization, yielding significant gains on benchmarks like GSM8K (+17.9\%) and AQuA (+12.2\%) [\texttt{arXiv:2203.11171}]. More complex frameworks move beyond simple sampling toward structured exploration. The Tree of Thoughts (ToT) framework enables deliberate problem-solving through lookahead and backtracking [\texttt{arXiv:2305.10601}], while Graph of Thoughts (GoT) further extends this by modeling information as an arbitrary graph, achieving a 62\% quality increase over ToT in certain tasks [\texttt{arXiv:2308.09687}]. Similarly, Reasoning via Planning (RAP) utilizes Monte Carlo Tree Search (MCTS) to repurpose the LLM as a world model for strategic exploration [\texttt{arXiv:2305.14992}].
+
+Another critical dimension is the use of verifiers to rank or guide completions. Early work demonstrated that training verifiers to judge correctness can significantly improve performance on GSM8K [\texttt{arXiv:2110.14168}]. However, this approach faces a non-monotonicity challenge: increasing completions beyond 400 can degrade performance as the verifier may be fooled by adversarial solutions [\texttt{arXiv:2110.14168}]. Recent advances attempt to mitigate this by shifting from outcome-based to process-based supervision. Rather than judging only the final answer, process supervision provides feedback for each intermediate step [\texttt{arXiv:2305.20050}], which has been shown to improve reasoning error rates significantly [\texttt{arXiv:2211.14275}]. This is complemented by iterative refinement techniques, such as Self-Refine, where a model uses self-generated feedback to improve its own outputs [\texttt{arXiv:2303.17651}], though it is important to note that some studies suggest intrinsic self-correction remains limited, as performance can occasionally degrade during these attempts [\texttt{arXiv:2310.01798}].
+
+\subsection{Current Frontier}
+
+The frontier of large language model (LLM) reasoning has shifted from increasing parameter counts to optimizing the allocation of test-time compute (TTC). Recent research establishes that scaling inference-time computation can be more efficient than scaling model size, with smaller models utilizing advanced inference strategies to outperform significantly larger counterparts (\texttt{arXiv:2408.00724}; \texttt{arXiv:2502.06703}). This paradigm is driven by diverse methodologies, ranging from stochastic sampling and tree-based searches to reinforcement learning (RL) that incentivizes emergent reasoning patterns like self-reflection and backtracking (\texttt{arXiv:2501.12948}).
+
+A primary axis of current research involves the optimization of sampling and verification strategies. Traditional self-consistency via stochastic decoding (e.g., nucleus sampling) has demonstrated absolute accuracy improvements of 9\% to 15\% over greedy decoding (\texttt{arXiv:2603.21301}). However, the effectiveness of these methods is highly model-dependent; for instance, dual-model agreement can actually decrease accuracy in smaller, non-reasoning models (\texttt{arXiv:2603.21301}). To mitigate the inefficiencies of simple sampling, researchers have proposed "thought-level" uncertainty minimization, which selects continuations by maximizing internal predictive certainty at the granularity of individual reasoning steps rather than full trajectories (\texttt{arXiv:2603.07159}). This approach matches or exceeds standard self-consistency under comparable token budgets (\texttt{arXiv:2603.07159}).
+
+The literature also highlights a critical tension between reasoning depth and accuracy, often referred to as "overthinking." While increasing the token budget generally improves performance (\texttt{arXiv:2504.00869}), there is a documented saturation point or "plateau" beyond which returns diminish (\texttt{arXiv:2505.20522}). In some domains, such as medical reasoning or specific mathematical tasks, excessive reasoning length can lead to performance degradation (\texttt{arXiv:2504.00869}; \texttt{arXiv:2510.06471}). This has prompted the development of "thinking-optimal" strategies that aim to find the shortest correct response or utilize adaptive budget allocation to prevent redundant computation (\texttt{arXiv:2502.18080}; \texttt{arXiv:2509.25420}).
+
+Furthermore, the transition from end-to-end reasoning to agentic frameworks has introduced new scaling taxonomies. For LLM agents, scaling involves parallel sampling, sequential revision, and diversifying rollouts (\texttt{arXiv:2506.12928}). While Best-of-N (BoN) sampling provides significant gains (e.g., 8 points on GAIA), the utility of iterative reflection remains contentious; some studies suggest reflection can actually decrease agent performance (\texttt{arXiv:2506.12928}). This complexity is compounded by the fact that test-time scaling is not a universal remedy; for knowledge-intensive tasks, increasing compute may fail to improve accuracy and can instead exacerbate hallucinations, as the model cannot generate new ground-truth information during inference (\texttt{arXiv:2509.06861}). Consequently, the field is moving toward model-aware and task-aware taxonomies that prioritize dynamic, adaptive compute allocation (\texttt{arXiv:2512.02008}; \texttt{arXiv:2509.09864}).
+
+\subsection{Tensions and Open Problems}
+
+A primary tension in the literature concerns the fundamental drivers of model performance: whether intelligence is best scaled through massive pre-training or through the strategic expansion of inference-time computation. Traditional scaling laws, as articulated in \texttt{arXiv:2001.08361}, suggest that model capability is largely a function of training compute and parameter count. However, recent work such as \texttt{arXiv:2501.12599} challenges this paradigm by demonstrating that reinforcement learning can be scaled to unlock emergent reasoning capabilities that exceed the predictions of earlier compute-optimal frameworks like \texttt{arXiv:2203.15556}. This debate is further complicated by the "overthinking" phenomenon; while some argue that increasing inference compute is essential for complex tasks, \texttt{arXiv:2412.21187} suggests that excessive reasoning can actually degrade performance on simple queries, a view contested by \texttt{arXiv:2502.04463}, which argues for more efficient training methods to balance reasoning depth with computational economy.
+
+Another significant disagreement centers on the reliability and methodology of evaluation. As models move toward complex reasoning, the metrics used to judge them have come under scrutiny. For instance, the reliance on human-centric instruction following and helpfulness, as established in \texttt{arXiv:2203.02155} and refined in \texttt{arXiv:2204.05862}, is increasingly viewed as insufficient for assessing deep logical rigor. This is echoed by the critique in \texttt{arXiv:2306.05685}, which argues that using LLMs as judges (as seen in MT-Bench) may lack the precision required to evaluate mathematical verifiers, a method previously championed in \texttt{arXiv:2110.14168}. Furthermore, the integrity of code-based evaluations is in question; while early benchmarks like \texttt{arXiv:2107.03374} provided a foundation for evaluating programming capabilities, more recent studies such as \texttt{arXiv:2403.07974} suggest these datasets suffer from significant contamination, necessitating the more holistic and contamination-free approaches found in LiveCodeBench.
+
+Finally, there is an ongoing debate regarding the optimal mechanism for test-time scaling. Some researchers advocate for simple repetition and sampling strategies, such as the "Large Language Monkeys" approach in \texttt{arXiv:2407.21787}, to boost performance. However, this is contested by \texttt{arXiv:2510.02611}, which suggests that the role of temperature sampling is more nuanced and that simple repetition may not be the most efficient path to accuracy. This tension is compounded by the emergence of sophisticated search-based methods; while some focus on scaling via self-consistency or simple prompting, others propose more structured architectures, such as the hierarchical retrieval-augmented MCTS discussed in \texttt{arXiv:2507.05557}, to navigate the vast search space of possible reasoning paths.
+
+\subsection{Outlook}
+
+The frontier of the field is rapidly shifting from "scaling laws for training" to "scaling laws for inference." As the industry moves toward adaptive and controllable test-time compute (\texttt{arXiv:2507.02076}), the central challenge will be optimizing the trade-off between reasoning accuracy, latency, and energy consumption (\texttt{arXiv:2505.14733}, \texttt{arXiv:2509.09864}). We expect the next generation of models to move beyond static reasoning toward dynamic, uncertainty-aware systems (\texttt{arXiv:2603.07159}) that can autonomously decide how much "thought" to invest in a given problem, effectively managing the plateauing returns of test-time scaling (\texttt{arXiv:2505.20522}) to achieve truly agentic intelligence.
+
+\section*{References}
+\begin{enumerate}\small
+  \item Attention Is All You Need (2017). \texttt{arXiv:1706.03762}
+  \item Proximal Policy Optimization Algorithms (2017). \texttt{arXiv:1707.06347}
+  \item Language Models are Few-Shot Learners (2020). \texttt{arXiv:2005.14165}
+  \item Scaling Laws for Neural Language Models (2020). \texttt{arXiv:2001.08361}
+  \item Measuring Massive Multitask Language Understanding (2020). \texttt{arXiv:2009.03300}
+  \item Learning to summarize from human feedback (2020). \texttt{arXiv:2009.01325}
+  \item Evaluating Large Language Models Trained on Code (2021). \texttt{arXiv:2107.03374}
+  \item Training Verifiers to Solve Math Word Problems (2021). \texttt{arXiv:2110.14168}
+  \item Measuring Mathematical Problem Solving With the MATH Dataset (2021). \texttt{arXiv:2103.03874}
+  \item Program Synthesis with Large Language Models (2021). \texttt{arXiv:2108.07732}
+  \item Show Your Work: Scratchpads for Intermediate Computation with Language
+  Models (2021). \texttt{arXiv:2112.00114}
+  \item LoRA: Low-Rank Adaptation of Large Language Models (2021). \texttt{arXiv:2106.09685}
+  \item Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (2022). \texttt{arXiv:2201.11903}
+  \item Self-Consistency Improves Chain of Thought Reasoning in Language Models (2022). \texttt{arXiv:2203.11171}
+  \item Training language models to follow instructions with human feedback (2022). \texttt{arXiv:2203.02155}
+  \item Large Language Models are Zero-Shot Reasoners (2022). \texttt{arXiv:2205.11916}
+  \item STaR: Bootstrapping Reasoning With Reasoning (2022). \texttt{arXiv:2203.14465}
+  \item Solving Quantitative Reasoning Problems with Language Models (2022). \texttt{arXiv:2206.14858}
+  \item Least-to-Most Prompting Enables Complex Reasoning in Large Language
+  Models (2022). \texttt{arXiv:2205.10625}
+  \item Solving math word problems with process- and outcome-based feedback (2022). \texttt{arXiv:2211.14275}
+  \item Training Compute-Optimal Large Language Models (2022). \texttt{arXiv:2203.15556}
+  \item Making Large Language Models Better Reasoners with Step-Aware Verifier (2022). \texttt{arXiv:2206.02336}
+  \item Training a Helpful and Harmless Assistant with Reinforcement Learning
+  from Human Feedback (2022). \texttt{arXiv:2204.05862}
+  \item ReAct: Synergizing Reasoning and Acting in Language Models (2022). \texttt{arXiv:2210.03629}
+  \item PAL: Program-aided Language Models (2022). \texttt{arXiv:2211.10435}
+  \item Competition-Level Code Generation with AlphaCode (2022). \texttt{arXiv:2203.07814}
+  \item Constitutional AI: Harmlessness from AI Feedback (2022). \texttt{arXiv:2212.08073}
+  \item Scaling Laws for Reward Model Overoptimization (2022). \texttt{arXiv:2210.10760}
+  \item Large Language Models Can Self-Improve (2022). \texttt{arXiv:2210.11610}
+  \item Fast Inference from Transformers via Speculative Decoding (2022). \texttt{arXiv:2211.17192}
+  \item Automatic Chain of Thought Prompting in Large Language Models (2022). \texttt{arXiv:2210.03493}
+  \item GPT-4 Technical Report (2023). \texttt{arXiv:2303.08774}
+  \item Tree of Thoughts: Deliberate Problem Solving with Large Language Models (2023). \texttt{arXiv:2305.10601}
+  \item LLaMA: Open and Efficient Foundation Language Models (2023). \texttt{arXiv:2302.13971}
+  \item Self-Refine: Iterative Refinement with Self-Feedback (2023). \texttt{arXiv:2303.17651}
+  \item Llama 2: Open Foundation and Fine-Tuned Chat Models (2023). \texttt{arXiv:2307.09288}
+  \item Let's Verify Step by Step (2023). \texttt{arXiv:2305.20050}
+  \item Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human
+  Annotations (2023). \texttt{arXiv:2312.08935}
+  \item GPQA: A Graduate-Level Google-Proof Q\&A Benchmark (2023). \texttt{arXiv:2311.12022}
+  \item Efficient Memory Management for Large Language Model Serving with
+  PagedAttention (2023). \texttt{arXiv:2309.06180}
+  \item Reflexion: Language Agents with Verbal Reinforcement Learning (2023). \texttt{arXiv:2303.11366}
+  \item Alphazero-like Tree-Search can Guide Large Language Model Decoding and
+  Training (2023). \texttt{arXiv:2309.17179}
+  \item Reasoning with Language Model is Planning with World Model (2023). \texttt{arXiv:2305.14992}
+  \item Direct Preference Optimization: Your Language Model is Secretly a Reward
+  Model (2023). \texttt{arXiv:2305.18290}
+  \item MetaMath: Bootstrap Your Own Mathematical Questions for Large Language
+  Models (2023). \texttt{arXiv:2309.12284}
+  \item Graph of Thoughts: Solving Elaborate Problems with Large Language Models (2023). \texttt{arXiv:2308.09687}
+  \item Teaching Large Language Models to Self-Debug (2023). \texttt{arXiv:2304.05128}
+  \item Self-Evaluation Guided Beam Search for Reasoning (2023). \texttt{arXiv:2305.00633}
+  \item Large Language Models Cannot Self-Correct Reasoning Yet (2023). \texttt{arXiv:2310.01798}
+  \item Mistral 7B (2023). \texttt{arXiv:2310.06825}
+  \item Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (2023). \texttt{arXiv:2306.05685}
+  \item Improving Factuality and Reasoning in Language Models through Multiagent
+  Debate (2023). \texttt{arXiv:2305.14325}
+  \item SWE-bench: Can Language Models Resolve Real-World GitHub Issues? (2023). \texttt{arXiv:2310.06770}
+  \item Language Agent Tree Search Unifies Reasoning Acting and Planning in
+  Language Models (2023). \texttt{arXiv:2310.04406}
+  \item Scaling LLM Test-Time Compute Optimally can be More Effective than
+  Scaling Model Parameters (2024). \texttt{arXiv:2408.03314}
+  \item DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open
+  Language Models (2024). \texttt{arXiv:2402.03300}
+  \item The Llama 3 Herd of Models (2024). \texttt{arXiv:2407.21783}
+  \item Large Language Monkeys: Scaling Inference Compute with Repeated Sampling (2024). \texttt{arXiv:2407.21787}
+  \item OpenAI o1 System Card (2024). \texttt{arXiv:2412.16720}
+  \item Qwen2.5 Technical Report (2024). \texttt{arXiv:2412.15115}
+  \item Inference Scaling Laws: An Empirical Analysis of Compute-Optimal
+  Inference for Problem-Solving with Language Models (2024). \texttt{arXiv:2408.00724}
+  \item Do NOT Think That Much for 2+3=? On the Overthinking of o1-Like LLMs (2024). \texttt{arXiv:2412.21187}
+  \item Training Large Language Models to Reason in a Continuous Latent Space (2024). \texttt{arXiv:2412.06769}
+  \item LiveCodeBench: Holistic and Contamination Free Evaluation of Large
+  Language Models for Code (2024). \texttt{arXiv:2403.07974}
+  \item Training Language Models to Self-Correct via Reinforcement Learning (2024). \texttt{arXiv:2409.12917}
+  \item AlphaMath Almost Zero: Process Supervision without Process (2024). \texttt{arXiv:2405.03553}
+  \item OlympiadBench: A Challenging Benchmark for Promoting AGI with
+  Olympiad-Level Bilingual Multimodal Scientific Problems (2024). \texttt{arXiv:2402.14008}
+  \item Qwen2.5-Math Technical Report: Toward Mathematical Expert Model via
+  Self-Improvement (2024). \texttt{arXiv:2409.12122}
+  \item MMLU-Pro: A More Robust and Challenging Multi-Task Language
+  Understanding Benchmark (2024). \texttt{arXiv:2406.01574}
+  \item Toward Self-Improvement of LLMs via Imagination, Searching, and
+  Criticizing (2024). \texttt{arXiv:2404.12253}
+  \item Generative Verifiers: Reward Modeling as Next-Token Prediction (2024). \texttt{arXiv:2408.15240}
+  \item Quiet-STaR: Language Models Can Teach Themselves to Think Before
+  Speaking (2024). \texttt{arXiv:2403.09629}
+  \item Improve Mathematical Reasoning in Language Models by Automated Process
+  Supervision (2024). \texttt{arXiv:2406.06592}
+  \item V-STaR: Training Verifiers for Self-Taught Reasoners (2024). \texttt{arXiv:2402.06457}
+  \item Token-Budget-Aware LLM Reasoning (2024). \texttt{arXiv:2412.18547}
+  \item Qwen2 Technical Report (2024). \texttt{arXiv:2407.10671}
+  \item From Decoding to Meta-Generation: Inference-time Algorithms for Large
+  Language Models (2024). \texttt{arXiv:2406.16838}
+  \item ReST-MCTS*: LLM Self-Training via Process Reward Guided Tree Search (2024). \texttt{arXiv:2406.03816}
+  \item The Art of Scaling Test-Time Compute for Large Language Models (2025). \texttt{arXiv:2512.02008}
+  \item Scaling Test-time Compute for LLM Agents (2025). \texttt{arXiv:2506.12928}
+  \item The Energy Cost of Reasoning: Analyzing Energy Usage in LLMs with Test-time Compute (2025). \texttt{arXiv:2505.14733}
+  \item Scaling over Scaling: Exploring Test-Time Scaling Plateau in Large Reasoning Models (2025). \texttt{arXiv:2505.20522}
+  \item A Survey on Test-Time Scaling in Large Language Models: What, How,
+  Where, and How Well? (2025). \texttt{arXiv:2503.24235}
+  \item Reasoning on a Budget: A Survey of Adaptive and Controllable Test-Time Compute in LLMs (2025). \texttt{arXiv:2507.02076}
+  \item Enhancing Test-Time Scaling of Large Language Models with Hierarchical Retrieval-Augmented MCTS (2025). \texttt{arXiv:2507.05557}
+  \item Test-time Scaling of LLMs: A Survey from A Subproblem Structure Perspective (2025). \texttt{arXiv:2511.14772}
+  \item m1: Unleash the Potential of Test-Time Scaling for Medical Reasoning with Large Language Models (2025). \texttt{arXiv:2504.00869}
+  \item Latency and Token-Aware Test-Time Compute (2025). \texttt{arXiv:2509.09864}
+  \item Rethinking Fine-Tuning when Scaling Test-Time Compute: Limiting Confidence Improves Mathematical Reasoning (2025). \texttt{arXiv:2502.07154}
+  \item Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth
+  Approach (2025). \texttt{arXiv:2502.05171}
+  \item Scaling Up, Speeding Up: A Benchmark of Speculative Decoding for Efficient LLM Test-Time Scaling (2025). \texttt{arXiv:2509.04474}
+  \item Are We Scaling the Right Thing? A System Perspective on Test-Time Scaling (2025). \texttt{arXiv:2509.19645}
+  \item ScaleRTL: Scaling LLMs with Reasoning Data and Test-Time Compute for Accurate RTL Code Generation (2025). \texttt{arXiv:2506.05566}
+  \item On the Role of Temperature Sampling in Test-Time Scaling (2025). \texttt{arXiv:2510.02611}
+  \item Adaptive Test-Time Reasoning via Reward-Guided Dual-Phase Search (2025). \texttt{arXiv:2509.25420}
+  \item Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation (2025). \texttt{arXiv:2510.09599}
+  \item Scaling Evaluation-time Compute with Reasoning Models as Evaluators (2025). \texttt{arXiv:2503.19877}
+  \item Inference-Time Scaling for Complex Tasks: Where We Stand and What Lies
+  Ahead (2025). \texttt{arXiv:2504.00294}
+  \item Can 1B LLM Surpass 405B LLM? Rethinking Compute-Optimal Test-Time
+  Scaling (2025). \texttt{arXiv:2502.06703}
+  \item Inference-Time Computations for LLM Reasoning and Planning: A Benchmark
+  and Insights (2025). \texttt{arXiv:2502.12521}
+  \item Crosslingual Reasoning through Test-Time Scaling (2025). \texttt{arXiv:2505.05408}
+  \item Rethinking Test-Time Scaling for Medical AI: Model and Task-Aware Strategies for LLMs and VLMs (2025). \texttt{arXiv:2506.13102}
+  \item Efficient Test-Time Scaling via Self-Calibration (2025). \texttt{arXiv:2503.00031}
+  \item Inverse Scaling in Test-Time Compute (2025). \texttt{arXiv:2507.14417}
+  \item Test-Time Scaling of Reasoning Models for Machine Translation (2025). \texttt{arXiv:2510.06471}
+  \item Test-Time Scaling in Reasoning Models Is Not Effective for Knowledge-Intensive Tasks Yet (2025). \texttt{arXiv:2509.06861}
+  \item Towards Thinking-Optimal Scaling of Test-Time Compute for LLM Reasoning (2025). \texttt{arXiv:2502.18080}
+  \item A Theoretical Study on Bridging Internal Probability and Self-Consistency for LLM Reasoning (2025). \texttt{arXiv:2510.15444}
+  \item DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning (2025). \texttt{arXiv:2501.12948}
+  \item s1: Simple test-time scaling (2025). \texttt{arXiv:2501.19393}
+  \item Kimi k1.5: Scaling Reinforcement Learning with LLMs (2025). \texttt{arXiv:2501.12599}
+  \item Qwen3 Technical Report (2025). \texttt{arXiv:2505.09388}
+  \item L1: Controlling How Long A Reasoning Model Thinks With Reinforcement Learning (2025). \texttt{arXiv:2503.04697}
+  \item LIMO: Less is More for Reasoning (2025). \texttt{arXiv:2502.03387}
+  \item The Lessons of Developing Process Reward Models in Mathematical Reasoning (2025). \texttt{arXiv:2501.07301}
+  \item Training Language Models to Reason Efficiently (2025). \texttt{arXiv:2502.04463}
+  \item Demystifying Long Chain-of-Thought Reasoning in LLMs (2025). \texttt{arXiv:2502.03373}
+  \item Process Reinforcement through Implicit Rewards (2025). \texttt{arXiv:2502.01456}
+  \item Enhancing reasoning accuracy in large language models during inference time (2026). \texttt{arXiv:2603.21301}
+  \item Improving reasoning at inference time via uncertainty minimisation (2026). \texttt{arXiv:2603.07159}
+\end{enumerate}
+
+\end{document}

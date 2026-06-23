@@ -18,6 +18,10 @@ STATUS_OK = 1
 STATUS_WARNING = 2
 STATUS_ERROR = 3
 
+# Papers from this YYYYMM onward prefer arXiv's own LaTeXML HTML (current, no render lag);
+# older papers prefer ar5iv (full historical backlog). The other is always tried as fallback.
+ARXIV_HTML_CUTOFF_YYYYMM = 202401
+
 _LEGACY_FILE_RE = re.compile(r"^([a-zA-Z][a-zA-Z\-]*)(\d{7})\.html$")
 _MODERN_FILE_RE = re.compile(r"^(\d{4}\.\d+)\.html$")
 
@@ -48,6 +52,23 @@ def html_filename_to_paper_id(name: str) -> str | None:
 
 def paper_id_to_ar5iv_url(paper_id: str) -> str:
     return f"https://ar5iv.labs.arxiv.org/html/{paper_id}"
+
+
+def paper_id_to_arxiv_html_url(paper_id: str) -> str:
+    return f"https://arxiv.org/html/{paper_id}"
+
+
+def yymm_to_yyyymm(yymm: str) -> int:
+    """YYMM -> sortable YYYYMM, pivoting 91-99 to 19xx and 00-90 to 20xx (arXiv epoch)."""
+    yy, mm = int(yymm[:2]), int(yymm[2:4])
+    year = 1900 + yy if yy >= 91 else 2000 + yy
+    return year * 100 + mm
+
+
+def prefer_arxiv_html(paper_id: str) -> bool:
+    """True if this paper's date is at/after the arXiv-HTML cutoff (prefer arxiv.org over ar5iv)."""
+    yymm = paper_id_to_yymm(paper_id)
+    return yymm is not None and yymm_to_yyyymm(yymm) >= ARXIV_HTML_CUTOFF_YYYYMM
 
 
 def html_path(paper_id: str) -> Path | None:

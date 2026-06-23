@@ -1,0 +1,67 @@
+[
+ {
+  "config": "full",
+  "n_topics": 27,
+  "n_landmarks": 80.0,
+  "n_edges": 5589.04,
+  "frontier_count": 35.81,
+  "grounded": 28.41,
+  "off_digest": 0.48,
+  "num_density": 49.73,
+  "landmark_recall": 0.09,
+  "j_overall": 4.84,
+  "faithfulness": 0.96
+ },
+ {
+  "config": "indegree",
+  "n_topics": 27,
+  "n_landmarks": 80.0,
+  "n_edges": 5530.56,
+  "frontier_count": 16.59,
+  "grounded": 28.96,
+  "off_digest": 0.44,
+  "num_density": 52.6,
+  "landmark_recall": 0.11,
+  "j_overall": 4.88,
+  "faithfulness": 0.95
+ },
+ {
+  "config": "no_cluster",
+  "n_topics": 27,
+  "n_landmarks": 79.44,
+  "n_edges": 2328.85,
+  "frontier_count": 33.56,
+  "grounded": 29.11,
+  "off_digest": 0.44,
+  "num_density": 51.71,
+  "landmark_recall": 0.09,
+  "j_overall": 4.9,
+  "faithfulness": 0.96
+ },
+ {
+  "config": "no_graph",
+  "n_topics": 27,
+  "n_landmarks": 80.0,
+  "n_edges": 0.0,
+  "frontier_count": 65.22,
+  "grounded": 25.33,
+  "off_digest": 0.52,
+  "num_density": 45.88,
+  "landmark_recall": 0.01,
+  "j_overall": 4.64,
+  "faithfulness": 0.96
+ },
+ {
+  "config": "no_fulltext",
+  "n_topics": 27,
+  "n_landmarks": 40.0,
+  "n_edges": 5658.59,
+  "frontier_count": 15.89,
+  "grounded": 25.52,
+  "off_digest": 0.0,
+  "num_density": 49.74,
+  "landmark_recall": 0.09,
+  "j_overall": 4.74,
+  "faithfulness": 0.95
+ }
+]

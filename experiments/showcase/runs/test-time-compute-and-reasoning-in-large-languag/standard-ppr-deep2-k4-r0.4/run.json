@@ -1,0 +1,898 @@
+{
+ "question": "test-time compute and reasoning in large language models",
+ "mode": "deep_loop",
+ "effort": "standard",
+ "rank": "ppr",
+ "recency": 0.4,
+ "max_rounds": 2,
+ "rounds_run": 1,
+ "critique_k": 4,
+ "n_critiques": 4,
+ "figures_enabled": true,
+ "no_frontier_pull": false,
+ "n_figures": 14,
+ "figures": {
+  "2201.11903": {
+   "page": 1,
+   "file": "figures/2201.11903_p1.png",
+   "caption": "The figure compares \"Standard Prompting\" and \"Chain-of-Thought Prompting\" through two side-by-side examples of math word problems. Each example consists of a \"Model Input\" box containing a question and a \"Model Output\" box containing the answer, with the Chain-of-Thought version featuring a blue-highlighted intermediate reasoning step. The figure conveys that standard prompting leads to an incorrect answer (27), whereas chain-of-thought prompting enables the model to reach the correct answer (9) by showing its work."
+  },
+  "2408.03314": {
+   "page": 2,
+   "file": "figures/2408.03314_p2.png",
+   "caption": "The figure consists of two side-by-side panels comparing compute-optimal scaling strategies. The left panel is a line graph plotting MATH Accuracy (%) against Generation Budget, showing that \"PRM Compute Optimal\" scaling eventually outperforms \"Majority,\" \"CRM Best-of-N Weighted,\" and \"PRM Best-of-N Weighted\" baselines. The right panel is a grouped bar chart showing the Relative Improvement in Test-time Compute (%) across different ratios of Inference-to-Pretraining tokens, categorized by question difficulty (Easy, Medium, and Hard)."
+  },
+  "2501.12948": {
+   "page": 4,
+   "file": "figures/2501.12948_p4.png",
+   "caption": "Figure 1 contains two line graphs plotted against \"Steps\" on the x-axis. The left graph plots \"Accuracy\" on the y-axis, showing the upward trends of \"r1-zero-pass@1\" and \"r1-zero-cons@16\" compared to a horizontal dashed line representing \"human participants.\" The right graph plots \"Average length per response\" on the y-axis, showing a steady increase in response length as training steps progress."
+  },
+  "2110.14168": {
+   "page": 2,
+   "file": "figures/2110.14168_p2.png",
+   "caption": "The figure displays three math word problems from the GSM8K dataset, each followed by a step-by-step solution. The solutions include calculation annotations highlighted in red text, which represent the arithmetic operations performed to reach the final answer."
+  },
+  "2203.11171": {
+   "page": 1,
+   "file": "figures/2203.11171_p1.png",
+   "caption": "The figure illustrates the self-consistency method using a mathematical word problem as an example. It shows a prompt leading to multiple branching paths of \"Chain of Thought\" reasoning, each resulting in a different final answer, which are then aggregated to identify the most frequent (consistent) answer."
+  },
+  "2103.03874": {
+   "page": 2,
+   "file": "figures/2103.03874_p2.png",
+   "caption": "The figure is divided into two columns comparing \"Metamath Theorem Proving\" and the \"MATH Dataset (Ours).\" The left column displays formal logic proofs and simple arithmetic problems, while the right column presents competition-level mathematical problems accompanied by step-by-step natural language solutions and boxed final answers. The figure conveys that while previous datasets focus on formal proofs or plug-and-chug arithmetic, the new MATH dataset focuses on complex, multi-step problem solving."
+  },
+  "2305.10601": {
+   "page": 2,
+   "file": "figures/2305.10601_p2.png",
+   "caption": "The figure uses labeled ovals for \"Input\" and \"Output\" and rectangular boxes to represent \"thoughts\" to compare four prompting methods. It illustrates a progression from direct Input-Output prompting (a single arrow) and Chain of Thought (a linear sequence of boxes) to Self-Consistency (multiple parallel paths with a majority vote) and Tree of Thoughts (a branching structure of green and pink boxes representing explored paths). The diagram conveys how the Tree of Thoughts approach expands the problem-solving process into a complex, searchable tree of intermediate reasoning steps."
+  },
+  "2501.19393": {
+   "page": 1,
+   "file": "figures/2501.19393_p1.png",
+   "caption": "The figure consists of three scatter plots showing accuracy (%) on the y-axis against average thinking time (tokens) on the x-axis for three different benchmarks: MATH500, AIME24, and GPQA Diamond. Each plot uses blue circular markers to convey a positive correlation between increased test-time compute (thinking tokens) and improved task accuracy."
+  },
+  "2603.07159": {
+   "page": 2,
+   "file": "figures/2603.07159_p2.png",
+   "caption": "This figure consists of four panels comparing different inference methods: \"Forward pass,\" \"Uncertainty minimisation,\" \"Majority voting,\" and \"Early stop (k=2).\" Each panel uses diagrams of input/output blocks connected by nodes and arrows to illustrate different computational paths, with the \"Uncertainty minimisation\" panel specifically using color-coded nodes (red for high uncertainty, pink for low) to show the selection of paths that minimize uncertainty."
+  },
+  "2603.21301": {
+   "page": 3,
+   "file": "figures/2603.21301_p3.png",
+   "caption": "This flowchart illustrates a \"Self Consistency\" process starting from an \"Input Query\" that undergoes \"Controlled Stochastic Decoding\" using specific temperature and nucleus sampling parameters. The process branches into six parallel \"Run\" boxes, each representing a stochastic reasoning path and final answer, which are then funneled into a \"Most Consistent Answer Extraction\" step. Finally, a \"Verifier Model Comparison\" compares the extracted answer to the \"Ground-Truth Answer\" to output either a \"CORRECT\" or \"INCORRECT\" result."
+  },
+  "2605.10344": {
+   "page": 2,
+   "file": "figures/2605.10344_p2.png",
+   "caption": "This horizontal bar chart compares the Pass@1 scores of various frontier and backbone models on the IMO-AnswerBench. The gray bars represent large frontier models like Kimi-K2.5 and Gemini-3.1-Pro High, while the blue and light blue bars represent Qwen3 backbone models, specifically highlighting the performance gains achieved by adding TMAS and Hybrid-RL."
+  },
+  "2512.02008": {
+   "page": 1,
+   "file": "figures/2512.02008_p1.png",
+   "caption": "The figure consists of three side-by-side line plots showing accuracy versus total token consumption for \"Short-horizon,\" \"Long-horizon,\" and \"Non-reasoning\" model categories. Each plot contains three colored lines (cyan for shortest, purple for majority vote, and red for beam search) with marker sizes representing the number of parallel traces ($N$), and shaded background regions indicate which strategy is optimal for a given compute budget. The figure conveys that the best test-time scaling strategy depends on the specific model type and the amount of compute budget available."
+  },
+  "2507.02076": {
+   "page": 3,
+   "file": "figures/2507.02076_p3.png",
+   "caption": "This figure is a hierarchical taxonomy diagram consisting of nested boxes connected by branching lines. It categorizes research on \"Precise and Efficient Test-time Compute for LLMs\" into a primary \"Controllable\" branch, which is further subdivided into \"Sequential\" and \"Parallel\" approaches. Each sub-category then branches into specific methodologies\u2014Prompting-based, Reinforcement Learning (RL), and Supervised Finetuning (SFT)\u2014listing relevant academic citations within each terminal box."
+  },
+  "2505.14733": {
+   "page": 4,
+   "file": "figures/2505.14733_p4.png",
+   "caption": "The figure consists of three line graphs titled \"Math,\" \"Code,\" and \"Common Sense,\" plotting Accuracy against Energy per query (kWh). Each graph contains three colored lines\u2014blue for \"Base,\" orange for \"MV,\" and green for \"RT\"\u2014showing how accuracy scales with energy consumption across different reasoning methods."
+  }
+ },
+ "config": "standard-ppr-deep2-k4-r0.4",
+ "schema": [
+  [
+   "mechanism_type",
+   "The method used to scale inference-time computation."
+  ],
+  [
+   "scaling_strategy",
+   "How compute is managed (e.g., adaptive, budget-constrained)."
+  ],
+  [
+   "reasoning_task",
+   "The specific reasoning benchmark or domain tested."
+  ],
+  [
+   "performance_improvement",
+   "The measured gain in reasoning accuracy or quality."
+  ],
+  [
+   "computational_overhead",
+   "The cost in energy, latency, or token usage."
+  ],
+  [
+   "agentic_framework",
+   "Whether the method uses single or multi-agent systems."
+  ]
+ ],
+ "n_pool": 438,
+ "n_landmarks": 80,
+ "n_edges": 7232,
+ "frontier_year": 2025,
+ "frontier_count": 34,
+ "grounded": [
+  "1706.03762",
+  "2001.08361",
+  "2005.14165",
+  "2110.14168",
+  "2112.00114",
+  "2203.11171",
+  "2203.15556",
+  "2205.10625",
+  "2205.11916",
+  "2211.14275",
+  "2302.13971",
+  "2303.08774",
+  "2303.11366",
+  "2303.17651",
+  "2305.10601",
+  "2305.20050",
+  "2307.09288",
+  "2312.08935",
+  "2402.03300",
+  "2407.21783",
+  "2407.21787",
+  "2408.00724",
+  "2408.03314",
+  "2412.16720",
+  "2412.21187",
+  "2501.12948",
+  "2501.19393",
+  "2502.05171",
+  "2502.06703",
+  "2502.07154",
+  "2502.18080",
+  "2503.19877",
+  "2503.24235",
+  "2504.00294",
+  "2504.00869",
+  "2505.14733",
+  "2505.16122",
+  "2505.20522",
+  "2506.12928",
+  "2507.02076",
+  "2507.05557",
+  "2509.09864",
+  "2509.25420",
+  "2510.02611",
+  "2510.07358",
+  "2511.14772",
+  "2512.02008",
+  "2512.11109",
+  "2603.07159",
+  "2603.21301",
+  "2605.10344"
+ ],
+ "off_digest": [
+  "2502.05172"
+ ],
+ "report_chars": 30985,
+ "judge_scores_final": {},
+ "landmarks": [
+  {
+   "arxiv_id": "2603.07159",
+   "title": "Improving reasoning at inference time via uncertainty minimisation",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.82230988665558,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.02008",
+   "title": "The Art of Scaling Test-Time Compute for Large Language Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8738765857205458,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2603.21301",
+   "title": "Enhancing reasoning accuracy in large language models during inference time",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.814902180076462,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.02076",
+   "title": "Reasoning on a Budget: A Survey of Adaptive and Controllable Test-Time Compute in LLMs",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8400250280660607,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2605.10344",
+   "title": "TMAS: Scaling Test-Time Compute via Multi-Agent Synergy",
+   "year": 2026,
+   "category": "cs",
+   "score": 0.799583956934079,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.14733",
+   "title": "The Energy Cost of Reasoning: Analyzing Energy Usage in LLMs with Test-time Compute",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8366656605488882,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.20522",
+   "title": "Scaling over Scaling: Exploring Test-Time Scaling Plateau in Large Reasoning Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8333698589519551,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.07154",
+   "title": "Rethinking Fine-Tuning when Scaling Test-Time Compute: Limiting Confidence Improves Mathematical Reasoning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8271273631560198,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.12928",
+   "title": "Scaling Test-time Compute for LLM Agents",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.820848395024057,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.00869",
+   "title": "m1: Unleash the Potential of Test-Time Scaling for Medical Reasoning with Large Language Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8170299329829587,
+   "in_degree": 3,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.05171",
+   "title": "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth\n  Approach",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8156875273419745,
+   "in_degree": 22,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.19877",
+   "title": "Scaling Evaluation-time Compute with Reasoning Models as Evaluators",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.811291211378026,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.00294",
+   "title": "Inference-Time Scaling for Complex Tasks: Where We Stand and What Lies\n  Ahead",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8109562879753218,
+   "in_degree": 4,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.09864",
+   "title": "Latency and Token-Aware Test-Time Compute",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8099798410555354,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.25420",
+   "title": "Adaptive Test-Time Reasoning via Reward-Guided Dual-Phase Search",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8099031787391412,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2503.24235",
+   "title": "A Survey on Test-Time Scaling in Large Language Models: What, How,\n  Where, and How Well?",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8094344815694966,
+   "in_degree": 33,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2509.19645",
+   "title": "Are We Scaling the Right Thing? A System Perspective on Test-Time Scaling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8070799021704594,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.06471",
+   "title": "Test-Time Scaling of Reasoning Models for Machine Translation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8070754508786498,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2511.14772",
+   "title": "Test-time Scaling of LLMs: A Survey from A Subproblem Structure Perspective",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.806621419078089,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.12521",
+   "title": "Inference-Time Computations for LLM Reasoning and Planning: A Benchmark\n  and Insights",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8053213816523466,
+   "in_degree": 6,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.18080",
+   "title": "Towards Thinking-Optimal Scaling of Test-Time Compute for LLM Reasoning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8030092160778698,
+   "in_degree": 25,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.16122",
+   "title": "Plan and Budget: Effective and Efficient Test-Time Scaling on Reasoning Large Language Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8028590889539785,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2502.06703",
+   "title": "Can 1B LLM Surpass 405B LLM? Rethinking Compute-Optimal Test-Time\n  Scaling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8015725327118214,
+   "in_degree": 35,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.09599",
+   "title": "Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8015348929405723,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2512.11109",
+   "title": "Limits and Gains of Test-Time Scaling in Vision-Language Reasoning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.8007751783114584,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.07358",
+   "title": "Encode, Think, Decode: Scaling test-time reasoning with recursive latent thoughts",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7999164793588988,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2510.02611",
+   "title": "On the Role of Temperature Sampling in Test-Time Scaling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7998503288335372,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.05557",
+   "title": "Enhancing Test-Time Scaling of Large Language Models with Hierarchical Retrieval-Augmented MCTS",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7984977138593425,
+   "in_degree": 1,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2506.15882",
+   "title": "Fractional Reasoning via Latent Steering Vectors Improves Inference Time Compute",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7982523558058332,
+   "in_degree": 0,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2505.05408",
+   "title": "Crosslingual Reasoning through Test-Time Scaling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7978923603748952,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2504.10449",
+   "title": "M1: Towards Scalable Test-Time Compute with Mamba Reasoning Models",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7968561911674835,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2507.14417",
+   "title": "Inverse Scaling in Test-Time Compute",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7967400062473589,
+   "in_degree": 2,
+   "era": 2
+  },
+  {
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5102082089057609,
+   "in_degree": 50,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6493377498783308,
+   "in_degree": 106,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2001.08361",
+   "title": "Scaling Laws for Neural Language Models",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6580029683292644,
+   "in_degree": 71,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2107.03374",
+   "title": "Evaluating Large Language Models Trained on Code",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6021076165616635,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2201.11903",
+   "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6934560886992682,
+   "in_degree": 259,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2110.14168",
+   "title": "Training Verifiers to Solve Math Word Problems",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6324015555268233,
+   "in_degree": 215,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2103.03874",
+   "title": "Measuring Mathematical Problem Solving With the MATH Dataset",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6159488950396026,
+   "in_degree": 191,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.11171",
+   "title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6707665767662665,
+   "in_degree": 211,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2009.03300",
+   "title": "Measuring Massive Multitask Language Understanding",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.6757685522501119,
+   "in_degree": 58,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2203.02155",
+   "title": "Training language models to follow instructions with human feedback",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.555769405667998,
+   "in_degree": 95,
+   "era": 1
+  },
+  {
+   "arxiv_id": "1707.06347",
+   "title": "Proximal Policy Optimization Algorithms",
+   "year": 2017,
+   "category": "cs",
+   "score": 0.5340445514892358,
+   "in_degree": 72,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2009.01325",
+   "title": "Learning to summarize from human feedback",
+   "year": 2020,
+   "category": "cs",
+   "score": 0.5660845455271896,
+   "in_degree": 35,
+   "era": 0
+  },
+  {
+   "arxiv_id": "2108.07732",
+   "title": "Program Synthesis with Large Language Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.6315366215436081,
+   "in_degree": 38,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.11916",
+   "title": "Large Language Models are Zero-Shot Reasoners",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6946876710735571,
+   "in_degree": 76,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2408.03314",
+   "title": "Scaling LLM Test-Time Compute Optimally can be More Effective than\n  Scaling Model Parameters",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.015625,
+   "in_degree": 221,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.08774",
+   "title": "GPT-4 Technical Report",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5717234097984919,
+   "in_degree": 91,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2112.00114",
+   "title": "Show Your Work: Scratchpads for Intermediate Computation with Language\n  Models",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5809097205828702,
+   "in_degree": 37,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2101.02235",
+   "title": "Did Aristotle Use a Laptop? A Question Answering Benchmark with Implicit\n  Reasoning Strategies",
+   "year": 2021,
+   "category": "cs",
+   "score": 0.5683402648493702,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2501.12948",
+   "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.6121190411882571,
+   "in_degree": 218,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2305.10601",
+   "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6865367332450696,
+   "in_degree": 146,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2203.14465",
+   "title": "STaR: Bootstrapping Reasoning With Reasoning",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6511973766135248,
+   "in_degree": 57,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2302.13971",
+   "title": "LLaMA: Open and Efficient Foundation Language Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5426055885681054,
+   "in_degree": 39,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2303.17651",
+   "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6492454759927154,
+   "in_degree": 104,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.14858",
+   "title": "Solving Quantitative Reasoning Problems with Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6382765591564656,
+   "in_degree": 54,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2402.03300",
+   "title": "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open\n  Language Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6610944938175262,
+   "in_degree": 107,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2307.09288",
+   "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5645067516312651,
+   "in_degree": 49,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.20050",
+   "title": "Let's Verify Step by Step",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.627384959473378,
+   "in_degree": 86,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2407.21783",
+   "title": "The Llama 3 Herd of Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.5756520943120097,
+   "in_degree": 120,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2501.19393",
+   "title": "s1: Simple test-time scaling",
+   "year": 2025,
+   "category": "cs",
+   "score": 0.7422535589115513,
+   "in_degree": 129,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2211.14275",
+   "title": "Solving math word problems with process- and outcome-based feedback",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6301066405368826,
+   "in_degree": 69,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2312.08935",
+   "title": "Math-Shepherd: Verify and Reinforce LLMs Step-by-step without Human\n  Annotations",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5721829395437646,
+   "in_degree": 92,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2205.10625",
+   "title": "Least-to-Most Prompting Enables Complex Reasoning in Large Language\n  Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6331617166520189,
+   "in_degree": 50,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2407.21787",
+   "title": "Large Language Monkeys: Scaling Inference Compute with Repeated Sampling",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.7456894375590551,
+   "in_degree": 119,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2203.15556",
+   "title": "Training Compute-Optimal Large Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6744642111530548,
+   "in_degree": 41,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2412.16720",
+   "title": "OpenAI o1 System Card",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.551987970275254,
+   "in_degree": 104,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2311.12022",
+   "title": "GPQA: A Graduate-Level Google-Proof Q&A Benchmark",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5505652749623208,
+   "in_degree": 89,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2309.06180",
+   "title": "Efficient Memory Management for Large Language Model Serving with\n  PagedAttention",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.568541027961361,
+   "in_degree": 68,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2309.17179",
+   "title": "Alphazero-like Tree-Search can Guide Large Language Model Decoding and\n  Training",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.665805199531017,
+   "in_degree": 64,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2206.02336",
+   "title": "Making Large Language Models Better Reasoners with Step-Aware Verifier",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6580533175186595,
+   "in_degree": 43,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2412.15115",
+   "title": "Qwen2.5 Technical Report",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.5918752143743526,
+   "in_degree": 91,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2303.11366",
+   "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6170667126594607,
+   "in_degree": 46,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2204.05862",
+   "title": "Training a Helpful and Harmless Assistant with Reinforcement Learning\n  from Human Feedback",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.5447987816695701,
+   "in_degree": 29,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.14992",
+   "title": "Reasoning with Language Model is Planning with World Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.6920177328568315,
+   "in_degree": 56,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2305.18290",
+   "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward\n  Model",
+   "year": 2023,
+   "category": "cs",
+   "score": 0.5805411067747352,
+   "in_degree": 60,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2210.03629",
+   "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.644639797631333,
+   "in_degree": 33,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2211.10435",
+   "title": "PAL: Program-aided Language Models",
+   "year": 2022,
+   "category": "cs",
+   "score": 0.6751043754789284,
+   "in_degree": 28,
+   "era": 1
+  },
+  {
+   "arxiv_id": "2408.00724",
+   "title": "Inference Scaling Laws: An Empirical Analysis of Compute-Optimal\n  Inference for Problem-Solving with Language Models",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.014705882352941176,
+   "in_degree": 81,
+   "era": 2
+  },
+  {
+   "arxiv_id": "2412.21187",
+   "title": "Do NOT Think That Much for 2+3=? On the Overthinking of o1-Like LLMs",
+   "year": 2024,
+   "category": "cs",
+   "score": 0.6606867770205123,
+   "in_degree": 76,
+   "era": 2
+  }
+ ]
+}

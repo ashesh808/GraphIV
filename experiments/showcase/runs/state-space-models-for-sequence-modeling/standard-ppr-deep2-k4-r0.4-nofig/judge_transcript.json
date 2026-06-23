@@ -1,0 +1,27 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "hardware-aware SSM kernels parallel scan",
+   "SSM scaling laws vs transformers",
+   "multimodal state space models",
+   "SSM long-context retrieval performance"
+  ],
+  "assessment": "The review is excellent and covers the theoretical frontier well, but lacks depth on the hardware-level optimizations and scaling empiricals that define the current practical deployment of SSMs."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {},
+  "gaps": [],
+  "assessment": "(judge output unparseable)"
+ }
+]

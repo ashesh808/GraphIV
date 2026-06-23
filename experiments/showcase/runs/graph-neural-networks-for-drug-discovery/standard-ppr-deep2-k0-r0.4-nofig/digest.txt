@@ -1,0 +1,731 @@
+QUESTION: graph neural networks for drug discovery
+
+SCHEMA FIELDS: ['task_type', 'gnn_architecture', 'input_representation', 'explainability_method', 'performance_metrics', 'benchmark_datasets']
+
+ERAS:
+  [0] Origins: 2012-2017
+  [1] Key Advances: 2017-2021
+  [2] Current Frontier: 2021-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1201.0490 (2012) "Scikit-learn: Machine Learning in Python" [cs] (cited-by 17 in-topic, era 0)
+    relations: used-by arXiv:2309.12906; compared-by arXiv:1406.1231; used-by arXiv:1611.07308; used-by arXiv:1704.07555; used-by arXiv:1706.02216; cited-by arXiv:1904.01561
+arXiv:1312.6114 (2013) "Auto-Encoding Variational Bayes" [stat] (cited-by 57 in-topic, era 0)
+    relations: cited-by arXiv:2304.01565; cited-by arXiv:1605.08803; extended-by arXiv:1610.02415; used-by arXiv:1611.07308; used-by arXiv:1703.01925; used-by arXiv:1802.03480
+arXiv:1312.6203 (2013) "Spectral Networks and Locally Connected Networks on Graphs" [cs] (cited-by 56 in-topic, era 0)
+    gnn_architecture: Spectral Networks and Locally Connected Networks
+    input_representation: signals defined on general domains (graphs)
+    relations: cited-by arXiv:2304.01565; used-by arXiv:1606.09375; compared-by arXiv:1901.00596; cited-by arXiv:2208.09481; extended-by arXiv:2211.03666; compared-by arXiv:1704.02901
+arXiv:1310.4546 (2013) "Distributed Representations of Words and Phrases and their
+  Compositionality" [cs] (cited-by 19 in-topic, era 0)
+    relations: cited-by arXiv:2302.08261; cited-by arXiv:1403.6652; used-by arXiv:1503.03578; used-by arXiv:1607.00653; cited-by arXiv:1609.02907; cited-by arXiv:1706.02216
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 109 in-topic, era 0)
+    relations: used-by arXiv:2305.13315; cited-by arXiv:2403.12143; cited-by arXiv:2406.03278; used-by arXiv:2507.03430; used-by arXiv:1509.09292; cited-by arXiv:1511.05493
+arXiv:1403.6652 (2014) "DeepWalk: Online Learning of Social Representations" [cs] (cited-by 30 in-topic, era 0)
+    gnn_architecture: truncated random walks treated as sentences for language modeling
+    input_representation: latent representations of vertices in a network
+    performance_metrics: F1 scores
+    benchmark_datasets: BlogCatalog, Flickr, and YouTube
+    relations: cites arXiv:1310.4546; cited-by arXiv:2302.08261; cited-by arXiv:2304.01565; compared-by arXiv:1609.02907; compared-by arXiv:1611.07308; compared-by arXiv:1710.10903; compared-by arXiv:1503.03578
+arXiv:1406.1231 (2014) "Multi-task Neural Networks for QSAR Predictions" [stat] (cited-by 6 in-topic, era 0)
+    task_type: Quantitative Structure-Activity/Property Relationship (QSAR/QSPR) predictions for multiple assays
+    relations: compares-with arXiv:1201.0490; cited-by arXiv:1509.09292; cited-by arXiv:1510.02855
+arXiv:1509.09292 (2015) "Convolutional Networks on Graphs for Learning Molecular Fingerprints" [cs] (cited-by 69 in-topic, era 0)
+    task_type: Molecular fingerprint learning and property prediction
+    gnn_architecture: Convolutional neural network (CNN) operating directly on graphs
+    input_representation: Graphs of arbitrary size and shape
+    relations: compares-with arXiv:1312.6203; cites arXiv:1406.1231; cites arXiv:1502.02072; uses arXiv:1412.6980; cited-by arXiv:2304.01565; compared-by arXiv:2312.16855; compared-by arXiv:1704.02901; cited-by arXiv:1806.01261; cited-by arXiv:2012.05716; cited-by arXiv:1511.05493
+arXiv:1511.05493 (2015) "Gated Graph Sequence Neural Networks" [cs] (cited-by 45 in-topic, era 0)
+    task_type: feature learning for graph-structured inputs, AI (bAbI) tasks, graph algorithm learning, and program verification (subgraph matching to abstract data structures)
+    gnn_architecture: Gated Graph Sequence Neural Networks (GGNN) using gated recurrent units (GRUs)
+    input_representation: graph-structured inputs
+    benchmark_datasets: bAbI, graph algorithm learning tasks, and program verification tasks
+    relations: cites arXiv:1403.6652; cites arXiv:1312.6203; cites arXiv:1509.09292; cites arXiv:1412.6980; cited-by arXiv:2304.01565; used-by arXiv:1802.04364; used-by arXiv:1805.11973; used-by arXiv:1901.00596; cited-by arXiv:1903.02428; cited-by arXiv:1605.05273
+arXiv:1511.06391 (2015) "Order Matters: Sequence to sequence for sets" [stat] (cited-by 18 in-topic, era 0)
+    benchmark_datasets: language modeling, parsing tasks, sorting numbers, and estimating the joint probability of unknown graphical models
+    relations: cited-by arXiv:1903.02428; cited-by arXiv:1605.08803; used-by arXiv:1704.01212; used-by arXiv:1712.06113; cited-by arXiv:1802.03480; cited-by arXiv:1803.03324
+arXiv:1503.03578 (2015) "LINE: Large-scale Information Network Embedding" [cs] (cited-by 17 in-topic, era 0)
+    task_type: network embedding (visualization, node classification, and link prediction)
+    input_representation: undirected, directed, and/or weighted information networks
+    benchmark_datasets: language networks, social networks, and citation networks
+    relations: compares-with arXiv:1403.6652; uses arXiv:1310.4546; cited-by arXiv:2302.08261; used-by arXiv:1607.00653; cited-by arXiv:1609.02907; compared-by arXiv:1611.07308; cited-by arXiv:1706.02216; cited-by arXiv:1806.01261
+arXiv:1510.02855 (2015) "AtomNet: A Deep Convolutional Neural Network for Bioactivity Prediction
+  in Structure-based Drug Discovery" [cs] (cited-by 13 in-topic, era 0)
+    task_type: structure-based bioactivity prediction
+    input_representation: structural target information (3D spatial structure)
+    performance_metrics: AUC (achieving > 0.9 on 57.8% of targets)
+    benchmark_datasets: DUDE benchmark
+    relations: cites arXiv:1406.1231; cites arXiv:1502.02072; cited-by arXiv:1605.05273; cited-by arXiv:1802.08219; cited-by arXiv:1902.04166
+arXiv:1502.02072 (2015) "Massively Multitask Networks for Drug Discovery" [stat] (cited-by 8 in-topic, era 0)
+    task_type: drug discovery (predicting measurements across biological targets)
+    performance_metrics: predictive accuracies
+    benchmark_datasets: dataset of nearly 40 million measurements across more than 200 biological targets
+    relations: compared-by arXiv:2312.16855; cited-by arXiv:1509.09292; cited-by arXiv:1510.02855
+arXiv:1609.02907 (2016) "Semi-Supervised Classification with Graph Convolutional Networks" [cs] (cited-by 159 in-topic, era 0)
+    task_type: semi-supervised learning on graph-structured data
+    gnn_architecture: Graph Convolutional Networks (GCN) based on a localized first-order approximation of spectral graph convolutions
+    input_representation: graphs with node features and local graph structure
+    benchmark_datasets: citation networks and a knowledge graph dataset
+    relations: compares-with arXiv:1403.6652; compares-with arXiv:1312.6203; compares-with arXiv:1606.09375; cites arXiv:1310.4546; cites arXiv:1503.03578; cites arXiv:1607.00653; cited-by arXiv:2304.01565; cited-by arXiv:2403.12143; cited-by arXiv:2404.11568; cited-by arXiv:2506.01302; cited-by arXiv:2507.03430; extended-by arXiv:1710.10903
+arXiv:1602.07576 (2016) "Group Equivariant Convolutional Networks" [cs] (cited-by 117 in-topic, era 0)
+    gnn_architecture: Group equivariant Convolutional Neural Networks (G-CNNs) using G-convolutions
+    benchmark_datasets: CIFAR10, rotated MNIST
+    relations: uses arXiv:1412.6980; cited-by arXiv:2110.02905; used-by arXiv:2112.01388; motivates arXiv:1811.02017; used-by arXiv:1911.08251; critiqued-by arXiv:2002.12880; cited-by arXiv:2208.09481
+arXiv:1606.09375 (2016) "Convolutional Neural Networks on Graphs with Fast Localized Spectral
+  Filtering" [cs] (cited-by 54 in-topic, era 0)
+    gnn_architecture: Spectral graph convolutional neural networks with fast localized spectral filtering
+    input_representation: High-dimensional irregular domains represented by graphs (e.g., social networks, brain connectomes, words' embedding)
+    benchmark_datasets: MNIST, 20NEWS
+    relations: uses arXiv:1312.6203; uses arXiv:1412.6980; cites arXiv:1511.05493; used-by arXiv:1710.10903; used-by arXiv:1901.00596; cited-by arXiv:2208.09481; compared-by arXiv:1609.02907; cited-by arXiv:1704.01212; compared-by arXiv:1704.02901
+arXiv:1610.02415 (2016) "Automatic chemical design using a data-driven continuous representation
+  of molecules" [cs] (cited-by 49 in-topic, era 0)
+    task_type: Automatic chemical design and optimization through continuous latent space exploration
+    input_representation: Discrete representations of molecules converted to real-valued continuous vectors via an encoder
+    benchmark_datasets: Hundreds of thousands of existing chemical structures; drug-like molecules; molecules with fewer than nine heavy atoms
+    relations: cites arXiv:1703.00564; cites arXiv:1603.00856; extends arXiv:1312.6114; cites arXiv:1703.01925; cites arXiv:1705.10843; cited-by arXiv:2302.08261; extended-by arXiv:1802.03480; extended-by arXiv:1805.09076; used-by arXiv:1703.01925; cited-by arXiv:1704.07555; cited-by arXiv:1705.10843
+arXiv:1611.07308 (2016) "Variational Graph Auto-Encoders" [stat] (cited-by 39 in-topic, era 0)
+    task_type: unsupervised learning on graph-structured data and link prediction
+    gnn_architecture: graph convolutional network (GCN) encoder and a simple inner product decoder
+    input_representation: undirected graphs with node features
+    benchmark_datasets: citation networks
+    relations: compares-with arXiv:1403.6652; compares-with arXiv:1503.03578; uses arXiv:1607.00653; uses arXiv:1412.6980; uses arXiv:1201.0490; compares-with arXiv:1609.02907; critiqued-by arXiv:2304.01565; critiqued-by arXiv:1901.00596; compared-by arXiv:1706.02216; cited-by arXiv:1802.08773; cited-by arXiv:1805.11973; used-by arXiv:1903.02428
+arXiv:1611.08097 (2016) "Geometric deep learning: going beyond Euclidean data" [cs] (cited-by 37 in-topic, era 0)
+    input_representation: graphs and manifolds
+    relations: cited-by arXiv:2208.09481; cited-by arXiv:1802.03480; cited-by arXiv:1805.11973; cited-by arXiv:1806.01261; cited-by arXiv:1806.08804; cited-by arXiv:1811.02017
+arXiv:1603.00856 (2016) "Molecular Graph Convolutions: Moving Beyond Fingerprints" [stat] (cited-by 35 in-topic, era 0)
+    task_type: ligand-based virtual screening
+    gnn_architecture: molecular graph convolutions
+    input_representation: undirected graphs of small molecules (atoms, bonds, distances, etc.)
+    relations: compared-by arXiv:2312.16855; cited-by arXiv:1610.02415; compared-by arXiv:1704.01212; cited-by arXiv:1706.08566; cited-by arXiv:1802.04364; cited-by arXiv:1806.01261
+arXiv:1605.05273 (2016) "Learning Convolutional Neural Networks for Graphs" [cs] (cited-by 26 in-topic, era 0)
+    gnn_architecture: Convolutional Neural Networks for arbitrary graphs
+    input_representation: Undirected or directed graphs with discrete and continuous node and edge attributes
+    relations: cites arXiv:1511.05493; cites arXiv:1312.6203; cites arXiv:1509.09292; cites arXiv:1510.02855; cited-by arXiv:2110.03336; compared-by arXiv:1704.02901; motivates arXiv:1901.00596; cited-by arXiv:1905.12265; cited-by arXiv:2208.09481; cited-by arXiv:1609.02907
+arXiv:1607.00653 (2016) "node2vec: Scalable Feature Learning for Networks" [cs] (cited-by 25 in-topic, era 0)
+    task_type: multi-label classification and link prediction
+    input_representation: low-dimensional continuous feature representations learned via biased random walks
+    benchmark_datasets: several real-world networks from diverse domains
+    relations: extends arXiv:1403.6652; uses arXiv:1503.03578; uses arXiv:1310.4546; cites arXiv:1511.05493; cited-by arXiv:2302.08261; used-by arXiv:2507.11757; cited-by arXiv:1609.02907; used-by arXiv:1611.07308; critiqued-by arXiv:1706.02216; cited-by arXiv:1806.01261
+arXiv:1611.08402 (2016) "Geometric deep learning on graphs and manifolds using mixture model CNNs" [cs] (cited-by 21 in-topic, era 0)
+    gnn_architecture: mixture model CNNs
+    input_representation: non-Euclidean structured data (graphs and manifolds)
+    relations: extended-by arXiv:1710.10903; cited-by arXiv:1802.03690; cited-by arXiv:1802.04364; cited-by arXiv:1806.01261; used-by arXiv:1903.02428; cited-by arXiv:2012.05716
+arXiv:1605.08803 (2016) "Density estimation using Real NVP" [cs] (cited-by 17 in-topic, era 0)
+    performance_metrics: log-likelihood
+    benchmark_datasets: four datasets of natural images
+    relations: uses arXiv:1412.6980; cites arXiv:1312.6114; cites arXiv:1511.06391; used-by arXiv:2304.01565; extended-by arXiv:1807.03039; cited-by arXiv:2001.09382; cited-by arXiv:2003.00638; cited-by arXiv:2006.11239; cited-by arXiv:2208.09481
+arXiv:1612.08498 (2016) "Steerable CNNs" [cs] (cited-by 15 in-topic, era 0)
+    task_type: image classification
+    benchmark_datasets: CIFAR
+    relations: compares-with arXiv:1602.07576; cited-by arXiv:2407.20471; cited-by arXiv:2002.12880
+arXiv:1704.01212 (2017) "Neural Message Passing for Quantum Chemistry" [cs] (cited-by 167 in-topic, era 0)
+    task_type: molecular property prediction
+    gnn_architecture: Message Passing Neural Networks (MPNNs)
+    input_representation: input graph
+    relations: cites arXiv:1312.6203; cites arXiv:1606.09375; motivated-by arXiv:1609.02907; compares-with arXiv:1603.00856; cites arXiv:1509.09292; compares-with arXiv:1511.05493; cited-by arXiv:2302.08261; cited-by arXiv:2304.01565; used-by arXiv:2305.13315; compared-by arXiv:2312.16855; cited-by arXiv:2403.12143; used-by arXiv:2404.11568
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 101 in-topic, era 0)
+    task_type: machine translation and English constituency parsing
+    performance_metrics: BLEU score (28.4 on WMT 2014 English-to-German; 41.8 on WMT 2014 English-to-French)
+    benchmark_datasets: WMT 2014 English-to-German, WMT 2014 English-to-French
+    relations: uses arXiv:1412.6980; used-by arXiv:2403.12143; used-by arXiv:1806.01261; extended-by arXiv:1710.10903; used-by arXiv:1810.04805; used-by arXiv:1910.10683; cited-by arXiv:2005.14165
+arXiv:1710.10903 (2017) "Graph Attention Networks" [stat] (cited-by 93 in-topic, era 0)
+    gnn_architecture: Graph Attention Networks (GATs) using masked self-attentional layers
+    input_representation: Graph-structured data where nodes attend over their neighborhoods' features
+    benchmark_datasets: Cora, Citeseer, Pubmed citation network datasets, and a protein-protein interaction dataset
+    relations: compares-with arXiv:1403.6652; uses arXiv:1606.09375; extends arXiv:1609.02907; extends arXiv:1611.08402; uses arXiv:1706.02216; cites arXiv:1511.05493; cited-by arXiv:2304.01565; cited-by arXiv:2309.12906; cited-by arXiv:2312.16855; cited-by arXiv:2404.11568; used-by arXiv:2012.09624; cited-by arXiv:2208.09481
+arXiv:1706.02216 (2017) "Inductive Representation Learning on Large Graphs" [cs] (cited-by 76 in-topic, era 0)
+    task_type: node classification
+    gnn_architecture: GraphSAGE (inductive framework using sampling and aggregation functions)
+    input_representation: node feature information (e.g., text attributes) and local neighborhood features
+    benchmark_datasets: citation data, Reddit post data, and protein-protein interaction multi-graph dataset
+    relations: critiques arXiv:1607.00653; uses arXiv:1403.6652; cites arXiv:1503.03578; uses arXiv:1609.02907; compares-with arXiv:1611.07308; cites arXiv:1511.05493; cited-by arXiv:2304.01565; cited-by arXiv:2502.09335; used-by arXiv:1710.10903; used-by arXiv:1901.00596; cited-by arXiv:2102.07916; cited-by arXiv:2208.09481
+arXiv:1703.00564 (2017) "MoleculeNet: A Benchmark for Molecular Machine Learning" [cs] (cited-by 70 in-topic, era 0)
+    task_type: molecular property prediction
+    input_representation: molecular featurizations and learnable representations
+    benchmark_datasets: MoleculeNet (curated from multiple public datasets)
+    relations: cited-by arXiv:2304.01565; motivates arXiv:2305.13315; cited-by arXiv:2309.12906; used-by arXiv:2312.16855; used-by arXiv:2404.11568; cited-by arXiv:2406.03278
+arXiv:1706.08566 (2017) "SchNet: A continuous-filter convolutional neural network for modeling
+  quantum interactions" [stat] (cited-by 45 in-topic, era 0)
+    task_type: modeling quantum interactions (total energy and interatomic forces prediction)
+    gnn_architecture: continuous-filter convolutional neural network
+    input_representation: precise atomic locations (coordinates) in molecules
+    benchmark_datasets: benchmarks of equilibrium molecules and molecular dynamics trajectories
+    relations: cites arXiv:1704.01212; cites arXiv:1509.09292; cites arXiv:1603.00856; cites arXiv:1312.6203; cites arXiv:1412.6980; compared-by arXiv:2305.13315; compared-by arXiv:2312.16855; cited-by arXiv:2012.10885; used-by arXiv:2102.09844; used-by arXiv:2206.11990; cited-by arXiv:1802.04364
+arXiv:1703.01925 (2017) "Grammar Variational Autoencoder" [stat] (cited-by 32 in-topic, era 0)
+    task_type: molecular synthesis and symbolic regression
+    input_representation: parse trees from a context-free grammar
+    relations: uses arXiv:1610.02415; uses arXiv:1312.6114; extended-by arXiv:1802.03480; extended-by arXiv:1802.04364; used-by arXiv:1803.03324; compared-by arXiv:1805.09076; cited-by arXiv:1610.02415; cited-by arXiv:1705.10843
+arXiv:1712.06113 (2017) "SchNet - a deep learning architecture for molecules and materials" [physics] (cited-by 28 in-topic, era 0)
+    task_type: predicting molecular and material properties, potential-energy surfaces, and energy-conserving force fields
+    gnn_architecture: continuous-filter convolutional layers
+    input_representation: atomistic systems with embeddings of atom types
+    relations: uses arXiv:1511.06391; cited-by arXiv:2208.09481; cited-by arXiv:2002.12880; cited-by arXiv:2007.02005; cited-by arXiv:2012.05716; cited-by arXiv:2208.04852
+arXiv:1703.06103 (2017) "Modeling Relational Data with Graph Convolutional Networks" [stat] (cited-by 27 in-topic, era 0)
+    task_type: Knowledge base completion (link prediction and entity classification)
+    gnn_architecture: Relational Graph Convolutional Networks (R-GCNs)
+    input_representation: Multi-relational knowledge graphs (subject-predicate-object triples)
+    performance_metrics: 29.8% improvement on FB15k-237 over a decoder-only baseline
+    benchmark_datasets: Yago, DBPedia, Wikidata, FB15k-237
+    relations: used-by arXiv:1805.11973; cited-by arXiv:2208.09481; cited-by arXiv:1806.08804; cited-by arXiv:1901.00596; used-by arXiv:1903.02428; used-by arXiv:2001.09382
+arXiv:1704.07555 (2017) "Molecular De Novo Design through Deep Reinforcement Learning" [cs] (cited-by 19 in-topic, era 0)
+    task_type: Molecular de novo design (analogue generation, scaffold hopping, and target-specific activity generation)
+    input_representation: sequence-based
+    performance_metrics: percentage of predicted actives (>95%)
+    relations: cites arXiv:1610.02415; uses arXiv:1412.6980; cites arXiv:1705.10843; uses arXiv:1201.0490; extended-by arXiv:1802.03480; cited-by arXiv:1802.08773; used-by arXiv:1803.03324; cited-by arXiv:1805.09076; cited-by arXiv:1806.02473; cited-by arXiv:1905.13372
+arXiv:1705.10843 (2017) "Objective-Reinforced Generative Adversarial Networks (ORGAN) for
+  Sequence Generation Models" [stat] (cited-by 17 in-topic, era 0)
+    task_type: unsupervised data generation (specifically molecule generation via SMILES)
+    input_representation: text sequences (SMILES)
+    relations: cites arXiv:1610.02415; uses arXiv:1412.6980; cites arXiv:1703.01925; compared-by arXiv:2406.03278; used-by arXiv:1805.11973; cited-by arXiv:1905.13372; cited-by arXiv:1610.02415; cited-by arXiv:1704.07555; critiqued-by arXiv:1802.04364
+arXiv:1704.02901 (2017) "Dynamic Edge-Conditioned Filters in Convolutional Neural Networks on
+  Graphs" [cs] (cited-by 12 in-topic, era 0)
+    task_type: graph classification and point cloud classification
+    gnn_architecture: Dynamic Edge-Conditioned Convolutional Neural Networks
+    input_representation: graphs with edge labels and point clouds
+    relations: compares-with arXiv:1605.05273; compares-with arXiv:1509.09292; compares-with arXiv:1312.6203; compares-with arXiv:1609.02907; compares-with arXiv:1606.09375; cites arXiv:1511.05493; used-by arXiv:1802.03480; extended-by arXiv:1806.08804; used-by arXiv:1903.02428; cited-by arXiv:2002.12880; cited-by arXiv:2005.00687; cited-by arXiv:2208.04852
+arXiv:1802.08219 (2018) "Tensor field networks: Rotation- and translation-equivariant neural
+  networks for 3D point clouds" [cs] (cited-by 119 in-topic, era 1)
+    task_type: geometry, physics, and chemistry tasks
+    gnn_architecture: Tensor field networks (locally equivariant to 3D rotations, translations, and permutations)
+    input_representation: 3D point clouds using filters built from spherical harmonics
+    relations: uses arXiv:1706.08566; cites arXiv:1510.02855; cites arXiv:1802.03690; cites arXiv:1602.07576; cites arXiv:1704.01212; cited-by arXiv:2407.20471; motivates arXiv:1811.02017; cited-by arXiv:2007.02005; cited-by arXiv:2012.10885; used-by arXiv:2102.09844; used-by arXiv:2110.02905
+arXiv:1810.00826 (2018) "How Powerful are Graph Neural Networks?" [cs] (cited-by 107 in-topic, era 1)
+    task_type: graph classification
+    gnn_architecture: Weisfeiler-Lehman (WL) equivalent architecture
+    relations: cites arXiv:1806.08804; cites arXiv:1511.05493; cites arXiv:1706.02216; uses arXiv:1609.02907; cites arXiv:1603.00856; cites arXiv:1710.10903; compared-by arXiv:2304.01565; used-by arXiv:2312.16855; cited-by arXiv:2404.11568; cited-by arXiv:2507.03430; used-by arXiv:2110.03336; extended-by arXiv:2003.00638
+arXiv:1802.04364 (2018) "Junction Tree Variational Autoencoder for Molecular Graph Generation" [cs] (cited-by 70 in-topic, era 1)
+    task_type: Molecular graph generation and optimization
+    gnn_architecture: Graph message passing network
+    input_representation: Tree-structured scaffold over chemical substructures
+    relations: uses arXiv:1511.05493; extends arXiv:1703.01925; uses arXiv:1802.08786; compares-with arXiv:1802.03480; compares-with arXiv:1803.03324; cites arXiv:1509.09292; cited-by arXiv:2304.01565; used-by arXiv:2309.12906; compared-by arXiv:2406.03278; cited-by arXiv:2507.03430; used-by arXiv:1905.13372; used-by arXiv:2001.09382
+arXiv:1802.08773 (2018) "GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models" [cs] (cited-by 68 in-topic, era 1)
+    task_type: Graph generation
+    gnn_architecture: Deep autoregressive model (decomposing process into node and edge formations)
+    performance_metrics: Maximum Mean Discrepancy (MMD)
+    relations: cites arXiv:1312.6114; cites arXiv:1611.07308; compares-with arXiv:1802.03480; extends arXiv:1803.03324; cites arXiv:1704.07555; cites arXiv:1610.02415; critiqued-by arXiv:2304.01565; cited-by arXiv:2506.01302; used-by arXiv:2003.00638; cited-by arXiv:1805.09076; cited-by arXiv:1806.01261; compared-by arXiv:1806.02473
+arXiv:1802.03690 (2018) "On the Generalization of Equivariance and Convolution in Neural Networks
+  to the Action of Compact Groups" [stat] (cited-by 63 in-topic, era 1)
+    relations: cites arXiv:1511.05493; cites arXiv:1602.07576; cites arXiv:1605.05273; cites arXiv:1606.09375; cites arXiv:1509.09292; cites arXiv:1611.08402; cited-by arXiv:1811.02017; cited-by arXiv:1802.08219; critiqued-by arXiv:1806.01261; cited-by arXiv:1807.02547; motivates arXiv:1909.12057; cited-by arXiv:1911.08251
+arXiv:1802.03480 (2018) "GraphVAE: Towards Generation of Small Graphs Using Variational
+  Autoencoders" [cs] (cited-by 63 in-topic, era 1)
+    task_type: molecule generation
+    gnn_architecture: variational autoencoder (GraphVAE)
+    input_representation: probabilistic fully-connected graph of a predefined maximum size
+    relations: extends arXiv:1610.02415; extends arXiv:1703.01925; uses arXiv:1312.6114; cites arXiv:1611.08097; cites arXiv:1704.01212; uses arXiv:1704.02901; critiqued-by arXiv:2304.01565; compared-by arXiv:1802.04364; used-by arXiv:1803.03324; used-by arXiv:1805.11973; cited-by arXiv:1901.00596; used-by arXiv:2012.07397
+arXiv:1807.02547 (2018) "3D Steerable CNNs: Learning Rotationally Equivariant Features in
+  Volumetric Data" [cs] (cited-by 61 in-topic, era 1)
+    task_type: amino acid propensity prediction and protein structure classification
+    gnn_architecture: 3D Steerable CNNs (SE(3)-equivariant convolutions)
+    input_representation: scalar-, vector-, and tensor fields over 3D Euclidean space
+    relations: uses arXiv:1802.08219; cites arXiv:1802.03690; cites arXiv:1602.07576; cites arXiv:1412.6980; cited-by arXiv:2407.20471; extended-by arXiv:1911.08251; motivates arXiv:1811.02017; cited-by arXiv:2110.02905; cited-by arXiv:1802.03690; cited-by arXiv:2002.12880
+arXiv:1805.11973 (2018) "MolGAN: An implicit generative model for small molecular graphs" [stat] (cited-by 56 in-topic, era 1)
+    task_type: Small molecular graph generation
+    gnn_architecture: Generative Adversarial Network (GAN) adapted for graphs
+    input_representation: Graph-structured data (molecular graphs)
+    performance_metrics: Validity (close to 100% valid compounds)
+    benchmark_datasets: QM9 chemical database
+    relations: uses arXiv:1703.06103; uses arXiv:1511.05493; uses arXiv:1705.10843; uses arXiv:1802.03480; compares-with arXiv:1610.02415; compares-with arXiv:1703.01925; critiqued-by arXiv:2304.01565; cited-by arXiv:1901.00596; compared-by arXiv:2012.07397; cited-by arXiv:1806.01261; cited-by arXiv:2001.09382; compared-by arXiv:2110.06241
+arXiv:1803.03324 (2018) "Learning Deep Generative Models of Graphs" [cs] (cited-by 50 in-topic, era 1)
+    task_type: Generative modeling of graphs (synthetic and molecular)
+    gnn_architecture: Graph neural networks expressing probabilistic dependencies among nodes and edges
+    input_representation: Graphs capturing structure and attributes
+    benchmark_datasets: Synthetic graphs and real molecular graphs
+    relations: uses arXiv:1703.01925; uses arXiv:1802.03480; compares-with arXiv:1610.02415; cites arXiv:1509.09292; cites arXiv:1511.05493; cites arXiv:1609.02907; critiqued-by arXiv:2304.01565; cited-by arXiv:2506.01302; compared-by arXiv:1802.04364; compared-by arXiv:1805.09076; cited-by arXiv:1901.00596; extended-by arXiv:1802.08773
+arXiv:1811.02017 (2018) "A General Theory of Equivariant CNNs on Homogeneous Spaces" [cs] (cited-by 44 in-topic, era 1)
+    gnn_architecture: Group equivariant Convolutional Neural Networks (G-CNNs)
+    input_representation: Fields on a homogeneous base space (e.g., Euclidean space and the sphere)
+    relations: motivated-by arXiv:1602.07576; motivated-by arXiv:1911.08251; motivated-by arXiv:1802.08219; motivated-by arXiv:1807.02547; cites arXiv:1802.03690; cites arXiv:1611.08097; cited-by arXiv:1909.12057; cited-by arXiv:1911.08251; cited-by arXiv:2002.12880; cited-by arXiv:2006.04780; cited-by arXiv:2012.10885
+arXiv:1806.02473 (2018) "Graph Convolutional Policy Network for Goal-Directed Molecular Graph
+  Generation" [cs] (cited-by 43 in-topic, era 1)
+    task_type: goal-directed molecular graph generation
+    gnn_architecture: Graph Convolutional Policy Network (GCPN)
+    input_representation: molecular graphs
+    performance_metrics: chemical property optimization (61% improvement), constrained property optimization (184% improvement)
+    relations: compares-with arXiv:1610.02415; compares-with arXiv:1703.01925; compares-with arXiv:1802.08786; cites arXiv:1704.07555; compares-with arXiv:1705.10843; compares-with arXiv:1802.04364; cited-by arXiv:2302.08261; cited-by arXiv:2304.01565; used-by arXiv:2406.03278; used-by arXiv:1905.13372; used-by arXiv:2001.09382; cited-by arXiv:2208.09481
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 40 in-topic, era 1)
+    performance_metrics: GLUE score (80.5%), MultiNLI accuracy (86.7%), SQuAD v1.1 Test F1 (93.2), SQuAD v2.0 Test F1 (83.1)
+    benchmark_datasets: GLUE, MultiNLI, SQuAD v1.1, SQuAD v2.0
+    relations: uses arXiv:1706.03762; cites arXiv:1310.4546; cited-by arXiv:2302.08261; used-by arXiv:1910.10683; used-by arXiv:1905.12265; cited-by arXiv:2005.14165; cited-by arXiv:2102.07916; cited-by arXiv:2206.11990
+arXiv:1810.02244 (2018) "Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks" [cs] (cited-by 37 in-topic, era 1)
+    task_type: graph classification and regression
+    gnn_architecture: k-dimensional Graph Neural Networks (k-GNNs)
+    relations: cited-by arXiv:2404.11568; cited-by arXiv:2110.03336; cited-by arXiv:2208.09481; cited-by arXiv:1903.02428; cited-by arXiv:2010.02449; cited-by arXiv:2106.06610
+arXiv:1806.08804 (2018) "Hierarchical Graph Representation Learning with Differentiable Pooling" [cs] (cited-by 36 in-topic, era 1)
+    task_type: graph classification
+    gnn_architecture: DiffPool (differentiable graph pooling module)
+    performance_metrics: accuracy (average improvement of 5-10%)
+    benchmark_datasets: four out of five benchmark data sets (specific names not listed)
+    relations: compares-with arXiv:1704.01212; extends arXiv:1704.02901; uses arXiv:1706.02216; compares-with arXiv:1609.02907; cites arXiv:1710.10903; cites arXiv:1509.09292; cited-by arXiv:2302.08261; cited-by arXiv:2404.11568; compared-by arXiv:1901.00596; cited-by arXiv:2012.05716; cited-by arXiv:2208.09481; cited-by arXiv:1810.00826
+arXiv:1806.01261 (2018) "Relational inductive biases, deep learning, and graph networks" [cs] (cited-by 34 in-topic, era 1)
+    gnn_architecture: graph networks
+    relations: cites arXiv:1509.09292; uses arXiv:1706.03762; extends arXiv:1704.01212; cites arXiv:1611.08097; cites arXiv:1803.03324; cites arXiv:1603.00856; cited-by arXiv:2404.11568; cited-by arXiv:1901.00596; cited-by arXiv:1903.02428; cited-by arXiv:2012.07397; used-by arXiv:2107.04119; cited-by arXiv:2110.02905
+arXiv:1805.09076 (2018) "Constrained Graph Variational Autoencoders for Molecule Design" [cs] (cited-by 31 in-topic, era 1)
+    task_type: molecule generation
+    gnn_architecture: graph-structured variational autoencoder (encoder and decoder)
+    input_representation: graphs representing chemical molecules
+    performance_metrics: matching the statistics of the original dataset on semantically important metrics
+    relations: compares-with arXiv:1803.03324; extends arXiv:1610.02415; compares-with arXiv:1703.01925; cites arXiv:1606.09375; cites arXiv:1802.08773; uses arXiv:1704.01212; cited-by arXiv:2302.08261; critiqued-by arXiv:2304.01565; cited-by arXiv:2012.07397; cited-by arXiv:2208.09481; cited-by arXiv:1905.13372; cited-by arXiv:1910.00760
+arXiv:1811.12823 (2018) "Molecular Sets (MOSES): A Benchmarking Platform for Molecular Generation
+  Models" [cs] (cited-by 27 in-topic, era 1)
+    task_type: molecular generation
+    performance_metrics: quality and diversity of generated structures
+    benchmark_datasets: Molecular Sets (MOSES)
+    relations: used-by arXiv:1905.13372; cited-by arXiv:2001.09382; cited-by arXiv:2209.14734
+arXiv:1812.08434 (2018) "Graph Neural Networks: A Review of Methods and Applications" [cs] (cited-by 25 in-topic, era 1)
+    gnn_architecture: Graph Convolutional Network (GCN), Graph Attention Network (GAT), Graph Recurrent Network (GRN)
+    relations: used-by arXiv:2404.11568; cited-by arXiv:2012.05716; cited-by arXiv:2208.09481; extended-by arXiv:2211.03666
+arXiv:1802.08786 (2018) "Syntax-Directed Variational Autoencoder for Structured Data" [cs] (cited-by 21 in-topic, era 1)
+    task_type: molecular structure generation, reconstruction, and optimization
+    input_representation: discrete structures with formal grammars and semantics
+    relations: uses arXiv:1703.01925; uses arXiv:1610.02415; cites arXiv:1312.6114; cites arXiv:1509.09292; cites arXiv:1705.10843; cited-by arXiv:2302.08261; used-by arXiv:1802.04364; cited-by arXiv:1802.08773; compared-by arXiv:1806.02473; cited-by arXiv:1910.00760; cited-by arXiv:2208.09481
+arXiv:1806.03536 (2018) "Representation Learning on Graphs with Jumping Knowledge Networks" [cs] (cited-by 16 in-topic, era 1)
+    task_type: representation learning on graphs
+    gnn_architecture: Jumping Knowledge (JK) networks (compatible with GCN, GraphSAGE, and GAT)
+    benchmark_datasets: social, bioinformatics and citation networks
+    relations: used-by arXiv:2003.00638; cited-by arXiv:2211.03666; used-by arXiv:1903.02428; cited-by arXiv:1810.00826; used-by arXiv:1905.12265; compared-by arXiv:2005.00687
+arXiv:1807.03039 (2018) "Glow: Generative Flow with Invertible 1x1 Convolutions" [stat] (cited-by 12 in-topic, era 1)
+    performance_metrics: log-likelihood
+    relations: extends arXiv:1605.08803; cites arXiv:1312.6114; uses arXiv:1412.6980; cited-by arXiv:2001.09382; cited-by arXiv:2006.11239; cited-by arXiv:2208.09481
+arXiv:1911.08251 (2019) "General $E(2)$-Equivariant Steerable CNNs" [cs] (cited-by 55 in-topic, era 1)
+    gnn_architecture: E(2)-equivariant Steerable CNNs
+    benchmark_datasets: CIFAR-10, CIFAR-100, STL-10
+    relations: extends arXiv:1807.02547; uses arXiv:1602.07576; cites arXiv:1312.6203; cites arXiv:1811.02017; cites arXiv:1802.03690; cites arXiv:1802.08219; motivates arXiv:1811.02017; cited-by arXiv:2002.12880; compared-by arXiv:2012.10885; cited-by arXiv:2102.09844; cited-by arXiv:2110.02905; cited-by arXiv:2112.01388
+arXiv:1912.01703 (2019) "PyTorch: An Imperative Style, High-Performance Deep Learning Library" [cs] (cited-by 44 in-topic, era 1)
+    relations: cited-by arXiv:2406.03278; used-by arXiv:2101.03164; cited-by arXiv:2005.00687; used-by arXiv:2003.00638; used-by arXiv:2110.02905; used-by arXiv:2110.03336
+arXiv:1903.02428 (2019) "Fast Graph Representation Learning with PyTorch Geometric" [cs] (cited-by 43 in-topic, era 1)
+    input_representation: graphs, point clouds and manifolds
+    relations: uses arXiv:1806.03536; cites arXiv:1511.06391; cites arXiv:1511.05493; uses arXiv:1609.02907; uses arXiv:1710.10903; cites arXiv:1611.08097; used-by arXiv:2101.03164; cited-by arXiv:2005.00687; used-by arXiv:1905.12265; cited-by arXiv:2012.05716; used-by arXiv:2110.02905; used-by arXiv:2208.04852
+arXiv:1901.00596 (2019) "A Comprehensive Survey on Graph Neural Networks" [cs] (cited-by 42 in-topic, era 1)
+    gnn_architecture: recurrent graph neural networks, convolutional graph neural networks, graph autoencoders, and spatial-temporal graph neural networks
+    relations: uses arXiv:1511.05493; compares-with arXiv:1312.6203; uses arXiv:1606.09375; uses arXiv:1609.02907; motivated-by arXiv:1605.05273; motivated-by arXiv:1704.01212; cited-by arXiv:2302.08261; cited-by arXiv:2012.05716; used-by arXiv:2102.07916; cited-by arXiv:2208.04852; cited-by arXiv:2208.09481; extended-by arXiv:2211.03666
+arXiv:1910.00760 (2019) "Efficient Graph Generation with Graph Recurrent Attention Networks" [cs] (cited-by 42 in-topic, era 1)
+    task_type: Deep generative modeling of graphs
+    gnn_architecture: Graph Recurrent Attention Networks (GRANs) using GNNs with attention
+    performance_metrics: Time efficiency and sample quality
+    relations: cites arXiv:1610.02415; uses arXiv:1803.03324; uses arXiv:1806.02473; cites arXiv:1611.07308; compares-with arXiv:1802.03480; cites arXiv:1805.09076; critiqued-by arXiv:2304.01565; cited-by arXiv:2012.07397; compared-by arXiv:2209.14734
+arXiv:1905.12265 (2019) "Strategies for Pre-training Graph Neural Networks" [cs] (cited-by 30 in-topic, era 1)
+    task_type: molecular property prediction and protein function prediction
+    performance_metrics: ROC-AUC (up to 9.4% absolute improvement)
+    benchmark_datasets: multiple graph classification datasets
+    relations: cites arXiv:1605.05273; uses arXiv:1810.00826; uses arXiv:1810.04805; uses arXiv:1310.4546; compares-with arXiv:1609.02907; uses arXiv:1706.02216; cited-by arXiv:2302.08261; used-by arXiv:2102.07916; used-by arXiv:2005.00687
+arXiv:1904.01561 (2019) "Analyzing Learned Molecular Representations for Property Prediction" [cs] (cited-by 27 in-topic, era 1)
+    task_type: molecular property prediction
+    gnn_architecture: graph convolutional model
+    input_representation: graph structure of the molecule
+    benchmark_datasets: 19 public and 16 proprietary industrial datasets
+    relations: uses arXiv:1703.00564; cites arXiv:1610.02415; cites arXiv:1802.04364; cites arXiv:1609.02907; cites arXiv:1706.02216; cites arXiv:1312.6203; cited-by arXiv:2302.08261; used-by arXiv:2305.13315; used-by arXiv:2312.16855; used-by arXiv:2404.11568; compared-by arXiv:2507.03430; cited-by arXiv:2208.04852
+arXiv:1905.13372 (2019) "MolecularRNN: Generating realistic molecular graphs with optimized
+  properties" [cs] (cited-by 18 in-topic, era 1)
+    task_type: de-novo molecular design / generative modeling
+    gnn_architecture: graph recurrent generative model (MolecularRNN)
+    input_representation: molecular graphs
+    performance_metrics: validity (100%), distribution shift for lipophilicity, drug-likeness, and melting point
+    relations: uses arXiv:1806.02473; uses arXiv:1802.04364; cites arXiv:1705.10843; cites arXiv:1704.07555; cites arXiv:1610.02415; compares-with arXiv:1803.03324; cited-by arXiv:2304.01565; used-by arXiv:2001.09382
+arXiv:1909.12057 (2019) "B-Spline CNNs on Lie Groups" [cs] (cited-by 17 in-topic, era 1)
+    task_type: cancer detection in histopathology slides and facial landmark localization
+    gnn_architecture: B-Spline Group Convolutional Neural Networks (G-CNNs) for arbitrary Lie groups
+    benchmark_datasets: histopathology slides and facial landmark datasets
+    relations: cites arXiv:1602.07576; cites arXiv:1811.02017; motivated-by arXiv:1802.03690; cites arXiv:1802.08219; cited-by arXiv:2110.02905; cited-by arXiv:2208.09481; cited-by arXiv:2002.12880; cited-by arXiv:2012.10885
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 14 in-topic, era 1)
+    task_type: natural language processing (summarization, question answering, text classification, etc.)
+    input_representation: text-to-text format
+    benchmark_datasets: Colossal Clean Crawled Corpus
+    relations: uses arXiv:1810.04805; cites arXiv:1310.4546; uses arXiv:1706.03762; used-by arXiv:2005.14165
+arXiv:1902.04166 (2019) "WideDTA: prediction of drug-target binding affinity" [q-bio] (cited-by 11 in-topic, era 1)
+    task_type: drug-target binding affinity prediction
+    input_representation: word-based sequence representation (protein sequence, ligand SMILES, protein domains and motifs, and maximum common substructure words)
+    benchmark_datasets: KIBA dataset
+    relations: cites arXiv:1510.02855; cited-by arXiv:2012.09624
+arXiv:2002.12880 (2020) "Generalizing Convolutional Neural Networks for Equivariance to Lie
+  Groups on Arbitrary Continuous Data" [stat] (cited-by 59 in-topic, era 1)
+    gnn_architecture: Convolutional layers equivariant to Lie groups via exponential and logarithm maps
+    input_representation: Arbitrary continuous data (including images, ball-and-stick molecular data, and Hamiltonian dynamical systems)
+    performance_metrics: Exact conservation of linear and angular momentum (for Hamiltonian systems)
+    relations: critiques arXiv:1602.07576; cites arXiv:1911.08251; cites arXiv:1802.03690; cites arXiv:1811.02017; cites arXiv:1612.08498; cites arXiv:1704.02901; cited-by arXiv:2110.03336; used-by arXiv:2012.10885; cited-by arXiv:2206.11990; cited-by arXiv:2208.09481; cited-by arXiv:2102.09844; compared-by arXiv:2110.02905
+arXiv:2006.11239 (2020) "Denoising Diffusion Probabilistic Models" [cs] (cited-by 51 in-topic, era 1)
+    performance_metrics: Inception score (9.46), FID score (3.17)
+    benchmark_datasets: CIFAR10, LSUN (256x256)
+    relations: cites arXiv:1605.08803; cites arXiv:1807.03039; cites arXiv:1312.6114; uses arXiv:1706.03762; uses arXiv:1412.6980; cited-by arXiv:2304.01565; used-by arXiv:2209.14734
+arXiv:2003.03123 (2020) "Directional Message Passing for Molecular Graphs" [cs] (cited-by 48 in-topic, era 1)
+    task_type: predicting quantum mechanical properties of molecules
+    gnn_architecture: directional message passing neural network (DimeNet)
+    input_representation: molecular graphs using distances between atoms (nodes) and directional information in coordinate space via spherical Bessel functions and spherical harmonics
+    performance_metrics: outperforms previous GNNs by 76% on MD17 and 31% on QM9
+    benchmark_datasets: MD17, QM9
+    relations: compared-by arXiv:2305.13315; cited-by arXiv:2012.05716; used-by arXiv:2206.11990; used-by arXiv:2012.09624; used-by arXiv:2012.10885; used-by arXiv:2101.03164
+arXiv:2003.00638 (2020) "Permutation Invariant Graph Generation via Score-Based Generative
+  Modeling" [cs] (cited-by 40 in-topic, era 1)
+    task_type: Graph generation
+    gnn_architecture: Permutation equivariant, multi-channel graph neural network
+    relations: extends arXiv:1810.00826; uses arXiv:1806.03536; uses arXiv:1802.08773; compares-with arXiv:1802.03480; compares-with arXiv:1803.03324; cites arXiv:1706.02216; compared-by arXiv:2304.01565; critiqued-by arXiv:2209.14734
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 31 in-topic, era 1)
+    relations: uses arXiv:1910.10683; cites arXiv:1706.03762; cites arXiv:1810.04805; cited-by arXiv:2012.10885; cited-by arXiv:2206.11990
+arXiv:2001.09382 (2020) "GraphAF: a Flow-based Autoregressive Model for Molecular Graph
+  Generation" [cs] (cited-by 31 in-topic, era 1)
+    task_type: Molecular graph generation and goal-directed property optimization
+    input_representation: Molecular graphs
+    performance_metrics: Chemical validity (68% without rules, 100% with rules) and training speed (2x faster than GCPN)
+    relations: uses arXiv:1905.13372; uses arXiv:1802.04364; uses arXiv:1806.02473; uses arXiv:1509.09292; cites arXiv:1312.6114; cites arXiv:1805.11973; cited-by arXiv:2302.08261; cited-by arXiv:2304.01565; cited-by arXiv:2012.07397; compared-by arXiv:2110.06241
+arXiv:2006.04780 (2020) "Lorentz Group Equivariant Neural Network for Particle Physics" [hep-ph] (cited-by 26 in-topic, era 1)
+    task_type: classification tasks in particle physics (tagging top quark decays)
+    gnn_architecture: Lorentz Group Equivariant Neural Network based on finite-dimensional representations of the Lorentz group and equivariant nonlinearity involving tensor products
+    input_representation: energy-momenta of jet constituents produced in proton-proton collisions
+    benchmark_datasets: public classification dataset [27]
+    relations: cites arXiv:1602.07576; cites arXiv:1802.08219; cites arXiv:1312.6203; cites arXiv:1807.02547; extends arXiv:1802.03690; cites arXiv:1811.02017; cited-by arXiv:2010.02449; used-by arXiv:2106.06610; cited-by arXiv:2112.01388
+arXiv:2005.00687 (2020) "Open Graph Benchmark: Datasets for Machine Learning on Graphs" [cs] (cited-by 25 in-topic, era 1)
+    benchmark_datasets: Open Graph Benchmark (OGB)
+    relations: cites arXiv:1810.00826; cites arXiv:1912.01703; cites arXiv:1903.02428; uses arXiv:1703.00564; cites arXiv:1611.07308; cites arXiv:1704.01212; cited-by arXiv:2305.13315; cited-by arXiv:2206.11990; cited-by arXiv:2211.03666
+arXiv:2012.10885 (2020) "LieTransformer: Equivariant self-attention for Lie Groups" [cs] (cited-by 24 in-topic, era 1)
+    task_type: molecular property regression, shape counting on point clouds, and modelling particle trajectories under Hamiltonian dynamics
+    gnn_architecture: LieTransformer (LieSelfAttention layers)
+    relations: cites arXiv:1704.01212; cites arXiv:1706.08566; cites arXiv:1802.08219; uses arXiv:2002.12880; extends arXiv:1802.03690; cites arXiv:1811.02017
+arXiv:2010.02449 (2020) "On the Universality of Rotation Equivariant Point Cloud Networks" [cs] (cited-by 22 in-topic, era 1)
+    gnn_architecture: Rotation equivariant point cloud networks
+    input_representation: Point clouds
+    relations: cites arXiv:1810.02244; uses arXiv:1802.08219; cites arXiv:1704.01212; cites arXiv:1810.00826; cites arXiv:1807.02547; cites arXiv:2006.04780; used-by arXiv:2106.06610; cited-by arXiv:2110.03336; cited-by arXiv:2208.09481
+arXiv:2007.02005 (2020) "Finding Symmetry Breaking Order Parameters with Euclidean Neural
+  Networks" [cs] (cited-by 11 in-topic, era 1)
+    gnn_architecture: Euclidean symmetry equivariant neural networks
+    relations: cites arXiv:1802.08219; cites arXiv:1712.06113; extended-by arXiv:2407.20471; used-by arXiv:2206.11990
+arXiv:2012.05716 (2020) "Utilising Graph Machine Learning within Drug Discovery and Development" [q-bio] (cited-by 9 in-topic, era 1)
+    task_type: target identification, design of small molecules and biologics, and drug repurposing
+    input_representation: biomolecular structures, functional relationships, and multi-omic datasets
+    relations: cites arXiv:1806.08804; cites arXiv:1509.09292; cites arXiv:2003.03123; cites arXiv:1802.04364; cites arXiv:1403.6652; cites arXiv:1609.02907; cited-by arXiv:2302.08261; cited-by arXiv:2309.12906
+arXiv:2012.09624 (2020) "Distance-aware Molecule Graph Attention Network for Drug-Target Binding
+  Affinity Prediction" [q-bio] (cited-by 2 in-topic, era 1)
+    task_type: drug-target binding affinity prediction
+    gnn_architecture: diStance-aware Molecule graph Attention Network (S-MAN) with edge-node hierarchical attentive aggregation
+    input_representation: pocket-ligand graph integrating topological structure and spatial position information via a position encoding mechanism
+    benchmark_datasets: two standard datasets
+    relations: uses arXiv:1710.10903; cites arXiv:1902.04166; uses arXiv:1609.02907; uses arXiv:1810.00826; uses arXiv:2003.03123
+arXiv:2008.12187 (2020) "Graph Neural Network Architecture Search for Molecular Property
+  Prediction" [cs] (cited-by 0 in-topic, era 1)
+    task_type: Molecular property prediction of small molecules
+    gnn_architecture: Message-passing neural networks (MPNNs) discovered via Neural Architecture Search (NAS)
+    input_representation: Molecules represented as graphs where atoms are nodes and bonds are edges
+    benchmark_datasets: MoleculeNet (quantum mechanics and physical chemistry datasets)
+    relations: uses arXiv:1704.01212; uses arXiv:1703.00564; uses arXiv:1511.05493; cites arXiv:1710.10903; cites arXiv:1810.00826; cites arXiv:1609.02907
+arXiv:2012.07397 (2020) "Molecular graph generation with Graph Neural Networks" [stat] (cited-by 0 in-topic, era 1)
+    task_type: unconditional molecular graph generation
+    gnn_architecture: MG^2N^2 (sequential molecular graph generator based on graph neural network modules)
+    input_representation: subgraph produced during previous steps
+    explainability_method: sequentiality and modularity of the generation process
+    benchmark_datasets: QM9 and Zinc
+    relations: uses arXiv:1802.03480; compares-with arXiv:1805.11973; cites arXiv:1805.09076; cites arXiv:1802.04364; cites arXiv:2001.09382; cites arXiv:1806.02473
+arXiv:2007.04275 (2020) "Graph Neural Networks for the Prediction of Substrate-Specific Organic
+  Reaction Conditions" [cs] (cited-by 0 in-topic, era 1)
+    task_type: Classification tasks pertaining to the identification of experimental reagents and conditions
+    gnn_architecture: Seven different GNN architectures
+    explainability_method: Identification of specific graph features
+    benchmark_datasets: A dataset collection of four ubiquitous reactions from the organic chemistry literature
+    relations: cites arXiv:1509.09292; cites arXiv:1511.05493; cites arXiv:1704.01212; cites arXiv:1603.00856; cites arXiv:1710.10903; cites arXiv:1703.06103
+arXiv:2102.09844 (2021) "E(n) Equivariant Graph Neural Networks" [cs] (cited-by 120 in-topic, era 1)
+    task_type: dynamical systems modelling, representation learning in graph autoencoders, and predicting molecular properties
+    gnn_architecture: E(n)-Equivariant Graph Neural Networks (EGNNs)
+    relations: uses arXiv:1704.01212; uses arXiv:1802.08219; uses arXiv:1706.08566; uses arXiv:1609.02907; uses arXiv:1312.6203; uses arXiv:1606.09375; cited-by arXiv:2304.01565; extended-by arXiv:2110.02905; used-by arXiv:2110.03336; cited-by arXiv:2206.11990; cited-by arXiv:2208.09481; cited-by arXiv:2106.03843
+arXiv:2101.03164 (2021) "E(3)-Equivariant Graph Neural Networks for Data-Efficient and Accurate
+  Interatomic Potentials" [physics] (cited-by 61 in-topic, era 1)
+    task_type: Learning interatomic potentials for molecular dynamics simulations
+    gnn_architecture: E(3)-equivariant neural network (NequIP) using E(3)-equivariant convolutions for geometric tensors
+    input_representation: Geometric tensors representing atomic environments
+    performance_metrics: Accuracy and data efficiency (outperforms existing models with up to three orders of magnitude fewer training data)
+    benchmark_datasets: A diverse set of molecules and materials
+    relations: uses arXiv:1912.01703; uses arXiv:1903.02428; compares-with arXiv:1706.08566; uses arXiv:2003.03123; cites arXiv:1704.01212; extends arXiv:1802.08219; cited-by arXiv:2302.08261; cited-by arXiv:2407.20471; compared-by arXiv:2206.11990; compared-by arXiv:2208.09481; cited-by arXiv:2106.03843; cited-by arXiv:2110.02905
+arXiv:2110.02905 (2021) "Geometric and Physical Quantities Improve E(3) Equivariant Message
+  Passing" [cs] (cited-by 51 in-topic, era 1)
+    task_type: computational physics and chemistry
+    gnn_architecture: Steerable E(3) Equivariant Graph Neural Networks (SEGNNs) using steerable MLPs
+    input_representation: node and edge attributes containing covariant information (vectors or tensors) such as position, force, velocity, or spin
+    relations: cites arXiv:1602.07576; cites arXiv:1909.12057; extends arXiv:2102.09844; cites arXiv:1807.02547; uses arXiv:1802.08219; uses arXiv:1412.6980; used-by arXiv:2206.11990; cited-by arXiv:2208.09481
+arXiv:2110.03336 (2021) "Frame Averaging for Invariant and Equivariant Network Design" [cs] (cited-by 31 in-topic, era 1)
+    gnn_architecture: Frame Averaging (FA) applied to Message Passing (MP) GNNs, universal Graph Neural Networks, and Euclidean motion invariant point cloud networks
+    input_representation: Graphs and point clouds
+    benchmark_datasets: point cloud normal estimation, beyond 2-WL graph separation, and n-body dynamics prediction
+    relations: cites arXiv:2002.12880; uses arXiv:1704.01212; uses arXiv:1810.00826; cites arXiv:1810.02244; cites arXiv:1605.05273; uses arXiv:2102.09844
+arXiv:2106.06610 (2021) "Scalars are universal: Equivariant machine learning, structured like
+  classical physics" [cs] (cited-by 26 in-topic, era 1)
+    relations: cites arXiv:2102.09844; cites arXiv:1710.10903; uses arXiv:1802.08219; cites arXiv:1609.02907; cites arXiv:1509.09292; cites arXiv:1704.01212
+arXiv:2112.01388 (2021) "Residual Pathway Priors for Soft Equivariance Constraints" [cs] (cited-by 18 in-topic, era 1)
+    task_type: reinforcement learning and dynamical systems
+    benchmark_datasets: Mujoco locomotion tasks
+    relations: uses arXiv:1602.07576; cites arXiv:1911.08251; cites arXiv:2006.04780; cites arXiv:2102.09844; cites arXiv:2002.12880; uses arXiv:1412.6980
+arXiv:2107.04119 (2021) "Quantitative Evaluation of Explainable Graph Neural Networks for
+  Molecular Property Prediction" [q-bio] (cited-by 4 in-topic, era 1)
+    task_type: molecular property prediction
+    gnn_architecture: GraphNet and CMPNN
+    explainability_method: GradInput and IG (Integrated Gradients)
+    benchmark_datasets: three levels of benchmark datasets
+    relations: cites arXiv:1802.04364; cites arXiv:1706.03762; cites arXiv:1904.01561; cites arXiv:1704.01212; cites arXiv:1805.09076; cites arXiv:1609.02907; cited-by arXiv:2302.08261
+arXiv:2102.07916 (2021) "Few-Shot Graph Learning for Molecular Property Prediction" [cs] (cited-by 4 in-topic, era 1)
+    task_type: Few-shot molecular property prediction
+    gnn_architecture: Meta-MGNN (Meta-learning framework with molecular graph neural networks, self-supervised modules, and self-attentive task weights)
+    input_representation: Molecular graphs
+    benchmark_datasets: Two public multi-property datasets
+    relations: uses arXiv:1905.12265; cites arXiv:1706.02216; compares-with arXiv:1609.02907; uses arXiv:1810.00826; cites arXiv:1704.01212; cites arXiv:1810.04805; cited-by arXiv:2404.11568; cited-by arXiv:2507.03430
+arXiv:2106.03843 (2021) "Equivariant Graph Neural Networks for 3D Macromolecular Structure" [cs] (cited-by 3 in-topic, era 1)
+    task_type: Representing and reasoning about 3D structures of macromolecules
+    gnn_architecture: Equivariant graph neural networks (Geometric Vector Perceptrons)
+    input_representation: 3D macromolecular structures
+    benchmark_datasets: ATOM3D benchmark
+    relations: cites arXiv:1802.08219; cites arXiv:2101.03164; cites arXiv:2102.09844
+arXiv:2110.06241 (2021) "Molecular Graph Generation via Geometric Scattering" [cs] (cited-by 1 in-topic, era 1)
+    task_type: molecular graph generation
+    gnn_architecture: autoencoder with geometric scattering transform and GAN
+    input_representation: graphs with node features (atomic elements) and edge features (bonds)
+    relations: compares-with arXiv:2001.09382; compares-with arXiv:1805.11973; compares-with arXiv:1609.02907; cites arXiv:1610.02415
+arXiv:2209.14734 (2022) "DiGress: Discrete Denoising diffusion for graph generation" [cs] (cited-by 46 in-topic, era 2)
+    task_type: graph generation (molecular and non-molecular)
+    gnn_architecture: graph transformer network
+    input_representation: graphs with categorical node and edge attributes
+    performance_metrics: validity (up to 3x improvement on planar graph dataset)
+    benchmark_datasets: GuacaMol (1.3M drug-like molecules), planar graph dataset
+    relations: cites arXiv:1805.09076; uses arXiv:2006.11239; critiques arXiv:2003.00638; critiques arXiv:1810.00826; critiques arXiv:1810.02244; compares-with arXiv:1910.00760; used-by arXiv:2304.01565; cited-by arXiv:2406.03278
+arXiv:2206.11990 (2022) "Equiformer: Equivariant Graph Attention Transformer for 3D Atomistic
+  Graphs" [cs] (cited-by 29 in-topic, era 2)
+    task_type: 3D atomistic graph modeling (molecular properties)
+    gnn_architecture: Equivariant Graph Attention Transformer (Equiformer) using SE(3)/E(3)-equivariant features based on irreducible representations (irreps) and tensor products
+    input_representation: 3D atomistic graphs
+    benchmark_datasets: QM9, MD17, and OC20
+    relations: uses arXiv:1704.01212; uses arXiv:1706.08566; cites arXiv:2002.12880; cites arXiv:1802.08219; cites arXiv:2102.09844; uses arXiv:2110.02905
+arXiv:2209.11142 (2022) "A Generalist Neural Algorithmic Learner" [cs] (cited-by 7 in-topic, era 2)
+    task_type: neural algorithmic reasoning (sorting, searching, dynamic programming, path-finding, and geometry)
+    gnn_architecture: single graph neural network processor
+    performance_metrics: average single-task performance (improved by over 20%)
+    benchmark_datasets: CLRS benchmark
+    relations: cites arXiv:1706.03762; compares-with arXiv:1704.01212; cites arXiv:1810.02244; uses arXiv:1412.6980
+arXiv:2208.09481 (2022) "Graph neural networks for materials science and chemistry" [physics] (cited-by 4 in-topic, era 2)
+    task_type: predicting materials properties, accelerating simulations, designing new materials, and predicting synthesis routes
+    input_representation: graph or structural representation of molecules and materials
+    relations: cites arXiv:1611.08097; cites arXiv:1703.00564; cites arXiv:1312.6203; cites arXiv:1606.09375; cites arXiv:1609.02907; cites arXiv:1810.02244
+arXiv:2209.05582 (2022) "Graph Neural Networks for Molecules" [cs] (cited-by 1 in-topic, era 2)
+    task_type: molecular property prediction, molecular scoring and docking, molecular optimization and de novo generation, molecular dynamics simulation
+    gnn_architecture: message-passing operations
+    input_representation: 2D molecule graphs and 3D molecular systems
+    relations: cited-by arXiv:2404.11568
+arXiv:2208.13994 (2022) "HiGNN: Hierarchical Informative Graph Neural Networks for Molecular
+  Property Prediction Equipped with Feature-Wise Attention" [cs] (cited-by 1 in-topic, era 2)
+    task_type: molecular property prediction
+    gnn_architecture: Hierarchical Informative Graph Neural Networks (HiGNN) with a feature-wise attention block
+    input_representation: Co-representation learning of molecular graphs and chemically synthesizable BRICS fragments
+    explainability_method: molecule-fragment similarity mechanism (subgraph level)
+    relations: (none in-topic)
+arXiv:2208.04852 (2022) "Graph neural networks for the prediction of molecular structure-property
+  relationships" [q-bio] (cited-by 0 in-topic, era 2)
+    task_type: molecular property prediction
+    input_representation: molecular graph where atoms correspond to nodes and bonds correspond to edges
+    relations: cites arXiv:1704.01212; cites arXiv:1904.01561; uses arXiv:1810.02244; cites arXiv:1703.00564; cites arXiv:1901.00596; cites arXiv:1509.09292
+arXiv:2211.03666 (2022) "Application of Graph Neural Networks and graph descriptors for graph
+  classification" [cs] (cited-by 0 in-topic, era 2)
+    task_type: graph classification
+    gnn_architecture: Jumping Knowledge GNN
+    relations: extends arXiv:1312.6203; cites arXiv:1806.03536; uses arXiv:1703.00564; extends arXiv:1901.00596; extends arXiv:1903.02428; extends arXiv:1812.08434
+arXiv:2304.01565 (2023) "A Survey on Graph Diffusion Models: Generative AI in Science for
+  Molecule, Protein and Material" [cs] (cited-by 6 in-topic, era 2)
+    task_type: Generative modeling for molecules, proteins, and materials design
+    relations: cites arXiv:1312.6114; cites arXiv:1609.02907; cites arXiv:1706.02216; cites arXiv:1509.09292; cites arXiv:1312.6203; cites arXiv:1703.00564
+arXiv:2312.16855 (2023) "Molecular Property Prediction Based on Graph Structure Learning" [cs] (cited-by 1 in-topic, era 2)
+    task_type: Molecular Property Prediction (MPP)
+    gnn_architecture: Graph Neural Network (GNN) combined with molecule-level graph structure learning (GSL)
+    input_representation: Molecular graphs (intra-molecule) and a molecular similarity graph (MSG) constructed from molecular fingerprints (inter-molecule)
+    explainability_method: Visualization studies
+    benchmark_datasets: Seven various benchmark datasets
+    relations: compares-with arXiv:1509.09292; cites arXiv:1710.10903; compares-with arXiv:1704.01212; uses arXiv:1810.00826; uses arXiv:1904.01561; uses arXiv:1703.00564
+arXiv:2309.12906 (2023) "Building explainable graph neural network by sparse learning for the
+  drug-protein binding prediction" [q-bio] (cited-by 0 in-topic, era 2)
+    task_type: drug-protein binding prediction
+    gnn_architecture: SLGNN (Sparse Learning to Graph Neural Networks) incorporating generalized fused lasso with message-passing algorithms
+    input_representation: chemical-substructure-based graph (nodes are chemical substructures)
+    explainability_method: sparse learning (generalized fused lasso) to identify connected subgraphs
+    benchmark_datasets: known drug-protein binding data
+    relations: cites arXiv:2012.05716; cites arXiv:1703.00564; uses arXiv:1802.04364; cites arXiv:1710.10903; uses arXiv:1201.0490
+arXiv:2302.08261 (2023) "Knowledge-augmented Graph Machine Learning for Drug Discovery: A Survey" [cs] (cited-by 0 in-topic, era 2)
+    input_representation: 2D or 3D protein and molecule structures
+    relations: cites arXiv:1805.09076; cites arXiv:1806.02473; cites arXiv:2001.09382; cites arXiv:2101.03164; cites arXiv:2012.05716; cites arXiv:1901.00596
+arXiv:2305.13315 (2023) "3D Molecular Geometry Analysis with 2D Graphs" [physics] (cited-by 0 in-topic, era 2)
+    task_type: Predicting ground-state 3D molecular geometries from 2D graphs
+    gnn_architecture: Equilibrium Message Passing Neural Network (EMPNN)
+    input_representation: Molecular graphs (2D)
+    benchmark_datasets: A newly developed large-scale molecular geometry dataset
+    relations: uses arXiv:1904.01561; motivated-by arXiv:1703.00564; uses arXiv:1704.01212; compares-with arXiv:1706.08566; compares-with arXiv:2003.03123; cites arXiv:2005.00687
+arXiv:2412.19589 (2024) "ViDTA: Enhanced Drug-Target Affinity Prediction via Virtual Graph Nodes
+  and Attention-based Feature Fusion" [cs] (cited-by 2 in-topic, era 2)
+    task_type: Drug-target affinity (DTA) prediction
+    gnn_architecture: Graph Neural Network (GNN) with virtual graph nodes and an attention-based linear feature fusion network
+    input_representation: Drug molecular topology (local and global features) and protein features
+    benchmark_datasets: Davis, Metz, and KIBA
+    relations: uses arXiv:1704.01212
+arXiv:2407.20471 (2024) "Relaxed Equivariant Graph Neural Networks" [cs] (cited-by 2 in-topic, era 2)
+    task_type: modeling complex physical systems / learning and representing symmetry breaking within continuous groups
+    gnn_architecture: relaxed E(3) graph equivariant neural networks (based on e3nn framework)
+    relations: cites arXiv:1612.08498; cites arXiv:1802.08219; cites arXiv:1807.02547; cites arXiv:2101.03164; extends arXiv:2007.02005
+arXiv:2403.12143 (2024) "Graph Neural Networks for Learning Equivariant Representations of Neural
+  Networks" [cs] (cited-by 1 in-topic, era 2)
+    task_type: classifying implicit neural representations, generating neural network weights, predicting generalization errors, editing implicit neural representations, and learning to optimize
+    gnn_architecture: graph neural networks and transformers that preserve permutation symmetry
+    input_representation: computational graphs of parameters
+    relations: uses arXiv:1706.03762; cites arXiv:1609.02907; cites arXiv:1704.01212; cites arXiv:1412.6980
+arXiv:2404.11568 (2024) "On the Scalability of GNNs for Molecular Graphs" [cs] (cited-by 0 in-topic, era 2)
+    task_type: Molecular property prediction and chemical space navigation (38 downstream tasks)
+    gnn_architecture: Message-passing networks, graph Transformers, and hybrid architectures (MolGPS foundation model)
+    input_representation: 2D molecular graphs
+    performance_metrics: Outperforming previous state-of-the-arts on 26 out of 38 downstream tasks
+    benchmark_datasets: Largest public collection of 2D molecular graphs
+    relations: cites arXiv:2209.05582; cites arXiv:1609.02907; cites arXiv:1710.10903; uses arXiv:1704.01212; uses arXiv:1904.01561; uses arXiv:1703.00564
+arXiv:2406.03278 (2024) "Using GNN property predictors as molecule generators" [cs] (cited-by 0 in-topic, era 2)
+    task_type: Molecular structure generation for specific electronic properties (energy gaps and logP)
+    gnn_architecture: Invertible Graph Neural Networks (GNNs)
+    input_representation: Molecular graphs
+    performance_metrics: Target property hit rates and molecular diversity
+    relations: cites arXiv:2209.14734; cites arXiv:1912.01703; compares-with arXiv:1802.04364; compares-with arXiv:1705.10843; uses arXiv:1806.02473; cites arXiv:1703.00564
+arXiv:2506.06915 (2025) "Graph Neural Networks in Modern AI-aided Drug Discovery" [q-bio] (cited-by 0 in-topic, era 2)
+    task_type: molecular property prediction, virtual screening, molecular generation, biomedical knowledge graph construction, and synthesis planning
+    gnn_architecture: geometric GNNs, scalable graph architectures, and graph generative frameworks
+    input_representation: molecular graphs
+    explainability_method: interpretable models
+    relations: (none in-topic)
+arXiv:2509.07887 (2025) "A Survey of Graph Neural Networks for Drug Discovery: Recent Developments and Challenges" [cs] (cited-by 0 in-topic, era 2)
+    task_type: molecular property prediction (drug-target binding affinity, drug-drug interaction, microbiome interaction, drug repositioning, retrosynthesis, and new drug design)
+    input_representation: graph-structured data such as drug molecule models
+    relations: (none in-topic)
+arXiv:2506.01302 (2025) "Recent Developments in GNNs for Drug Discovery" [cs] (cited-by 0 in-topic, era 2)
+    task_type: molecule generation, molecular property prediction, and drug-drug interaction prediction
+    input_representation: various molecular representations
+    relations: cites arXiv:1703.00564; cites arXiv:1609.02907; cites arXiv:1803.03324; cites arXiv:1802.08773
+arXiv:2507.03430 (2025) "Multi-Level Fusion Graph Neural Network for Molecule Property Prediction" [cs] (cited-by 0 in-topic, era 2)
+    task_type: Molecule property prediction (classification and regression)
+    gnn_architecture: Multi-Level Fusion Graph Neural Network (MLFGNN) integrating Graph Attention Networks and a Graph Transformer
+    input_representation: Graph structures (local and global dependencies) and molecular fingerprints
+    explainability_method: Interpretability analysis of task-relevant chemical patterns
+    relations: compares-with arXiv:1904.01561; cites arXiv:2102.07916; cites arXiv:1802.04364; cites arXiv:1609.02907; cites arXiv:1704.01212; cites arXiv:1810.00826
+arXiv:2507.11757 (2025) "A Graph-in-Graph Learning Framework for Drug-Target Interaction Prediction" [cs] (cited-by 0 in-topic, era 2)
+    task_type: Drug-target interaction (DTI) prediction
+    gnn_architecture: Graph-in-Graph (GiG) framework
+    input_representation: Drug and target molecular structures represented as meta-nodes within a drug-target interaction graph
+    benchmark_datasets: A compiled benchmark comprising drug SMILES, protein sequences, and interaction data
+    relations: uses arXiv:1607.00653; cites arXiv:1609.02907; cites arXiv:1710.10903
+arXiv:2502.09335 (2025) "Graph Diffusion Network for Drug-Gene Prediction" [cs] (cited-by 0 in-topic, era 2)
+    task_type: drug-gene prediction
+    gnn_architecture: graph diffusion network (GDNDGP) with meta-path-based homogeneous graph learning and a parallel diffusion network
+    input_representation: tripartite drug-gene-disease networks
+    benchmark_datasets: DGIdb 4.0
+    relations: cites arXiv:1706.02216
+arXiv:2602.20274 (2026) "Geometry and biological processes" [math] (cited-by 0 in-topic, era 2)
+    task_type: modeling biochemical processes related to food or chemical sensitivities
+    input_representation: geometric approach
+    relations: (none in-topic)
+
+MAIN PATH (oldest -> newest):
+  arXiv:1201.0490 (2012) -> arXiv:1406.1231 (2014) -> arXiv:1509.09292 (2015) -> arXiv:1605.05273 (2016) -> arXiv:1704.01212 (2017) -> arXiv:1802.03690 (2018) -> arXiv:1909.12057 (2019) -> arXiv:2002.12880 (2020) -> arXiv:2102.09844 (2021) -> arXiv:2304.01565 (2023)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2206.11990 compares [negative] arXiv:2101.03164
+  arXiv:2304.01565 critiques [negative] arXiv:1802.08773
+  arXiv:2304.01565 critiques [negative] arXiv:1802.03480
+  arXiv:2304.01565 critiques [negative] arXiv:1805.11973
+  arXiv:2304.01565 critiques [negative] arXiv:1805.09076
+  arXiv:2304.01565 critiques [negative] arXiv:1611.07308
+  arXiv:2304.01565 critiques [negative] arXiv:1803.03324
+  arXiv:2304.01565 critiques [negative] arXiv:1910.00760
+  arXiv:1901.00596 critiques [negative] arXiv:1810.00826
+  arXiv:1901.00596 critiques [negative] arXiv:1611.07308
+  arXiv:2002.12880 critiques [negative] arXiv:1602.07576
+  arXiv:1706.02216 critiques [negative] arXiv:1607.00653
+  arXiv:1802.04364 critiques [negative] arXiv:1705.10843
+  arXiv:1806.01261 critiques [negative] arXiv:1602.07576
+  arXiv:1806.01261 critiques [negative] arXiv:1802.03690
+  arXiv:1901.00596 critiques [negative] arXiv:1509.09292
+  arXiv:1901.00596 critiques [negative] arXiv:1603.00856
+  arXiv:2209.14734 critiques [negative] arXiv:2003.00638
+  arXiv:2209.14734 critiques [negative] arXiv:1810.00826
+  arXiv:2209.14734 critiques [negative] arXiv:1810.02244
+  arXiv:2304.01565 compares [neutral] arXiv:2003.00638
+  arXiv:2304.01565 compares [neutral] arXiv:1810.00826
+  arXiv:2305.13315 compares [neutral] arXiv:1706.08566
+  arXiv:2305.13315 compares [neutral] arXiv:2003.03123
+  arXiv:2312.16855 compares [neutral] arXiv:1509.09292
+  arXiv:2312.16855 compares [neutral] arXiv:1704.01212
+  arXiv:2312.16855 compares [neutral] arXiv:1502.02072
+  arXiv:2312.16855 compares [neutral] arXiv:1603.00856
+  arXiv:2312.16855 compares [neutral] arXiv:1706.08566
+  arXiv:2406.03278 compares [neutral] arXiv:1802.04364
+  arXiv:2406.03278 compares [neutral] arXiv:1705.10843
+  arXiv:2507.03430 compares [neutral] arXiv:1904.01561
+  arXiv:2507.03430 compares [neutral] arXiv:1703.00564
+  arXiv:1609.02907 compares [neutral] arXiv:1403.6652
+  arXiv:1611.07308 compares [neutral] arXiv:1403.6652
+  arXiv:1704.02901 compares [neutral] arXiv:1605.05273
+  arXiv:1704.02901 compares [neutral] arXiv:1509.09292
+  arXiv:1710.10903 compares [neutral] arXiv:1403.6652
+  arXiv:1802.04364 compares [neutral] arXiv:1802.03480
+  arXiv:1802.04364 compares [neutral] arXiv:1803.03324
+  arXiv:1805.09076 compares [positive] arXiv:1803.03324
+  arXiv:1805.09076 compares [neutral] arXiv:1703.01925
+  arXiv:1901.00596 compares [neutral] arXiv:1312.6203
+  arXiv:1901.00596 compares [neutral] arXiv:1806.08804
+  arXiv:2012.07397 compares [neutral] arXiv:1805.11973
+  arXiv:2102.07916 compares [positive] arXiv:1609.02907
+  arXiv:2208.09481 compares [positive] arXiv:2101.03164
+  arXiv:1704.02901 compares [neutral] arXiv:1312.6203
+  arXiv:1704.02901 compares [neutral] arXiv:1609.02907
+  arXiv:1406.1231 compares [neutral] arXiv:1201.0490
+  arXiv:1503.03578 compares [neutral] arXiv:1403.6652
+  arXiv:1509.09292 compares [neutral] arXiv:1312.6203
+  arXiv:1609.02907 compares [neutral] arXiv:1312.6203
+  arXiv:1609.02907 compares [neutral] arXiv:1606.09375
+  arXiv:1611.07308 compares [neutral] arXiv:1503.03578
+  arXiv:1611.07308 compares [positive] arXiv:1609.02907
+  arXiv:1612.08498 compares [neutral] arXiv:1602.07576
+  arXiv:1704.01212 compares [positive] arXiv:1603.00856
+  arXiv:1704.01212 compares [positive] arXiv:1511.05493
+  arXiv:1704.02901 compares [positive] arXiv:1606.09375
+  arXiv:1706.02216 compares [neutral] arXiv:1611.07308
+  arXiv:1802.08773 compares [neutral] arXiv:1802.03480
+  arXiv:1803.03324 compares [neutral] arXiv:1610.02415
+  arXiv:1805.11973 compares [neutral] arXiv:1610.02415
+  arXiv:1805.11973 compares [neutral] arXiv:1703.01925
+  arXiv:1806.02473 compares [neutral] arXiv:1610.02415
+  arXiv:1806.02473 compares [neutral] arXiv:1703.01925
+  arXiv:1806.02473 compares [neutral] arXiv:1802.08786
+  arXiv:1806.02473 compares [neutral] arXiv:1705.10843
+  arXiv:1806.02473 compares [neutral] arXiv:1802.04364
+  arXiv:1806.02473 compares [neutral] arXiv:1802.08773
+  arXiv:1806.02473 compares [neutral] arXiv:1803.03324
+  arXiv:1806.02473 compares [neutral] arXiv:1802.03480
+  arXiv:1806.08804 compares [positive] arXiv:1704.01212
+  arXiv:1806.08804 compares [positive] arXiv:1609.02907
+  arXiv:1806.08804 compares [neutral] arXiv:1606.09375
+  arXiv:1806.08804 compares [positive] arXiv:1511.06391
+  arXiv:1905.12265 compares [positive] arXiv:1609.02907
+  arXiv:1905.12265 compares [positive] arXiv:1710.10903
+  arXiv:1905.13372 compares [neutral] arXiv:1803.03324
+  arXiv:1910.00760 compares [neutral] arXiv:1802.03480
+  arXiv:2001.09382 compares [positive] arXiv:1703.01925
+  arXiv:2001.09382 compares [positive] arXiv:1610.02415
+  arXiv:2001.09382 compares [positive] arXiv:1802.03480
+  arXiv:2003.00638 compares [neutral] arXiv:1802.03480
+  arXiv:2003.00638 compares [neutral] arXiv:1803.03324
+  arXiv:2005.00687 compares [positive] arXiv:1806.03536
+  arXiv:2012.07397 compares [neutral] arXiv:1704.01212
+  arXiv:2012.10885 compares [positive] arXiv:1911.08251
+  arXiv:2101.03164 compares [positive] arXiv:1706.08566
+  arXiv:2110.02905 compares [neutral] arXiv:1704.01212
+  arXiv:2110.02905 compares [neutral] arXiv:1706.08566
+  arXiv:2110.02905 compares [neutral] arXiv:2002.12880
+  arXiv:2110.06241 compares [neutral] arXiv:2001.09382
+  arXiv:2110.06241 compares [neutral] arXiv:1805.11973
+  arXiv:2110.06241 compares [neutral] arXiv:1609.02907
+  arXiv:2209.11142 compares [positive] arXiv:1704.01212
+  arXiv:2209.14734 compares [neutral] arXiv:1910.00760
+  arXiv:2209.14734 compares [neutral] arXiv:1802.08773
+  arXiv:2209.14734 compares [neutral] arXiv:1802.04364
+  arXiv:2305.13315 motivates [neutral] arXiv:1703.00564
+  arXiv:1811.02017 motivates [positive] arXiv:1602.07576
+  arXiv:1811.02017 motivates [neutral] arXiv:1911.08251
+  arXiv:1811.02017 motivates [neutral] arXiv:1802.08219
+  arXiv:1811.02017 motivates [neutral] arXiv:1807.02547
+  arXiv:1901.00596 motivates [neutral] arXiv:1605.05273
+  arXiv:1901.00596 motivates [neutral] arXiv:1704.01212
+  arXiv:1704.01212 motivates [neutral] arXiv:1609.02907
+  arXiv:1909.12057 motivates [positive] arXiv:1802.03690

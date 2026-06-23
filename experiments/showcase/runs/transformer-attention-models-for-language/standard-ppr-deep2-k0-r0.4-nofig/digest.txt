@@ -1,0 +1,631 @@
+QUESTION: transformer attention models for language
+
+SCHEMA FIELDS: ['attention_mechanism', 'primary_objective', 'architectural_modification', 'application_domain', 'efficiency_gain', 'core_innovation']
+
+ERAS:
+  [0] Origins: 2014-2018
+  [1] Key Advances: 2018-2022
+  [2] Current Frontier: 2022-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1409.0473 (2014) "Neural Machine Translation by Jointly Learning to Align and Translate" [cs] (cited-by 105 in-topic, era 0)
+    attention_mechanism: soft-search (attention mechanism) for relevant parts of a source sentence
+    primary_objective: improving translation performance by overcoming the fixed-length vector bottleneck
+    architectural_modification: extending the basic encoder-decoder architecture to allow automatic (soft-)searching of source sentence parts
+    application_domain: Neural Machine Translation (English-to-French)
+    core_innovation: jointly learning to align and translate by replacing the fixed-length vector with a mechanism to search for relevant source sentence parts
+    relations: uses arXiv:1409.3215; uses arXiv:1406.1078; cited-by arXiv:2302.00340; cited-by arXiv:2308.07661; cited-by arXiv:2310.01749; cited-by arXiv:2605.00768; used-by arXiv:1409.3215; cited-by arXiv:1608.05859
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 91 in-topic, era 0)
+    primary_objective: first-order gradient-based optimization of stochastic objective functions
+    application_domain: stochastic optimization / machine learning
+    efficiency_gain: computationally efficient with little memory requirements
+    core_innovation: adaptive estimates of lower-order moments
+    relations: compared-by arXiv:2302.00340; cited-by arXiv:2310.01749; used-by arXiv:2605.00768; used-by arXiv:1806.00187; used-by arXiv:1607.06450; used-by arXiv:1609.08144
+arXiv:1409.3215 (2014) "Sequence to Sequence Learning with Neural Networks" [cs] (cited-by 38 in-topic, era 0)
+    primary_objective: sequence-to-sequence learning
+    architectural_modification: multilayered LSTM encoder-decoder architecture
+    application_domain: English to French translation
+    core_innovation: an end-to-end approach using a deep LSTM to map input sequences to a fixed-dimensional vector and decode them into target sequences
+    relations: uses arXiv:1409.0473; uses arXiv:1406.1078; cited-by arXiv:2302.00340; used-by arXiv:1609.08144; used-by arXiv:1409.0473; cited-by arXiv:1607.06450; cited-by arXiv:1701.06538; cited-by arXiv:1706.03762
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 32 in-topic, era 0)
+    primary_objective: Learning phrase representations for statistical machine translation
+    architectural_modification: A two-RNN architecture consisting of an encoder that maps a sequence to a fixed-length vector and a decoder that maps the vector back to a sequence
+    application_domain: Statistical Machine Translation
+    core_innovation: RNN Encoder-Decoder model used to compute conditional probabilities of phrase pairs as features for a log-linear translation model
+    relations: cited-by arXiv:2302.00340; used-by arXiv:1409.3215; used-by arXiv:1409.0473; used-by arXiv:1607.06450; cited-by arXiv:1609.08144; cited-by arXiv:1706.03762
+arXiv:1508.07909 (2015) "Neural Machine Translation of Rare Words with Subword Units" [cs] (cited-by 65 in-topic, era 0)
+    primary_objective: open-vocabulary translation
+    architectural_modification: encoding rare and unknown words as sequences of subword units
+    application_domain: Neural Machine Translation (NMT)
+    core_innovation: subword units (e.g., character n-grams or byte pair encoding) to represent rare and unknown words
+    relations: used-by arXiv:2310.01749; used-by arXiv:1609.08144; cited-by arXiv:1706.03762; used-by arXiv:1806.00187; used-by arXiv:1809.10853; used-by arXiv:1905.09418
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 63 in-topic, era 0)
+    primary_objective: Ease the training of substantially deeper neural networks
+    architectural_modification: Reformulating layers to learn residual functions with reference to layer inputs (residual learning framework)
+    application_domain: Image recognition (classification, detection, localization, and segmentation)
+    efficiency_gain: Achieved 152 layers (8x deeper than VGG) with lower complexity; 3.57% error on ImageNet test set
+    core_innovation: Residual learning framework using identity shortcut connections to facilitate training of deep networks
+    relations: motivates arXiv:2302.00340; cited-by arXiv:2405.05219; cited-by arXiv:2107.02192; used-by arXiv:1609.08144; used-by arXiv:1612.08083; extended-by arXiv:1701.06538
+arXiv:1506.06724 (2015) "Aligning Books and Movies: Towards Story-like Visual Explanations by
+  Watching Movies and Reading Books" [cs] (cited-by 46 in-topic, era 0)
+    primary_objective: Align books to their movie releases to provide rich descriptive explanations for visual content.
+    architectural_modification: Proposed a context-aware CNN to combine information from multiple sources.
+    application_domain: Movie/book alignment and visual explanation.
+    core_innovation: Exploiting an unsupervised neural sentence embedding trained from books and a video-text neural embedding to compute similarities between movie clips and book sentences.
+    relations: used-by arXiv:1607.06450; used-by arXiv:1810.04805; used-by arXiv:1906.08237; cited-by arXiv:1907.11692; used-by arXiv:1909.11942; cited-by arXiv:1910.10683
+arXiv:1508.04025 (2015) "Effective Approaches to Attention-based Neural Machine Translation" [cs] (cited-by 44 in-topic, era 0)
+    attention_mechanism: global (attends to all source words) and local (attends to a subset of source words)
+    primary_objective: exploring useful architectures for attention-based NMT
+    architectural_modification: implementation of global and local attentional mechanisms
+    application_domain: Neural Machine Translation (NMT), specifically English-German translation
+    efficiency_gain: 5.0 BLEU points gain over non-attentional systems; 1.0 BLEU points improvement over existing best system (reaching 25.9 BLEU)
+    core_innovation: examination and demonstration of two classes of attentional mechanisms: global and local attention
+    relations: cited-by arXiv:2605.00768; cited-by arXiv:1609.08144; used-by arXiv:1701.06538; cited-by arXiv:1706.03762; cited-by arXiv:1803.02155; extended-by arXiv:1905.07799
+arXiv:1503.02531 (2015) "Distilling the Knowledge in a Neural Network" [stat] (cited-by 32 in-topic, era 0)
+    primary_objective: Compressing the knowledge of an ensemble into a single, easier-to-deploy model.
+    architectural_modification: Introduction of a new type of ensemble composed of one or more full models and many specialist models.
+    application_domain: Machine learning model compression (MNIST and acoustic modeling).
+    efficiency_gain: Reduces the computational expense of making predictions compared to using a whole ensemble.
+    core_innovation: Knowledge distillation from an ensemble into a single model and the use of specialist models to distinguish fine-grained classes.
+    relations: used-by arXiv:2503.18565; cited-by arXiv:1608.05859; cited-by arXiv:1910.10683; cited-by arXiv:2005.14165; critiqued-by arXiv:2006.04768; cited-by arXiv:2106.05822
+arXiv:1609.07843 (2016) "Pointer Sentinel Mixture Models" [cs] (cited-by 64 in-topic, era 0)
+    primary_objective: Improve language modeling performance on rare/unseen words and reduce parameter count.
+    architectural_modification: Pointer sentinel mixture architecture (combining context reproduction with a standard softmax classifier).
+    application_domain: Neural sequence modeling / Language modeling.
+    efficiency_gain: Achieves state of the art performance (70.9 perplexity on Penn Treebank) using far fewer parameters than a standard softmax LSTM.
+    core_innovation: Pointer sentinel mixture architecture that can either reproduce a word from recent context or use a standard softmax classifier.
+    relations: cites arXiv:1409.0473; used-by arXiv:2506.01115; cited-by arXiv:2006.11527; used-by arXiv:2104.01572; compared-by arXiv:1612.08083; cited-by arXiv:1809.10853; used-by arXiv:1901.02860
+arXiv:1607.06450 (2016) "Layer Normalization" [stat] (cited-by 63 in-topic, era 0)
+    primary_objective: reduce training time and stabilize hidden state dynamics
+    architectural_modification: computing mean and variance from all summed inputs to neurons in a layer on a single training case, rather than over a mini-batch
+    application_domain: feed-forward and recurrent neural networks
+    efficiency_gain: substantially reduce the training time compared with previously published techniques
+    core_innovation: layer normalization (transposing batch normalization to compute statistics across a single training case's layer instead of a mini-batch)
+    relations: cites arXiv:1409.3215; uses arXiv:1406.1078; uses arXiv:1412.6980; uses arXiv:1506.06724; cited-by arXiv:2308.07661; used-by arXiv:2605.00768; used-by arXiv:2209.03834; used-by arXiv:2104.01572; cited-by arXiv:2604.00965; used-by arXiv:1706.03762
+arXiv:1606.05250 (2016) "SQuAD: 100,000+ Questions for Machine Comprehension of Text" [cs] (cited-by 50 in-topic, era 0)
+    primary_objective: creating a new reading comprehension dataset for machine comprehension of text
+    application_domain: Machine reading comprehension / Question Answering
+    core_innovation: The Stanford Question Answering Dataset (SQuAD), consisting of 100,000+ questions based on Wikipedia articles
+    relations: compared-by arXiv:1802.05365; extended-by arXiv:1810.04805; used-by arXiv:1906.08237; used-by arXiv:1907.11692; used-by arXiv:1909.11942; used-by arXiv:1910.10683
+arXiv:1612.08083 (2016) "Language Modeling with Gated Convolutional Networks" [cs] (cited-by 25 in-topic, era 0)
+    primary_objective: Efficiency through parallelization over sequential tokens
+    architectural_modification: Stacked convolutions with a novel simplified gating mechanism
+    application_domain: Language modeling
+    efficiency_gain: Reduces latency to score a sentence by an order of magnitude compared to a recurrent baseline
+    core_innovation: A finite context approach using stacked convolutions and a simplified gating mechanism for non-recurrent language modeling
+    relations: compares-with arXiv:1609.07843; uses arXiv:1512.03385; compares-with arXiv:1701.06538; cited-by arXiv:2407.05591; cited-by arXiv:1809.10853; cited-by arXiv:1901.02860; cited-by arXiv:1911.05507; used-by arXiv:2106.05822
+arXiv:1609.08144 (2016) "Google's Neural Machine Translation System: Bridging the Gap between
+  Human and Machine Translation" [cs] (cited-by 24 in-topic, era 0)
+    attention_mechanism: attention connecting the bottom layer of the decoder to the top layer of the encoder
+    primary_objective: addressing computational expense, rare word handling, and improving accuracy and speed
+    architectural_modification: deep LSTM network with 8 encoder and 8 decoder layers using residual connections
+    application_domain: Neural Machine Translation (NMT)
+    efficiency_gain: low-precision arithmetic during inference to accelerate translation speed
+    core_innovation: use of sub-word units ('wordpieces') and a specific attention mechanism to improve parallelism
+    relations: uses arXiv:1409.3215; uses arXiv:1409.0473; uses arXiv:1412.6980; uses arXiv:1512.03385; cites arXiv:1406.1078; uses arXiv:1508.07909; extended-by arXiv:1701.06538; used-by arXiv:1706.03762; used-by arXiv:1803.02155; used-by arXiv:1810.04805; compared-by arXiv:1910.10683; used-by arXiv:2003.04974
+arXiv:1606.08415 (2016) "Gaussian Error Linear Units (GELUs)" [cs] (cited-by 24 in-topic, era 0)
+    abstract: We propose the Gaussian Error Linear Unit (GELU), a high-performing neural
+network activation function. The GELU activation function is $x\Phi(x)$, where
+$\Phi(x)$ the standard Gaussian cumulative distribution function. The GELU
+nonlinearity weights inputs by their value, rather than gates inputs by
+    relations: cited-by arXiv:1810.04805; used-by arXiv:1904.10509; used-by arXiv:1907.11692; used-by arXiv:1909.11942
+arXiv:1608.05859 (2016) "Using the Output Embedding to Improve Language Models" [cs] (cited-by 19 in-topic, era 0)
+    primary_objective: Improve language model performance and reduce model size
+    architectural_modification: Tying the input embedding and the output embedding (topmost weight matrix)
+    application_domain: Neural network language models and neural translation models
+    efficiency_gain: Reduces the size of neural translation models to less than half of their original size
+    core_innovation: Weight tying between input and output embeddings and a new method of regularizing the output embedding
+    relations: cites arXiv:1409.0473; cites arXiv:1503.02531; used-by arXiv:1706.03762; used-by arXiv:1809.10853; used-by arXiv:2104.01572
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 337 in-topic, era 0)
+    attention_mechanism: Self-attention (based solely on attention mechanisms)
+    primary_objective: To replace recurrence and convolutions with a simple network architecture that is more parallelizable and faster to train.
+    architectural_modification: Dispensing with recurrence and convolutions entirely in favor of a Transformer architecture based solely on attention mechanisms.
+    application_domain: Sequence transduction, specifically machine translation (English-to-German, English-to-French) and English constituency parsing.
+    efficiency_gain: More parallelizable and requires significantly less time to train (e.g., 3.5 days on eight GPUs for WMT 2014 English-to-French).
+    core_innovation: The Transformer, a new network architecture based solely on attention mechanisms, dispensing with recurrence and convolutions.
+    relations: uses arXiv:1705.03122; uses arXiv:1609.08144; cites arXiv:1701.06538; cites arXiv:1409.3215; compares-with arXiv:1409.0473; cites arXiv:1406.1078; cited-by arXiv:2305.03210; used-by arXiv:2308.07661; used-by arXiv:2310.01749; cited-by arXiv:2405.05219; cited-by arXiv:2407.05591; compared-by arXiv:2410.12850
+arXiv:1705.03122 (2017) "Convolutional Sequence to Sequence Learning" [cs] (cited-by 36 in-topic, era 0)
+    attention_mechanism: separate attention module for each decoder layer
+    primary_objective: parallelization and easier optimization
+    architectural_modification: architecture based entirely on convolutional neural networks using gated linear units
+    application_domain: sequence to sequence learning (specifically WMT'14 English-German and English-French translation)
+    efficiency_gain: order of magnitude faster speed compared to deep LSTM setup
+    core_innovation: convolutional sequence to sequence architecture with gated linear units
+    relations: used-by arXiv:1706.03762; used-by arXiv:1806.00187; cited-by arXiv:1803.02155; cited-by arXiv:1904.10509; cited-by arXiv:2003.04974; compared-by arXiv:2009.14658
+arXiv:1704.05426 (2017) "A Broad-Coverage Challenge Corpus for Sentence Understanding through
+  Inference" [cs] (cited-by 33 in-topic, era 0)
+    primary_objective: development and evaluation of machine learning models for sentence understanding
+    application_domain: Natural Language Inference (NLI)
+    core_innovation: introduction of the MultiNLI corpus containing 433k examples across ten distinct genres to enable cross-genre domain adaptation evaluation
+    relations: compares-with arXiv:1412.6980; cited-by arXiv:1810.04805; used-by arXiv:1905.10650; cited-by arXiv:1907.11692; cited-by arXiv:1909.11942; cited-by arXiv:1910.10683; used-by arXiv:2010.02399
+arXiv:1701.06538 (2017) "Outrageously Large Neural Networks: The Sparsely-Gated
+  Mixture-of-Experts Layer" [cs] (cited-by 25 in-topic, era 0)
+    primary_objective: Increasing model capacity without a proportional increase in computation
+    architectural_modification: Introduction of a Sparsely-Gated Mixture-of-Experts (MoE) layer consisting of up to thousands of feed-forward sub-networks applied between stacked LSTM layers
+    application_domain: Language modeling and machine translation
+    efficiency_gain: Greater than 1000x improvements in model capacity with only minor losses in computational efficiency
+    core_innovation: Sparsely-Gated Mixture-of-Experts (MoE) layer using a trainable gating network to select a sparse combination of experts
+    relations: extends arXiv:1609.08144; cites arXiv:1409.3215; cites arXiv:1409.0473; uses arXiv:1508.04025; extends arXiv:1512.03385; uses arXiv:1412.6980; cited-by arXiv:1706.03762; cited-by arXiv:1809.10853; cited-by arXiv:1901.02860; compared-by arXiv:1612.08083; cited-by arXiv:1910.10683; cited-by arXiv:2003.04974
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 238 in-topic, era 0)
+    primary_objective: Pre-training deep bidirectional representations from unlabeled text for language understanding.
+    architectural_modification: Jointly conditioning on both left and right context in all layers; fine-tuning requires only one additional output layer.
+    application_domain: Natural language processing (e.g., question answering, language inference, GLUE, MultiNLI, SQuAD).
+    core_innovation: Bidirectional Encoder Representations from Transformers (BERT) that pre-train deep bidirectional representations by jointly conditioning on both left and right context.
+    relations: extends arXiv:1802.05365; cites arXiv:1804.07461; cites arXiv:1704.05426; extends arXiv:1606.05250; uses arXiv:1706.03762; uses arXiv:1609.08144; cited-by arXiv:2302.00340; cited-by arXiv:2305.03210; cited-by arXiv:2405.05219; cited-by arXiv:2507.19595; extended-by arXiv:1907.11692; used-by arXiv:1906.08237
+arXiv:1804.07461 (2018) "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language
+  Understanding" [cs] (cited-by 88 in-topic, era 0)
+    primary_objective: To create a general tool for evaluating and analyzing model performance across a diverse range of NLU tasks.
+    application_domain: Natural Language Understanding (NLU)
+    core_innovation: The introduction of the General Language Understanding Evaluation (GLUE) benchmark and a hand-crafted diagnostic test suite for linguistic analysis.
+    relations: cited-by arXiv:2405.05219; cited-by arXiv:1810.04805; cited-by arXiv:1906.08237; cited-by arXiv:1907.11692; used-by arXiv:1909.11942; cited-by arXiv:1910.03771
+arXiv:1803.02155 (2018) "Self-Attention with Relative Position Representations" [cs] (cited-by 53 in-topic, era 0)
+    attention_mechanism: relation-aware self-attention (relative position representations)
+    primary_objective: efficiently consider representations of the relative positions/distances between sequence elements
+    architectural_modification: extending the self-attention mechanism to include relative position representations instead of relying solely on absolute position representations
+    application_domain: machine translation (WMT 2014 English-to-German and English-to-French)
+    core_innovation: an alternative approach to modeling position by extending self-attention to consider relative distances between sequence elements
+    relations: uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1705.03122; cites arXiv:1409.0473; cites arXiv:1406.1078; cites arXiv:1508.04025; compared-by arXiv:1806.00187; compared-by arXiv:1901.02860; critiqued-by arXiv:2103.13597; cited-by arXiv:1905.07799; cited-by arXiv:1910.10683; cited-by arXiv:2002.10260
+arXiv:1802.05365 (2018) "Deep contextualized word representations" [cs] (cited-by 43 in-topic, era 0)
+    primary_objective: modeling complex word use characteristics (syntax/semantics) and polysemy across linguistic contexts
+    architectural_modification: using learned functions of the internal states of a deep bidirectional language model (biLM)
+    application_domain: Natural Language Processing (NLP) tasks including question answering, textual entailment, and sentiment analysis
+    core_innovation: deep contextualized word representations derived from the internal states of a pre-trained bidirectional language model
+    relations: cites arXiv:1607.06450; compares-with arXiv:1606.05250; uses arXiv:1412.6980; extended-by arXiv:1810.04805; compared-by arXiv:2209.03834; used-by arXiv:1901.02860; cited-by arXiv:1906.04341; compared-by arXiv:1906.08237; cited-by arXiv:1907.11692
+arXiv:1809.10853 (2018) "Adaptive Input Representations for Neural Language Modeling" [cs] (cited-by 37 in-topic, era 0)
+    attention_mechanism: self-attentional architecture
+    primary_objective: efficiency and performance in neural language modeling
+    architectural_modification: extension of adaptive softmax to input representations of variable capacity (adaptive embeddings)
+    application_domain: neural language modeling
+    efficiency_gain: more than twice as fast to train than character input CNN with a lower number of parameters
+    core_innovation: adaptive input representations of variable capacity
+    relations: cites arXiv:1612.08083; cites arXiv:1701.06538; compares-with arXiv:1808.04444; uses arXiv:1706.03762; uses arXiv:1608.05859; uses arXiv:1512.03385; compared-by arXiv:1901.02860; cited-by arXiv:1911.05507; cited-by arXiv:1906.08237; cited-by arXiv:1909.11942; cited-by arXiv:2010.11929
+arXiv:1806.00187 (2018) "Scaling Neural Machine Translation" [cs] (cited-by 33 in-topic, era 0)
+    primary_objective: speed up training
+    application_domain: Neural Machine Translation (WMT'14 English-German and English-French)
+    efficiency_gain: nearly 5x speedup on a single 8-GPU machine
+    core_innovation: reduced precision and large batch training
+    relations: uses arXiv:1706.03762; uses arXiv:1705.03122; compares-with arXiv:1803.02155; uses arXiv:1412.6980; cites arXiv:1409.0473; uses arXiv:1508.07909; cited-by arXiv:2001.04451; used-by arXiv:2003.04974; cited-by arXiv:2103.13597; cited-by arXiv:1809.10853; used-by arXiv:1905.10650; cited-by arXiv:1907.11692
+arXiv:1808.04444 (2018) "Character-Level Language Modeling with Deeper Self-Attention" [cs] (cited-by 27 in-topic, era 0)
+    primary_objective: achieving state of the art performance in character-level language modeling using deep transformer models
+    architectural_modification: 64-layer transformer with auxiliary losses at intermediate network layers and intermediate sequence positions
+    application_domain: character-level language modeling
+    core_innovation: using a very deep (64-layer) transformer with auxiliary losses at intermediate layers and positions to outperform RNN variants
+    relations: used-by arXiv:1901.02860; used-by arXiv:1904.10509; used-by arXiv:1905.07799; cited-by arXiv:1911.05507; cited-by arXiv:2107.02192; compared-by arXiv:1809.10853
+arXiv:1901.02860 (2019) "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context" [cs] (cited-by 106 in-topic, era 1)
+    attention_mechanism: segment-level recurrence mechanism
+    primary_objective: learning dependency beyond a fixed length without disrupting temporal coherence
+    architectural_modification: segment-level recurrence mechanism and a novel positional encoding scheme
+    application_domain: language modeling
+    efficiency_gain: up to 1,800+ times faster than vanilla Transformers during evaluation
+    core_innovation: segment-level recurrence mechanism and a novel positional encoding scheme to resolve context fragmentation
+    relations: cites arXiv:1612.08083; compares-with arXiv:1809.10853; uses arXiv:1808.04444; cites arXiv:1701.06538; compares-with arXiv:1803.02155; compares-with arXiv:1706.03762; compared-by arXiv:1905.07799; extended-by arXiv:1906.08237; cited-by arXiv:1910.03771; used-by arXiv:1911.05507; used-by arXiv:2107.02192; extended-by arXiv:2507.00453
+arXiv:1907.11692 (2019) "RoBERTa: A Robustly Optimized BERT Pretraining Approach" [cs] (cited-by 101 in-topic, era 1)
+    primary_objective: To conduct a replication study of BERT pretraining and measure the impact of hyperparameters and training data size.
+    application_domain: Language model pretraining (GLUE, RACE, and SQuAD tasks).
+    core_innovation: Optimization of BERT pretraining through careful selection of hyperparameters and increased training data size, revealing that BERT was significantly undertrained.
+    relations: extends arXiv:1810.04805; uses arXiv:1906.08237; cites arXiv:1506.06724; cites arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1412.6980; cited-by arXiv:1906.08237; cited-by arXiv:1910.03771; extended-by arXiv:1910.10683; used-by arXiv:2006.04768; used-by arXiv:2010.02399; used-by arXiv:2209.03834
+arXiv:1904.10509 (2019) "Generating Long Sequences with Sparse Transformers" [cs] (cited-by 91 in-topic, era 1)
+    abstract: Transformers are powerful sequence models, but require time and memory that
+grows quadratically with the sequence length. In this paper we introduce sparse
+factorizations of the attention matrix which reduce this to $O(n \sqrt{n})$. We
+also introduce a) a variation on architecture and initialization
+    relations: uses arXiv:1808.04444; cites arXiv:1705.03122; extends arXiv:1706.03762; uses arXiv:1607.06450; uses arXiv:1606.08415; cited-by arXiv:2405.05219; used-by arXiv:2507.19595; cited-by arXiv:2605.00768; cited-by arXiv:1911.05507; cited-by arXiv:2006.04768; cited-by arXiv:2009.14794
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 87 in-topic, era 1)
+    primary_objective: Exploring the landscape of transfer learning by introducing a unified text-to-text framework.
+    architectural_modification: Converts all text-based language problems into a unified text-to-text format.
+    application_domain: Natural Language Processing (NLP) tasks including summarization, question answering, and text classification.
+    core_innovation: A unified text-to-text framework and the introduction of the 'Colossal Clean Crawled Corpus'.
+    relations: uses arXiv:1810.04805; compares-with arXiv:1909.11942; extends arXiv:1907.11692; uses arXiv:1906.08237; cites arXiv:1701.06538; compares-with arXiv:1804.07461; used-by arXiv:2005.14165; cited-by arXiv:1910.03771; compared-by arXiv:2209.03834; cited-by arXiv:1909.11942; cited-by arXiv:2006.04768; cited-by arXiv:2007.14062
+arXiv:1906.08237 (2019) "XLNet: Generalized Autoregressive Pretraining for Language Understanding" [cs] (cited-by 68 in-topic, era 1)
+    attention_mechanism: Transformer-XL (relative positional encoding)
+    primary_objective: To enable learning bidirectional contexts while overcoming the pretrain-finetune discrepancy of BERT via an autoregressive formulation.
+    architectural_modification: Integration of Transformer-XL ideas into a permutation-based factorization order.
+    application_domain: Natural Language Understanding (NLU) tasks including question answering, natural language inference, sentiment analysis, and document ranking.
+    core_innovation: Generalized autoregressive pretraining that maximizes the expected likelihood over all permutations of the factorization order.
+    relations: extends arXiv:1901.02860; cites arXiv:1907.11692; uses arXiv:1810.04805; compares-with arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1606.05250; used-by arXiv:1907.11692; cited-by arXiv:1910.03771; cited-by arXiv:2209.03834; used-by arXiv:1909.11942; used-by arXiv:1910.10683; cited-by arXiv:1911.05507
+arXiv:1909.11942 (2019) "ALBERT: A Lite BERT for Self-supervised Learning of Language
+  Representations" [cs] (cited-by 56 in-topic, era 1)
+    primary_objective: lower memory consumption and increase training speed
+    architectural_modification: two parameter-reduction techniques
+    application_domain: self-supervised learning of language representations
+    efficiency_gain: lower memory consumption and increased training speed; scales much better compared to original BERT
+    core_innovation: two parameter-reduction techniques and a self-supervised loss focusing on inter-sentence coherence
+    relations: uses arXiv:1906.08237; uses arXiv:1810.04805; uses arXiv:1907.11692; cites arXiv:1802.05365; uses arXiv:1706.03762; cites arXiv:1910.10683; cited-by arXiv:1910.03771; compared-by arXiv:1910.10683; compared-by arXiv:2209.03834; cited-by arXiv:1906.08237; cited-by arXiv:2005.14165; cited-by arXiv:2006.16236
+arXiv:1905.09418 (2019) "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy
+  Lifting, the Rest Can Be Pruned" [cs] (cited-by 55 in-topic, era 1)
+    attention_mechanism: multi-head self-attention
+    primary_objective: efficiency (via pruning)
+    architectural_modification: pruning of individual attention heads using stochastic gates and a differentiable relaxation of the L0 penalty
+    application_domain: neural machine translation (English-Russian WMT dataset)
+    efficiency_gain: removal of 38 out of 48 encoder heads with only a 0.15 BLEU drop
+    core_innovation: a novel pruning method based on stochastic gates and a differentiable relaxation of the L0 penalty to identify and retain specialized heads
+    relations: uses arXiv:1706.03762; uses arXiv:1508.07909; uses arXiv:1412.6980; cited-by arXiv:2305.03210; cited-by arXiv:1905.10650; cited-by arXiv:1906.04341; extended-by arXiv:2002.10260; cited-by arXiv:2010.02399; extended-by arXiv:2205.07100
+arXiv:1906.04341 (2019) "What Does BERT Look At? An Analysis of BERT's Attention" [cs] (cited-by 54 in-topic, era 1)
+    primary_objective: Analyzing the attention mechanisms of pre-trained models to understand what they learn.
+    application_domain: Natural Language Processing (NLP) / BERT analysis.
+    core_innovation: Proposing methods for analyzing attention mechanisms and an attention-based probing classifier to identify linguistic patterns (syntax and coreference).
+    relations: cites arXiv:1802.05365; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1706.03762; uses arXiv:1508.07909; cites arXiv:1905.09418; cited-by arXiv:2305.03210; used-by arXiv:2010.02399; extended-by arXiv:2002.10260; cited-by arXiv:2006.11527; cited-by arXiv:2202.02093; cited-by arXiv:2209.03834
+arXiv:1911.05507 (2019) "Compressive Transformers for Long-Range Sequence Modelling" [cs] (cited-by 52 in-topic, era 1)
+    attention_mechanism: compresses past memories
+    primary_objective: long-range sequence learning
+    architectural_modification: compresses past memories for long-range sequence learning
+    application_domain: language modelling (WikiText-103, Enwik8, PG-19), speech modelling, and reinforcement learning
+    core_innovation: Compressive Transformer (memory compression mechanism)
+    relations: cites arXiv:1808.04444; uses arXiv:1901.02860; cites arXiv:1904.10509; compares-with arXiv:1905.07799; cites arXiv:1612.08083; cites arXiv:1809.10853; cited-by arXiv:2302.00340; cited-by arXiv:2107.02192; extended-by arXiv:2507.00453; cited-by arXiv:2006.11527; cited-by arXiv:2007.14062; compared-by arXiv:2009.14794
+arXiv:1905.10650 (2019) "Are Sixteen Heads Really Better than One?" [cs] (cited-by 49 in-topic, era 1)
+    attention_mechanism: multi-headed attention
+    primary_objective: model pruning and efficiency
+    architectural_modification: removing/pruning attention heads (potentially reducing layers to a single head)
+    application_domain: Natural Language Processing (NLP), specifically Transformer-based models like BERT and MT models
+    efficiency_gain: potential speed and memory efficiency improvements
+    core_innovation: observation that a large percentage of attention heads can be removed at test time without significantly impacting performance
+    relations: uses arXiv:1706.03762; uses arXiv:1806.00187; uses arXiv:1810.04805; cites arXiv:1409.0473; cites arXiv:1406.1078; uses arXiv:1508.04025; cited-by arXiv:1906.04341; cited-by arXiv:2002.10260; cited-by arXiv:2006.16236; cited-by arXiv:2010.02399; cited-by arXiv:2106.05822; extended-by arXiv:2205.07100
+arXiv:1910.03771 (2019) "HuggingFace's Transformers: State-of-the-art Natural Language Processing" [cs] (cited-by 46 in-topic, era 1)
+    primary_objective: opening up advances in NLP to the wider machine learning community
+    application_domain: Natural Language Processing
+    core_innovation: an open-source library providing state-of-the-art Transformer architectures under a unified API with a curated collection of pretrained models
+    relations: cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1901.02860; cites arXiv:1906.08237; cites arXiv:1910.10683; cites arXiv:2001.04451; used-by arXiv:2605.00768; used-by arXiv:2006.11527; used-by arXiv:2102.12895; used-by arXiv:2104.09864; used-by arXiv:2209.03834
+arXiv:1905.07799 (2019) "Adaptive Attention Span in Transformers" [cs] (cited-by 40 in-topic, era 1)
+    attention_mechanism: adaptive attention span
+    primary_objective: extend maximum context size while maintaining control over memory footprint and computational time
+    application_domain: character level language modeling
+    core_innovation: a novel self-attention mechanism that can learn its optimal attention span
+    relations: uses arXiv:1808.04444; compares-with arXiv:1901.02860; compares-with arXiv:1706.03762; cites arXiv:1803.02155; uses arXiv:1409.0473; extends arXiv:1508.04025; compared-by arXiv:1911.05507; cited-by arXiv:2007.14062; cited-by arXiv:2107.02192; cited-by arXiv:2001.04451; cited-by arXiv:2002.10260; cited-by arXiv:2006.16236
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 128 in-topic, era 1)
+    primary_objective: improving task-agnostic, few-shot performance through scaling
+    application_domain: Natural Language Processing (translation, question-answering, cloze tasks, reasoning, etc.)
+    core_innovation: scaling up autoregressive language models to 175 billion parameters to enable few-shot learning without gradient updates
+    relations: uses arXiv:1910.10683; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1906.08237; cites arXiv:1909.11942; cited-by arXiv:2405.05219; cited-by arXiv:2410.12850; used-by arXiv:2507.19595; cited-by arXiv:2605.00768; cited-by arXiv:2604.00965; cited-by arXiv:2006.04768
+arXiv:2004.05150 (2020) "Longformer: The Long-Document Transformer" [cs] (cited-by 97 in-topic, era 1)
+    attention_mechanism: combines a local windowed attention with a task motivated global attention
+    primary_objective: to address the quadratic scaling limitation of self-attention to process long sequences
+    architectural_modification: a drop-in replacement for standard self-attention; introduces Longformer-Encoder-Decoder (LED) for generative tasks
+    application_domain: long-document processing, character-level language modeling, and generative sequence-to-sequence tasks
+    efficiency_gain: scales linearly with sequence length
+    core_innovation: an attention mechanism that combines local windowed attention with task-motivated global attention
+    relations: cited-by arXiv:2302.00340; cited-by arXiv:2405.05219; cited-by arXiv:2507.19595; cited-by arXiv:2605.00768; cited-by arXiv:1910.03771; used-by arXiv:2107.02192
+arXiv:2001.04451 (2020) "Reformer: The Efficient Transformer" [cs] (cited-by 78 in-topic, era 1)
+    abstract: Large Transformer models routinely achieve state-of-the-art results on a
+number of tasks but training these models can be prohibitively costly,
+especially on long sequences. We introduce two techniques to improve the
+efficiency of Transformers. For one, we replace dot-product attention by one
+that u
+    relations: compares-with arXiv:1706.03762; cites arXiv:1806.00187; cites arXiv:1808.04444; uses arXiv:1607.06450; cites arXiv:1810.04805; cites arXiv:1905.07799; cited-by arXiv:2302.00340; cited-by arXiv:2507.19595; cited-by arXiv:1910.03771; cited-by arXiv:2006.04768; cited-by arXiv:2107.02192; cited-by arXiv:2002.10260
+arXiv:2006.04768 (2020) "Linformer: Self-Attention with Linear Complexity" [cs] (cited-by 67 in-topic, era 1)
+    attention_mechanism: low-rank matrix approximation
+    primary_objective: efficiency (reducing time and space complexity)
+    architectural_modification: approximating self-attention with a low-rank matrix
+    application_domain: natural language processing
+    efficiency_gain: reduces complexity from $O(n^2)$ to $O(n)$ in both time and space
+    core_innovation: Linformer, a linear transformer that uses low-rank matrix approximation for self-attention
+    relations: cites arXiv:1706.03762; cites arXiv:1904.10509; cites arXiv:2001.04451; uses arXiv:1907.11692; compares-with arXiv:1810.04805; cites arXiv:1806.00187; cited-by arXiv:2302.00340; cited-by arXiv:2405.05219; extended-by arXiv:2507.19595; compared-by arXiv:2107.02192; cited-by arXiv:2009.14658; used-by arXiv:2009.14794
+arXiv:2007.14062 (2020) "Big Bird: Transformers for Longer Sequences" [cs] (cited-by 66 in-topic, era 1)
+    attention_mechanism: sparse attention mechanism (including global tokens)
+    primary_objective: reducing quadratic dependency on sequence length to linear
+    architectural_modification: sparse attention mechanism with O(1) global tokens
+    application_domain: NLP (question answering, summarization) and genomics
+    efficiency_gain: reduces quadratic dependency to linear; handles sequences up to 8x longer
+    core_innovation: BigBird sparse attention mechanism that is a universal approximator and Turing complete
+    relations: cites arXiv:1905.07799; cites arXiv:1901.02860; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1910.10683; cited-by arXiv:2405.05219; cited-by arXiv:2410.12850; cited-by arXiv:2507.19595; cited-by arXiv:2605.00768; cited-by arXiv:2006.11527; cited-by arXiv:2507.00453
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 62 in-topic, era 1)
+    attention_mechanism: pure transformer applied directly to sequences of image patches
+    primary_objective: applying transformers to computer vision tasks without reliance on convolutional networks
+    architectural_modification: applying a pure transformer architecture directly to sequences of image patches
+    application_domain: image recognition/classification (e.g., ImageNet, CIFAR-100, VTAB)
+    efficiency_gain: requires substantially fewer computational resources to train compared to state-of-the-art convolutional networks
+    core_innovation: Vision Transformer (ViT) which uses a pure transformer architecture on image patches instead of relying on CNNs
+    relations: uses arXiv:1706.03762; cites arXiv:2005.14165; uses arXiv:1810.04805; uses arXiv:1512.03385; cites arXiv:1904.10509; cites arXiv:1809.10853; cited-by arXiv:2305.03210; cited-by arXiv:2506.01115; used-by arXiv:2107.02192; compared-by arXiv:2209.09735; cited-by arXiv:2102.12895; cited-by arXiv:2106.05822
+arXiv:2006.16236 (2020) "Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention" [cs] (cited-by 59 in-topic, era 1)
+    attention_mechanism: linear dot-product of kernel feature maps
+    primary_objective: efficiency for very long sequences
+    architectural_modification: express self-attention as a linear dot-product of kernel feature maps to enable iterative implementation
+    application_domain: autoregressive transformers
+    efficiency_gain: complexity reduced from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$; up to 4000x faster on autoregressive prediction of very long sequences
+    core_innovation: expressing self-attention as a linear dot-product of kernel feature maps to leverage the associativity property of matrix products
+    relations: uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1907.11692; cited-by arXiv:2405.05219; extended-by arXiv:2503.18565; used-by arXiv:2507.19595; cited-by arXiv:2006.11527; cited-by arXiv:2009.14658; used-by arXiv:2009.14794
+arXiv:2009.14794 (2020) "Rethinking Attention with Performers" [cs] (cited-by 56 in-topic, era 1)
+    attention_mechanism: Fast Attention Via positive Orthogonal Random features (FAVOR+)
+    primary_objective: Efficiency (achieving linear space and time complexity)
+    architectural_modification: Replacement of softmax attention with a kernel-based approximation using positive orthogonal random features
+    application_domain: Pixel-prediction, text models, and protein sequence modeling
+    efficiency_gain: Reduction from quadratic to linear space and time complexity
+    core_innovation: FAVOR+ approach for unbiased or nearly-unbiased estimation of the attention matrix without relying on sparsity or low-rankness priors
+    relations: cites arXiv:1904.10509; compares-with arXiv:1911.05507; cites arXiv:2004.05150; uses arXiv:2006.16236; cites arXiv:1706.03762; uses arXiv:2006.04768; cited-by arXiv:2405.05219; cited-by arXiv:2507.19595; cited-by arXiv:2107.02192; compared-by arXiv:2104.09864; cited-by arXiv:2205.07100; compared-by arXiv:2209.03834
+arXiv:2002.10260 (2020) "Fixed Encoder Self-Attention Patterns in Transformer-Based Machine
+  Translation" [cs] (cited-by 12 in-topic, era 1)
+    attention_mechanism: fixed, non-learnable attentive patterns based on position
+    primary_objective: reducing redundancy in attention heads
+    architectural_modification: replacing all but one attention head of each encoder layer with fixed positional patterns
+    application_domain: Neural Machine Translation (NMT)
+    core_innovation: replacing learnable attention heads in the encoder with fixed, non-learnable positional patterns
+    relations: extends arXiv:1706.03762; extends arXiv:1810.04805; cites arXiv:1806.00187; extends arXiv:1905.09418; cites arXiv:1905.10650; cites arXiv:1904.10509; cited-by arXiv:2302.00340; cited-by arXiv:2010.02399
+arXiv:2006.11527 (2020) "Memory Transformer" [cs] (cited-by 5 in-topic, era 1)
+    primary_objective: improve the processing of properties related to the sequence as a whole by storing local and global representations
+    architectural_modification: adding memory tokens to store non-local representations, creating a memory bottleneck for global information, and controlling memory updates with a dedicated layer
+    application_domain: machine translation, language modelling, and GLUE benchmark tasks
+    core_innovation: Memory-augmented Transformer extensions using memory tokens, memory bottlenecks, and dedicated update layers to store non-local representations
+    relations: cites arXiv:2006.16236; cites arXiv:2007.14062; cites arXiv:1609.07843; cites arXiv:1706.03762; extends arXiv:1810.04805; extends arXiv:1901.02860
+arXiv:2010.02399 (2020) "Guiding Attention for Self-Supervised Learning with Transformers" [cs] (cited-by 1 in-topic, era 1)
+    attention_mechanism: bi-directional self-attention
+    primary_objective: efficient self-supervised learning
+    application_domain: self-supervised learning with Transformers
+    efficiency_gain: faster convergence
+    core_innovation: computationally efficient auxiliary loss function to guide attention heads to conform to non-linguistic regularities
+    relations: cites arXiv:1810.04805; uses arXiv:1907.11692; uses arXiv:1906.04341; uses arXiv:1706.03762; uses arXiv:1804.07461; cites arXiv:1910.10683
+arXiv:2003.04974 (2020) "Transformer++" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: multi-head attention combined with convolution for intermediate context
+    primary_objective: improving dependency modeling and translation accuracy
+    architectural_modification: incorporating convolution into multi-head attention and adding a framework to learn POS tagging and NER information during encoder training
+    application_domain: Neural machine translation (WMT 2014 English-to-German and English-to-French)
+    core_innovation: learning dependencies through an intermediate context using convolution in multi-head attention and integrating POS/NER information into the encoder
+    relations: uses arXiv:1706.03762; uses arXiv:1806.00187; uses arXiv:1409.0473; cites arXiv:1406.1078; cites arXiv:1701.06538; cites arXiv:1508.04025
+arXiv:2009.14658 (2020) "Learning Hard Retrieval Decoder Attention for Transformers" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: hard retrieval attention (where an attention head attends to only one token)
+    primary_objective: efficiency
+    architectural_modification: replacing matrix multiplication between attention probabilities and value sequence with a retrieval operation
+    application_domain: machine translation (decoder self- and cross-attention networks)
+    efficiency_gain: 1.43 times faster in decoding
+    core_innovation: learning a hard retrieval attention where each head attends to a single token instead of all tokens
+    relations: uses arXiv:1706.03762; compares-with arXiv:1409.3215; compares-with arXiv:1409.0473; compares-with arXiv:1705.03122; uses arXiv:1508.07909; cites arXiv:1901.02860
+arXiv:2104.09864 (2021) "RoFormer: Enhanced Transformer with Rotary Position Embedding" [cs] (cited-by 47 in-topic, era 1)
+    attention_mechanism: self-attention with explicit relative position dependency
+    primary_objective: effectively leverage positional information for dependency modeling
+    architectural_modification: integration of Rotary Position Embedding (RoPE) which encodes absolute position with a rotation matrix
+    application_domain: long text classification
+    core_innovation: Rotary Position Embedding (RoPE)
+    relations: extends arXiv:1706.03762; extends arXiv:1810.04805; cites arXiv:1803.02155; uses arXiv:2006.16236; cites arXiv:1901.02860; cites arXiv:1705.03122; used-by arXiv:2405.05219; compared-by arXiv:2407.05591; cited-by arXiv:2410.12850; used-by arXiv:2506.01115; cited-by arXiv:2605.00768; extended-by arXiv:2507.00453
+arXiv:2107.02192 (2021) "Long-Short Transformer: Efficient Transformers for Language and Vision" [cs] (cited-by 7 in-topic, era 1)
+    attention_mechanism: Long-range attention with dynamic projection and short-term attention
+    primary_objective: Efficiency for modeling long sequences
+    architectural_modification: Dual normalization strategy to account for scale mismatch between long-range and short-term attention
+    application_domain: Language (autoregressive and bidirectional) and Vision (high-resolution images)
+    efficiency_gain: Linear complexity; 0.97 test BPC on enwik8 using half the parameters; 3x longer sequences compared to full-attention version
+    core_innovation: Long-Short Transformer (Transformer-LS) aggregating long-range attention with dynamic projection and short-term attention
+    relations: compares-with arXiv:2006.04768; cites arXiv:1706.03762; cites arXiv:2001.04451; cites arXiv:2009.14794; cites arXiv:1808.04444; uses arXiv:1901.02860; cited-by arXiv:2302.00340
+arXiv:2103.13597 (2021) "Mask Attention Networks: Rethinking and Strengthen Transformer" [cs] (cited-by 2 in-topic, era 1)
+    attention_mechanism: dynamic mask attention (DMAN) with a learnable mask matrix
+    primary_objective: improve capability for localness modeling in text representation learning
+    architectural_modification: a sequential layered structure combining Dynamic Mask Attention Networks (DMAN), Self-Attention Networks (SAN), and Feed-Forward Networks (FFN)
+    application_domain: text representation learning (specifically neural machine translation and text summarization)
+    core_innovation: redefining SAN and FFN as special cases of Mask Attention Networks (MANs) and introducing the DMAN layer with a learnable mask matrix
+    relations: uses arXiv:1706.03762; critiques arXiv:1803.02155; cites arXiv:1806.00187; cites arXiv:1901.02860; cites arXiv:1905.07799
+arXiv:2106.05822 (2021) "GroupBERT: Enhanced Transformer Architecture with Efficient Grouped
+  Structures" [cs] (cited-by 0 in-topic, era 1)
+    primary_objective: efficiency
+    architectural_modification: addition of a convolutional module to complement self-attention and use of grouped transformations in feed-forward layers and convolutions
+    application_domain: language representation learning
+    efficiency_gain: improved floating-point operations (FLOPs) and time-to-train
+    core_innovation: decoupling local and global interactions via a convolutional module combined with grouped transformations to reduce computational cost
+    relations: uses arXiv:1810.04805; cites arXiv:1409.3215; cites arXiv:1706.03762; compares-with arXiv:2005.14165; cites arXiv:2010.11929; cites arXiv:1901.02860
+arXiv:2102.12895 (2021) "Evolving Attention with Residual Convolutions" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: evolving attention (using residual connections and convolutional layers)
+    primary_objective: improve transformer performance by modeling the evolutionary process of attention maps
+    architectural_modification: incorporating residual connections and convolutional layers to allow preceding layers to instruct succeeding layers
+    application_domain: image classification, natural language understanding, and machine translation
+    core_innovation: a mechanism where attention maps across layers share knowledge via residual connections and model abstraction levels through convolutional layers
+    relations: uses arXiv:1706.03762; uses arXiv:1810.04805; cites arXiv:2001.04451; cites arXiv:1705.03122; cites arXiv:2010.11929; uses arXiv:1803.02155
+arXiv:2104.01572 (2021) "TransfoRNN: Capturing the Sequential Information in Self-Attention
+  Representations for Language Modeling" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: self-attention
+    primary_objective: capturing sequential information (token arrangement) to improve Transformers
+    architectural_modification: cascading recurrent neural networks to the Transformers
+    application_domain: language modeling and speech recognition
+    efficiency_gain: Penn Treebank: perplexity reduced up to 5.5% with model size reduced up to 10.5%; WikiText-2: perplexity reduced up to 2.2% with 27.7% smaller model
+    core_innovation: TransfoRNN model which uses RNNs to capture sequential information from self-attention representations
+    relations: uses arXiv:1607.06450; uses arXiv:1609.07843; uses arXiv:1808.04444; cites arXiv:1907.11692; cites arXiv:1810.04805; cites arXiv:1409.0473
+arXiv:2205.07100 (2022) "Multiformer: A Head-Configurable Transformer-Based Model for Direct
+  Speech Translation" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: head-configurable (different attention mechanisms used on each head)
+    primary_objective: reducing information loss while addressing long sequence lengths and redundancy in speech tasks
+    architectural_modification: allows the use of different attention mechanisms on each individual head
+    application_domain: Direct Speech Translation
+    efficiency_gain: outperforms baseline by up to 0.7 BLEU
+    core_innovation: Multiformer architecture that mixes different attention patterns across different heads and layers
+    relations: cites arXiv:1706.03762; compares-with arXiv:2004.05150; compares-with arXiv:2006.04768; extends arXiv:1905.09418; extends arXiv:1905.10650; cites arXiv:2009.14794
+arXiv:2209.09735 (2022) "Relaxed Attention for Transformer Models" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: relaxed attention (smoothing of the attention weights)
+    primary_objective: regularization and suppression of implicitly learned internal language models to facilitate external LM integration
+    architectural_modification: smoothing of attention weights in self-attention (encoder) and cross-attention (decoder) layers
+    application_domain: Natural Language Processing (lip-reading and machine translation)
+    efficiency_gain: virtually no additional model parameters
+    core_innovation: relaxed attention as a smoothing mechanism for attention weights
+    relations: extends arXiv:1706.03762; compares-with arXiv:2010.11929; cites arXiv:2005.14165; cites arXiv:1406.1078; uses arXiv:1409.0473; cites arXiv:1810.04805
+arXiv:2202.02093 (2022) "Temporal Attention for Language Models" [cs] (cited-by 0 in-topic, era 1)
+    attention_mechanism: temporal attention (time-aware self-attention)
+    primary_objective: improving temporal generalization by incorporating time-specific information
+    architectural_modification: extension of the self-attention mechanism to include time points
+    application_domain: semantic change detection
+    core_innovation: temporal attention mechanism that creates time-specific contextualized word representations
+    relations: uses arXiv:1810.04805; cites arXiv:1907.11692; uses arXiv:1706.03762; cites arXiv:1906.04341
+arXiv:2209.03834 (2022) "Pre-Training a Graph Recurrent Network for Language Representation" [cs] (cited-by 0 in-topic, era 1)
+    primary_objective: Exploring the potential of graph recurrent networks for self-supervised language model pre-training and general language understanding.
+    architectural_modification: Replaces attention with a graph recurrent network that builds a graph structure for each sequence using local token-level communications and a decoupled sentence-level representation.
+    application_domain: Natural language processing (English and Chinese language understanding).
+    efficiency_gain: Reduces complexity from quadratic (Transformer) to linear; more efficient during inference and less contextualized feature redundancy.
+    core_innovation: Utilizing a graph recurrent network for self-supervised language representation pre-training as an alternative to attention-based models.
+    relations: compares-with arXiv:1909.11942; cites arXiv:1906.08237; uses arXiv:1706.03762; uses arXiv:1607.06450; compares-with arXiv:1802.05365; uses arXiv:1810.04805
+arXiv:2210.00640 (2022) "Wide Attention Is The Way Forward For Transformers?" [cs] (cited-by 0 in-topic, era 1)
+    primary_objective: Challenging the 'going deeper is better' belief by exploring wider and shallower Transformer designs.
+    architectural_modification: Changing the model aspect ratio by increasing the number of attention heads per layer while decreasing the number of layers, keeping total attention heads constant.
+    application_domain: Natural Language Processing (NLP)
+    efficiency_gain: 3.1x faster inference latency on CPU (IMDb byte level text classification) and 50% smaller model size.
+    core_innovation: Demonstrating that wide single-layer Transformer models can compete with or outperform deeper models while being more efficient and interpretable.
+    relations: cites arXiv:1706.03762; compares-with arXiv:2004.05150; cites arXiv:2001.04451; cites arXiv:2009.14794; cites arXiv:2006.04768; motivated-by arXiv:1512.03385
+arXiv:2310.01749 (2023) "Stack Attention: Improving the Ability of Transformers to Model
+  Hierarchical Patterns" [cs] (cited-by 2 in-topic, era 2)
+    attention_mechanism: stack attention (variants based on deterministic and nondeterministic pushdown automata)
+    primary_objective: improving the ability to model hierarchical patterns and context-free languages (CFLs)
+    architectural_modification: incorporation of stacks into the attention operator
+    application_domain: natural language modeling and machine translation
+    efficiency_gain: more effective under a constrained parameter budget
+    core_innovation: an attention operator that incorporates stacks to allow recognition of arbitrary context-free languages without syntactic supervision
+    relations: uses arXiv:1706.03762; cites arXiv:1409.0473; uses arXiv:1508.07909; cites arXiv:1412.6980
+arXiv:2305.03210 (2023) "AttentionViz: A Global View of Transformer Attention" [cs] (cited-by 1 in-topic, era 2)
+    attention_mechanism: self-attention (query and key vectors)
+    primary_objective: model understanding and visualization
+    application_domain: language and vision transformers
+    core_innovation: visualizing a joint embedding of query and key vectors to enable analysis of global patterns across multiple input sequences
+    relations: cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:2010.11929; cites arXiv:1906.04341; cites arXiv:1905.09418
+arXiv:2302.00340 (2023) "Attention Link: An Efficient Attention-Based Low Resource Machine
+  Translation Architecture" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: attention link (AL)
+    primary_objective: improve transformer models' performance, especially in low training resources
+    architectural_modification: novel architecture named as attention link (AL)
+    application_domain: low resource machine translation
+    core_innovation: attention link (AL) architecture
+    relations: motivated-by arXiv:1512.03385; cites arXiv:1409.3215; cites arXiv:1406.1078; cites arXiv:1409.0473; cites arXiv:2004.05150; cites arXiv:2107.02192
+arXiv:2308.07661 (2023) "Attention Is Not All You Need Anymore" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: Extractors (including SHE, HE, WE, and ME)
+    primary_objective: Reducing computational and memory complexity while maintaining or improving performance
+    architectural_modification: Drop-in replacements for the self-attention mechanism
+    application_domain: Natural language processing and computer vision
+    efficiency_gain: Less computational and memory complexity; shorter critical paths of computation
+    core_innovation: A family of replacement mechanisms called Extractors (SHE, HE, WE, and ME)
+    relations: cites arXiv:1409.0473; uses arXiv:1706.03762; cites arXiv:1607.06450
+arXiv:2310.10930 (2023) "Enhanced Transformer Architecture for Natural Language Processing" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: zero masked self-attention
+    primary_objective: improve processing performance while reducing training resource requirements
+    architectural_modification: full layer normalization, weighted residual connection, and positional encoding exploiting reinforcement learning
+    application_domain: Natural Language Processing (specifically machine translation)
+    core_innovation: Enhanced Transformer featuring full layer normalization, weighted residual connection, reinforcement learning-based positional encoding, and zero masked self-attention
+    relations: (none in-topic)
+arXiv:2405.04515 (2024) "A Transformer with Stack Attention" [cs] (cited-by 1 in-topic, era 2)
+    attention_mechanism: differentiable, stack-based attention mechanism
+    primary_objective: addressing the limitation in modeling power regarding context-free language tasks
+    architectural_modification: augmenting transformer-based language models with a stack-based attention mechanism
+    application_domain: natural language modeling / context-free language tasks
+    core_innovation: incorporating a differentiable, stack-based attention mechanism into transformer-based models to enable modeling of deterministic context-free languages
+    relations: (none in-topic)
+arXiv:2405.05219 (2024) "Conv-Basis: A New Paradigm for Efficient Attention Inference and
+  Gradient Computation in Transformers" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: convolution-like approximation using a conv basis system
+    primary_objective: efficiency and scalability for longer contexts
+    architectural_modification: approximation of the attention matrix via a sum of k structured convolution matrices
+    application_domain: Transformer models / Large Language Models (LLMs)
+    efficiency_gain: inference, training forward, and backward gradient reduced to O(knd log n) or n^{1+o(1)} time
+    core_innovation: the conv basis system which decomposes lower triangular matrices into a sum of structured convolution matrices
+    relations: uses arXiv:2104.09864; cites arXiv:1810.04805; cites arXiv:2005.14165; cites arXiv:1706.03762; cites arXiv:1904.10509; cites arXiv:2004.05150
+arXiv:2407.05591 (2024) "On the Power of Convolution Augmented Transformer" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: Convolution-Augmented Transformer (CAT) incorporating convolutional filters in K/Q/V embeddings
+    primary_objective: Improving recall, copying, and length generalization
+    architectural_modification: Incorporation of convolutional filters into the K/Q/V embeddings of an attention layer
+    application_domain: Language modeling
+    efficiency_gain: Mitigates the need for full attention by summarizing the context window and creating salient summary tokens
+    core_innovation: Synergizing the locality of convolution with the global view of attention to solve associative recall (AR) and copying tasks with a single layer
+    relations: cites arXiv:1706.03762; cites arXiv:1612.08083; compares-with arXiv:2104.09864
+arXiv:2410.12850 (2024) "RecurFormer: Not All Transformer Heads Need Self-Attention" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: Hybrid mechanism combining standard attention heads with linear recurrent neural networks (Mamba architecture)
+    primary_objective: Reducing computational costs and memory overhead during inference, especially for long inputs
+    architectural_modification: Replacing recency-aware attention heads (those focusing on local/short-range dependencies) with linear RNNs (Mamba)
+    application_domain: Transformer-based Large Language Models (LLMs) inference
+    efficiency_gain: Reduces cache size without evicting tokens and enhances inference efficiency
+    core_innovation: Replacing specific local-dependency attention heads with Mamba-based linear recurrent neural networks to maintain long-range modeling while reducing memory overhead
+    relations: cites arXiv:2005.14165; compares-with arXiv:1706.03762; cites arXiv:2007.14062; cites arXiv:2104.09864
+arXiv:2411.10115 (2024) "Memorization in Attention-only Transformers" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: multi-head attention
+    primary_objective: analyzing and improving the memorization capacity of Transformers across any context size
+    application_domain: language-based Transformers
+    core_innovation: a novel proof extending memorization hypotheses to any context size and the introduction of the concept of approximate memorization of distributions
+    relations: (none in-topic)
+arXiv:2507.19595 (2025) "Efficient Attention Mechanisms for Large Language Models: A Survey" [cs] (cited-by 2 in-topic, era 2)
+    attention_mechanism: Linear attention (kernel approximations, recurrent formulations, fastweight dynamics) and Sparse attention (fixed patterns, block-wise routing, clustering strategies)
+    primary_objective: Addressing quadratic time and memory complexity for efficient long-context modeling
+    architectural_modification: Architectures built entirely on efficient attention and hybrid designs combining local and global components
+    application_domain: Large Language Models (LLMs)
+    efficiency_gain: Reduction from quadratic complexity to linear complexity (for linear attention methods)
+    core_innovation: Systematic survey categorizing efficient attention into linear and sparse methods, integrating algorithmic innovations with hardware-level considerations
+    relations: cites arXiv:1706.03762; uses arXiv:2006.16236; uses arXiv:1904.10509; cites arXiv:2009.14794; cites arXiv:2004.05150; cites arXiv:2001.04451
+arXiv:2507.00453 (2025) "Recurrent Memory-Augmented Transformers with Chunked Attention for Long-Context Language Modeling" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: combination of global attention, chunked local attention, and a gated FIFO memory mechanism
+    primary_objective: efficiently handle both short-range and long-range dependencies without quadratic attention cost
+    architectural_modification: unified attention block incorporating chunked local attention and a gated FIFO memory module
+    application_domain: long-context language modeling (e.g., dialogue modeling, code completion, and document understanding)
+    efficiency_gain: avoids increasing attention cost quadratically
+    core_innovation: integration of chunked local attention with a gated FIFO memory mechanism for persistent storage of past token representations
+    relations: cites arXiv:2004.05150; cites arXiv:2007.14062; cites arXiv:1706.03762; extends arXiv:1901.02860; extends arXiv:1911.05507; extends arXiv:2104.09864
+arXiv:2506.01115 (2025) "Is Random Attention Sufficient for Sequence Modeling? Disentangling Trainable Components in the Transformer" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: MixiT (entirely random attention scores)
+    primary_objective: Disentangling the contributions of trainable components (MLP vs. attention) in the Transformer architecture.
+    architectural_modification: Variants with frozen MLP layers or frozen key/query weights; MixiT architecture with random attention scores and stable signal propagation.
+    application_domain: Sequence modeling and language modeling.
+    core_innovation: Proving that frozen key/query weights can form induction heads and perform competitively, and the design of MixiT to isolate the role of attention via random scores.
+    relations: uses arXiv:2104.09864; cites arXiv:1706.03762; cites arXiv:2010.11929; uses arXiv:1609.07843
+arXiv:2503.18565 (2025) "Distil-xLSTM: Learning Attention Mechanisms through Recurrent Structures" [cs] (cited-by 0 in-topic, era 2)
+    primary_objective: compute and scale efficiency
+    architectural_modification: approximating transformer-based attention parametrization using recurrent sequence mixing components
+    application_domain: Small Language Model (SLM) / Natural Language Processing (NLP)
+    core_innovation: Distil-xLSTM: distilling knowledge from an LLM into an xLSTM-based SLM that approximates transformer attention via recurrent structures
+    relations: uses arXiv:1503.02531; extends arXiv:2006.16236
+arXiv:2510.11602 (2025) "Deconstructing Attention: Investigating Design Principles for Effective Language Modeling" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: dot-product attention (standard), plus controlled variants relaxing mixing, sequence-dependency, mathematical form, and query-key coupling
+    primary_objective: investigating design principles for effective language modeling through systematic deconstruction
+    architectural_modification: uniform relaxation of principles across all layers or hybrid architectures where only some layers retain standard attention
+    application_domain: language modeling
+    core_innovation: systematic deconstruction of attention principles (mixing, sequence-dependency, mathematical form, and query-key coupling) to identify indispensable components and cooperative effects
+    relations: (none in-topic)
+arXiv:2605.00768 (2026) "Characterizing the Expressivity of Local Attention in Transformers" [cs] (cited-by 0 in-topic, era 2)
+    attention_mechanism: local attention (bounded window) and global attention
+    primary_objective: characterizing the expressivity of local attention in terms of recognizer expressivity
+    architectural_modification: combining global and local attention (hybrid global-local transformers)
+    application_domain: formal language recognition and natural language modeling
+    efficiency_gain: reduces quadratic cost of global attention to linear
+    core_innovation: proving that local attention introduces a second temporal operator that strictly enlarges the class of recognizable regular languages and demonstrating that global and local attention are expressively complementary
+    relations: cites arXiv:1508.04025; cites arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:1409.0473; cites arXiv:1904.10509; cites arXiv:2004.05150
+arXiv:2604.00965 (2026) "Understanding Transformers and Attention Mechanisms: An Introduction for Applied Mathematicians" [math] (cited-by 0 in-topic, era 2)
+    attention_mechanism: Multi-Headed Attention, Grouped Query Attention, and Latent Attention
+    primary_objective: To provide an introductory overview of Transformers and attention mechanisms for applied mathematicians
+    application_domain: Modern language models
+    efficiency_gain: Reduction of computational and memory cost via KV caching, Grouped Query attention, and Latent Attention
+    relations: uses arXiv:1706.03762; cites arXiv:2104.09864; cites arXiv:1607.06450; cites arXiv:1810.04805; cites arXiv:2005.14165
+
+MAIN PATH (oldest -> newest):
+  arXiv:1409.3215 (2014) -> arXiv:1609.08144 (2016) -> arXiv:1701.06538 (2017) -> arXiv:1809.10853 (2018) -> arXiv:1901.02860 (2019) -> arXiv:2005.14165 (2020) -> arXiv:2107.02192 (2021) -> arXiv:2302.00340 (2023)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:1906.08237 compares [negative] arXiv:1802.05365
+  arXiv:2006.04768 critiques [negative] arXiv:1503.02531
+  arXiv:2302.00340 compares [neutral] arXiv:1412.6980
+  arXiv:2407.05591 compares [positive] arXiv:2104.09864
+  arXiv:2107.02192 compares [positive] arXiv:2006.04768
+  arXiv:1910.10683 compares [neutral] arXiv:1909.11942
+  arXiv:1911.05507 compares [neutral] arXiv:1905.07799
+  arXiv:2006.04768 compares [neutral] arXiv:1810.04805
+  arXiv:2209.03834 compares [neutral] arXiv:1909.11942
+  arXiv:2209.03834 compares [neutral] arXiv:1802.05365
+  arXiv:2209.03834 compares [neutral] arXiv:1910.10683
+  arXiv:2209.09735 compares [neutral] arXiv:2010.11929
+  arXiv:1612.08083 compares [positive] arXiv:1609.07843
+  arXiv:1612.08083 compares [neutral] arXiv:1701.06538
+  arXiv:1704.05426 compares [neutral] arXiv:1412.6980
+  arXiv:1802.05365 compares [neutral] arXiv:1606.05250
+  arXiv:1809.10853 compares [neutral] arXiv:1808.04444
+  arXiv:1910.10683 compares [positive] arXiv:1804.07461
+  arXiv:1910.10683 compares [positive] arXiv:1409.3215
+  arXiv:1910.10683 compares [positive] arXiv:1609.08144
+  arXiv:2006.04768 compares [neutral] arXiv:1506.06724
+  arXiv:2009.14658 compares [positive] arXiv:1409.3215
+  arXiv:2009.14658 compares [positive] arXiv:1409.0473
+  arXiv:2009.14658 compares [positive] arXiv:1705.03122
+  arXiv:2009.14794 compares [neutral] arXiv:1911.05507
+  arXiv:2009.14794 compares [neutral] arXiv:1506.06724
+  arXiv:2010.11929 compares [positive] arXiv:1412.6980
+  arXiv:2104.09864 compares [neutral] arXiv:1804.07461
+  arXiv:2104.09864 compares [neutral] arXiv:2009.14794
+  arXiv:2106.05822 compares [positive] arXiv:2005.14165
+  arXiv:2205.07100 compares [neutral] arXiv:2004.05150
+  arXiv:2205.07100 compares [neutral] arXiv:2006.04768
+  arXiv:2209.03834 compares [neutral] arXiv:1705.03122
+  arXiv:2209.03834 compares [neutral] arXiv:2004.05150
+  arXiv:2209.03834 compares [neutral] arXiv:2001.04451
+  arXiv:2209.03834 compares [neutral] arXiv:2006.04768
+  arXiv:2209.03834 compares [neutral] arXiv:2009.14794
+  arXiv:2209.03834 compares [neutral] arXiv:1506.06724
+  arXiv:2210.00640 compares [positive] arXiv:2004.05150
+  arXiv:2104.09864 critiques [neutral] arXiv:1910.10683
+  arXiv:2302.00340 motivates [neutral] arXiv:1512.03385
+  arXiv:2210.00640 motivates [neutral] arXiv:1512.03385

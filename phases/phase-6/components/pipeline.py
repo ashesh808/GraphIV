@@ -12,20 +12,28 @@ from __future__ import annotations
 import asyncio
 import json
 import re
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
 
-from _common import LLM_ROUTER, NEO4J_DB, neo4j_driver
+from _common import LLM_ROUTER, NARRATOR_MODEL, PG_DSN
 from compose_report import build_digest, compose
 from extract import extract_many
 from figures import figures_for
 from frontier_rank import rank_landmarks_frontier
+from llm import NO_THINK, chat_sync
 from pagerank import rank_landmarks_ppr
+from recency import FrontierSpec, detect_frontier
 from retrieval_hybrid import hybrid_pool
-from retrieval_refined import refined_pool
-from retrieve import embed_query, fetch_abstracts, free_model
+from retrieval_refined import frontier_pull, refined_pool
+from retrieve import embed_query, free_model
+from store import Store
 from schema import propose_schema
 from subgraph import (
+    Edge,
+    Era,
+    Landmark,
+    PoolNode,
     assign_eras,
     augment_with_ancestors,
     induce_subgraph,
@@ -59,11 +67,132 @@ def _free_router_vram() -> None:
         pass
 
 
+_HYDE_SYS = (
+    "You write a single concise, realistic arXiv-style abstract (4-6 sentences) for a "
+    "hypothetical foundational paper on the user's topic. Output ONLY the abstract text, "
+    "no title, no preamble."
+)
+
+
+def hyde_query(question: str) -> str:
+    """HyDE: an LLM writes a hypothetical abstract so the EMBEDDED query is doc-shaped
+    ('Title: ..\\nAbstract: ..'), matching how the corpus was encoded. A bare topic phrase
+    embeds poorly (it lexically collides with off-topic papers — 'diffusion' -> diffusing-media
+    physics); the doc-shaped hypothetical lands among real abstracts. Falls back to the bare
+    question on any LLM failure. Must run BEFORE the router VRAM is freed for the nomic embed.
+    """
+    try:
+        text, _, _ = chat_sync(NARRATOR_MODEL, _HYDE_SYS, question, 0.5, 400, NO_THINK)
+    except Exception:  # noqa: BLE001
+        return question
+    text = text.strip()
+    return f"Title: {question}\nAbstract: {text}" if text else question
+
+
+# recency-aware rankers take the topic-adaptive frontier; "indegree" is the bare ablation.
 _RANKERS = {
     "ppr": rank_landmarks_ppr,  # personalized PageRank + frontier reservation
-    "frontier": rank_landmarks_frontier,  # in-degree + frontier reservation
-    "indegree": rank_landmarks,  # pure in-degree (ablation: no frontier, no PPR)
+    "frontier": rank_landmarks_frontier,  # age-normalized in-degree + frontier reservation
 }
+
+
+@dataclass
+class Pass:
+    """One retrieval+rank result; shared by the single-pass run and the deep loop."""
+
+    pool: dict[str, PoolNode]
+    landmarks: list[Landmark]
+    edges: list[Edge]
+    eras: list[Era]
+    spine: list[str]
+    tens: list[Edge]
+    leaf: str | None
+    fr: FrontierSpec
+
+
+def retrieve_rank(
+    store: Store,
+    qvec: list[float],
+    question: str,
+    tree: TopicTree,
+    n_pool: int,
+    target: int,
+    m: int,
+    rank: str,
+    no_cluster: bool,
+    no_graph: bool,
+    recency: float,
+    now: datetime,
+    no_frontier_pull: bool = False,
+) -> Pass:
+    """Hybrid pool -> topic-adaptive frontier -> refined drill -> induce subgraph -> rank.
+
+    The single source of the recency logic; both run() and deep_loop reuse it so the
+    frontier handling never diverges between the single-pass and iterative paths.
+    `no_frontier_pull` disables the leaf-independent recent-paper pull (ablation lever).
+    """
+    pool = hybrid_pool(store, qvec, question, n_pool)
+    years0 = [n.year for n in pool.values() if n.year is not None]
+    fr = detect_frontier(years0, now.year, now.month, m, recency)
+    print(
+        f"[research] frontier_year={fr.frontier_year} recent_floor={fr.recent_floor} "
+        f"(now {now.year}-{now.month:02d})",
+        flush=True,
+    )
+    leaf: str | None = None
+    if not no_cluster:  # ablation: skip the topic-tree refinement
+        pool, leaf, _ = refined_pool(
+            store, qvec, pool, tree, fr.frontier_year, target=target
+        )
+    # leaf-independent frontier pull: the topic tree predates the delta, so the newest
+    # papers have no leaf — vector-search them directly so 2025/2026 work can enter the pool.
+    if not no_frontier_pull:
+        front = frontier_pull(
+            store, qvec, fr.frontier_year, want=max(40, fr.recent_floor)
+        )
+        n_front = sum(1 for a in front if a not in pool)
+        pool.update(front)
+        print(f"[research] frontier_pull added {n_front} recent papers", flush=True)
+    else:
+        print("[research] frontier_pull DISABLED (ablation)", flush=True)
+    _ = augment_with_ancestors(store, pool, qvec, max_add=120)
+    edges = [] if no_graph else induce_subgraph(store, list(pool))
+    print(f"[research] pool {len(pool)} · edges {len(edges)} · leaf {leaf}", flush=True)
+    if no_graph or rank == "indegree":
+        landmarks = rank_landmarks(pool, edges, m)
+    else:
+        landmarks = _RANKERS[rank](
+            pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
+        )
+    eras = assign_eras(landmarks)
+    spine = main_path(landmarks, edges)
+    tens = tensions(landmarks, edges)
+    return Pass(pool, landmarks, edges, eras, spine, tens, leaf, fr)
+
+
+def rank_pool(
+    store: Store,
+    pool: dict[str, PoolNode],
+    m: int,
+    rank: str,
+    no_graph: bool,
+    fr: FrontierSpec,
+) -> Pass:
+    """Induce + rank an already-built pool (the deep loop's re-rank after gap expansion).
+
+    Reuses the round-0 frontier `fr` so the topic frontier stays stable across rounds.
+    """
+    edges = [] if no_graph else induce_subgraph(store, list(pool))
+    if no_graph or rank == "indegree":
+        landmarks = rank_landmarks(pool, edges, m)
+    else:
+        landmarks = _RANKERS[rank](
+            pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
+        )
+    eras = assign_eras(landmarks)
+    spine = main_path(landmarks, edges)
+    tens = tensions(landmarks, edges)
+    return Pass(pool, landmarks, edges, eras, spine, tens, None, fr)
 
 
 def run(
@@ -72,39 +201,46 @@ def run(
     rank: str = "ppr",
     no_cluster: bool = False,
     no_graph: bool = False,
+    recency: float = 0.4,
+    no_frontier_pull: bool = False,
 ) -> dict[str, object]:
     n_pool, target, m, do_extract = TIERS[effort]
     print(
-        f"[research] '{question}' effort={effort} rank={rank} "
-        f"no_cluster={no_cluster} no_graph={no_graph}",
+        f"[research] '{question}' effort={effort} rank={rank} recency={recency} "
+        f"no_cluster={no_cluster} no_graph={no_graph} no_frontier_pull={no_frontier_pull}",
         flush=True,
     )
 
+    hyde = hyde_query(
+        question
+    )  # doc-shaped query (router LLM) — before freeing its VRAM
     _free_router_vram()  # reclaim VRAM from any resident LLM before loading nomic
-    qvec = embed_query(question)
+    qvec = embed_query(hyde)
     free_model()
     tree = TopicTree()
-    leaf = None
-    with neo4j_driver() as drv, drv.session(database=NEO4J_DB) as session:
-        pool = hybrid_pool(session, qvec, question, n_pool)
-        if not no_cluster:  # ablation: skip the topic-tree refinement
-            pool, leaf, _ = refined_pool(session, qvec, pool, tree, target=target)
-        _ = augment_with_ancestors(session, pool, qvec, max_add=120)
-        # ablation: no_graph drops the citation subgraph (vector-only, no chronology).
-        edges = [] if no_graph else induce_subgraph(session, list(pool))
-        print(
-            f"[research] pool {len(pool)} · edges {len(edges)} · leaf {leaf}",
-            flush=True,
+    now = datetime.now()
+    store = Store(PG_DSN)
+    try:
+        p = retrieve_rank(
+            store,
+            qvec,
+            question,
+            tree,
+            n_pool,
+            target,
+            m,
+            rank,
+            no_cluster,
+            no_graph,
+            recency,
+            now,
+            no_frontier_pull,
         )
-    # no_graph -> no in-degree/PPR signal, so rank by similarity (sort pool by score).
-    landmarks = (
-        rank_landmarks(pool, edges, m) if no_graph else _RANKERS[rank](pool, edges, m)
-    )
-    eras = assign_eras(landmarks)
-    spine = main_path(landmarks, edges)
-    tens = tensions(landmarks, edges)
-
-    abstracts = fetch_abstracts([lm.arxiv_id for lm in landmarks])
+        pool, landmarks, edges = p.pool, p.landmarks, p.edges
+        eras, spine, tens, fr = p.eras, p.spine, p.tens, p.fr
+        abstracts = store.abstracts([lm.arxiv_id for lm in landmarks])
+    finally:
+        store.close()
     # R1.5: schema from the question + a few top-landmark abstracts.
     samples = [
         f"Title: {lm.title}\nAbstract: {abstracts.get(lm.arxiv_id, '')[:400]}"
@@ -136,10 +272,16 @@ def run(
         flush=True,
     )
 
-    cfg = f"{effort}-{rank}{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
+    cfg = (
+        f"{effort}-{rank}-r{recency}"
+        f"{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
+        f"{'-nofpull' if no_frontier_pull else ''}"
+    )
     out_dir = OUT / _slug(question) / cfg
     out_dir.mkdir(parents=True, exist_ok=True)
-    frontier = sum(1 for lm in landmarks if lm.year is not None and lm.year >= 2023)
+    frontier = sum(
+        1 for lm in landmarks if lm.year is not None and lm.year >= fr.frontier_year
+    )
 
     # P3: deep tier reads + embeds key figures (vision model) for the most-cited landmarks.
     figs: dict[str, dict[str, object]] = {}
@@ -175,12 +317,15 @@ def run(
         "rank": rank,
         "no_cluster": no_cluster,
         "no_graph": no_graph,
+        "recency": recency,
+        "no_frontier_pull": no_frontier_pull,
         "config": cfg,
         "schema": schema.fields,
         "n_pool": len(pool),
         "n_landmarks": len(landmarks),
         "n_edges": len(edges),
-        "frontier_2023plus": frontier,
+        "frontier_year": fr.frontier_year,
+        "frontier_count": frontier,
         "grounded": grounded,
         "off_digest": off_digest,
         "n_figures": len(figs),

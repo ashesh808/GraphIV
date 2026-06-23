@@ -1,0 +1,38 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 3,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 4
+  },
+  "gaps": [
+   "diffusion transformer architecture DiT scaling",
+   "video diffusion models temporal consistency",
+   "rectified flow for one-step generation",
+   "controlnet adapter conditioning methods"
+  ],
+  "assessment": "The review is excellent in historical lineage and recent niche optimizations but misses the dominant architectural shift toward Diffusion Transformers and the expansion into video generation."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 4
+  },
+  "gaps": [
+   "diffusion models direct preference optimization DPO RLHF",
+   "consistency models one-step generation",
+   "quantization and distillation for edge diffusion models",
+   "LLM-guided diffusion prompt adherence"
+  ],
+  "assessment": "The review is excellent in its historical lineage but lacks coverage of recent preference alignment (DPO) and the specific shift toward one-step consistency models."
+ }
+]

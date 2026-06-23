@@ -78,6 +78,33 @@ def render_page(arxiv_id: str, page: int = 0, dpi: int = 150) -> bytes | None:
         return None
 
 
+def pdf_text(arxiv_id: str, max_chars: int = 40000) -> str | None:
+    """Concatenated page text from the on-disk PDF (for deep per-paper critique), or None.
+
+    Reads native PDF text streams page by page up to `max_chars`. Used when ar5iv HTML is
+    unavailable or when the critique wants the whole paper, not just salient sections.
+    """
+    p = pdf_path(arxiv_id)
+    if p is None:
+        return None
+    try:
+        parts: list[str] = []
+        total = 0
+        with fitz.open(p) as doc:  # pyright: ignore[reportUnknownMemberType]
+            for i in range(doc.page_count):
+                pg = doc.load_page(i)  # pyright: ignore[reportUnknownMemberType]
+                raw: Any = pg.get_text()  # pyright: ignore[reportUnknownMemberType]
+                txt = str(raw)
+                parts.append(txt)
+                total += len(txt)
+                if total >= max_chars:
+                    break
+    except Exception:  # noqa: BLE001  (corrupt/locked PDFs are skippable)
+        return None
+    joined = "\n".join(parts).strip()
+    return joined[:max_chars] if joined else None
+
+
 def figure_regions(
     arxiv_id: str, page: int = 0
 ) -> list[tuple[float, float, float, float]]:

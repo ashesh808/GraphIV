@@ -1,0 +1,536 @@
+QUESTION: transformer attention models for language
+
+SCHEMA FIELDS: ['contribution', 'method', 'dataset', 'result', 'limitation']
+
+ERAS:
+  [0] Origins: 2014-2018
+  [1] Key Advances: 2018-2021
+  [2] Current Frontier: 2021-2025
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1409.0473 (2014) "Neural Machine Translation by Jointly Learning to Align and Translate" [cs] (cited-by 93 in-topic, era 0)
+    contribution: Proposes extending the basic encoder-decoder architecture by allowing the model to automatically (soft-)search for relevant parts of a source sentence instead of relying on a fixed-length vector bottleneck.
+    method: An encoder-decoder architecture that incorporates an attention mechanism to perform soft-alignment between source and target words.
+    dataset: English-to-French translation task.
+    result: Achieved translation performance comparable to existing state-of-the-art phrase-based systems.
+    relations: uses arXiv:1409.3215; uses arXiv:1406.1078; cited-by arXiv:2502.00617; cited-by arXiv:2505.23735; used-by arXiv:1409.3215; cited-by arXiv:1608.05859; cited-by arXiv:1609.07843; used-by arXiv:1609.08144
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 92 in-topic, era 0)
+    contribution: Introduction of Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions using adaptive estimates of lower-order moments.
+    method: Adaptive estimates of lower-order moments; includes a variant called AdaMax based on the infinity norm.
+    result: Provides a regret bound on the convergence rate comparable to the best known results under the online convex optimization framework; empirical results demonstrate it compares favorably to other stochastic optimization methods.
+    relations: used-by arXiv:2502.00617; cited-by arXiv:2505.15548; cited-by arXiv:2505.20496; used-by arXiv:2507.15779; used-by arXiv:1806.00187; used-by arXiv:1607.06450
+arXiv:1409.3215 (2014) "Sequence to Sequence Learning with Neural Networks" [cs] (cited-by 34 in-topic, era 0)
+    contribution: A general end-to-end approach to sequence learning using a multilayered LSTM to map input sequences to a fixed-dimensional vector for decoding.
+    method: Encoder-decoder architecture using multilayered Long Short-Term Memory (LSTM) networks.
+    dataset: WMT'14 English to French translation dataset.
+    result: Achieved a BLEU score of 34.8 on the entire test set (penalized on out-of-vocabulary words); reranking 1000 SMT hypotheses increased BLEU score to 36.5.
+    relations: uses arXiv:1409.0473; uses arXiv:1406.1078; used-by arXiv:1609.08144; used-by arXiv:1409.0473; cited-by arXiv:1607.06450; used-by arXiv:1610.08613; cited-by arXiv:1701.06538; cited-by arXiv:1706.03762
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 30 in-topic, era 0)
+    contribution: A novel RNN Encoder-Decoder model that learns semantically and syntactically meaningful phrase representations to improve statistical machine translation.
+    method: A neural network architecture consisting of two recurrent neural networks (RNN) trained jointly to maximize the conditional probability of a target sequence given a source sequence.
+    result: Empirical improvement in statistical machine translation performance when using the model's conditional probabilities as an additional feature in a log-linear model.
+    relations: cited-by arXiv:2505.00929; critiqued-by arXiv:2506.11305; cited-by arXiv:2508.09834; used-by arXiv:1409.3215; used-by arXiv:1409.0473; used-by arXiv:1607.06450
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 62 in-topic, era 0)
+    contribution: A residual learning framework that reformulates layers to learn residual functions with reference to layer inputs, enabling the training of substantially deeper networks.
+    method: Residual learning framework (residual nets) using identity shortcut connections to ease optimization.
+    dataset: ImageNet, CIFAR-10, and COCO.
+    result: Achieved 3.57% error on ImageNet test set (1st place ILSVRC 2015); 28% relative improvement on COCO object detection; evaluated depths up to 152 layers.
+    relations: cited-by arXiv:2503.23814; cited-by arXiv:2508.09834; used-by arXiv:1609.08144; compared-by arXiv:1610.08613; extended-by arXiv:1701.06538; used-by arXiv:1706.03762
+arXiv:1508.07909 (2015) "Neural Machine Translation of Rare Words with Subword Units" [cs] (cited-by 58 in-topic, era 0)
+    contribution: Enabling open-vocabulary neural machine translation by encoding rare and unknown words as sequences of subword units.
+    method: Encoding words as sequences of subword units using techniques such as character n-gram models and Byte Pair Encoding (BPE).
+    dataset: WMT 15 English-German and English-Russian translation tasks.
+    result: Improved over a back-off dictionary baseline by 1.1 BLEU for English-German and 1.3 BLEU for English-Russian.
+    relations: motivates arXiv:2505.02266; used-by arXiv:2507.22448; used-by arXiv:1609.08144; cited-by arXiv:1706.03762; used-by arXiv:1806.00187; used-by arXiv:1809.10853
+arXiv:1506.06724 (2015) "Aligning Books and Movies: Towards Story-like Visual Explanations by
+  Watching Movies and Reading Books" [cs] (cited-by 42 in-topic, era 0)
+    contribution: Aligning books to their movie releases to provide rich, story-like descriptive explanations for visual content that go beyond standard captions.
+    method: Unsupervised neural sentence embeddings from books, video-text neural embeddings for clip-sentence similarity, and a context-aware CNN to combine multiple information sources.
+    result: Demonstrated good quantitative performance for movie/book alignment and qualitative diversity in tasks.
+    relations: cited-by arXiv:2509.07324; used-by arXiv:1607.06450; used-by arXiv:1810.04805; used-by arXiv:1906.08237; cited-by arXiv:1907.11692; used-by arXiv:1909.11942
+arXiv:1508.04025 (2015) "Effective Approaches to Attention-based Neural Machine Translation" [cs] (cited-by 40 in-topic, era 0)
+    contribution: Examination and demonstration of two effective classes of attentional mechanisms (global and local) for neural machine translation.
+    method: Global attention (attends to all source words) and local attention (attends to a subset of source words).
+    dataset: WMT translation tasks between English and German (specifically WMT'15 English to German).
+    result: Local attention achieved a 5.0 BLEU point gain over non-attentional systems; an ensemble model achieved a state-of-the-art 25.9 BLEU points on WMT'15 English to German, improving by 1.0 BLEU point over the previous best system.
+    relations: cited-by arXiv:1609.08144; used-by arXiv:1701.06538; cited-by arXiv:1706.03762; cited-by arXiv:1803.02155; extended-by arXiv:1905.07799; used-by arXiv:1905.10650
+arXiv:1503.02531 (2015) "Distilling the Knowledge in a Neural Network" [stat] (cited-by 24 in-topic, era 0)
+    contribution: A technique to compress the knowledge of an ensemble of models into a single model and the introduction of a new ensemble type composed of full models and specialist models.
+    method: Knowledge distillation (compressing ensemble knowledge into a single model) and a new ensemble architecture using specialist models to distinguish fine-grained classes.
+    dataset: MNIST and a commercial acoustic model.
+    result: Surprising results on MNIST and significant improvement of a heavily used commercial acoustic model.
+    relations: used-by arXiv:2503.18565; cited-by arXiv:2508.09834; cited-by arXiv:1608.05859; cited-by arXiv:1910.10683; cited-by arXiv:2005.14165; critiqued-by arXiv:2006.04768
+arXiv:1609.07843 (2016) "Pointer Sentinel Mixture Models" [cs] (cited-by 67 in-topic, era 0)
+    contribution: Introduction of the pointer sentinel mixture architecture, allowing models to either reproduce words from recent context or use a standard softmax classifier.
+    method: Pointer sentinel-LSTM architecture (mixture of pointer and softmax mechanisms).
+    dataset: Penn Treebank, WikiText corpus.
+    result: Achieved 70.9 perplexity on Penn Treebank using far fewer parameters than a standard softmax LSTM.
+    relations: cites arXiv:1409.0473; used-by arXiv:2502.00617; used-by arXiv:2503.02130; compared-by arXiv:2505.00929; used-by arXiv:2505.06633; used-by arXiv:2505.23735; used-by arXiv:2506.01115
+arXiv:1607.06450 (2016) "Layer Normalization" [stat] (cited-by 57 in-topic, era 0)
+    contribution: Introduction of layer normalization, which computes mean and variance from all summed inputs to neurons in a layer for a single training case, making it independent of mini-batch size and applicable to recurrent neural networks.
+    method: Transposing batch normalization by computing normalization statistics (mean and variance) across the layer dimension for each training case, including adaptive bias and gain applied before non-linearity.
+    result: Substantially reduces training time compared with previously published techniques and stabilizes hidden state dynamics in recurrent networks.
+    relations: cites arXiv:1409.3215; uses arXiv:1406.1078; uses arXiv:1412.6980; uses arXiv:1506.06724; used-by arXiv:2506.11305; used-by arXiv:1706.03762; cited-by arXiv:1802.05365; cited-by arXiv:1803.02155; used-by arXiv:1806.00187; used-by arXiv:1904.10509
+arXiv:1606.05250 (2016) "SQuAD: 100,000+ Questions for Machine Comprehension of Text" [cs] (cited-by 44 in-topic, era 0)
+    contribution: Introduction of the Stanford Question Answering Dataset (SQuAD), a reading comprehension dataset of 100,000+ questions based on Wikipedia articles.
+    method: Analysis of reasoning types using dependency and constituency trees; implementation of a logistic regression model.
+    dataset: SQuAD (100,000+ questions posed by crowdworkers on Wikipedia articles).
+    result: Logistic regression model achieved 51.0% F1 score, compared to a 20% baseline and 86.8% human performance.
+    relations: used-by arXiv:2505.23735; cited-by arXiv:2509.07324; compared-by arXiv:1802.05365; extended-by arXiv:1810.04805; used-by arXiv:1906.08237; used-by arXiv:1907.11692
+arXiv:1609.08144 (2016) "Google's Neural Machine Translation System: Bridging the Gap between
+  Human and Machine Translation" [cs] (cited-by 22 in-topic, era 0)
+    contribution: Presentation of GNMT, a neural machine translation system designed to address computational expense, translation speed, and rare word handling.
+    method: Deep LSTM network with 8 encoder and 8 decoder layers using attention, residual connections, wordpiece sub-word units, and low-precision arithmetic for inference.
+    dataset: WMT'14 English-to-French and English-to-German benchmarks; human side-by-side evaluation on isolated simple sentences.
+    result: Reduces translation errors by an average of 60% compared to Google's phrase-based production system; achieves competitive results to state-of-the-art on WMT'14.
+    relations: uses arXiv:1409.3215; uses arXiv:1409.0473; uses arXiv:1412.6980; uses arXiv:1512.03385; cites arXiv:1406.1078; uses arXiv:1508.07909; extended-by arXiv:1701.06538; used-by arXiv:1706.03762; used-by arXiv:1803.02155; used-by arXiv:1810.04805; compared-by arXiv:1910.10683
+arXiv:1608.05859 (2016) "Using the Output Embedding to Improve Language Models" [cs] (cited-by 20 in-topic, era 0)
+    contribution: Proposes tying the input and output embedding matrices and introduces a new regularization method for the output embedding.
+    method: Weight tying between input and output embedding matrices and a new regularization technique for the output embedding.
+    result: Significant reduction in perplexity across various language models and reduction of neural translation model size to less than half without harming performance.
+    relations: cites arXiv:1409.0473; cites arXiv:1503.02531; used-by arXiv:1706.03762; used-by arXiv:1809.10853
+arXiv:1610.08613 (2016) "Can Active Memory Replace Attention?" [cs] (cited-by 4 in-topic, era 0)
+    contribution: Proposes an extended model of active memory that matches existing attention models on neural machine translation and generalizes better to longer sentences.
+    method: Extended model of active memory designed to address shortcomings in previous parallel/uniform memory mechanisms.
+    result: Matches existing attention models on neural machine translation and shows better generalization to longer sentences.
+    limitation: Previous active memory models did not succeed in most natural language processing tasks, particularly machine translation.
+    relations: cites arXiv:1406.1078; uses arXiv:1409.3215; compares-with arXiv:1409.0473; compares-with arXiv:1512.03385; uses arXiv:1412.6980; cited-by arXiv:1706.03762
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 352 in-topic, era 0)
+    contribution: The Transformer, a new simple network architecture based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
+    method: Attention mechanisms (Transformer architecture) used in an encoder-decoder configuration.
+    dataset: WMT 2014 English-to-German, WMT 2014 English-to-French, and English constituency parsing.
+    result: 28.4 BLEU on WMT 2014 English-to-German (improving over existing best results by over 2 BLEU); 41.8 BLEU on WMT 2014 English-to-French.
+    relations: uses arXiv:1705.03122; uses arXiv:1609.08144; cites arXiv:1701.06538; cites arXiv:1409.3215; compares-with arXiv:1409.0473; cites arXiv:1406.1078; used-by arXiv:2502.00617; cited-by arXiv:2503.02130; cited-by arXiv:2503.23814; cited-by arXiv:2505.00509; cited-by arXiv:2505.00929; cited-by arXiv:2505.06633
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 44 in-topic, era 0)
+    contribution: Proposes decoupling weight decay from the optimization steps to recover the original formulation of weight decay regularization, specifically for adaptive gradient algorithms like Adam.
+    method: Decoupled weight decay regularization (AdamW/SGDW) where weight decay is separated from the loss function gradient updates.
+    dataset: Image classification datasets.
+    result: Decouples the optimal weight decay factor from the learning rate and allows Adam to compete with SGD with momentum in generalization performance.
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; used-by arXiv:2502.00617; cited-by arXiv:2503.02130; used-by arXiv:2505.02266; used-by arXiv:2509.00605; used-by arXiv:2005.14165; used-by arXiv:2104.09864
+arXiv:1705.03122 (2017) "Convolutional Sequence to Sequence Learning" [cs] (cited-by 30 in-topic, era 0)
+    contribution: An architecture for sequence to sequence learning based entirely on convolutional neural networks that allows for full parallelization during training.
+    method: Convolutional neural networks using gated linear units and separate attention modules for each decoder layer.
+    dataset: WMT'14 English-German and WMT'14 English-French translation tasks.
+    result: Outperformed the accuracy of the deep LSTM setup of Wu et al. (2016) at an order of magnitude faster speed on both GPU and CPU.
+    relations: used-by arXiv:1706.03762; used-by arXiv:1806.00187; cited-by arXiv:1803.02155; cited-by arXiv:1904.10509; cited-by arXiv:2104.09864
+arXiv:1704.05426 (2017) "A Broad-Coverage Challenge Corpus for Sentence Understanding through
+  Inference" [cs] (cited-by 30 in-topic, era 0)
+    contribution: Introduction of the Multi-Genre Natural Language Inference (MultiNLI) corpus for sentence understanding and cross-genre domain adaptation evaluation.
+    dataset: MultiNLI corpus containing 433k examples across ten distinct genres of written and spoken English.
+    relations: compares-with arXiv:1412.6980; used-by arXiv:2505.02266; cited-by arXiv:1810.04805; used-by arXiv:1905.10650; cited-by arXiv:1907.11692; cited-by arXiv:1909.11942; cited-by arXiv:1910.10683
+arXiv:1701.06538 (2017) "Outrageously Large Neural Networks: The Sparsely-Gated
+  Mixture-of-Experts Layer" [cs] (cited-by 28 in-topic, era 0)
+    contribution: Achieving >1000x improvements in model capacity with minor losses in computational efficiency via a Sparsely-Gated Mixture-of-Experts layer.
+    method: Sparsely-Gated Mixture-of-Experts (MoE) layer consisting of up to thousands of feed-forward sub-networks controlled by a trainable gating network, applied convolutionally between stacked LSTM layers.
+    dataset: Large language modeling and machine translation benchmarks.
+    result: Models with up to 137 billion parameters achieved significantly better results than state-of-the-art at lower computational cost.
+    relations: extends arXiv:1609.08144; cites arXiv:1409.3215; cites arXiv:1409.0473; uses arXiv:1508.04025; extends arXiv:1512.03385; uses arXiv:1412.6980; used-by arXiv:2508.00544; cited-by arXiv:2508.09834; cited-by arXiv:1706.03762; cited-by arXiv:1809.10853; cited-by arXiv:1901.02860; cited-by arXiv:1910.10683
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 217 in-topic, era 0)
+    contribution: Introduction of BERT, a language representation model designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context.
+    method: Pre-training deep bidirectional representations from unlabeled text using Transformers, followed by fine-tuning with a single additional output layer.
+    dataset: Unlabeled text (for pre-training); GLUE, MultiNLI, SQuAD v1.1, and SQuAD v2.0 (for evaluation).
+    result: Achieved state-of-the-art results on eleven NLP tasks: GLUE score of 80.5%, MultiNLI accuracy of 86.7%, SQuAD v1.1 Test F1 of 93.2, and SQuAD v2.0 Test F1 of 83.1.
+    relations: extends arXiv:1802.05365; cites arXiv:1804.07461; cites arXiv:1704.05426; extends arXiv:1606.05250; uses arXiv:1706.03762; uses arXiv:1609.08144; cited-by arXiv:2505.00929; used-by arXiv:2505.02266; cited-by arXiv:2505.15548; cited-by arXiv:2505.20496; cited-by arXiv:2505.22107; compared-by arXiv:2506.11305
+arXiv:1804.07461 (2018) "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language
+  Understanding" [cs] (cited-by 78 in-topic, era 0)
+    contribution: Introduction of the General Language Understanding Evaluation (GLUE) benchmark and a hand-crafted diagnostic test suite for evaluating and analyzing NLU models.
+    method: A model-agnostic multi-task benchmark designed to evaluate performance across a diverse range of existing NLU tasks.
+    dataset: A diverse range of existing NLU tasks and a hand-crafted diagnostic test suite.
+    result: Baselines using multi-task and transfer learning did not show substantial improvements over training separate models per task.
+    limitation: Current multi-task and transfer learning methods do not immediately provide substantial improvements over task-specific models.
+    relations: used-by arXiv:2508.00544; cited-by arXiv:1810.04805; cited-by arXiv:2509.07324; cited-by arXiv:1906.08237; cited-by arXiv:1907.11692; used-by arXiv:1909.11942
+arXiv:1803.02155 (2018) "Self-Attention with Relative Position Representations" [cs] (cited-by 47 in-topic, era 0)
+    contribution: An alternative approach to the Transformer that extends the self-attention mechanism to efficiently consider relative position representations (distances between sequence elements).
+    method: Relation-aware self-attention mechanism that incorporates relative position representations instead of relying solely on absolute position representations.
+    dataset: WMT 2014 English-to-German and English-to-French translation tasks.
+    result: Improvements of 1.3 BLEU on English-to-German and 0.3 BLEU on English-to-French translation tasks over absolute position representations.
+    relations: uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1705.03122; cites arXiv:1409.0473; cites arXiv:1406.1078; cites arXiv:1508.04025; compared-by arXiv:1806.00187; compared-by arXiv:1901.02860; cited-by arXiv:1905.07799; cited-by arXiv:1910.10683; cited-by arXiv:2104.09864
+arXiv:1802.05365 (2018) "Deep contextualized word representations" [cs] (cited-by 39 in-topic, era 0)
+    contribution: Introduction of deep contextualized word representations that model complex word use (syntax/semantics) and variation across linguistic contexts (polysemy).
+    method: Learned functions of the internal states of a deep bidirectional language model (biLM) pre-trained on a large text corpus.
+    result: Significantly improved state of the art across six challenging NLP problems, including question answering, textual entailment, and sentiment analysis.
+    relations: cites arXiv:1607.06450; compares-with arXiv:1606.05250; uses arXiv:1412.6980; extended-by arXiv:1810.04805; used-by arXiv:1901.02860; compared-by arXiv:1906.08237; cited-by arXiv:1907.11692; cited-by arXiv:1909.11942; cited-by arXiv:1910.03771
+arXiv:1809.10853 (2018) "Adaptive Input Representations for Neural Language Modeling" [cs] (cited-by 36 in-topic, era 0)
+    contribution: Introduction of adaptive input representations for neural language modeling that extend adaptive softmax to input representations of variable capacity.
+    method: Systematic comparison of various factorization choices (words, characters, or sub-word units) for a self-attentional architecture.
+    dataset: WikiText-103 and Billion Word benchmark.
+    result: Models are more than twice as fast to train than character input CNN with fewer parameters; achieved 18.7 perplexity on WikiText-103 (10.5 improvement) and 23.02 perplexity on Billion Word.
+    relations: cites arXiv:1701.06538; compares-with arXiv:1808.04444; uses arXiv:1706.03762; uses arXiv:1608.05859; uses arXiv:1512.03385; cites arXiv:1609.07843; used-by arXiv:2502.00617; compared-by arXiv:1901.02860; cited-by arXiv:1911.05507; cited-by arXiv:2509.20581; cited-by arXiv:1906.08237; cited-by arXiv:1909.11942
+arXiv:1806.00187 (2018) "Scaling Neural Machine Translation" [cs] (cited-by 30 in-topic, era 0)
+    contribution: Demonstrating that reduced precision and large batch training can speed up NMT training by nearly 5x on a single 8-GPU machine.
+    method: Reduced precision and large batch training.
+    dataset: WMT'14 English-German, Paracrawl, and WMT'14 English-French.
+    result: 29.3 BLEU (WMT'14 En-De in 85 mins on 128 GPUs), 29.8 BLEU (Paracrawl), and 43.2 BLEU (WMT'14 En-Fr in 8.5 hours on 128 GPUs).
+    relations: uses arXiv:1706.03762; uses arXiv:1705.03122; compares-with arXiv:1803.02155; uses arXiv:1412.6980; cites arXiv:1409.0473; uses arXiv:1508.07909; cited-by arXiv:2001.04451; cited-by arXiv:1809.10853; used-by arXiv:1905.10650; cited-by arXiv:1907.11692; cited-by arXiv:2006.04768
+arXiv:1808.04444 (2018) "Character-Level Language Modeling with Deeper Self-Attention" [cs] (cited-by 27 in-topic, era 0)
+    contribution: A deep (64-layer) transformer model with fixed context outperforms RNN variants in character-level language modeling.
+    method: 64-layer transformer with auxiliary losses at intermediate network layers and intermediate sequence positions.
+    dataset: text8 and enwik8
+    result: 1.13 bits per character on text8 and 1.06 bits per character on enwik8.
+    relations: used-by arXiv:1901.02860; used-by arXiv:1904.10509; used-by arXiv:1905.07799; cited-by arXiv:1911.05507; compared-by arXiv:1809.10853; cited-by arXiv:1810.04805
+arXiv:1901.02860 (2019) "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context" [cs] (cited-by 109 in-topic, era 1)
+    contribution: A novel neural architecture (Transformer-XL) that enables learning dependencies beyond a fixed length without disrupting temporal coherence and resolves context fragmentation.
+    method: Segment-level recurrence mechanism and a novel positional encoding scheme.
+    dataset: enwiki8, text8, WikiText-103, One Billion Word, and Penn Treebank.
+    result: Learns dependency 80% longer than RNNs and 450% longer than vanilla Transformers; up to 1,800+ times faster during evaluation; achieves bpc/perplexity of 0.99 (enwiki8), 1.08 (text8), 18.3 (WikiText-103), 21.8 (One Billion Word), and 54.5 (Penn Treebank).
+    relations: compares-with arXiv:1809.10853; uses arXiv:1808.04444; cites arXiv:1701.06538; compares-with arXiv:1803.02155; compares-with arXiv:1706.03762; uses arXiv:1802.05365; used-by arXiv:2502.00617; compared-by arXiv:2505.00929; cited-by arXiv:2508.09834; compared-by arXiv:1905.07799; extended-by arXiv:1906.08237; cited-by arXiv:1910.03771
+arXiv:1904.10509 (2019) "Generating Long Sequences with Sparse Transformers" [cs] (cited-by 91 in-topic, era 1)
+    abstract: Transformers are powerful sequence models, but require time and memory that
+grows quadratically with the sequence length. In this paper we introduce sparse
+factorizations of the attention matrix which reduce this to $O(n \sqrt{n})$. We
+also introduce a) a variation on architecture and initialization
+    relations: uses arXiv:1808.04444; cites arXiv:1705.03122; extends arXiv:1706.03762; uses arXiv:1607.06450; cited-by arXiv:2506.11305; used-by arXiv:2507.19595; cited-by arXiv:2508.09834; cited-by arXiv:1911.05507; cited-by arXiv:2006.04768; cited-by arXiv:2009.14794
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 87 in-topic, era 1)
+    contribution: Introduction of a unified framework that converts all text-based language problems into a text-to-text format and a systematic study of transfer learning techniques.
+    method: Unified text-to-text transformer framework and systematic comparison of pre-training objectives, architectures, unlabeled datasets, and transfer approaches.
+    dataset: Colossal Clean Crawled Corpus (C4).
+    result: Achieved state-of-the-art results on many benchmarks covering summarization, question answering, and text classification.
+    relations: uses arXiv:1810.04805; compares-with arXiv:1909.11942; extends arXiv:1907.11692; uses arXiv:1906.08237; cites arXiv:1701.06538; compares-with arXiv:1804.07461; cited-by arXiv:2503.02130; cited-by arXiv:2505.00929; cited-by arXiv:2506.11305; cited-by arXiv:2508.09834; used-by arXiv:2005.14165; cited-by arXiv:1910.03771
+arXiv:1907.11692 (2019) "RoBERTa: A Robustly Optimized BERT Pretraining Approach" [cs] (cited-by 86 in-topic, era 1)
+    contribution: A replication study of BERT pretraining that identifies the impact of hyperparameters and training data size, demonstrating that BERT was significantly undertrained.
+    method: Robustly optimized BERT pretraining through careful measurement of key hyperparameters and training data size.
+    dataset: GLUE, RACE, and SQuAD.
+    result: Achieved state-of-the-art results on GLUE, RACE, and SQuAD, matching or exceeding the performance of models published after BERT.
+    relations: extends arXiv:1810.04805; uses arXiv:1906.08237; cites arXiv:1506.06724; cites arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1412.6980; cited-by arXiv:2505.20496; cited-by arXiv:2506.11305; cited-by arXiv:1906.08237; cited-by arXiv:1910.03771; extended-by arXiv:1910.10683; used-by arXiv:2006.04768
+arXiv:1906.08237 (2019) "XLNet: Generalized Autoregressive Pretraining for Language Understanding" [cs] (cited-by 54 in-topic, era 1)
+    contribution: A generalized autoregressive pretraining method that enables learning bidirectional contexts by maximizing the expected likelihood over all permutations of the factorization order.
+    method: Generalized autoregressive pretraining using permutation language modeling and integration of Transformer-XL ideas.
+    result: Outperforms BERT on 20 tasks, including question answering, natural language inference, sentiment analysis, and document ranking.
+    relations: extends arXiv:1901.02860; cites arXiv:1907.11692; uses arXiv:1810.04805; compares-with arXiv:1802.05365; uses arXiv:1706.03762; uses arXiv:1606.05250; cited-by arXiv:2505.20496; used-by arXiv:1907.11692; cited-by arXiv:1910.03771; used-by arXiv:1909.11942; used-by arXiv:1910.10683; cited-by arXiv:1911.05507
+arXiv:1911.05507 (2019) "Compressive Transformers for Long-Range Sequence Modelling" [cs] (cited-by 54 in-topic, era 1)
+    contribution: Introduction of the Compressive Transformer, an attentive sequence model that compresses past memories for long-range sequence learning, and the proposal of the PG-19 open-vocabulary language modelling benchmark.
+    method: Compressive Transformer (attentive sequence model that compresses past memories).
+    dataset: WikiText-103, Enwik8, and PG-19.
+    result: Achieved 17.1 ppl on WikiText-103 and 0.97 bpc on Enwik8.
+    relations: cites arXiv:1808.04444; uses arXiv:1901.02860; cites arXiv:1904.10509; compares-with arXiv:1905.07799; cites arXiv:1809.10853; uses arXiv:1706.03762; cited-by arXiv:2502.00617; used-by arXiv:2505.15548; cited-by arXiv:2506.11305; cited-by arXiv:2508.09834; cited-by arXiv:2007.14062; compared-by arXiv:2009.14794
+arXiv:1909.11942 (2019) "ALBERT: A Lite BERT for Self-supervised Learning of Language
+  Representations" [cs] (cited-by 49 in-topic, era 1)
+    contribution: Two parameter-reduction techniques to lower memory consumption and increase training speed, and a self-supervised loss focusing on inter-sentence coherence.
+    method: Parameter reduction (factorized embedding parameterization and cross-layer parameter sharing) and a coherence-based self-supervised loss.
+    dataset: GLUE, RACE, and SQuAD benchmarks.
+    result: Established new state-of-the-art results on GLUE, RACE, and SQuAD with fewer parameters compared to BERT-large.
+    relations: uses arXiv:1906.08237; uses arXiv:1810.04805; uses arXiv:1907.11692; cites arXiv:1802.05365; uses arXiv:1706.03762; cites arXiv:1910.10683; cited-by arXiv:2505.02266; cited-by arXiv:1910.03771; compared-by arXiv:1910.10683; cited-by arXiv:1906.08237; cited-by arXiv:2001.08361; cited-by arXiv:2005.14165
+arXiv:1905.09418 (2019) "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy
+  Lifting, the Rest Can Be Pruned" [cs] (cited-by 48 in-topic, era 1)
+    contribution: Identification that specialized heads perform key linguistic roles and can be pruned significantly without major performance loss.
+    method: Pruning heads using stochastic gates and a differentiable relaxation of the L0 penalty.
+    dataset: English-Russian WMT dataset.
+    result: Pruning 38 out of 48 encoder heads results in a drop of only 0.15 BLEU.
+    relations: uses arXiv:1706.03762; uses arXiv:1508.07909; uses arXiv:1412.6980; compared-by arXiv:2507.02944; cited-by arXiv:1905.10650
+arXiv:1910.03771 (2019) "HuggingFace's Transformers: State-of-the-art Natural Language Processing" [cs] (cited-by 47 in-topic, era 1)
+    contribution: An open-source library providing state-of-the-art Transformer architectures under a unified API and a curated collection of pretrained models.
+    method: A unified API for accessing various Transformer architectures and pretrained models designed for extensibility, simplicity, and industrial deployment.
+    relations: cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1901.02860; cites arXiv:1906.08237; cites arXiv:1910.10683; cites arXiv:2001.04451; cited-by arXiv:2507.22448; used-by arXiv:2104.09864
+arXiv:1905.10650 (2019) "Are Sixteen Heads Really Better than One?" [cs] (cited-by 46 in-topic, era 1)
+    contribution: Observation that a large percentage of attention heads can be removed at test time without significantly impacting performance, and some layers can be reduced to a single head.
+    method: Pruning attention heads using greedy algorithms to improve speed, memory efficiency, and accuracy.
+    relations: uses arXiv:1706.03762; uses arXiv:1806.00187; uses arXiv:1810.04805; cites arXiv:1409.0473; cites arXiv:1406.1078; uses arXiv:1508.04025; cited-by arXiv:2006.16236
+arXiv:1905.07799 (2019) "Adaptive Attention Span in Transformers" [cs] (cited-by 38 in-topic, era 1)
+    contribution: A novel self-attention mechanism that learns its optimal attention span to extend maximum context size while controlling memory and computation.
+    method: Adaptive attention span mechanism.
+    dataset: text8 and enwiki8.
+    result: Achieved state-of-the-art performance on text8 and enwiki8 using a maximum context of 8k characters.
+    relations: uses arXiv:1808.04444; compares-with arXiv:1901.02860; compares-with arXiv:1706.03762; cites arXiv:1803.02155; uses arXiv:1409.0473; extends arXiv:1508.04025; compared-by arXiv:2502.00617; cited-by arXiv:2506.11305; cited-by arXiv:2508.09834; compared-by arXiv:1911.05507; cited-by arXiv:2007.14062; cited-by arXiv:2001.04451
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 132 in-topic, era 1)
+    contribution: Demonstrating that scaling up language models to 175 billion parameters significantly improves task-agnostic, few-shot performance without gradient updates or fine-tuning.
+    method: Training GPT-3, an autoregressive language model with 175 billion parameters, and testing it in a few-shot setting via text interaction.
+    dataset: Various NLP datasets including translation, question-answering, cloze tasks, unscrambling words, novel word usage, 3-digit arithmetic, and news article generation.
+    result: Achieved strong performance on many NLP tasks, competitiveness with prior state-of-the-art fine-tuning approaches, and news articles indistinguishable from human-written ones to evaluators.
+    limitation: Struggles on certain datasets and faces methodological issues related to training on large web corpora.
+    relations: uses arXiv:1910.10683; uses arXiv:2001.08361; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1906.08237; cited-by arXiv:2503.23814; cited-by arXiv:2504.08719; used-by arXiv:2505.06633; cited-by arXiv:2505.22107; cited-by arXiv:2506.01919; cited-by arXiv:2506.17671
+arXiv:2004.05150 (2020) "Longformer: The Long-Document Transformer" [cs] (cited-by 94 in-topic, era 1)
+    contribution: Introduction of the Longformer, an attention mechanism that scales linearly with sequence length, and the Longformer-Encoder-Decoder (LED) for generative tasks.
+    method: Combines local windowed attention with task-motivated global attention as a drop-in replacement for standard self-attention.
+    dataset: text8, enwik8, WikiHop, TriviaQA, and arXiv summarization dataset.
+    result: Achieves state-of-the-art results on text8 and enwik8; outperforms RoBERTa on long document tasks; sets new state-of-the-art results on WikiHop and TriviaQA.
+    relations: compared-by arXiv:2502.00617; cited-by arXiv:2504.08719; cited-by arXiv:2505.22107; cited-by arXiv:2507.19595; extended-by arXiv:2508.09834; cited-by arXiv:1910.03771
+arXiv:2001.04451 (2020) "Reformer: The Efficient Transformer" [cs] (cited-by 80 in-topic, era 1)
+    abstract: Large Transformer models routinely achieve state-of-the-art results on a
+number of tasks but training these models can be prohibitively costly,
+especially on long sequences. We introduce two techniques to improve the
+efficiency of Transformers. For one, we replace dot-product attention by one
+that u
+    relations: compares-with arXiv:1706.03762; cites arXiv:1806.00187; cites arXiv:1808.04444; uses arXiv:1607.06450; cites arXiv:1810.04805; cites arXiv:1905.07799; cited-by arXiv:2505.22107; cited-by arXiv:2506.11305; cited-by arXiv:2507.19595; cited-by arXiv:2508.09834; cited-by arXiv:1910.03771; cited-by arXiv:2006.04768
+arXiv:2007.14062 (2020) "Big Bird: Transformers for Longer Sequences" [cs] (cited-by 66 in-topic, era 1)
+    contribution: A sparse attention mechanism that reduces quadratic dependency on sequence length to linear while remaining a universal approximator and Turing complete.
+    method: BigBird sparse attention mechanism incorporating global tokens, local attention, and random attention.
+    result: Handles sequences up to 8x longer than previously possible on similar hardware; improves performance on question answering and summarization tasks.
+    relations: cites arXiv:1905.07799; cites arXiv:1901.02860; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1910.10683; cited-by arXiv:2504.08719; cited-by arXiv:2505.22107; cited-by arXiv:2507.19595; extended-by arXiv:2508.09834; cited-by arXiv:2509.20581; cited-by arXiv:2509.24663
+arXiv:2006.16236 (2020) "Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention" [cs] (cited-by 65 in-topic, era 1)
+    contribution: Expressing self-attention as a linear dot-product of kernel feature maps to reduce complexity from O(N^2) to O(N) and revealing the relationship between Transformers and RNNs.
+    method: Linear dot-product of kernel feature maps using the associativity property of matrix products to enable an iterative implementation.
+    result: Up to 4000x faster on autoregressive prediction of very long sequences while achieving similar performance to vanilla transformers.
+    relations: uses arXiv:1706.03762; cites arXiv:1409.3215; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1907.11692; used-by arXiv:2503.02130; extended-by arXiv:2503.18565; cited-by arXiv:2505.22107; compared-by arXiv:2505.23735; critiqued-by arXiv:2506.11305; cited-by arXiv:2506.17671
+arXiv:2006.04768 (2020) "Linformer: Self-Attention with Linear Complexity" [cs] (cited-by 64 in-topic, era 1)
+    contribution: Proposes the Linformer, a new self-attention mechanism that reduces complexity from $O(n^2)$ to $O(n)$ in both time and space by approximating self-attention with a low-rank matrix.
+    method: Low-rank matrix approximation of the self-attention mechanism.
+    result: Performs on par with standard Transformer models while being more memory- and time-efficient.
+    relations: cites arXiv:1706.03762; cites arXiv:1904.10509; cites arXiv:2001.04451; uses arXiv:1907.11692; compares-with arXiv:1810.04805; cites arXiv:1806.00187; cited-by arXiv:2506.11305; cited-by arXiv:2506.17671; extended-by arXiv:2507.19595; compared-by arXiv:2508.09834; cited-by arXiv:2509.20581; cited-by arXiv:2509.00605
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 62 in-topic, era 1)
+    contribution: Demonstrates that a pure transformer applied directly to sequences of image patches can perform very well on image classification tasks without reliance on CNNs.
+    method: Vision Transformer (ViT) architecture applied to sequences of 16x16 image patches.
+    dataset: ImageNet, CIFAR-100, VTAB, and other mid-sized or small image recognition benchmarks.
+    result: Attains excellent results compared to state-of-the-art convolutional networks while requiring substantially fewer computational resources to train.
+    relations: uses arXiv:1706.03762; cites arXiv:2005.14165; uses arXiv:1810.04805; uses arXiv:1512.03385; cites arXiv:1904.10509; cites arXiv:1809.10853; extended-by arXiv:2505.00929; cited-by arXiv:2506.01115; cited-by arXiv:2508.09834
+arXiv:2009.14794 (2020) "Rethinking Attention with Performers" [cs] (cited-by 58 in-topic, era 1)
+    contribution: Introduction of Performers, a Transformer architecture that estimates regular softmax full-rank attention with linear space and time complexity using the FAVOR+ mechanism.
+    method: Fast Attention Via positive Orthogonal Random features (FAVOR+), which approximates softmax attention-kernels using positive orthogonal random features.
+    dataset: A rich set of tasks including pixel-prediction, text models, and protein sequence modeling.
+    result: Demonstrated competitive results compared to other efficient sparse and dense attention methods across various tasks.
+    relations: cites arXiv:1904.10509; compares-with arXiv:1911.05507; cites arXiv:2004.05150; uses arXiv:2006.16236; cites arXiv:1706.03762; uses arXiv:2006.04768; cited-by arXiv:2505.22107; critiqued-by arXiv:2506.11305; cited-by arXiv:2507.19595; cited-by arXiv:2509.20581; cited-by arXiv:2509.00605; compared-by arXiv:2104.09864
+arXiv:2001.08361 (2020) "Scaling Laws for Neural Language Models" [cs] (cited-by 36 in-topic, era 1)
+    contribution: Empirical scaling laws for language model performance (cross-entropy loss) as a power-law function of model size, dataset size, and compute.
+    method: Empirical study of scaling trends across more than seven orders of magnitude to determine optimal compute allocation.
+    result: Loss scales as a power-law; larger models are significantly more sample-efficient; optimal training involves large models on modest data, stopping before convergence.
+    limitation: Architectural details like network width or depth have minimal effects within a wide range.
+    relations: cites arXiv:1810.04805; cites arXiv:1906.08237; cites arXiv:1907.11692; cites arXiv:1910.10683; uses arXiv:1706.03762; uses arXiv:1508.07909; cited-by arXiv:2502.00617; cited-by arXiv:2507.15779; cited-by arXiv:2507.15343; used-by arXiv:2005.14165
+arXiv:2104.09864 (2021) "RoFormer: Enhanced Transformer with Rotary Position Embedding" [cs] (cited-by 52 in-topic, era 1)
+    contribution: Proposes Rotary Position Embedding (RoPE) to integrate absolute position via rotation matrices while incorporating explicit relative position dependency in self-attention.
+    method: RoFormer architecture using Rotary Position Embedding (RoPE) to encode absolute position with a rotation matrix.
+    dataset: Various long text classification benchmark datasets.
+    result: Consistently overcomes alternatives in long text classification tasks.
+    relations: extends arXiv:1706.03762; extends arXiv:1810.04805; cites arXiv:1803.02155; uses arXiv:2006.16236; cites arXiv:1901.02860; cites arXiv:1705.03122; compared-by arXiv:2503.02130; cited-by arXiv:2504.08719; used-by arXiv:2505.02266; used-by arXiv:2506.01115; cited-by arXiv:2506.01919; compared-by arXiv:2506.11305
+arXiv:2507.19595 (2025) "Efficient Attention Mechanisms for Large Language Models: A Survey" [cs] (cited-by 2 in-topic, era 2)
+    contribution: A systematic and comprehensive survey of efficient attention mechanisms (linear and sparse) for large language models, covering algorithmic innovations, hardware considerations, and integration into pre-trained models.
+    method: Categorization of efficient attention into linear attention (kernel approximations, recurrent formulations, fastweight dynamics) and sparse attention (fixed patterns, block-wise routing, clustering strategies).
+    limitation: The quadratic time and memory complexity of standard self-attention in Transformer-based architectures.
+    relations: cites arXiv:1706.03762; uses arXiv:2006.16236; uses arXiv:1904.10509; cites arXiv:2009.14794; cites arXiv:2004.05150; cites arXiv:2001.04451; cited-by arXiv:2508.09834; cited-by arXiv:2509.24663
+arXiv:2505.23735 (2025) "ATLAS: Learning to Optimally Memorize the Context at Test Time" [cs] (cited-by 2 in-topic, era 2)
+    contribution: ATLAS, a high-capacity long-term memory module that optimizes memory based on both current and past tokens to overcome the online update limitation of recurrent models.
+    method: A long-term memory module that optimizes memory using current and past tokens, integrated into a new family of Transformer-like architectures called DeepTransformers.
+    dataset: BABILong benchmark
+    result: Surpasses Transformers and recent linear recurrent models; achieves +80% accuracy in 10M context length on the BABILong benchmark.
+    relations: cites arXiv:1409.0473; cites arXiv:1706.03762; compares-with arXiv:2006.16236; uses arXiv:1609.07843; uses arXiv:1606.05250; cited-by arXiv:2507.19595; cited-by arXiv:2508.09834
+arXiv:2503.02130 (2025) "Forgetting Transformer: Softmax Attention with a Forget Gate" [cs] (cited-by 1 in-topic, era 2)
+    contribution: Introduction of the Forgetting Transformer (FoX), which incorporates a data-dependent forget gate into the softmax attention mechanism to improve long-context modeling and length extrapolation.
+    method: Forgetting Attention, which down-weights unnormalized attention scores in a data-dependent way; also introduces a 'Pro' block design.
+    result: Outperforms Transformer on long-context language modeling, length extrapolation, and short-context downstream tasks; performs on par with Transformer on long-context downstream tasks; retains superior long-context capabilities over Mamba-2, HGRN2, and DeltaNet in needle-in-the-haystack tests.
+    relations: compares-with arXiv:2104.09864; cites arXiv:1706.03762; uses arXiv:2006.16236; cites arXiv:1711.05101; uses arXiv:1609.07843; cites arXiv:1910.10683
+arXiv:2504.08719 (2025) "SWAN-GPT: An Efficient and Scalable Approach for Long-Context Language
+  Modeling" [cs] (cited-by 1 in-topic, era 2)
+    contribution: A decoder-only Transformer architecture (SWAN-GPT) that robustly generalizes to sequence lengths substantially longer than those seen during training without additional long-context training.
+    method: Interleaving layers without positional encodings (NoPE) with sliding-window attention layers equipped with rotary positional encodings (SWA-RoPE), enhanced by dynamic scaling of attention scores during inference.
+    result: Strong performance on sequence lengths significantly longer than training length; more computationally efficient than standard GPT architectures with higher throughput.
+    relations: cites arXiv:2005.14165; cites arXiv:2104.09864; cites arXiv:2004.05150; cites arXiv:2007.14062
+arXiv:2509.08184 (2025) "Selective Induction Heads: How Transformers Select Causal Structures In Context" [cs] (cited-by 1 in-topic, era 2)
+    contribution: Introduction of Selective Induction Heads, a circuit that enables transformers to dynamically select the correct causal structure (lag) in-context.
+    method: A framework using interleaved Markov chains with different lags and fixed transition probabilities, implemented via a 3-layer transformer construction and supported by theoretical analysis of asymptotic convergence to the maximum likelihood solution.
+    result: Empirical demonstration that transformers identify the correct lag and copy the corresponding token from the past to predict the next token.
+    relations: (none in-topic)
+arXiv:2506.01115 (2025) "Is Random Attention Sufficient for Sequence Modeling? Disentangling Trainable Components in the Transformer" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Disentangling the roles of attention and MLP layers in Transformers and demonstrating that frozen key/query weights can still form induction heads and perform language modeling.
+    method: Comparative analysis of standard Transformers against variants with frozen MLP layers or frozen attention weights, and the introduction of MixiT (an architecture with entirely random attention scores and stable signal propagation).
+    result: Attention with frozen key and query weights can form induction heads and perform competitively on language modeling; attention is largely responsible for in-context reasoning, while MLPs handle knowledge storage.
+    relations: uses arXiv:2104.09864; cites arXiv:1706.03762; cites arXiv:2010.11929; uses arXiv:1609.07843
+arXiv:2506.11305 (2025) "Don't Pay Attention" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Avey, a foundational architecture that decouples sequence length from context width by pairing a ranker with an autoregressive neural processor to select relevant tokens.
+    method: A ranker paired with an autoregressive neural processor to select and contextualize only the most relevant tokens for any given token.
+    result: Compares favorably to the Transformer on standard short-range NLP benchmarks and significantly outperforms it on tasks requiring long-range dependency modeling.
+    relations: compares-with arXiv:1706.03762; cites arXiv:1907.11692; cites arXiv:1910.10683; critiques arXiv:2006.16236; critiques arXiv:2009.14794; cites arXiv:2006.04768
+arXiv:2510.11602 (2025) "Deconstructing Attention: Investigating Design Principles for Effective Language Modeling" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Systematic deconstruction of Transformer attention design principles to identify which components are indispensable for effective language modeling.
+    method: Designing controlled variants that selectively relax four principles (mixing information across positions, sequence-dependent activations, specific mathematical form, and coupling of queries/keys) applied uniformly or in hybrid architectures.
+    result: Token mixing is indispensable (absence leads to near-random behavior); mathematical form and sequence dependency can be substantially relaxed, especially in hybrid architectures; variants failing in isolation can succeed when interleaved with standard attention.
+    relations: (none in-topic)
+arXiv:2508.09834 (2025) "Speed Always Wins: A Survey on Efficient Architectures for Large Language Models" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A systematic examination and blueprint of innovative LLM architectures designed to address transformer computational limitations and boost efficiency.
+    method: A survey categorizing recent studies into linear/sparse sequence modeling, efficient full attention variants, sparse mixture-of-experts (MoE), hybrid architectures, and emerging diffusion LLMs.
+    relations: extends arXiv:2007.14062; cites arXiv:2005.14165; cites arXiv:1910.10683; uses arXiv:1706.03762; uses arXiv:2006.16236; cites arXiv:2507.19595
+arXiv:2505.22107 (2025) "Curse of High Dimensionality Issue in Transformer for Long-context Modeling" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Dynamic Group Attention (DGA) to reduce computational redundancy in long-context modeling by reformulating sequence modeling as a supervised learning task and applying group coding.
+    method: Reformulation of probabilistic sequence modeling as a supervised learning task; theoretical analysis of attention sparsity; formulation of attention optimization as a linear coding problem; implementation of Dynamic Group Attention (DGA) using a group coding strategy to aggregate less important toke
+    result: DGA significantly reduces computational costs while maintaining competitive performance.
+    relations: cites arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:2001.04451; cites arXiv:2004.05150; cites arXiv:2007.14062; cites arXiv:2009.14794
+arXiv:2505.06633 (2025) "Attention Is Not All You Need: The Importance of Feedforward Networks in Transformer Models" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Demonstrates that the Feedforward Network (FFN) is critical to model performance and that a three-layer FFN configuration can outperform the standard two-layer configuration.
+    method: Comparative analysis of transformer block configurations, specifically comparing standard two-layer FFNs against three-layer FFNs.
+    result: Three-layer FFN models with fewer blocks deliver lower training loss with fewer total parameters in less time compared to standard two-layer configurations.
+    relations: uses arXiv:1609.07843; cites arXiv:1706.03762; uses arXiv:2005.14165
+arXiv:2509.24663 (2025) "InfLLM-V2: Dense-Sparse Switchable Attention for Seamless Short-to-Long Adaptation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of InfLLM-V2, a dense-sparse switchable attention framework that enables seamless short-to-long sequence adaptation without extra parameters or disrupting pretrain-on-short/finetune-on-long workflows.
+    method: A trainable sparse attention mechanism that reuses dense attention parameters via parameter-free architecture modification, utilizing dense attention for short inputs and transitioning to sparse attention for long sequences.
+    result: 4$	imes$ faster than dense attention while retaining 98.1% of long-context understanding performance and 99.7% of chain-of-thought reasoning performance.
+    relations: cites arXiv:2005.14165; cites arXiv:1706.03762; cites arXiv:2004.05150; cites arXiv:2007.14062; cites arXiv:2507.19595; cites arXiv:1904.10509
+arXiv:2503.18565 (2025) "Distil-xLSTM: Learning Attention Mechanisms through Recurrent Structures" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Distil-xLSTM, an xLSTM-based Small Language Model (SLM) trained via knowledge distillation from an LLM to approximate transformer-based attention parametrization.
+    method: Knowledge distillation from a Large Language Model (LLM) into an xLSTM-based recurrent structure to approximate attention mechanisms.
+    result: Shows promising results while being compute and scale efficient with minimal training.
+    relations: uses arXiv:1503.02531; extends arXiv:2006.16236
+arXiv:2505.00929 (2025) "Compact Recurrent Transformer with Persistent Memory" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel and efficient Compact Recurrent Transformer (CRT) that combines shallow Transformer models with recurrent neural networks to manage a single persistent memory vector for long-range information.
+    method: Combining shallow Transformer models processing short local segments with recurrent neural networks to compress and manage a single persistent memory vector.
+    dataset: WordPTB, WikiText-103, and Toyota Smarthome video dataset.
+    result: Achieved comparable or superior prediction results to full-length Transformers using half or quarter size segments and substantially reduced FLOPs; achieved state-of-the-art performance on the Toyota Smarthome video dataset.
+    relations: cites arXiv:1706.03762; cites arXiv:1406.1078; cites arXiv:1810.04805; cites arXiv:1910.10683; compares-with arXiv:1609.07843; compares-with arXiv:1901.02860
+arXiv:2502.00617 (2025) "Efficient Language Modeling for Low-Resource Settings with Hybrid
+  RNN-Transformer Architectures" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Improving transformer-based model performance in low-data regimes by selectively replacing attention layers with feed-forward and quasi-recurrent neural network layers.
+    method: Hybrid RNN-Transformer architectures using selective replacement of attention layers with feed-forward and quasi-recurrent neural network layers.
+    dataset: Enwik8 and Wikitext-103 corpora.
+    result: Reduced architectures outperform existing models with a comparable number of parameters and achieve comparable performance to larger models with significantly fewer parameters.
+    relations: uses arXiv:1809.10853; uses arXiv:1706.03762; cites arXiv:1409.0473; cites arXiv:2001.08361; uses arXiv:1901.02860; uses arXiv:1609.07843
+arXiv:2507.15343 (2025) "StackTrans: From Large Language Model to Large Pushdown Automata Model" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes StackTrans, an architecture that incorporates differentiable hidden state stacks between Transformer layers to better capture the Chomsky hierarchy (e.g., regular expressions and deterministic context-free grammars).
+    method: Explicitly incorporates stack operations (pushing and popping hidden states) between Transformer layers that are differentiable and learnable end-to-end, maintaining compatibility with flash-attention.
+    dataset: Benchmarks for Chomsky hierarchies and large-scale natural languages.
+    result: StackTrans-360M outperforms several larger open-source LLMs with 2-3x more parameters; successfully scaled from 360M to 7B parameters.
+    relations: uses arXiv:1706.03762; uses arXiv:2005.14165; cites arXiv:2001.08361
+arXiv:2509.00605 (2025) "Gated Associative Memory: A Parallel O(N) Architecture for Efficient Sequence Modeling" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes the Gated Associative Memory (GAM) network, a fully parallel architecture for sequence modeling with linear complexity O(N) relative to sequence length.
+    method: A GAM block replacing self-attention with two parallel pathways: a causal convolution for local context and a parallel associative memory retrieval mechanism for global patterns, fused via a gating mechanism.
+    dataset: WikiText-2 and TinyStories.
+    result: Consistently faster training speed than Transformer and Mamba baselines, achieving superior or competitive final validation perplexity across all datasets.
+    relations: cites arXiv:1706.03762; uses arXiv:1711.05101; uses arXiv:1609.07843; cites arXiv:2004.05150; cites arXiv:2006.04768; cites arXiv:2009.14794
+arXiv:2508.00544 (2025) "PaPaformer: Language Model from Pre-trained Parallel Paths" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of PaPaformer, a decoder-only transformer architecture variant that uses lower-dimensional parallel paths that can be trained individually and then combined into a larger model.
+    method: Training lower-dimensional parallel paths with different types of training data and combining them into a single larger model to reduce total parameters and training time.
+    result: Enables training and evaluation of decoder-only transformer-based language models in hours instead of days/weeks.
+    relations: cites arXiv:1706.03762; cites arXiv:2005.14165; uses arXiv:1701.06538; uses arXiv:1804.07461
+arXiv:2506.17671 (2025) "TPTT: Transforming Pretrained Transformers into Titans" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A framework (TPTT) to augment pretrained Transformers with linearized attention and internal memory gating without full retraining.
+    method: Linearized attention (LiZA), Memory as Gate (MaG), parameter-efficient fine-tuning (LoRA), and the DeltaProduct mechanism for converting quadratic-attention models to purely linear-attention models.
+    dataset: MMLU benchmark; tested on Llama-1B, OlMoE-1B-7B, Qwen2.5-1.5B, Gemma3-270m, OpenELM-1.3B, and Mistral-7B.
+    result: Titans-Llama-1B exhibited up to a 20% relative increase in Exact Match scores in one-shot evaluation.
+    limitation: Need for further studies on larger models and a broader set of benchmarks to evaluate generality and robustness.
+    relations: cites arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:2006.16236; cites arXiv:2006.04768
+arXiv:2503.23814 (2025) "An extension of linear self-attention for in-context learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Extending linear self-attention by introducing a bias matrix in addition to a weight matrix to allow for flexible matrix manipulations.
+    method: Extended linear self-attention that can output constant matrices, input matrices, and multiplications of two or three input matrices.
+    result: Demonstrated the ability to implement a heuristic construction of a batch-type gradient descent of ridge regression.
+    relations: cites arXiv:2005.14165; cites arXiv:1512.03385; cites arXiv:1706.03762
+arXiv:2505.20496 (2025) "Inceptive Transformers: Enhancing Contextual Representations through Multi-Scale Feature Learning Across Domains and Languages" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A lightweight architectural enhancement using an inception-style 1-D convolution module to augment token representations with multi-scale local features.
+    method: An inception-style 1-D convolution module placed on top of transformer layers to capture multi-scale features, followed by a self-attention layer for dynamic task-relevance weighting.
+    result: Outperforms baselines by 1% to 14% across five diverse tasks.
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1906.08237
+arXiv:2507.02944 (2025) "Beyond Parallelism: Synergistic Computational Graph Effects in Multi-Head Attention" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Reframing multi-head attention as a system of synergistic computational graphs where heads function as feedforward directed acyclic graphs (DAGs) with a common sink state.
+    method: Theoretical analysis of mixing time and minimax fidelity within a DAG framework, followed by empirical training of single-head vs. multi-head Transformers with equal parameter counts.
+    dataset: Sequence manipulation tasks.
+    result: Multi-head attention can synergistically enhance information propagation, yielding faster mixing times and minimax fidelity amplification under specific head-diversity conditions.
+    relations: cites arXiv:1706.03762; cites arXiv:2005.14165; compares-with arXiv:1905.09418
+arXiv:2506.01919 (2025) "Transformers as Multi-task Learners: Decoupling Features in Hidden Markov Models" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Investigation of layerwise behavior in Transformers to uncover mechanisms of multi-task generalization, providing theoretical analysis for expressiveness power.
+    method: Empirical exploration of Transformer layerwise behavior using Hidden Markov Models (HMMs) as a sequence model, followed by explicit theoretical constructions.
+    result: Lower layers focus on extracting feature representations influenced by neighboring tokens; upper layers exhibit decoupled features with high time disentanglement.
+    relations: cites arXiv:2005.14165; cites arXiv:2104.09864
+arXiv:2505.02266 (2025) "Parameter-Efficient Transformer Embeddings" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A parameter-efficient approach to transformer embeddings that generates token vectors deterministically from token IDs, reducing parameter count while maintaining competitive performance.
+    method: Deterministic generation of token embedding vectors via Fourier expansion of normalized token IDs, followed by a lightweight multilayer perceptron (MLP).
+    dataset: SNLI, MNLI, and STS-B.
+    result: Achieves competitive performance with significantly fewer parameters, faster training, and effective operation without dropout.
+    limitation: The study is described as a proof-of-concept, indicating a need for further large-scale experimentation.
+    relations: cites arXiv:1909.11942; motivated-by arXiv:1508.07909; uses arXiv:1704.05426; uses arXiv:1810.04805; uses arXiv:2104.09864; uses arXiv:1711.05101
+arXiv:2505.15548 (2025) "Short-Range Dependency Effects on Transformer Instability and a Decomposed Attention Solution" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Identification of short-range dependency capture limitations as a source of Transformer training instability and the proposal of Long Short-attention (LS-attention) to mitigate logit explosion.
+    method: Decomposing self-attention into local (short-range) and global (long-range) attention heads (LS-attention).
+    result: Reduces validation perplexity to nearly 2/5 of one alternative method; reaches similar perplexity as another method using 1/20 of the GPU hours; reduces inference latency by up to 36% compared to equivalent MHSA.
+    relations: cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1412.6980; uses arXiv:1911.05507
+arXiv:2509.20581 (2025) "Hierarchical Resolution Transformers: A Wavelet-Inspired Architecture for Multi-Scale Language Understanding" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Hierarchical Resolution Transformer (HRT), a wavelet-inspired architecture that processes language across multiple resolutions to align computational structure with linguistic hierarchy.
+    method: Multi-resolution attention with exponential sequence reduction across scales (characters to discourse-level) to achieve O(nlogn) complexity.
+    dataset: GLUE, SuperGLUE, Long Range Arena, and WikiText-103.
+    result: Average improvements of +3.8% on GLUE, +4.5% on SuperGLUE, and +6.1% on Long Range Arena; 42% reduction in memory usage and 37% reduction in inference latency.
+    relations: cites arXiv:1706.03762; cites arXiv:2001.04451; cites arXiv:2006.04768; cites arXiv:2009.14794; cites arXiv:2004.05150; cites arXiv:2007.14062
+arXiv:2507.15779 (2025) "Reservoir Computing as a Language Model" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Comparison of reservoir computing (RC) approaches against transformer-based architectures for character-level language modeling to evaluate the trade-off between prediction quality and computational efficiency.
+    method: Comparison of three approaches: a traditional reservoir with a static linear readout, an attention-enhanced reservoir with dynamic output weights, and transformer-based architectures, while varying the number of trainable parameters equally.
+    result: Transformers excel in prediction quality, whereas reservoir computers are highly efficient in reducing training and inference speed.
+    relations: uses arXiv:1412.6980; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:2005.14165; cites arXiv:2001.08361
+arXiv:2510.00258 (2025) "Delayed Attention Training Improves Length Generalization in Transformer--RNN Hybrids" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A training strategy that delays the training of attention layers to mitigate shortcut reliance and improve length generalization in Transformer-RNN hybrids.
+    method: Delayed attention training in hybrid models integrating recurrent and attention-based components.
+    dataset: A composite problem involving state tracking and associative recall.
+    result: Achieved near-perfect accuracy (>90%) on hybrid sequences three times longer than the training sequences.
+    limitation: Transformer components in hybrid models tend to exploit shortcut solutions, leading to poor length generalization.
+    relations: cites arXiv:1706.03762; uses arXiv:2104.09864
+arXiv:2505.00509 (2025) "Self-Ablating Transformers: More Interpretability, Less Sparsity" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of a self-ablation mechanism that integrates interpretability into model training by enforcing selective activation, promoting feature localization and neuron specialization.
+    method: Dynamic enforcement of a k-winner-takes-all constraint during training to force selective activation across neuron and attention units.
+    dataset: TinyStories
+    result: Achieved more localized circuits, concentrated feature representations, and increased neuron specialization without compromising language modelling performance; notably decreased overall sparsity.
+    relations: cites arXiv:1706.03762
+arXiv:2507.22448 (2025) "Falcon-H1: A Family of Hybrid-Head Language Models Redefining Efficiency and Performance" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Falcon-H1, a family of hybrid-head LLMs combining Transformer-based attention with State Space Models (SSMs) for improved efficiency and performance.
+    method: Parallel hybrid architecture combining Transformer attention with State Space Models (SSMs).
+    result: Falcon-H1-34B matches or outperforms models up to 70B scale (e.g., Qwen3-32B, Qwen2.5-72B, Llama3.3-70B); Falcon-H1-1.5B-Deep rivals 7B-10B models; Falcon-H1-0.5B performs comparably to 2024 7B models.
+    relations: cites arXiv:1706.03762; uses arXiv:1508.07909; cites arXiv:1910.03771
+arXiv:2512.20661 (2025) "From Fake Focus to Real Precision: Confusion-Driven Adversarial Attention Learning in Transformers" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Adversarial Feedback for Attention (AFA) training mechanism to redistribute attention weights from common words to task-relevant terms without manual annotations.
+    method: Adversarial Feedback for Attention (AFA) using a dynamic masking strategy, a discriminator to detect mask-induced differences, and a policy gradient approach to optimize attention distributions.
+    dataset: Three public datasets (unspecified by name).
+    result: Achieves state-of-the-art results on three public datasets and provides a 12.6% performance improvement when applied to large language models.
+    relations: (none in-topic)
+arXiv:2509.07324 (2025) "Mitigating Attention Localization in Small Scale: Self-Attention Refinement via One-step Belief Propagation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Self-Attention One-step Belief Propagation (SAOBP) to mitigate attention localization and introduces Global Token Dependency (GTD) to quantify multi-hop connections.
+    method: Self-Attention One-step Belief Propagation (SAOBP) refinement framework that injects multi-hop relationships via a belief propagation process.
+    result: Prevents entropy collapse in deeper layers and adaptively maintains GTD, showing competitive gains in small-scale models.
+    relations: cites arXiv:1910.10683; cites arXiv:1706.03762; cites arXiv:1609.07843; cites arXiv:1506.06724; cites arXiv:1804.07461; cites arXiv:1606.05250
+
+MAIN PATH (oldest -> newest):
+  arXiv:1409.3215 (2014) -> arXiv:1609.08144 (2016) -> arXiv:1701.06538 (2017) -> arXiv:1809.10853 (2018) -> arXiv:1901.02860 (2019) -> arXiv:2006.16236 (2020) -> arXiv:2104.09864 (2021) -> arXiv:2503.02130 (2025)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2507.02944 compares [negative] arXiv:1905.09418
+  arXiv:1906.08237 compares [negative] arXiv:1802.05365
+  arXiv:2506.11305 critiques [negative] arXiv:2006.16236
+  arXiv:2506.11305 critiques [negative] arXiv:2009.14794
+  arXiv:2506.11305 critiques [negative] arXiv:1406.1078
+  arXiv:2006.04768 critiques [negative] arXiv:1503.02531
+  arXiv:2502.00617 compares [positive] arXiv:2004.05150
+  arXiv:2502.00617 compares [positive] arXiv:1905.07799
+  arXiv:2503.02130 compares [positive] arXiv:2104.09864
+  arXiv:2505.00929 compares [neutral] arXiv:1609.07843
+  arXiv:2505.23735 compares [neutral] arXiv:2006.16236
+  arXiv:2506.11305 compares [neutral] arXiv:2104.09864
+  arXiv:2506.11305 compares [neutral] arXiv:1810.04805
+  arXiv:2508.09834 compares [neutral] arXiv:2006.04768
+  arXiv:2508.09834 compares [positive] arXiv:1810.04805
+  arXiv:1806.00187 compares [positive] arXiv:1803.02155
+  arXiv:1910.10683 compares [neutral] arXiv:1909.11942
+  arXiv:1911.05507 compares [neutral] arXiv:1905.07799
+  arXiv:2006.04768 compares [neutral] arXiv:1810.04805
+  arXiv:1610.08613 compares [neutral] arXiv:1409.0473
+  arXiv:1610.08613 compares [positive] arXiv:1512.03385
+  arXiv:1704.05426 compares [neutral] arXiv:1412.6980
+  arXiv:1802.05365 compares [neutral] arXiv:1606.05250
+  arXiv:1809.10853 compares [neutral] arXiv:1808.04444
+  arXiv:1910.10683 compares [positive] arXiv:1804.07461
+  arXiv:1910.10683 compares [positive] arXiv:1409.3215
+  arXiv:1910.10683 compares [positive] arXiv:1609.08144
+  arXiv:2006.04768 compares [neutral] arXiv:1506.06724
+  arXiv:2009.14794 compares [neutral] arXiv:1911.05507
+  arXiv:2009.14794 compares [neutral] arXiv:1506.06724
+  arXiv:2010.11929 compares [positive] arXiv:1412.6980
+  arXiv:2104.09864 compares [neutral] arXiv:1804.07461
+  arXiv:2104.09864 compares [neutral] arXiv:2009.14794
+  arXiv:2104.09864 critiques [neutral] arXiv:1910.10683
+  arXiv:2505.02266 motivates [neutral] arXiv:1508.07909
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:1810.04805:
+NOVELTY: Deep bidirectional Transformer encoder pre-training using Masked Language Model (MLM) and Next Sentence Prediction (NSP) objectives.
+STRENGTHS: Achieves state-of-the-art results on 11 NLP tasks, including an 80.5% GLUE score and 93.2 SQuAD v1.1 Test F1.
+WEAKNESSES: The [MASK] token introduces a structural mismatch between pre-training and fine-tuning; BERTLARGE also shows instability on small datasets.
+RELEVANCE: Advances transformer attention research by demonstrating how bidirectional self-attention can replace task-specific architectures through unified fine-tuning.
+arXiv:2507.19595:
+NOVELTY: Provides a unified taxonomy and dual-perspective analysis (algorithmic vs. hardware) of efficient attention, specifically bridging the gap between linear attention (recurrent/ICL-style) and sparse attention (fixed/block/clustering) within the context of modern LLM deployment.
+
+STRENGTHS: Offers a rigorous mathematical comparison of update rules (Table 1) and a detailed hardware-centric derivation of the "Chunkwise Recurrent Representation" (Eq. 15-17) to explain how parallelism is maintained in linear models.
+
+WEAKNESSES: The survey is incomplete/truncated, missing the full analysis of "Clustering Attention" and "Pretrained LLM" sections, and lacks a comparative performance benchmark (e.g., a table comparing perplexity vs. latency) across the categorized models.
+
+RELEVANCE: Directly addresses the transition from parameter-scaling to efficiency-centric LLM design, serving as a structural guide for selecting attention mechanisms based on sequence length and hardware constraints.
+arXiv:2503.02130:
+NOVELTY: Integration of a data-dependent forget gate directly into the softmax attention mechanism via a logit bias ($D_{ij} = \sum \log f_l$), enabling Transformers to selectively down-weight past information.
+
+STRENGTHS: Demonstrates superior long-context language modeling and length extrapolation compared to standard Transformers and recurrent models (Mamba-2, DeltaNet), achieving near-perfect accuracy in needle-in-the-haystack tests within training context lengths.
+
+WEAKNESSES: The empirical validation is limited to small-scale models (up to 760M parameters) and relatively short context lengths (16k tokens), leaving the scalability of the forget gate mechanism to much larger models unproven.
+
+RELEVANCE: Proposes a structural modification to the attention mechanism that bridges the gap between the high-retrieval capabilities of Transformers and the data-dependent forgetting efficiency of recurrent models.

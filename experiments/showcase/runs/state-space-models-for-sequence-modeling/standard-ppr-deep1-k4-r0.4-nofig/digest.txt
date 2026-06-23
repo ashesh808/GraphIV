@@ -1,0 +1,690 @@
+QUESTION: state space models for sequence modeling
+
+SCHEMA FIELDS: ['model_architecture', 'mathematical_formalism', 'primary_application', 'efficiency_tradeoffs', 'sequence_length_capability', 'key_innovation']
+
+ERAS:
+  [0] Origins: 2012-2017
+  [1] Key Advances: 2017-2021
+  [2] Current Frontier: 2021-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1211.5063 (2012) "On the difficulty of training Recurrent Neural Networks" [cs] (cited-by 33 in-topic, era 0)
+    model_architecture: Recurrent Neural Networks (RNNs)
+    mathematical_formalism: Analytical, geometric, and dynamical systems perspectives
+    primary_application: Sequence modeling (addressing vanishing and exploding gradient problems)
+    key_innovation: Gradient norm clipping strategy for exploding gradients and a soft constraint for vanishing gradients
+    relations: cited-by arXiv:2303.06349; cited-by arXiv:2303.09489; cited-by arXiv:2310.19694; cited-by arXiv:2312.06837; cited-by arXiv:2401.00955; cited-by arXiv:2406.12272
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 45 in-topic, era 0)
+    mathematical_formalism: First-order gradient-based optimization using adaptive estimates of lower-order moments; regret bound analysis under the online convex optimization framework.
+    primary_application: Stochastic optimization of objective functions, particularly for large-scale data/parameter problems, non-stationary objectives, and noisy or sparse gradients.
+    efficiency_tradeoffs: Computationally efficient with little memory requirements; invariant to diagonal rescaling of gradients.
+    key_innovation: An adaptive gradient-based optimization algorithm (Adam) using estimates of first and second moments, including a variant (AdaMax) based on the infinity norm.
+    relations: cited-by arXiv:2303.06349; used-by arXiv:2306.09539; used-by arXiv:2403.16899; used-by arXiv:1607.06450; cited-by arXiv:1611.01576; used-by arXiv:1706.03762
+arXiv:1409.0473 (2014) "Neural Machine Translation by Jointly Learning to Align and Translate" [cs] (cited-by 43 in-topic, era 0)
+    model_architecture: Encoder-decoder architecture with an attention mechanism (soft-alignment)
+    mathematical_formalism: Joint learning of alignment and translation via soft-searching for relevant source sentence parts
+    primary_application: Neural Machine Translation (specifically English-to-French translation)
+    sequence_length_capability: Addresses the bottleneck of fixed-length vectors by allowing access to specific parts of the source sentence
+    key_innovation: Introduction of an attention mechanism to allow the model to automatically (soft-)search for relevant parts of a source sentence instead of relying on a single fixed-length vector
+    relations: uses arXiv:1406.1078; uses arXiv:1211.5063; cited-by arXiv:2406.09062; cited-by arXiv:2501.11729; cited-by arXiv:2505.17932; used-by arXiv:1412.3555; cited-by arXiv:1609.07843; cited-by arXiv:1611.01576
+arXiv:1406.1078 (2014) "Learning Phrase Representations using RNN Encoder-Decoder for
+  Statistical Machine Translation" [cs] (cited-by 42 in-topic, era 0)
+    model_architecture: RNN Encoder-Decoder (two recurrent neural networks)
+    mathematical_formalism: Maximizing the conditional probability of a target sequence given a source sequence
+    primary_application: Statistical Machine Translation (SMT)
+    key_innovation: Using an RNN Encoder-Decoder to compute conditional probabilities of phrase pairs as an additional feature in a log-linear SMT model
+    relations: compared-by arXiv:2303.03982; cited-by arXiv:2303.06349; cited-by arXiv:2310.19694; cited-by arXiv:2312.06837; cited-by arXiv:2406.00943; cited-by arXiv:2410.03464
+arXiv:1412.3555 (2014) "Empirical Evaluation of Gated Recurrent Neural Networks on Sequence
+  Modeling" [cs] (cited-by 27 in-topic, era 0)
+    model_architecture: Gated Recurrent Neural Networks (specifically LSTM and GRU)
+    mathematical_formalism: Gating mechanisms
+    primary_application: Polyphonic music modeling and speech signal modeling
+    key_innovation: Empirical comparison of gated recurrent units (LSTM, GRU) against traditional tanh-based RNN units
+    relations: uses arXiv:1409.0473; uses arXiv:1211.5063; cited-by arXiv:2305.13048; used-by arXiv:2406.12272; cited-by arXiv:2503.18970; compared-by arXiv:2008.07669; cited-by arXiv:2110.13985; cited-by arXiv:2303.09489
+arXiv:1512.03385 (2015) "Deep Residual Learning for Image Recognition" [cs] (cited-by 47 in-topic, era 0)
+    model_architecture: Residual learning framework (Residual Networks/ResNets)
+    mathematical_formalism: Learning residual functions with reference to layer inputs rather than unreferenced functions
+    primary_application: Image recognition, ImageNet classification, COCO object detection, ImageNet localization, and COCO segmentation
+    efficiency_tradeoffs: Achieves higher depth (up to 152 layers) with lower complexity than VGG nets
+    key_innovation: Explicit reformulation of layers to learn residual functions to ease the training of substantially deeper networks
+    relations: cited-by arXiv:2302.06646; used-by arXiv:2310.19694; cited-by arXiv:2412.11211; used-by arXiv:1612.08083; used-by arXiv:1706.03762; used-by arXiv:1910.10683
+arXiv:1511.06464 (2015) "Unitary Evolution Recurrent Neural Networks" [cs] (cited-by 23 in-topic, era 0)
+    model_architecture: Unitary weight matrix RNN composed of several structured matrix building blocks.
+    mathematical_formalism: Unitary matrices with eigenvalues of absolute value exactly 1; complex domain hidden states.
+    primary_application: Sequence modeling tasks involving very long-term dependencies.
+    efficiency_tradeoffs: Avoids expensive computations like eigendecomposition after each weight update through structured matrix composition.
+    sequence_length_capability: Designed to handle very long-term dependencies by preventing vanishing and exploding gradients.
+    key_innovation: A parameterization of unitary weight matrices using composed structured building blocks to enable efficient optimization without eigendecomposition.
+    relations: cites arXiv:1211.5063; cited-by arXiv:2303.06349; cited-by arXiv:2312.06837; cited-by arXiv:2404.16112; cited-by arXiv:2406.09062; compared-by arXiv:2008.07669; cited-by arXiv:2102.02611
+arXiv:1609.07843 (2016) "Pointer Sentinel Mixture Models" [cs] (cited-by 59 in-topic, era 0)
+    model_architecture: pointer sentinel mixture architecture (specifically pointer sentinel-LSTM)
+    mathematical_formalism: mixture of a pointer mechanism (to reproduce words from recent context) and a standard softmax classifier
+    primary_application: language modeling
+    efficiency_tradeoffs: achieves state of the art performance using far fewer parameters than a standard softmax LSTM
+    key_innovation: ability to either reproduce a word from the recent context or produce a word from a standard softmax classifier
+    relations: compares-with arXiv:1211.5063; cites arXiv:1409.0473; used-by arXiv:2311.14495; used-by arXiv:2404.16112; cited-by arXiv:2406.09062; used-by arXiv:2501.11729; cited-by arXiv:2506.05678; cited-by arXiv:1611.01576
+arXiv:1607.06450 (2016) "Layer Normalization" [stat] (cited-by 47 in-topic, era 0)
+    mathematical_formalism: Computing mean and variance from all summed inputs to neurons in a layer on a single training case, followed by adaptive bias and gain application.
+    primary_application: Stabilizing hidden state dynamics in recurrent neural networks and reducing training time in feed-forward neural networks.
+    efficiency_tradeoffs: Reduces training time compared to previous techniques; performs identical computations at training and test times.
+    key_innovation: Transposing batch normalization into layer normalization by normalizing across the layer dimension for a single training case rather than across a mini-batch.
+    relations: uses arXiv:1406.1078; uses arXiv:1412.6980; used-by arXiv:2303.06349; cited-by arXiv:2305.13048; used-by arXiv:2310.19694; cited-by arXiv:2406.12272; cited-by arXiv:2406.09062; used-by arXiv:1706.03762
+arXiv:1612.08083 (2016) "Language Modeling with Gated Convolutional Networks" [cs] (cited-by 36 in-topic, era 0)
+    model_architecture: Stacked convolutional networks with a simplified gating mechanism
+    mathematical_formalism: Finite context approach using stacked convolutions and gating
+    primary_application: Language modeling (WikiText-103 and Google Billion Words benchmarks)
+    efficiency_tradeoffs: Allows parallelization over sequential tokens; reduces sentence scoring latency by an order of magnitude compared to recurrent baselines
+    sequence_length_capability: Features long-term dependencies despite being a finite context approach
+    key_innovation: A novel simplified gating mechanism for non-recurrent, stacked convolutional networks
+    relations: uses arXiv:1211.5063; compares-with arXiv:1609.07843; uses arXiv:1512.03385; used-by arXiv:2303.06349; compared-by arXiv:2310.19694; used-by arXiv:2401.00955; critiqued-by arXiv:2406.09062; cited-by arXiv:1901.02860; cited-by arXiv:1911.05507
+arXiv:1606.08415 (2016) "Gaussian Error Linear Units (GELUs)" [cs] (cited-by 32 in-topic, era 0)
+    abstract: We propose the Gaussian Error Linear Unit (GELU), a high-performing neural
+network activation function. The GELU activation function is $x\Phi(x)$, where
+$\Phi(x)$ the standard Gaussian cumulative distribution function. The GELU
+nonlinearity weights inputs by their value, rather than gates inputs by
+    relations: motivates arXiv:2401.00955; used-by arXiv:2406.09062; cited-by arXiv:1810.04805; used-by arXiv:1904.10509; used-by arXiv:1907.11692; cited-by arXiv:1909.08053
+arXiv:1606.06031 (2016) "The LAMBADA dataset: Word prediction requiring a broad discourse context" [cs] (cited-by 30 in-topic, era 0)
+    primary_application: Word prediction in narrative passages requiring broad discourse context.
+    sequence_length_capability: Requires models to move beyond local context to track information in broader discourse.
+    key_innovation: Introduction of the LAMBADA dataset, a benchmark designed to test long-range linguistic phenomena and discourse understanding.
+    relations: cited-by arXiv:2305.13048; cited-by arXiv:2406.09062; used-by arXiv:1909.08053; cited-by arXiv:1911.05507; cited-by arXiv:2005.14165; cited-by arXiv:2011.04006
+arXiv:1611.01576 (2016) "Quasi-Recurrent Neural Networks" [cs] (cited-by 19 in-topic, era 0)
+    model_architecture: Alternating convolutional layers and a minimalist recurrent pooling function applied across channels.
+    primary_application: Language modeling, sentiment classification, and character-level neural machine translation.
+    efficiency_tradeoffs: Up to 16 times faster at train and test time due to increased parallelism compared to LSTMs.
+    sequence_length_capability: Designed to address limitations of RNNs in handling very long sequences through parallelism.
+    key_innovation: Introduction of Quasi-Recurrent Neural Networks (QRNNs) which replace trainable recurrent layers with parallel convolutional layers and channel-wise recurrent pooling.
+    relations: cites arXiv:1609.07843; cites arXiv:1409.0473; cites arXiv:1412.6980; cited-by arXiv:2305.13048; cited-by arXiv:2310.19694; cited-by arXiv:2406.09062; cited-by arXiv:1911.05507; cited-by arXiv:2110.13985; cited-by arXiv:2208.04933
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 277 in-topic, era 0)
+    model_architecture: Transformer (encoder-decoder architecture based solely on attention mechanisms, dispensing with recurrence and convolutions)
+    mathematical_formalism: Attention mechanisms
+    primary_application: Machine translation (English-to-German, English-to-French) and English constituency parsing
+    efficiency_tradeoffs: More parallelizable and requires significantly less time to train compared to recurrent or convolutional models
+    key_innovation: The Transformer architecture, which relies entirely on attention mechanisms instead of recurrence or convolutions
+    relations: cites arXiv:1412.3555; compares-with arXiv:1409.0473; cites arXiv:1406.1078; uses arXiv:1512.03385; uses arXiv:1607.06450; uses arXiv:1412.6980; cited-by arXiv:2302.06646; used-by arXiv:2303.03982; cited-by arXiv:2303.06349; compared-by arXiv:2303.09489; used-by arXiv:2305.13048; cited-by arXiv:2306.09539
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 56 in-topic, era 0)
+    mathematical_formalism: Decoupling weight decay from the optimization steps taken with respect to the loss function to resolve the inequivalence between L2 regularization and weight decay in adaptive gradient algorithms.
+    primary_application: Image classification.
+    efficiency_tradeoffs: Decouples the optimal choice of weight decay factor from the learning rate setting.
+    key_innovation: Decoupled weight decay regularization (AdamW/SGDW) which separates the weight decay update from the gradient-based update to improve generalization in adaptive optimizers.
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; used-by arXiv:2303.06349; used-by arXiv:2303.09489; used-by arXiv:1909.08053; used-by arXiv:2005.14165; used-by arXiv:2208.04933
+arXiv:1810.04805 (2018) "BERT: Pre-training of Deep Bidirectional Transformers for Language
+  Understanding" [cs] (cited-by 115 in-topic, era 1)
+    model_architecture: Transformer encoder (deep bidirectional representations)
+    mathematical_formalism: Joint conditioning on both left and right context in all layers
+    primary_application: Natural language processing tasks including question answering (SQuAD v1.1/v2.0), language inference (MultiNLI), and GLUE benchmark
+    key_innovation: Pre-training deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context
+    relations: cites arXiv:1804.07461; uses arXiv:1706.03762; cites arXiv:1606.08415; cited-by arXiv:2306.09539; cited-by arXiv:2306.17184; compared-by arXiv:2404.16112; cited-by arXiv:2406.09062; critiqued-by arXiv:2412.11211; extended-by arXiv:1907.11692
+arXiv:1803.05457 (2018) "Think you have Solved Question Answering? Try ARC, the AI2 Reasoning
+  Challenge" [cs] (cited-by 52 in-topic, era 1)
+    primary_application: Advanced question answering on grade-school science questions
+    key_innovation: Introduction of the AI2 Reasoning Challenge (ARC), consisting of a 7,787 question set and a 14M sentence science corpus designed to test advanced knowledge and reasoning.
+    relations: cited-by arXiv:2305.13048; cited-by arXiv:2406.09062; cited-by arXiv:2005.14165
+arXiv:1804.07461 (2018) "GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language
+  Understanding" [cs] (cited-by 30 in-topic, era 1)
+    primary_application: Natural Language Understanding (NLU) evaluation and linguistic analysis
+    key_innovation: Introduction of the GLUE benchmark and a hand-crafted diagnostic test suite for multi-task NLU evaluation.
+    relations: cited-by arXiv:2406.09062; cited-by arXiv:2305.13048; cited-by arXiv:1810.04805; cited-by arXiv:1907.11692; used-by arXiv:1909.08053; compared-by arXiv:1910.10683
+arXiv:1904.10509 (2019) "Generating Long Sequences with Sparse Transformers" [cs] (cited-by 81 in-topic, era 1)
+    abstract: Transformers are powerful sequence models, but require time and memory that
+grows quadratically with the sequence length. In this paper we introduce sparse
+factorizations of the attention matrix which reduce this to $O(n \sqrt{n})$. We
+also introduce a) a variation on architecture and initialization
+    relations: extends arXiv:1706.03762; uses arXiv:1607.06450; uses arXiv:1606.08415; cited-by arXiv:2306.09539; cited-by arXiv:2410.03464; cited-by arXiv:2501.11729; cited-by arXiv:1911.05507; cited-by arXiv:2006.04768; cited-by arXiv:2009.06732
+arXiv:1901.02860 (2019) "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context" [cs] (cited-by 69 in-topic, era 1)
+    model_architecture: Transformer architecture with a segment-level recurrence mechanism
+    mathematical_formalism: Segment-level recurrence and a novel relative positional encoding scheme
+    primary_application: Language modeling
+    efficiency_tradeoffs: Up to 1,800+ times faster than vanilla Transformers during evaluation
+    sequence_length_capability: Learns dependency 80% longer than RNNs and 450% longer than vanilla Transformers; capable of generating coherent text with thousands of tokens
+    key_innovation: Segment-level recurrence mechanism and a novel positional encoding scheme to enable learning beyond a fixed-length context and resolve context fragmentation
+    relations: cites arXiv:1612.08083; compares-with arXiv:1706.03762; uses arXiv:1810.04805; cites arXiv:1409.0473; uses arXiv:1609.07843; cited-by arXiv:2302.06646; used-by arXiv:2306.09539; cited-by arXiv:2406.09062; cited-by arXiv:2410.03464; critiqued-by arXiv:2412.11211; compared-by arXiv:2503.18970
+arXiv:1910.10683 (2019) "Exploring the Limits of Transfer Learning with a Unified Text-to-Text
+  Transformer" [cs] (cited-by 53 in-topic, era 1)
+    model_architecture: Transformer (text-to-text format)
+    primary_application: Natural language processing (NLP) tasks including summarization, question answering, and text classification
+    key_innovation: A unified framework that converts all text-based language problems into a text-to-text format
+    relations: uses arXiv:1810.04805; extends arXiv:1907.11692; compares-with arXiv:1804.07461; cites arXiv:1409.0473; uses arXiv:1706.03762; uses arXiv:1607.06450; compared-by arXiv:2306.09539; critiqued-by arXiv:2412.11211; compared-by arXiv:2503.18970; used-by arXiv:2005.14165; cited-by arXiv:1909.08053; cited-by arXiv:2006.04768
+arXiv:1911.05507 (2019) "Compressive Transformers for Long-Range Sequence Modelling" [cs] (cited-by 47 in-topic, era 1)
+    model_architecture: Attentive sequence model with memory compression
+    primary_application: Language modelling (WikiText-103, Enwik8, PG-19), high-frequency speech modelling, and Reinforcement Learning (object matching task)
+    sequence_length_capability: Designed for long-range sequence learning via compression of past memories
+    key_innovation: Compressing past memories to enable long-range sequence learning
+    relations: uses arXiv:1901.02860; cites arXiv:1904.10509; cites arXiv:1612.08083; cites arXiv:1611.01576; uses arXiv:1706.03762; cites arXiv:1409.0473; cited-by arXiv:2404.16112; extended-by arXiv:2406.09062; extended-by arXiv:2009.06732; cited-by arXiv:2007.14062; cited-by arXiv:2008.07669; compared-by arXiv:2009.14794
+arXiv:1907.11692 (2019) "RoBERTa: A Robustly Optimized BERT Pretraining Approach" [cs] (cited-by 40 in-topic, era 1)
+    primary_application: Natural language processing tasks including GLUE, RACE, and SQuAD
+    efficiency_tradeoffs: Analysis of the impact of hyperparameter choices and training data size on performance
+    key_innovation: A replication study demonstrating that BERT was significantly undertrained and that optimized pretraining hyperparameters and larger data sizes can match or exceed subsequent models.
+    relations: extends arXiv:1810.04805; uses arXiv:1706.03762; uses arXiv:1412.6980; uses arXiv:1606.08415; cites arXiv:1804.07461; cited-by arXiv:2306.17184; used-by arXiv:1909.08053; extended-by arXiv:1910.10683; used-by arXiv:2006.04768; cited-by arXiv:2005.14165; cited-by arXiv:2006.16236
+arXiv:1909.08053 (2019) "Megatron-LM: Training Multi-Billion Parameter Language Models Using
+  Model Parallelism" [cs] (cited-by 28 in-topic, era 1)
+    model_architecture: Transformer
+    primary_application: Natural Language Processing (Language Modeling), specifically WikiText103, LAMBADA, and RACE datasets
+    efficiency_tradeoffs: Sustains 15.1 PetaFLOPs across 512 GPUs with 76% scaling efficiency; 30% of peak FLOPs
+    key_innovation: Simple, efficient intra-layer model parallelism that enables training transformer models with billions of parameters without requiring new compilers or library changes
+    relations: uses arXiv:1907.11692; uses arXiv:1810.04805; cites arXiv:1910.10683; cites arXiv:1901.02860; cites arXiv:1706.03762; cites arXiv:1606.08415; compared-by arXiv:2503.18970; cited-by arXiv:2005.14165; compared-by arXiv:2205.14135; cited-by arXiv:1911.05507
+arXiv:2006.16236 (2020) "Transformers are RNNs: Fast Autoregressive Transformers with Linear
+  Attention" [cs] (cited-by 155 in-topic, era 1)
+    model_architecture: Linear attention (linear dot-product of kernel feature maps)
+    mathematical_formalism: Associativity property of matrix products applied to kernel feature maps
+    primary_application: Autoregressive prediction of very long sequences
+    efficiency_tradeoffs: Reduces computational complexity from O(N^2) to O(N)
+    sequence_length_capability: Up to 4000x faster on very long sequences
+    key_innovation: Expressing self-attention as a linear dot-product of kernel feature maps to enable an iterative RNN-like implementation
+    relations: uses arXiv:1706.03762; cites arXiv:1409.0473; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1901.02860; cites arXiv:1904.10509; used-by arXiv:2305.13048; cited-by arXiv:2306.09539; cited-by arXiv:2310.19694; cited-by arXiv:2405.19036; critiqued-by arXiv:2406.09062; cited-by arXiv:2410.03464
+arXiv:2011.04006 (2020) "Long Range Arena: A Benchmark for Efficient Transformers" [cs] (cited-by 117 in-topic, era 1)
+    primary_application: Evaluating efficient Transformer models on long-context scenarios involving text, natural, synthetic images, and mathematical expressions.
+    sequence_length_capability: Sequences ranging from 1K to 16K tokens.
+    key_innovation: The Long Range Arena (LRA), a systematic and unified benchmark suite designed to evaluate model quality in long-range sequence modeling tasks.
+    relations: compares-with arXiv:2006.04768; compares-with arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1910.10683; compares-with arXiv:1904.10509; compares-with arXiv:2001.04451; used-by arXiv:2302.06646; cited-by arXiv:2303.03982; used-by arXiv:2303.06349; cited-by arXiv:2303.09489; compared-by arXiv:2305.13048; cited-by arXiv:2306.09539
+arXiv:2008.07669 (2020) "HiPPO: Recurrent Memory with Optimal Polynomial Projections" [cs] (cited-by 116 in-topic, era 1)
+    model_architecture: Recurrent memory mechanism based on polynomial projections (HiPPO-LegS) integrated into RNNs.
+    mathematical_formalism: Online compression of continuous signals and discrete time series via projection onto polynomial bases using a measure of importance for past time steps.
+    primary_application: Sequence modeling, specifically permuted MNIST and trajectory classification tasks.
+    efficiency_tradeoffs: Features fast updates and bounded gradients; designed to scale through time to remember all history.
+    sequence_length_capability: Designed to remember all history and provides timescale robustness, avoiding priors on the timescale.
+    key_innovation: A general framework (HiPPO) for optimal online function approximation through polynomial projections, providing a derivation for Legendre Memory Units (LMU).
+    relations: compares-with arXiv:1412.3555; cites arXiv:1211.5063; cites arXiv:1406.1078; compares-with arXiv:1511.06464; cites arXiv:1706.03762; cites arXiv:1901.02860; used-by arXiv:2302.06646; cited-by arXiv:2303.03982; motivates arXiv:2303.06349; cited-by arXiv:2306.09539; used-by arXiv:2310.19694; compared-by arXiv:2311.14495
+arXiv:2005.14165 (2020) "Language Models are Few-Shot Learners" [cs] (cited-by 113 in-topic, era 1)
+    model_architecture: Autoregressive language model (GPT-3)
+    primary_application: Few-shot NLP tasks including translation, question-answering, cloze tasks, on-the-fly reasoning (unscrambling words, novel word usage, 3-digit arithmetic), and news article generation.
+    key_innovation: Demonstrating that scaling up language models to 175 billion parameters enables strong task-agnostic, few-shot performance without task-specific fine-tuning or gradient updates.
+    relations: uses arXiv:1910.10683; cites arXiv:1909.08053; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; uses arXiv:1904.10509; cited-by arXiv:2303.06349; used-by arXiv:2305.13048; cited-by arXiv:2306.09539; cited-by arXiv:2311.14495; cited-by arXiv:2312.06837; cited-by arXiv:2406.09062
+arXiv:2009.14794 (2020) "Rethinking Attention with Performers" [cs] (cited-by 110 in-topic, era 1)
+    model_architecture: Linear Transformer architecture using Fast Attention Via positive Orthogonal Random features (FAVOR+)
+    mathematical_formalism: Kernel-based approximation of softmax attention-kernels using positive Orthogonal Random features (FAVOR+); unbiased or nearly-unbiased estimation of the attention matrix
+    primary_application: Pixel-prediction, text models, and protein sequence modeling
+    efficiency_tradeoffs: Linear space and time complexity (as opposed to quadratic complexity of regular Transformers)
+    key_innovation: FAVOR+ (Fast Attention Via positive Orthogonal Random features) approach to approximate softmax attention-kernels without relying on sparsity or low-rankness priors
+    relations: cites arXiv:1904.10509; compares-with arXiv:1911.05507; cites arXiv:2004.05150; uses arXiv:2006.16236; cites arXiv:1706.03762; uses arXiv:2006.04768; used-by arXiv:2303.09489; compared-by arXiv:2305.13048; cited-by arXiv:2306.09539; used-by arXiv:2310.19694; cited-by arXiv:2406.09062; cited-by arXiv:2510.09389
+arXiv:2004.05150 (2020) "Longformer: The Long-Document Transformer" [cs] (cited-by 106 in-topic, era 1)
+    model_architecture: Transformer-based with a combination of local windowed attention and task-motivated global attention.
+    mathematical_formalism: Attention mechanism that scales linearly with sequence length.
+    primary_application: Character-level language modeling, long document tasks (WikiHop, TriviaQA), and generative sequence-to-sequence tasks (arXiv summarization).
+    efficiency_tradeoffs: Replaces quadratic self-attention with a linear scaling mechanism to process documents of thousands of tokens.
+    sequence_length_capability: Effective for processing long sequences/documents of thousands of tokens or longer.
+    key_innovation: An attention mechanism that combines local windowed attention with task-motivated global attention to achieve linear scaling.
+    relations: cited-by arXiv:2303.09489; cited-by arXiv:2305.13048; cited-by arXiv:2310.19694; cited-by arXiv:2403.16899; extended-by arXiv:2404.16112; critiqued-by arXiv:2406.09062
+arXiv:2006.04768 (2020) "Linformer: Self-Attention with Linear Complexity" [cs] (cited-by 86 in-topic, era 1)
+    model_architecture: Low-rank approximation of self-attention
+    mathematical_formalism: Low-rank matrix approximation
+    primary_application: Natural language processing
+    efficiency_tradeoffs: Reduces complexity from $O(n^2)$ to $O(n)$ in both time and space
+    sequence_length_capability: Designed to address the prohibitive cost of long sequences
+    key_innovation: Approximating the self-attention mechanism with a low-rank matrix to achieve linear complexity
+    relations: cites arXiv:1706.03762; cites arXiv:1904.10509; cites arXiv:2001.04451; uses arXiv:1907.11692; compares-with arXiv:1810.04805; cites arXiv:1910.10683; cited-by arXiv:2305.13048; cited-by arXiv:2306.09539; cited-by arXiv:2310.19694; cited-by arXiv:2406.09062; cited-by arXiv:2410.03464; cited-by arXiv:2501.11729
+arXiv:2001.04451 (2020) "Reformer: The Efficient Transformer" [cs] (cited-by 85 in-topic, era 1)
+    model_architecture: Transformer with locality-sensitive hashing (LSH) attention and reversible residual layers
+    mathematical_formalism: Locality-sensitive hashing (LSH) for attention; reversible residual connections
+    primary_application: Sequence modeling, specifically addressing long sequences
+    efficiency_tradeoffs: Reduces attention complexity from O(L²) to O(L log L); reduces memory usage by storing activations only once instead of N times
+    sequence_length_capability: Designed to be much faster and more memory-efficient on long sequences
+    key_innovation: LSH attention and reversible residual layers
+    relations: compares-with arXiv:1706.03762; uses arXiv:1607.06450; cites arXiv:1810.04805; cites arXiv:1904.10509; compared-by arXiv:2303.09489; compared-by arXiv:2305.13048; cited-by arXiv:2310.19694; cited-by arXiv:2406.09062; cited-by arXiv:2410.03464; critiqued-by arXiv:2412.11211
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 77 in-topic, era 1)
+    model_architecture: Pure Transformer applied directly to sequences of image patches
+    primary_application: Image classification tasks (ImageNet, CIFAR-100, VTAB, etc.)
+    efficiency_tradeoffs: Requires substantially fewer computational resources to train compared to state-of-the-art convolutional networks
+    key_innovation: Eliminating the reliance on convolutional networks by applying a pure transformer directly to sequences of image patches
+    relations: uses arXiv:1706.03762; cites arXiv:2005.14165; uses arXiv:1810.04805; uses arXiv:1512.03385; cites arXiv:1904.10509; compares-with arXiv:1412.6980; cited-by arXiv:2302.06646; cited-by arXiv:2303.06349; cited-by arXiv:2310.19694; cited-by arXiv:2312.06837; used-by arXiv:2406.12272; cited-by arXiv:2405.19036
+arXiv:2007.14062 (2020) "Big Bird: Transformers for Longer Sequences" [cs] (cited-by 70 in-topic, era 1)
+    model_architecture: Sparse attention mechanism (BigBird)
+    mathematical_formalism: Universal approximator of sequence functions and Turing complete; includes $O(1)$ global tokens
+    primary_application: NLP tasks (question answering, summarization) and genomics data
+    efficiency_tradeoffs: Reduces quadratic memory dependency to linear complexity
+    sequence_length_capability: Handles sequences up to 8x longer than previously possible on similar hardware
+    key_innovation: A sparse attention mechanism that maintains the properties of full attention while achieving linear scaling
+    relations: cites arXiv:1901.02860; cites arXiv:1706.03762; cites arXiv:1810.04805; cites arXiv:1907.11692; cites arXiv:1910.10683; cites arXiv:1911.05507; cited-by arXiv:2305.13048; cited-by arXiv:2306.09539; cited-by arXiv:2403.16899; cited-by arXiv:2009.06732; cited-by arXiv:2404.16112; compared-by arXiv:2011.04006
+arXiv:2009.06732 (2020) "Efficient Transformers: A Survey" [cs] (cited-by 46 in-topic, era 1)
+    primary_application: language, vision and reinforcement learning
+    efficiency_tradeoffs: improvements around computational and memory efficiency
+    key_innovation: A comprehensive survey and characterization of recent efficiency-flavored 'X-former' models (e.g., Reformer, Linformer, Performer, Longformer).
+    relations: cites arXiv:1706.03762; cites arXiv:1901.02860; cites arXiv:1904.10509; cites arXiv:2001.04451; extends arXiv:1911.05507; cites arXiv:2004.05150; cited-by arXiv:2305.13048; cited-by arXiv:2312.06837; critiqued-by arXiv:2401.00955; cited-by arXiv:2410.03464; cited-by arXiv:2503.18970; cited-by arXiv:2505.17932
+arXiv:2111.00396 (2021) "Efficiently Modeling Long Sequences with Structured State Spaces" [cs] (cited-by 229 in-topic, era 1)
+    abstract: A central goal of sequence modeling is designing a single principled model
+that can address sequence data across a range of modalities and tasks,
+particularly on long-range dependencies. Although conventional models including
+RNNs, CNNs, and Transformers have specialized variants for capturing long
+
+    relations: compares-with arXiv:2006.16236; extends arXiv:2008.07669; uses arXiv:1706.03762; uses arXiv:2102.02611; uses arXiv:2110.13985; uses arXiv:2011.04006; cited-by arXiv:2302.06646; cited-by arXiv:2303.03982; used-by arXiv:2303.06349; used-by arXiv:2303.09489; compared-by arXiv:2305.13048; cited-by arXiv:2306.09539
+arXiv:2110.13985 (2021) "Combining Recurrent, Convolutional, and Continuous-time Models with
+  Linear State-Space Layers" [cs] (cited-by 76 in-topic, era 1)
+    model_architecture: Linear State-Space Layer (LSSL) simulating a linear continuous-time state-space representation
+    mathematical_formalism: Linear continuous-time state-space equations: $\dot{x} = Ax + Bu, y = Cx + Du$
+    primary_application: Time series modeling, including sequential image classification, healthcare regression, and speech classification
+    sequence_length_capability: Effective for long-range dependencies; outperforms baselines on length-16000 sequences
+    key_innovation: Introduction of LSSL which generalizes RNNs, temporal convolutions, and NDEs, combined with a trainable subset of structured matrices A for long-range memory
+    relations: uses arXiv:2102.02611; uses arXiv:2008.07669; cites arXiv:1412.3555; cites arXiv:1611.01576; cites arXiv:1211.5063; cites arXiv:1511.06464; cited-by arXiv:2303.03982; cited-by arXiv:2303.06349; used-by arXiv:2303.09489; cited-by arXiv:2310.19694; cited-by arXiv:2312.06837; cited-by arXiv:2401.00955
+arXiv:2102.02611 (2021) "CKConv: Continuous Kernel Convolution For Sequential Data" [cs] (cited-by 26 in-topic, era 1)
+    model_architecture: Continuous Kernel Convolutional Networks (CKCNNs)
+    mathematical_formalism: Convolutional kernels formulated as continuous functions
+    primary_application: Sequential data modeling, including non-uniformly sampled and irregularly-sampled datasets (e.g., permuted MNIST)
+    efficiency_tradeoffs: Parallel modeling within a single operation without recurrence; faster and simpler than neural ODEs
+    sequence_length_capability: Capable of modeling arbitrarily long sequences
+    key_innovation: Formulating convolutional kernels as continuous functions to handle arbitrary sequence lengths and irregular sampling natively
+    relations: uses arXiv:2008.07669; uses arXiv:1607.06450; uses arXiv:1412.6980; cites arXiv:1412.3555; cites arXiv:1211.5063; cites arXiv:1612.08083; critiqued-by arXiv:2302.06646; cited-by arXiv:2406.09062; used-by arXiv:2110.13985; used-by arXiv:2111.00396; compared-by arXiv:2206.11893; cited-by arXiv:2208.04933
+arXiv:2208.04933 (2022) "Simplified State Space Layers for Sequence Modeling" [cs] (cited-by 126 in-topic, era 2)
+    model_architecture: Multi-input, multi-output (MIMO) State Space Model (SSM)
+    mathematical_formalism: Connection between S5 and S4 via specific initialization and parameterization; use of parallel scans
+    primary_application: Long-range sequence modeling tasks (e.g., Long Range Arena benchmark, Path-X task)
+    efficiency_tradeoffs: Matches S4 computational efficiency by leveraging efficient and widely implemented parallel scans
+    sequence_length_capability: State-of-the-art performance on long-range tasks (87.4% on Long Range Arena, 98.5% on Path-X)
+    key_innovation: Replacing many independent single-input, single-output SSMs with a single multi-input, multi-output SSM (S5)
+    relations: uses arXiv:2111.00396; extends arXiv:2206.11893; uses arXiv:2011.04006; uses arXiv:1612.08083; cites arXiv:1511.06464; cites arXiv:2102.02611; cited-by arXiv:2302.06646; extended-by arXiv:2303.03982; used-by arXiv:2303.06349; critiqued-by arXiv:2303.09489; cited-by arXiv:2306.09539; extended-by arXiv:2310.19694
+arXiv:2206.11893 (2022) "On the Parameterization and Initialization of Diagonal State Space
+  Models" [cs] (cited-by 105 in-topic, era 2)
+    model_architecture: Diagonal State Space Model (specifically S4D)
+    mathematical_formalism: Diagonal restriction of the S4 matrix; kernel recovery in the limit of infinite state dimension
+    primary_application: Image, audio, medical time-series, and Long Range Arena (LRA) benchmark
+    efficiency_tradeoffs: Simplified kernel computation requiring only 2 lines of code; maintains performance of S4 while using a diagonal state matrix
+    sequence_length_capability: Effective on tasks involving long-range dependencies; averaged 85% on the Long Range Arena benchmark
+    key_innovation: Systematic parameterization and initialization of diagonal SSMs (S4D) that recovers the S4 kernel in the limit of infinite state dimension
+    relations: extends arXiv:2203.14343; extends arXiv:2111.00396; cites arXiv:2008.07669; extends arXiv:2206.12037; uses arXiv:2110.13985; compares-with arXiv:2102.02611; cited-by arXiv:2302.06646; compared-by arXiv:2303.06349; compared-by arXiv:2303.09489; used-by arXiv:2306.09539; used-by arXiv:2310.19694; compared-by arXiv:2311.14495
+arXiv:2212.14052 (2022) "Hungry Hungry Hippos: Towards Language Modeling with State Space Models" [cs] (cited-by 105 in-topic, era 2)
+    model_architecture: H3 (a new SSM layer) and hybrid H3-attention models.
+    mathematical_formalism: State Space Models (SSMs) with recurrent properties and a fused block FFT algorithm for FlashConv.
+    primary_application: Language modeling and sequence modeling tasks (e.g., OpenWebText, Pile, SuperGLUE).
+    efficiency_tradeoffs: FlashConv provides 2x speedup on long-range arena benchmarks and allows hybrid models to generate text 2.4x faster than Transformers; addresses hardware utilization issues.
+    sequence_length_capability: Scales to longer sequences using a novel state passing algorithm; FlashConv improves efficiency on sequences up to 8K.
+    key_innovation: The H3 layer designed for recalling and comparing tokens, and FlashConv for improved hardware utilization via fused block FFT and state passing.
+    relations: cites arXiv:2205.14135; extends arXiv:2206.12037; extends arXiv:2206.11893; cites arXiv:2009.14794; cites arXiv:2001.04451; uses arXiv:2006.16236; extended-by arXiv:2302.06646; cited-by arXiv:2303.06349; compared-by arXiv:2305.13048; cited-by arXiv:2306.09539; used-by arXiv:2310.19694; cited-by arXiv:2311.14495
+arXiv:2203.14343 (2022) "Diagonal State Spaces are as Effective as Structured State Spaces" [cs] (cited-by 88 in-topic, era 2)
+    model_architecture: Diagonal State Space (DSS)
+    mathematical_formalism: Diagonal state matrices (removing the low-rank correction used in S4)
+    primary_application: Long-range reasoning tasks (Long Range Arena), speech classification (Speech Commands dataset)
+    efficiency_tradeoffs: Conceptually simpler and more straightforward to implement than S4's diagonal plus low rank structure
+    sequence_length_capability: Matches S4 performance on long-range tasks
+    key_innovation: Demonstrating that diagonal state matrices alone can match the performance of Structured State Spaces (S4) without requiring low-rank corrections
+    relations: uses arXiv:2111.00396; cites arXiv:1706.03762; cites arXiv:2005.14165; cites arXiv:2004.05150; cites arXiv:2006.16236; cites arXiv:2006.04768; cited-by arXiv:2302.06646; compared-by arXiv:2303.06349; critiqued-by arXiv:2303.09489; compared-by arXiv:2305.13048; used-by arXiv:2306.09539; used-by arXiv:2310.19694
+arXiv:2205.14135 (2022) "FlashAttention: Fast and Memory-Efficient Exact Attention with
+  IO-Awareness" [cs] (cited-by 77 in-topic, era 2)
+    model_architecture: Exact attention (Transformer-based)
+    mathematical_formalism: IO-aware tiling to reduce reads/writes between GPU HBM and SRAM; block-sparse attention
+    primary_application: Sequence modeling, including BERT-large, GPT-2, long-document classification, and Path-X/Path-256 challenges
+    efficiency_tradeoffs: Reduces HBM accesses via tiling; achieves faster wall-clock speedups (e.g., 3x on GPT-2) compared to approximate methods by optimizing IO complexity
+    sequence_length_capability: Enables longer context, achieving better-than-chance performance on Path-X (16K) and Path-256 (64K) sequences
+    key_innovation: IO-aware exact attention algorithm using tiling to minimize memory reads/writes between GPU HBM and on-chip SRAM
+    relations: compares-with arXiv:1909.08053; compares-with arXiv:2006.04768; cites arXiv:2006.16236; cites arXiv:2009.14794; uses arXiv:2011.04006; uses arXiv:2001.04451; used-by arXiv:2302.06646; used-by arXiv:2303.06349; cited-by arXiv:2305.13048; cited-by arXiv:2310.19694; cited-by arXiv:2406.09062; cited-by arXiv:2410.03464
+arXiv:2202.09729 (2022) "It's Raw! Audio Generation with State-Space Models" [cs] (cited-by 49 in-topic, era 2)
+    model_architecture: Multi-scale architecture built around the S4 (Structured State Space) model.
+    mathematical_formalism: Parameterization improvement via connections to Hurwitz matrices to address instability during autoregressive generation.
+    primary_application: Unconditional waveform generation (specifically piano and speech) in both autoregressive and non-autoregressive (diffusion model backbone) settings.
+    efficiency_tradeoffs: Outperforms WaveNet on density estimation and speed at both training and inference while using 3x fewer parameters.
+    sequence_length_capability: Utilizes S4 for long sequence modeling to handle high sampling rates of audio waveforms.
+    key_innovation: SaShiMi architecture which stabilizes S4 for autoregressive generation using Hurwitz matrix-based parameterization.
+    relations: extends arXiv:2111.00396; cites arXiv:2005.14165; cites arXiv:1904.10509; cites arXiv:1211.5063; uses arXiv:2008.07669; uses arXiv:1606.08415; cited-by arXiv:2302.06646; cited-by arXiv:2303.03982; cited-by arXiv:2303.06349; motivates arXiv:2303.09489; cited-by arXiv:2310.19694; cited-by arXiv:2312.06837
+arXiv:2206.12037 (2022) "How to Train Your HiPPO: State Space Models with Generalized Orthogonal
+  Basis Projections" [cs] (cited-by 34 in-topic, era 2)
+    model_architecture: Linear time-invariant state space models (SSM)
+    mathematical_formalism: Decomposition onto exponentially-warped Legendre polynomials and generalized orthogonal basis projections
+    primary_application: Long-range sequence modeling (e.g., Long Range Arena benchmark, Path-X task)
+    sequence_length_capability: High effectiveness in capturing long-range dependencies (86% on Long Range Arena; 96% on Path-X)
+    key_innovation: A generalized and intuitive formulation of the HiPPO framework that provides a mathematical interpretation of S4 as a decomposition onto exponentially-warped Legendre polynomials
+    relations: cites arXiv:2203.14343; extends arXiv:2206.11893; extends arXiv:2008.07669; extends arXiv:2111.00396; extends arXiv:2110.13985; cites arXiv:1607.06450; used-by arXiv:2302.06646; cited-by arXiv:2303.06349; used-by arXiv:2310.19694; cited-by arXiv:2501.11729; extended-by arXiv:2503.18970; extended-by arXiv:2206.11893
+arXiv:2312.00752 (2023) "Mamba: Linear-Time Sequence Modeling with Selective State Spaces" [cs] (cited-by 203 in-topic, era 2)
+    model_architecture: Selective State Space Model (SSM) integrated into a simplified end-to-end neural network without attention or MLP blocks.
+    mathematical_formalism: SSM parameters are functions of the input, allowing for selective propagation or forgetting of information.
+    primary_application: General sequence modeling across language, audio, and genomics.
+    efficiency_tradeoffs: Linear scaling in sequence length and fast inference (5x higher throughput than Transformers).
+    sequence_length_capability: Effective on real data up to million-length sequences.
+    key_innovation: Introduction of selective SSMs where parameters are input-dependent, combined with a hardware-aware parallel algorithm in recurrent mode.
+    relations: cited-by arXiv:2312.06837; cited-by arXiv:2401.00955; extended-by arXiv:2403.16899; extended-by arXiv:2404.16112; used-by arXiv:2406.12272; cited-by arXiv:2405.19036
+arXiv:2303.06349 (2023) "Resurrecting Recurrent Neural Networks for Long Sequences" [cs] (cited-by 83 in-topic, era 2)
+    model_architecture: Linear Recurrent Unit (LRU)
+    mathematical_formalism: Linearizing and diagonalizing the recurrence, signal propagation arguments, and parameterization/initialization optimization
+    primary_application: Long-range reasoning tasks and sequence modeling (evaluated on Long Range Arena benchmark)
+    efficiency_tradeoffs: Matches the training speed of SSMs and provides fast RNN-like inference
+    sequence_length_capability: Effective on long sequences, matching SSM performance on the Long Range Arena benchmark
+    key_innovation: Recovering SSM-level performance in RNNs through careful design (linearization, diagonalization, and proper normalization) via the Linear Recurrent Unit
+    relations: uses arXiv:2111.00396; compares-with arXiv:2203.14343; uses arXiv:2208.04933; uses arXiv:2011.04006; uses arXiv:1711.05101; cites arXiv:2010.11929; cited-by arXiv:2305.13048; cited-by arXiv:2310.19694; used-by arXiv:2312.06211; used-by arXiv:2312.06837; compared-by arXiv:2401.00955; cited-by arXiv:2404.16112
+arXiv:2305.13048 (2023) "RWKV: Reinventing RNNs for the Transformer Era" [cs] (cited-by 83 in-topic, era 2)
+    model_architecture: Receptance Weighted Key Value (RWKV) combining linear attention with RNN/Transformer formulations
+    mathematical_formalism: Linear attention mechanism allowing dual formulation as both a Transformer (for parallel training) and an RNN (for constant complexity inference)
+    primary_application: Natural language processing (NLP) and sequence modeling tasks
+    efficiency_tradeoffs: Combines parallelizable training of Transformers with constant computational and memory complexity during inference (linear scaling vs. quadratic scaling)
+    sequence_length_capability: Maintains constant computational and memory complexity during inference
+    key_innovation: A novel architecture that reconciles the parallelization of Transformers with the efficient inference of RNNs via a linear attention mechanism
+    relations: cites arXiv:1607.06450; uses arXiv:1706.03762; uses arXiv:2005.14165; cites arXiv:2009.06732; cites arXiv:2006.04768; cites arXiv:2007.14062; cited-by arXiv:2311.14495; cited-by arXiv:2401.00955; cited-by arXiv:2404.16112; used-by arXiv:2406.09062; used-by arXiv:2503.18970
+arXiv:2302.06646 (2023) "Simple Hardware-Efficient Long Convolutions for Sequence Modeling" [cs] (cited-by 22 in-topic, era 2)
+    model_architecture: Long convolutions (learned directly)
+    mathematical_formalism: Butterfly decompositions of the convolution; kernel weight squashing for smoothness
+    primary_application: Long range arena, image classification, language modeling, brain data modeling, and Path256
+    efficiency_tradeoffs: FlashButterfly reduces GPU memory IO and increases FLOP utilization, achieving 2.2x speedup; extension increases expressivity without increasing runtime
+    sequence_length_capability: Effective on long sequences, including Path256 with sequence length 64K
+    key_innovation: FlashButterfly (an IO-aware algorithm using Butterfly decompositions) and learned Butterfly decomposition coefficients
+    relations: cites arXiv:2111.00396; cites arXiv:2203.14343; cites arXiv:2208.04933; extends arXiv:2212.14052; cites arXiv:2202.09729; uses arXiv:2206.12037; critiqued-by arXiv:2306.09539; compared-by arXiv:2312.06837
+arXiv:2303.09489 (2023) "Effectively Modeling Time Series with Simple Discrete State Spaces" [cs] (cited-by 11 in-topic, era 2)
+    model_architecture: State-space model (SSM) based on a companion matrix parameterization.
+    mathematical_formalism: Companion matrix representation for discrete-time processes and a 'closed-loop' variation for autoregressive generation.
+    primary_application: Time series modeling, including classification (ECG and speech) and long-horizon forecasting.
+    efficiency_tradeoffs: Reduces complexity from naive $\tilde{O}(d \ell)$ to $\tilde{O}(d + \ell)$ for memory and compute; speeds up training on ETTh1 by 73% and 80% relative to Transformers and LSTMs.
+    sequence_length_capability: Enables long-horizon forecasting via a closed-loop variation that generates its own layer-wise inputs.
+    key_innovation: A new SSM parameterization based on the companion matrix that allows the model to express autoregressive processes and a closed-loop variation for multi-step prediction.
+    relations: compares-with arXiv:1706.03762; critiques arXiv:2203.14343; uses arXiv:2111.00396; cites arXiv:2011.04006; uses arXiv:2110.13985; motivated-by arXiv:2202.09729; cited-by arXiv:2302.06646; cited-by arXiv:2312.06837; cited-by arXiv:2406.00943; cited-by arXiv:2406.09062
+arXiv:2303.03982 (2023) "Structured State Space Models for In-Context Reinforcement Learning" [cs] (cited-by 9 in-topic, era 2)
+    model_architecture: Modified Structured State Space Sequence (S4) model
+    mathematical_formalism: Parallelizable initialization and resetting of the hidden state
+    primary_application: In-context reinforcement learning and meta-learning in partially-observable environments
+    efficiency_tradeoffs: Asymptotically faster than Transformers in sequence length; runs over 5x faster than RNNs in practice
+    sequence_length_capability: High effectiveness in handling long-range sequences
+    key_innovation: Modification to S4 that enables parallel initialization and resetting of the hidden state for reinforcement learning
+    relations: cites arXiv:2111.00396; extends arXiv:2208.04933; cites arXiv:2008.07669; cites arXiv:2110.13985; cites arXiv:2202.09729; uses arXiv:1706.03762; cited-by arXiv:2310.19694; cited-by arXiv:2406.12272; cited-by arXiv:2501.11729
+arXiv:2311.14495 (2023) "StableSSM: Alleviating the Curse of Memory in State-space Models through
+  Stable Reparameterization" [cs] (cited-by 9 in-topic, era 2)
+    model_architecture: State-space models (SSMs)
+    mathematical_formalism: Stable reparameterization techniques to prevent recurrent weights from converging to a stability boundary
+    primary_application: Language modeling, image classification, and synthetic sequence modeling tasks
+    sequence_length_capability: Addresses the 'curse of memory' where standard SSMs are limited to approximating relationships with exponential decaying memory
+    key_innovation: Introduction of a class of reparameterization techniques for SSMs to lift memory limitations and enhance optimization stability
+    relations: compares-with arXiv:2206.11893; compares-with arXiv:2008.07669; compares-with arXiv:2111.00396; uses arXiv:2208.04933; cites arXiv:2212.14052; cites arXiv:1706.03762; used-by arXiv:2410.03464; cited-by arXiv:2503.18970; cited-by arXiv:2506.05678
+arXiv:2310.19694 (2023) "Convolutional State Space Models for Long-Range Spatiotemporal Modeling" [cs] (cited-by 7 in-topic, era 2)
+    model_architecture: Convolutional State Space Models (ConvSSM), specifically the ConvS5 variant.
+    mathematical_formalism: Equivalence between convolutional recurrences and state space models (SSMs); application of parallel scans to convolutional recurrences.
+    primary_application: Long-range spatiotemporal modeling (e.g., Moving-MNIST, DMLab, Minecraft, and Habitat prediction benchmarks).
+    efficiency_tradeoffs: Achieves subquadratic parallelization; trains 3X faster than ConvLSTM and generates samples 400X faster than Transformers.
+    sequence_length_capability: Designed for long-range temporal dependencies and long spatiotemporal sequences, outperforming Transformers on long-horizon Moving-MNIST.
+    key_innovation: Combining tensor modeling ideas of ConvLSTM with the long sequence modeling approaches of SSMs (S4/S5) via parallel scans applied to convolutional recurrences.
+    relations: extends arXiv:2111.00396; extends arXiv:2208.04933; cites arXiv:2010.11929; uses arXiv:1512.03385; cites arXiv:1406.1078; cites arXiv:1211.5063; cited-by arXiv:2412.11211; cited-by arXiv:2501.11729; cited-by arXiv:2503.18970
+arXiv:2312.06837 (2023) "Spectral State Space Models" [cs] (cited-by 6 in-topic, era 2)
+    model_architecture: Spectral state space model based on learning linear dynamical systems with the spectral filtering algorithm
+    mathematical_formalism: Spectral filtering algorithm (Hazan et al. (2017)) applied to linear dynamical systems
+    primary_application: Sequence modeling for prediction tasks with long-range dependencies across various modalities
+    efficiency_tradeoffs: Uses fixed convolutional filters that do not require learning
+    sequence_length_capability: Effective for tasks requiring very long range memory
+    key_innovation: A new SSM formulation using spectral filtering that provides provable robustness regardless of the spectrum of underlying dynamics or problem dimensionality
+    relations: uses arXiv:2011.04006; cites arXiv:1211.5063; cites arXiv:1406.1078; cites arXiv:1511.06464; cites arXiv:1706.03762; cites arXiv:2005.14165
+arXiv:2306.09539 (2023) "Block-State Transformers" [cs] (cited-by 6 in-topic, era 2)
+    model_architecture: Hybrid architecture combining an SSM sublayer with a Block Transformer sublayer.
+    primary_application: Language Modeling.
+    efficiency_tradeoffs: Demonstrates more than tenfold increase in speed at the layer level compared to the Block-Recurrent Transformer when model parallelization is employed; utilizes subquadratic runtime complexity.
+    sequence_length_capability: Generalizes to longer sequences and models long-range dependencies.
+    key_innovation: The Block-State Transformer (BST) layer, which integrates SSMs for long-range contextualization and block-wise attention for short-term representation.
+    relations: uses arXiv:2206.11893; uses arXiv:2203.14343; cites arXiv:2008.07669; cites arXiv:1810.04805; critiques arXiv:2302.06646; cites arXiv:1706.03762; cited-by arXiv:2406.09062
+arXiv:2312.06211 (2023) "Structured state-space models are deep Wiener models" [eess] (cited-by 2 in-topic, era 2)
+    model_architecture: Structured State-space Models (SSMs)
+    mathematical_formalism: Deep Wiener models
+    primary_application: Extremely-long sequence classification and regression problems
+    efficiency_tradeoffs: Parallelizable, allowing for efficient and scalable training
+    sequence_length_capability: Capable of tackling extremely-long sequence problems
+    key_innovation: Reframing SSMs as an extension of deep Wiener models to bridge machine learning and system identification
+    relations: uses arXiv:2111.00396; motivated-by arXiv:2203.14343; critiques arXiv:2206.11893; uses arXiv:2208.04933; uses arXiv:2303.06349; cites arXiv:2008.07669
+arXiv:2306.17184 (2023) "State space models can express n-gram languages" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: State Space Models (SSMs) and Recurrent Neural Networks (RNNs)
+    mathematical_formalism: Memorization capacity and spectrum restriction of the state transition matrix
+    primary_application: Next-word prediction for languages generated from n-gram rules
+    sequence_length_capability: Context window can be controlled by restricting the spectrum of the state transition matrix
+    key_innovation: Theoretical proof that SSMs can encode n-gram rules, demonstrating their expressivity for next-word prediction tasks
+    relations: cites arXiv:1810.04805; cites arXiv:1907.11692
+arXiv:2405.21060 (2024) "Transformers are SSMs: Generalized Models and Efficient Algorithms
+  Through Structured State Space Duality" [cs] (cited-by 100 in-topic, era 2)
+    model_architecture: Selective SSM (Mamba) and SSD-based architecture (Mamba-2)
+    mathematical_formalism: Structured State Space Duality (SSD) via decompositions of structured semiseparable matrices
+    primary_application: Language modeling
+    efficiency_tradeoffs: Mamba-2 is 2-8X faster than Mamba while remaining competitive with Transformers
+    key_innovation: State Space Duality (SSD) framework connecting SSMs and attention variants
+    relations: cited-by arXiv:2410.03464; cited-by arXiv:2412.11211; extended-by arXiv:2501.11729; cited-by arXiv:2503.18970; used-by arXiv:2510.09389
+arXiv:2404.16112 (2024) "Mamba-360: Survey of State Space Models as Transformer Alternative for
+  Long Sequence Modelling: Methods, Applications, and Challenges" [cs] (cited-by 13 in-topic, era 2)
+    model_architecture: Categorized into Gating architectures, Structural architectures, and Recurrent architectures (including S4, S4nd, Hippo, Hyena, DSS, GSS, LRU, Liquid-S4, and Mamba).
+    primary_application: NLP, speech recognition, time series forecasting, music generation, bioinformatics, vision, video, audio, medical (genomics), chemical (drug design), recommendation systems, and tabular data.
+    efficiency_tradeoffs: Addresses the $O(N^2)$ attention complexity of transformers.
+    sequence_length_capability: Designed as an alternative for long sequence modeling to address difficulties in dealing with long sequences.
+    key_innovation: A survey categorizing foundational SSMs into three paradigms (Gating, Structural, and Recurrent) and consolidating performance across diverse domains and benchmark datasets (LRA, WikiText, Glue, Pile, etc.).
+    relations: uses arXiv:2011.04006; cites arXiv:2111.00396; extends arXiv:2312.00752; cites arXiv:2008.07669; cites arXiv:2212.14052; cites arXiv:2305.13048; cited-by arXiv:2503.18970; cited-by arXiv:2507.21394
+arXiv:2403.16899 (2024) "State Space Models as Foundation Models: A Control Theoretic Overview" [eess] (cited-by 8 in-topic, era 2)
+    model_architecture: Linear state-space models (SSM), including selective architectures like Mamba
+    mathematical_formalism: Control theoretic modeling of dynamical systems and latent space encoding
+    primary_application: Deep sequence modeling and language tasks
+    sequence_length_capability: Evaluated via a standardized benchmark for learning long sequences
+    key_innovation: A systematic review and comparative analysis of SSM-based architectures from a control theoretic perspective
+    relations: cites arXiv:2011.04006; cites arXiv:2004.05150; cites arXiv:2007.14062; extends arXiv:2312.00752; critiques arXiv:2110.13985; critiques arXiv:2111.00396; cited-by arXiv:2405.19036; cited-by arXiv:2406.09062
+arXiv:2405.19036 (2024) "State Space Models are Provably Comparable to Transformers in Dynamic
+  Token Selection" [stat] (cited-by 3 in-topic, era 2)
+    model_architecture: SSMs combined with fully connected neural networks (nonlinear layers)
+    mathematical_formalism: Nonparametric regression and equivalence proofs for function estimation classes
+    primary_application: Dynamic token selection and nonparametric regression
+    efficiency_tradeoffs: Lower computational cost compared to Transformers
+    key_innovation: Proving that SSMs combined with nonlinear layers are comparable to Transformers in extracting essential tokens and estimating specific function classes
+    relations: cites arXiv:2403.16899; cites arXiv:2312.00752; cites arXiv:1706.03762; cites arXiv:2010.11929; cites arXiv:2111.00396; cites arXiv:2212.14052
+arXiv:2410.03464 (2024) "S7: Selective and Simplified State Space Layers for Sequence Modeling" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Selective State Space Model (SSM)
+    mathematical_formalism: Stable reparameterization for input-dependent state transitions and gradient norm control
+    primary_application: Neuromorphic event-based datasets, Long Range Arena benchmarks, and physical/biological time series
+    efficiency_tradeoffs: Maintains efficiency while incorporating input dependence through simplified design choices
+    sequence_length_capability: Effective in long-sequence modeling via stable reparameterization that prevents exploding or vanishing gradients
+    key_innovation: Introduction of S7, a simplified SSM using stable reparameterization to enable input-dependent filtering without high complexity
+    relations: compares-with arXiv:2011.04006; cites arXiv:2006.16236; cites arXiv:1901.02860; cites arXiv:1406.1078; extends arXiv:2208.04933; cites arXiv:2005.14165
+arXiv:2406.09062 (2024) "State-Space Modeling in Long Sequence Processing: A Survey on Recurrence in the Transformer Era" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Recurrent models, specifically (deep) State-Space models and large-context Transformers.
+    mathematical_formalism: Recurrent computations and local-forward computations.
+    primary_application: Sequential data processing and Large Language Models (LLMs).
+    sequence_length_capability: Aims to process long sequences and maintain long-term dependencies/correlations beyond current technology limits.
+    key_innovation: A complete taxonomy of recent trends in architectural and algorithmic solutions for recurrent-based sequential data processing.
+    relations: compares-with arXiv:2312.00752; uses arXiv:2305.13048; uses arXiv:2303.06349; motivated-by arXiv:1706.03762; motivated-by arXiv:2008.07669; cites arXiv:2205.14135
+arXiv:2410.03158 (2024) "Mathematical Formalism for Memory Compression in Selective State Space
+  Models" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Selective State Space Models (SSMs) with a selective gating mechanism
+    mathematical_formalism: Information-theoretic tools (mutual information and rate-distortion theory) and control theory/dynamical systems
+    primary_application: Time-series forecasting and natural language processing
+    efficiency_tradeoffs: Trade-off between memory efficiency and information retention; offers significant improvements in memory efficiency and processing speed compared to traditional RNNs
+    sequence_length_capability: Designed for modelling long-range dependencies with proven stability and convergence for reliable long-term memory retention
+    key_innovation: A rigorous mathematical framework for memory compression using a selective gating mechanism and information-theoretic bounds
+    relations: cited-by arXiv:2503.18970
+arXiv:2406.12272 (2024) "Slot State Space Models" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: SlotSSMs (a collection of multiple independent state vectors called slots with sparse interactions via self-attention bottlenecks)
+    mathematical_formalism: Independent state transitions per slot with sparse interactions implemented via self-attention bottlenecks
+    primary_application: Object-centric learning, 3D visual reasoning, and long-context video understanding
+    sequence_length_capability: Designed for long-range temporal dependency modeling
+    key_innovation: Incorporating independent mechanisms into SSMs by replacing the monolithic state vector with a collection of multiple slots to encourage separation of information
+    relations: cites arXiv:2111.00396; cites arXiv:2208.04933; uses arXiv:2312.00752; cites arXiv:2303.06349; cites arXiv:2202.09729; cites arXiv:1211.5063
+arXiv:2401.00955 (2024) "Learning Long Sequences in Spiking Neural Networks" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: State Space Models (SSMs) integrated with Spiking Neural Networks (SNNs)
+    primary_application: Long-range sequence modelling and sequential image classification
+    efficiency_tradeoffs: Outperforms current SOTA SNNs with fewer parameters; potential for energy-efficient deployment on neuromorphic hardware
+    sequence_length_capability: Outperforms Transformers on a well-established long-range sequence modelling benchmark
+    key_innovation: Systematic investigation of SSMs with SNNs and the introduction of a novel feature mixing layer
+    relations: uses arXiv:2206.11893; cites arXiv:1211.5063; compares-with arXiv:2303.06349; cites arXiv:1706.03762; critiques arXiv:2009.06732; cites arXiv:2305.13048
+arXiv:2412.11211 (2024) "Deep Learning-based Approaches for State Space Models: A Selective
+  Review" [stat] (cited-by 0 in-topic, era 2)
+    model_architecture: Discrete-time deep state space models and continuous-time models (latent neural Ordinary Differential Equations and Stochastic Differential Equations).
+    mathematical_formalism: Evolution of latent states governing observation values; maximum likelihood-based learning; variational autoencoder (VAE) learning pipelines.
+    primary_application: Sequence modeling, mixed frequency time series, and irregularly-spaced time series data.
+    key_innovation: A unified perspective and selective review of deep learning-based SSMs, covering both classical approaches and recent developments as standalone architectural modules for sequence modeling.
+    relations: critiques arXiv:2312.00752; cites arXiv:2405.21060; cites arXiv:2110.13985; critiques arXiv:1706.03762; cites arXiv:1512.03385; extends arXiv:2208.04933
+arXiv:2406.00943 (2024) "State Space Models on Temporal Graphs: A First-Principles Study" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: GraphSSM (a graph state space model)
+    mathematical_formalism: Discretized representations of an underlying continuous-time linear dynamical system integrated with a Laplacian regularization term
+    primary_application: Modeling the dynamics of temporal graphs (ordered sequences of static graph snapshots)
+    key_innovation: Extending SSM theory to temporal graphs by integrating structural information into the online approximation objective via Laplacian regularization
+    relations: uses arXiv:2008.07669; cites arXiv:1406.1078; cites arXiv:1706.03762; extends arXiv:2111.00396; extends arXiv:2208.04933; cites arXiv:2212.14052
+arXiv:2503.18970 (2025) "Advancing Intelligent Sequence Modeling: Evolution, Trade-offs, and Applications of State- Space Architectures from S4 to Mamba" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Structured State Space Models (SSMs), including S4, S5, Mamba, and Jamba (hybrid architectures).
+    mathematical_formalism: Integration of structured recurrence with state-space representations.
+    primary_application: Natural language processing, speech recognition, computer vision, time-series forecasting, real-time speech synthesis, and genomic sequence modeling.
+    efficiency_tradeoffs: Linear or near-linear computational scaling; reduces inference latency by up to 60% compared to traditional approaches; balances expressiveness with computational constraints.
+    sequence_length_capability: Excels in long-range dependency tasks and handling ultra-long sequences, outperforming Transformer-based models.
+    key_innovation: Evolution from foundational S4 to modern selective/hybrid architectures (Mamba, Jamba) to address vanishing gradients and quadratic memory complexity.
+    relations: cites arXiv:2405.21060; compares-with arXiv:2110.13985; cites arXiv:2404.16112; compares-with arXiv:2111.00396; cites arXiv:2311.14495; cites arXiv:2410.03158
+arXiv:2501.11729 (2025) "SeRpEnt: Selective Resampling for Expressive State Space Models" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Selective State Space Model (SSM) with a resampling mechanism
+    mathematical_formalism: Selective time intervals acting as linear approximators of information
+    primary_application: Sequence modeling, Long Range Arena benchmark, and language modeling tasks
+    sequence_length_capability: Designed to address the inability of traditional models to model long-range dependencies via information-aware compression
+    key_innovation: SeRpEnt architecture featuring a resampling mechanism that aggregates elements based on their information content
+    relations: extends arXiv:2312.00752; cites arXiv:1706.03762; cites arXiv:1409.0473; cites arXiv:1904.10509; uses arXiv:2011.04006; cites arXiv:2008.07669
+arXiv:2512.23824 (2025) "MS-SSM: A Multi-Scale State Space Model for Efficient Sequence Modeling" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Multi-scale State Space Model (MS-SSM) with an input-dependent scale-mixer
+    mathematical_formalism: Linear recurrences and multi-resolution processing of sequence dynamics
+    primary_application: Long-range and hierarchical tasks, including Long Range Arena, hierarchical reasoning, time series classification, and image recognition
+    efficiency_tradeoffs: Enhances memory efficiency by capturing both fine-grained and coarse patterns while maintaining computational efficiency
+    sequence_length_capability: Improved long-range modeling through multi-resolution processing and specialized state-space dynamics
+    key_innovation: A multi-scale framework that represents sequence dynamics across multiple resolutions with an input-dependent scale-mixer for dynamic information fusion
+    relations: (none in-topic)
+arXiv:2505.17932 (2025) "Geometric SSM: LTI State Space Models for Selective Tasks" [eess] (cited-by 0 in-topic, era 2)
+    model_architecture: LTI (Linear Time-Invariant) State Space Model based on geometric control principles
+    mathematical_formalism: Geometric control theory; invariant subspaces; dynamic residual generator
+    primary_application: Selective sequence modeling; extended induction head tasks
+    efficiency_tradeoffs: Preserves efficient FFT-based training
+    sequence_length_capability: Enables recognition of multi-token patterns and handles long-range dependencies via temporal memory
+    key_innovation: Achieving selectivity in LTI systems by using input patterns to excite distinct invariant subspaces, avoiding the need for time-varying system matrices.
+    relations: extends arXiv:2312.00752; cites arXiv:1706.03762; cites arXiv:1409.0473; cites arXiv:2009.06732; extends arXiv:2208.04933; uses arXiv:2212.14052
+arXiv:2505.18728 (2025) "Message-Passing State-Space Models: Improving Graph Learning with Modern Sequence Modeling" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Message-Passing State-Space Models (MP-SSM) integrated into the Message-Passing Neural Network (MPNN) framework.
+    mathematical_formalism: Exact sensitivity analysis used to characterize information flow, vanishing gradients, and over-squashing.
+    primary_application: Node classification, graph property prediction, long-range benchmarks, and spatiotemporal forecasting.
+    efficiency_tradeoffs: Highly optimized parallel implementation akin to modern SSMs; preserves architectural simplicity of message passing.
+    sequence_length_capability: Enables long-range information propagation.
+    key_innovation: Embedding key principles of modern SSM computation directly into the Message-Passing Neural Network framework to ensure permutation equivariance and message-passing compatibility.
+    relations: (none in-topic)
+arXiv:2506.05678 (2025) "Numerical Investigation of Sequence Modeling Theory using Controllable Memory Functions" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Recurrent neural networks, convolutional models, Transformers, and structured state-space models
+    mathematical_formalism: Synthetic benchmarking framework using memory functions and parameters determining temporal dependence strength
+    primary_application: Evaluating how sequence models capture distinct temporal structures via synthetic targets
+    key_innovation: A synthetic benchmarking framework using controllable memory functions to create a continuum of tasks with varying temporal complexity
+    relations: uses arXiv:1706.03762; cites arXiv:2111.00396; cites arXiv:2303.06349; cites arXiv:2011.04006; cites arXiv:2206.11893; cites arXiv:2311.14495
+arXiv:2510.09389 (2025) "Design Principles for Sequence Models via Coefficient Dynamics" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Unified framework covering Transformers, State Space Models (SSMs), gated linear RNNs, and RNNs with softmax attention.
+    mathematical_formalism: Linear combination coefficients cast as outputs of autonomous linear dynamical systems driven by impulse inputs.
+    primary_application: Systematic comparison and design of sequence modeling architectures.
+    efficiency_tradeoffs: Identifies tradeoffs between expressivity and efficient implementation.
+    key_innovation: A unified framework that treats output coefficients as dynamical systems to derive design principles for stability, selectivity, and expressivity.
+    relations: cites arXiv:2312.00752; cites arXiv:1706.03762; uses arXiv:2405.21060; uses arXiv:2006.16236; cites arXiv:2009.14794; cites arXiv:2111.00396
+arXiv:2511.13912 (2025) "Compute-in-Memory Implementation of State Space Models for Event Sequence Processing" [eess] (cited-by 0 in-topic, era 2)
+    model_architecture: re-parameterized SSM with real-valued coefficients and shared decay constants
+    mathematical_formalism: diagonalized state transition parameters and real-valued coefficients
+    primary_application: real-time, event-driven processing for event-based vision and audio tasks
+    efficiency_tradeoffs: high energy efficiency via hardware/algorithm co-design using crossbar-based CIM and memristors
+    key_innovation: algorithm and hardware co-design implementing SSMs in CIM systems using memristors with short-term memory effects
+    relations: (none in-topic)
+arXiv:2507.21394 (2025) "Systolic Array-based Accelerator for Structured State-Space Models" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Structured State-Space Models (SSMs)
+    mathematical_formalism: Solving differential equations through continuous integration
+    primary_application: Long-range sequence tasks (LRA datasets)
+    efficiency_tradeoffs: Achieves 2000x performance improvement over GPU and 250x performance/45x energy efficiency gains over traditional SA-based accelerators (TPU)
+    sequence_length_capability: Enables lengthy context windows via exponentially decaying memory to handle very long data sequences more efficiently than RNNs or Transformers
+    key_innovation: EpochCore: a specialized systolic array-based accelerator featuring LIMA-PE (versatile processing element) and ProDF (novel dataflow)
+    relations: uses arXiv:2008.07669; uses arXiv:2111.00396; cites arXiv:2404.16112; cites arXiv:2110.13985; cites arXiv:2208.04933; cites arXiv:2203.14343
+arXiv:2511.05926 (2025) "L2T-Hyena: Enhancing State-Space Models with an Adaptive Learn-to-Teach Framework" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Hybrid architecture integrating Hyena (SSM) with a Dynamic Loss Network (DLN) under a Learning-to-Teach (L2T) paradigm.
+    mathematical_formalism: Dynamic loss adaptation via a teacher model that trades off a primary cross-entropy objective and a regularization term based on student performance memory.
+    primary_application: Language modeling (Penn Treebank and WikiText-103 benchmarks), natural language processing, time-series analysis, and biological signal processing.
+    key_innovation: The L2T-DLN framework, which uses a teacher model to adapt the student's (Hyena) loss function online during training.
+    relations: (none in-topic)
+arXiv:2512.18965 (2025) "Lag Operator SSMs: A Geometric Framework for Structured State Space Modeling" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: discrete-time SSMs based on a novel lag operator framework
+    mathematical_formalism: geometric derivation of discrete-time recurrence via a lag operator measuring the 'sliding' and change of basis functions through a single inner product
+    primary_application: sequence modeling
+    key_innovation: a direct, first-principles framework for constructing discrete-time SSMs using a lag operator that avoids the continuous-to-discrete discretization process
+    relations: (none in-topic)
+arXiv:2605.15311 (2026) "Time-Varying Deep State Space Models for Sequences with Switching Dynamics" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Time-varying state-space model (SSM) based neural networks using a dictionary of basis functions.
+    mathematical_formalism: Time-varying dynamics governed by a dictionary of basis functions where each function evolves differently over time.
+    primary_application: Synthetic switching systems and speech denoising with switching dynamics noise.
+    efficiency_tradeoffs: Maintains comparable computational complexity to time-invariant counterparts.
+    key_innovation: Introduction of learnable time-varying dynamics through a dictionary of basis functions to model switching dynamics.
+    relations: cites arXiv:2111.00396; cites arXiv:2208.04933; cites arXiv:2312.00752; cites arXiv:2008.07669; cites arXiv:2206.11893
+
+MAIN PATH (oldest -> newest):
+  arXiv:1211.5063 (2012) -> arXiv:1409.0473 (2014) -> arXiv:1706.03762 (2017) -> arXiv:1810.04805 (2018) -> arXiv:1907.11692 (2019) -> arXiv:2006.16236 (2020) -> arXiv:2111.00396 (2021) -> arXiv:2206.11893 (2022) -> arXiv:2303.06349 (2023) -> arXiv:2404.16112 (2024) -> arXiv:2503.18970 (2025)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:1901.02860 compares [negative] arXiv:1706.03762
+  arXiv:2302.06646 critiques [negative] arXiv:2102.02611
+  arXiv:2303.09489 critiques [negative] arXiv:2203.14343
+  arXiv:2306.09539 critiques [negative] arXiv:2302.06646
+  arXiv:2312.06211 critiques [negative] arXiv:2206.11893
+  arXiv:2401.00955 critiques [negative] arXiv:2009.06732
+  arXiv:2406.09062 critiques [negative] arXiv:2006.16236
+  arXiv:2406.09062 critiques [negative] arXiv:2004.05150
+  arXiv:2406.09062 critiques [negative] arXiv:1612.08083
+  arXiv:2412.11211 critiques [negative] arXiv:2312.00752
+  arXiv:2412.11211 critiques [negative] arXiv:1706.03762
+  arXiv:2412.11211 critiques [negative] arXiv:1810.04805
+  arXiv:2412.11211 critiques [negative] arXiv:1910.10683
+  arXiv:2412.11211 critiques [negative] arXiv:2005.14165
+  arXiv:2412.11211 critiques [negative] arXiv:1901.02860
+  arXiv:2412.11211 critiques [negative] arXiv:2001.04451
+  arXiv:2503.18970 critiques [negative] arXiv:2312.00752
+  arXiv:2503.18970 critiques [negative] arXiv:1706.03762
+  arXiv:2203.14343 critiques [negative] arXiv:2008.07669
+  arXiv:2303.03982 compares [positive] arXiv:1406.1078
+  arXiv:2303.06349 compares [positive] arXiv:2203.14343
+  arXiv:2303.06349 compares [neutral] arXiv:2206.11893
+  arXiv:2303.09489 compares [neutral] arXiv:1706.03762
+  arXiv:2303.09489 compares [neutral] arXiv:2206.11893
+  arXiv:2303.09489 compares [neutral] arXiv:2001.04451
+  arXiv:2305.13048 compares [positive] arXiv:2011.04006
+  arXiv:2305.13048 compares [neutral] arXiv:2001.04451
+  arXiv:2305.13048 compares [neutral] arXiv:2009.14794
+  arXiv:2305.13048 compares [positive] arXiv:2212.14052
+  arXiv:2305.13048 compares [positive] arXiv:2203.14343
+  arXiv:2306.09539 compares [neutral] arXiv:1910.10683
+  arXiv:2310.19694 compares [neutral] arXiv:1612.08083
+  arXiv:2311.14495 compares [neutral] arXiv:2206.11893
+  arXiv:2311.14495 compares [neutral] arXiv:2008.07669
+  arXiv:2312.06837 compares [neutral] arXiv:2302.06646
+  arXiv:2401.00955 compares [neutral] arXiv:2303.06349
+  arXiv:2404.16112 compares [neutral] arXiv:1810.04805
+  arXiv:2406.09062 compares [neutral] arXiv:2312.00752
+  arXiv:2406.09062 compares [neutral] arXiv:2011.04006
+  arXiv:2406.09062 compares [neutral] arXiv:2203.14343
+  arXiv:2410.03464 compares [neutral] arXiv:2011.04006
+  arXiv:2501.11729 compares [neutral] arXiv:2212.14052
+  arXiv:2501.11729 compares [neutral] arXiv:2206.11893
+  arXiv:2503.18970 compares [neutral] arXiv:1910.10683
+  arXiv:2503.18970 compares [neutral] arXiv:1909.08053
+  arXiv:2503.18970 compares [neutral] arXiv:1901.02860
+  arXiv:2503.18970 compares [neutral] arXiv:2006.04768
+  arXiv:2507.21394 compares [positive] arXiv:2212.14052
+  arXiv:2001.04451 compares [neutral] arXiv:1706.03762
+  arXiv:2006.04768 compares [neutral] arXiv:1810.04805
+  arXiv:2008.07669 compares [neutral] arXiv:1412.3555
+  arXiv:2011.04006 compares [neutral] arXiv:2006.04768
+  arXiv:2205.14135 compares [positive] arXiv:1909.08053
+  arXiv:2205.14135 compares [neutral] arXiv:2006.04768
+  arXiv:1609.07843 compares [neutral] arXiv:1211.5063
+  arXiv:1612.08083 compares [positive] arXiv:1609.07843
+  arXiv:1706.03762 compares [neutral] arXiv:1409.0473
+  arXiv:1910.10683 compares [positive] arXiv:1804.07461
+  arXiv:2008.07669 compares [neutral] arXiv:1511.06464
+  arXiv:2009.14794 compares [neutral] arXiv:1911.05507
+  arXiv:2009.14794 compares [neutral] arXiv:2011.04006
+  arXiv:2010.11929 compares [positive] arXiv:1412.6980
+  arXiv:2011.04006 compares [neutral] arXiv:1706.03762
+  arXiv:2011.04006 compares [neutral] arXiv:1904.10509
+  arXiv:2011.04006 compares [neutral] arXiv:2001.04451
+  arXiv:2011.04006 compares [neutral] arXiv:2006.16236
+  arXiv:2011.04006 compares [neutral] arXiv:2007.14062
+  arXiv:2011.04006 compares [neutral] arXiv:2004.05150
+  arXiv:2202.09729 compares [positive] arXiv:1612.08083
+  arXiv:2203.14343 compares [neutral] arXiv:2011.04006
+  arXiv:2205.14135 compares [neutral] arXiv:1810.04805
+  arXiv:2206.11893 compares [neutral] arXiv:2102.02611
+  arXiv:2212.14052 compares [positive] arXiv:2011.04006
+  arXiv:2212.14052 compares [positive] arXiv:1609.07843
+  arXiv:2303.06349 motivates [neutral] arXiv:2008.07669
+  arXiv:2303.09489 motivates [neutral] arXiv:2202.09729
+  arXiv:2312.06211 motivates [neutral] arXiv:2203.14343
+  arXiv:2401.00955 motivates [neutral] arXiv:1606.08415
+  arXiv:2406.09062 motivates [neutral] arXiv:1706.03762
+  arXiv:2406.09062 motivates [neutral] arXiv:2008.07669
+  arXiv:2102.02611 motivates [neutral] arXiv:1901.02860
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2111.00396:
+NOVELTY: Introduces the Structured State Space (S4) model using a Normal Plus Low-Rank (NPLR) parameterization of the state matrix $A$, enabling stable diagonalization and efficient computation via a Cauchy kernel.
+STRENGTHS: Solves the 16k-length Path-X task (88% accuracy) where all prior models failed, and achieves 60× faster generation than Transformers on WikiText-103.
+WEAKNESSES: Susceptible to numerical instability if $A$ has eigenvalues in the right half-plane; ablation studies indicate performance is driven primarily by HiPPO initialization rather than the NPLR parameterization itself.
+RELEVANCE: Provides an $O(N+L)$ complexity framework that unifies continuous, recurrent, and convolutional representations to handle extremely long-range dependencies across multiple modalities.
+arXiv:1706.03762:
+NOVELTY: An architecture that dispenses with recurrence and convolution entirely, relying solely on multi-head self-attention to draw global dependencies.
+STRENGTHS: Achieves state-of-
+arXiv:2605.15311:
+NOVELTY: Integration of basis function expansion into deep SSM architectures to parameterize $A[t]$, $B[t]$, and $C[t]$ matrices, enabling continuous time-varying dynamics without explicit switching mode specification.
+
+STRENGTHS: Demonstrates superior performance in non-stationary tasks, specifically achieving up to 19.6 dB SI-SNR in speech denoising compared to 14.2 dB for time-invariant models (Table 3).
+
+WEAKNESSES: The stability guarantee relies on a simplifying assumption that $A[t]$ is diagonal and basis functions are bounded; the paper lacks empirical validation for non-diagonal $A[t]$ stability.
+
+RELEVANCE: Advances the review by providing a mechanism for SSMs to handle non-stationary/switching dynamics through learnable temporal basis functions rather than just input-dependent gating.

@@ -1,0 +1,1042 @@
+QUESTION: diffusion models for image generation
+
+SCHEMA FIELDS: ['model_architecture', 'primary_objective', 'conditioning_mechanism', 'efficiency_technique', 'data_modality', 'technical_novelty']
+
+ERAS:
+  [0] Origins: 2013-2017
+  [1] Key Advances: 2017-2022
+  [2] Current Frontier: 2022-2026
+
+PAPERS (chronological; extracted fields per paper):
+arXiv:1312.6114 (2013) "Auto-Encoding Variational Bayes" [stat] (cited-by 151 in-topic, era 0)
+    model_architecture: stochastic variational inference with a recognition model
+    primary_objective: efficient inference and learning in directed probabilistic models with continuous latent variables and intractable posterior distributions
+    efficiency_technique: reparameterization of the variational lower bound and stochastic gradient methods
+    technical_novelty: reparameterization trick for the variational lower bound to enable optimization via standard stochastic gradient methods
+    relations: used-by arXiv:2305.19066; cited-by arXiv:2308.16512; used-by arXiv:2408.08306; cited-by arXiv:2409.19365; cited-by arXiv:2412.14422; cited-by arXiv:2501.13349
+arXiv:1412.6980 (2014) "Adam: A Method for Stochastic Optimization" [cs] (cited-by 105 in-topic, era 0)
+    primary_objective: first-order gradient-based optimization of stochastic objective functions
+    efficiency_technique: adaptive estimates of lower-order moments
+    technical_novelty: adaptive estimates of lower-order moments with invariance to diagonal rescaling of the gradients
+    relations: used-by arXiv:2308.16512; cited-by arXiv:2410.01540; used-by arXiv:2104.02600; cited-by arXiv:2212.08051; cited-by arXiv:1610.07584; used-by arXiv:1706.03762
+arXiv:1405.0312 (2014) "Microsoft COCO: Common Objects in Context" [cs] (cited-by 65 in-topic, era 0)
+    primary_objective: advancing object recognition through scene understanding
+    data_modality: images
+    technical_novelty: dataset containing 91 object types with 2.5 million labeled instances in 328k images using per-instance segmentations
+    relations: used-by arXiv:2305.19066; cited-by arXiv:2307.01952; cited-by arXiv:2409.19365; compared-by arXiv:2502.01189; used-by arXiv:2505.24222; extended-by arXiv:2605.18736
+arXiv:1411.7766 (2014) "Deep Learning Face Attributes in the Wild" [cs] (cited-by 64 in-topic, era 0)
+    model_architecture: Cascaded CNN framework consisting of LNet (for face localization) and ANet (for attribute prediction)
+    primary_objective: Face attribute prediction in the wild
+    efficiency_technique: Training LNet for face localization using only image-level annotations instead of face bounding boxes or landmarks
+    data_modality: Images (faces)
+    technical_novelty: A dual-stage pre-training strategy where LNet is pre-trained on general object categories for localization and ANet is pre-trained on face identities for attribute prediction, enabling localization without bounding box supervision.
+    relations: cited-by arXiv:2502.10236; used-by arXiv:2104.02600; used-by arXiv:1706.08500; used-by arXiv:1710.10196; used-by arXiv:1905.07088; used-by arXiv:1907.05600
+arXiv:1406.2661 (2014) "Generative Adversarial Networks" [stat] (cited-by 60 in-topic, era 0)
+    model_architecture: multilayer perceptrons
+    primary_objective: estimating generative models via an adversarial process
+    efficiency_technique: backpropagation (eliminating the need for Markov chains or unrolled approximate inference networks)
+    technical_novelty: a minimax two-player game framework where a generative model G and a discriminative model D are trained simultaneously
+    relations: cites arXiv:1312.6114; cited-by arXiv:2311.14900; used-by arXiv:2006.06676; cited-by arXiv:1710.10196; used-by arXiv:1812.04948; cited-by arXiv:1904.06991; used-by arXiv:1912.04958
+arXiv:1503.03585 (2015) "Deep Unsupervised Learning using Nonequilibrium Thermodynamics" [cs] (cited-by 301 in-topic, era 0)
+    model_architecture: iterative forward and reverse diffusion process
+    primary_objective: modeling complex data-sets with flexible and tractable probability distributions
+    technical_novelty: systematically and slowly destroying structure in a data distribution through an iterative forward diffusion process inspired by non-equilibrium statistical physics
+    relations: cites arXiv:1312.6114; cited-by arXiv:2302.02398; cited-by arXiv:2302.05543; cited-by arXiv:2303.02490; cited-by arXiv:2303.08320; cited-by arXiv:2303.11328; motivates arXiv:2305.16213
+arXiv:1505.04597 (2015) "U-Net: Convolutional Networks for Biomedical Image Segmentation" [cs] (cited-by 119 in-topic, era 0)
+    model_architecture: U-Net (contracting path to capture context and a symmetric expanding path for precise localization)
+    primary_objective: Biomedical image segmentation
+    efficiency_technique: Strong use of data augmentation to utilize few annotated samples efficiently
+    data_modality: Biomedical images (e.g., electron microscopic stacks, transmitted light microscopy)
+    technical_novelty: Symmetric expanding path architecture for precise localization combined with heavy data augmentation
+    relations: used-by arXiv:2302.05543; used-by arXiv:2305.16213; cited-by arXiv:2307.01952; used-by arXiv:2408.08306; cited-by arXiv:2409.19365; compared-by arXiv:2509.13936
+arXiv:1506.03365 (2015) "LSUN: Construction of a Large-scale Image Dataset using Deep Learning
+  with Humans in the Loop" [cs] (cited-by 78 in-topic, era 0)
+    primary_objective: Construction of a large-scale labeled image dataset to alleviate the data bottleneck for deep learning models.
+    efficiency_technique: Partially automated labeling scheme using a cascading procedure (iterative sampling, human labeling, and model-based classification based on confidence).
+    data_modality: Image
+    technical_novelty: A 'humans in the loop' iterative labeling framework that uses classification confidence to split images into positive, negative, and unlabeled sets.
+    relations: used-by arXiv:2410.01540; used-by arXiv:2605.27343; used-by arXiv:2104.02600; extended-by arXiv:2108.02938; cited-by arXiv:2112.10752; used-by arXiv:2206.00927
+arXiv:1606.03498 (2016) "Improved Techniques for Training GANs" [cs] (cited-by 98 in-topic, era 0)
+    model_architecture: Generative Adversarial Networks (GANs)
+    primary_objective: Semi-supervised learning and high-quality image generation
+    data_modality: Images (MNIST, CIFAR-10, SVHN, ImageNet)
+    technical_novelty: New architectural features and training procedures for GANs
+    relations: used-by arXiv:2307.01952; cited-by arXiv:2308.16512; cited-by arXiv:2402.16369; used-by arXiv:2509.13936; cited-by arXiv:2509.15342; cited-by arXiv:2510.10149
+arXiv:1610.07584 (2016) "Learning a Probabilistic Latent Space of Object Shapes via 3D
+  Generative-Adversarial Modeling" [cs] (cited-by 28 in-topic, era 0)
+    model_architecture: 3D Generative Adversarial Network (3D-GAN) using volumetric convolutional networks
+    primary_objective: 3D object generation and exploration of the 3D object manifold
+    data_modality: 3D objects
+    technical_novelty: Mapping a low-dimensional probabilistic space to a 3D object space using an adversarial criterion to capture structure implicitly
+    relations: extends arXiv:1312.6114; cites arXiv:1412.6980; compared-by arXiv:1812.02822; cited-by arXiv:2111.04276; cited-by arXiv:2112.07945; cited-by arXiv:2209.11163; cited-by arXiv:2209.14988; cited-by arXiv:2211.10440
+arXiv:1706.08500 (2017) "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash
+  Equilibrium" [cs] (cited-by 262 in-topic, era 0)
+    primary_objective: Convergence of GAN training to a local Nash equilibrium
+    efficiency_technique: Two time-scale update rule (TTUR) using individual learning rates for discriminator and generator
+    data_modality: Image
+    technical_novelty: Application of stochastic approximation theory to prove convergence of TTUR to a stationary local Nash equilibrium and analysis of Adam optimization as heavy ball dynamics with friction
+    relations: uses arXiv:1411.7766; uses arXiv:1506.03365; uses arXiv:1412.6980; compares-with arXiv:1606.03498; used-by arXiv:2302.05543; compared-by arXiv:2303.11328; used-by arXiv:2305.19066; used-by arXiv:2307.01952; cited-by arXiv:2308.16512; used-by arXiv:2312.13253
+arXiv:1706.03762 (2017) "Attention Is All You Need" [cs] (cited-by 93 in-topic, era 0)
+    model_architecture: Transformer (encoder-decoder architecture based solely on attention mechanisms)
+    primary_objective: Sequence transduction (specifically machine translation)
+    efficiency_technique: Dispensing with recurrence and convolutions to allow for higher parallelization and reduced training time
+    data_modality: Text (sequence data)
+    technical_novelty: The Transformer architecture, which relies entirely on attention mechanisms instead of recurrent or convolutional layers
+    relations: uses arXiv:1412.6980; cited-by arXiv:2303.08320; used-by arXiv:2408.08306; cited-by arXiv:1711.05101; used-by arXiv:2010.11929; used-by arXiv:2006.11239; used-by arXiv:2012.09841
+arXiv:1711.05101 (2017) "Decoupled Weight Decay Regularization" [cs] (cited-by 71 in-topic, era 0)
+    primary_objective: Improving generalization performance of adaptive gradient algorithms (like Adam) by decoupling weight decay from the optimization steps.
+    efficiency_technique: Decoupling weight decay from the loss-based optimization steps.
+    data_modality: Image classification datasets
+    technical_novelty: Decoupling the weight decay factor from the learning rate to ensure equivalence to the original weight decay formulation in adaptive gradient algorithms.
+    relations: cites arXiv:1706.03762; cites arXiv:1412.6980; used-by arXiv:2302.02398; used-by arXiv:2303.11328; used-by arXiv:2305.16213; used-by arXiv:2102.12092; cited-by arXiv:2103.00020; used-by arXiv:2105.05233
+arXiv:1710.10196 (2017) "Progressive Growing of GANs for Improved Quality, Stability, and
+  Variation" [cs] (cited-by 61 in-topic, era 0)
+    model_architecture: Progressively growing generator and discriminator (adding layers for increasing resolutions)
+    primary_objective: Improve quality, stability, and variation in GAN training
+    efficiency_technique: Progressive growing from low resolution to high resolution to speed up training
+    data_modality: Images (e.g., CelebA at 1024^2, CIFAR10)
+    technical_novelty: A training methodology that incrementally adds layers to model increasingly fine details as training progresses
+    relations: uses arXiv:1412.6980; compares-with arXiv:1606.03498; cites arXiv:1706.08500; cites arXiv:1312.6114; cites arXiv:1406.2661; uses arXiv:1411.7766; cited-by arXiv:2302.05543; cited-by arXiv:2303.02490; used-by arXiv:2305.19066; used-by arXiv:2306.13720; used-by arXiv:2502.01189; compared-by arXiv:2505.24222
+arXiv:1711.00937 (2017) "Neural Discrete Representation Learning" [cs] (cited-by 43 in-topic, era 0)
+    model_architecture: Vector Quantised-Variational AutoEncoder (VQ-VAE) using vector quantisation (VQ)
+    primary_objective: Learning useful discrete representations without supervision
+    efficiency_technique: Vector quantisation (VQ) to circumvent posterior collapse
+    data_modality: Images, videos, and speech
+    technical_novelty: Encoder outputs discrete rather than continuous codes and utilizes a learned prior instead of a static one
+    relations: cites arXiv:1312.6114; compares-with arXiv:1412.6980; cited-by arXiv:2303.08320; used-by arXiv:2409.19365; used-by arXiv:2605.27343; extended-by arXiv:2012.09841; used-by arXiv:2102.12092; cited-by arXiv:2105.05233
+arXiv:1812.04948 (2018) "A Style-Based Generator Architecture for Generative Adversarial Networks" [cs] (cited-by 102 in-topic, era 1)
+    model_architecture: style-based generator architecture
+    primary_objective: unsupervised separation of high-level attributes and stochastic variation, and scale-specific control of synthesis
+    conditioning_mechanism: style transfer inspired mechanism (mapping latent codes to styles)
+    data_modality: images (human faces)
+    technical_novelty: automatic unsupervised disentanglement of high-level attributes and stochastic variation via a style-based framework
+    relations: extends arXiv:1710.10196; uses arXiv:1809.11096; compares-with arXiv:1807.03039; cites arXiv:1506.03365; uses arXiv:1406.2661; cites arXiv:1312.6114; cited-by arXiv:2302.05543; cited-by arXiv:2402.16369; used-by arXiv:2402.16907; cited-by arXiv:2409.19365; extended-by arXiv:1912.04958; used-by arXiv:1904.06991
+arXiv:1801.03924 (2018) "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric" [cs] (cited-by 96 in-topic, era 1)
+    primary_objective: Evaluating the perceptual quality of deep features as similarity metrics compared to classic metrics (PSNR, SSIM).
+    data_modality: image
+    technical_novelty: Introduction of a new dataset of human perceptual similarity judgments and the discovery that perceptual similarity is an emergent property across various deep visual representations (supervised, self-supervised, and unsupervised).
+    relations: compared-by arXiv:2303.11328; cited-by arXiv:2305.19066; cited-by arXiv:2402.16907; compared-by arXiv:2502.01189; used-by arXiv:2012.09841; cited-by arXiv:2303.02490
+arXiv:1809.11096 (2018) "Large Scale GAN Training for High Fidelity Natural Image Synthesis" [cs] (cited-by 93 in-topic, era 1)
+    model_architecture: Generative Adversarial Network (GAN)
+    primary_objective: High-fidelity, large-scale natural image synthesis from complex datasets
+    conditioning_mechanism: class-conditional
+    efficiency_technique: orthogonal regularization and truncation trick
+    data_modality: image
+    technical_novelty: applying orthogonal regularization to the generator to enable a truncation trick for controlling the fidelity-variety trade-off
+    relations: compares-with arXiv:1710.10196; compares-with arXiv:1606.03498; cites arXiv:1706.08500; uses arXiv:1412.6980; cited-by arXiv:2406.18459; cited-by arXiv:1907.05600; cited-by arXiv:1912.04958; used-by arXiv:1812.04948; used-by arXiv:1904.06991; compared-by arXiv:2006.06676
+arXiv:1807.03039 (2018) "Glow: Generative Flow with Invertible 1x1 Convolutions" [stat] (cited-by 43 in-topic, era 1)
+    model_architecture: Generative flow using invertible 1x1 convolutions
+    primary_objective: Improving log-likelihood and enabling efficient realistic-looking synthesis and manipulation
+    efficiency_technique: Parallelizable training and synthesis
+    data_modality: Large images
+    technical_novelty: Invertible 1x1 convolutions
+    relations: cites arXiv:1312.6114; uses arXiv:1412.6980; uses arXiv:1710.10196; compares-with arXiv:1506.03365; compared-by arXiv:1812.04948; used-by arXiv:1904.06991; used-by arXiv:2007.03898; cited-by arXiv:2102.09672; cited-by arXiv:2106.05931; cited-by arXiv:2107.00630
+arXiv:1806.07366 (2018) "Neural Ordinary Differential Equations" [cs] (cited-by 37 in-topic, era 1)
+    model_architecture: continuous-depth neural networks (parameterized derivative of hidden state)
+    primary_objective: modeling continuous-depth transformations and scalable backpropagation through ODE solvers
+    efficiency_technique: constant memory cost via ODE solvers and trading numerical precision for speed
+    technical_novelty: parameterizing the derivative of the hidden state to define a continuous-depth model and scalable backpropagation through black-box ODE solvers
+    relations: compares-with arXiv:1412.6980; uses arXiv:1312.6114; used-by arXiv:2202.00512; used-by arXiv:2210.02747; cited-by arXiv:2006.11239; cited-by arXiv:2010.02502; used-by arXiv:2011.13456; cited-by arXiv:2101.09258
+arXiv:1812.02822 (2018) "Learning Implicit Fields for Generative Shape Modeling" [cs] (cited-by 24 in-topic, era 1)
+    model_architecture: implicit field decoder (IM-NET)
+    primary_objective: generative shape modeling and improving visual quality
+    conditioning_mechanism: feature vector encoding a shape
+    data_modality: 3D shapes
+    technical_novelty: replacing conventional decoders with an implicit field decoder (IM-NET) that uses a binary classifier to assign values to 3D point coordinates for iso-surface extraction
+    relations: compares-with arXiv:1610.07584; compares-with arXiv:1312.6114; cites arXiv:1807.03039; cites arXiv:1710.10196; cited-by arXiv:2111.04276; cited-by arXiv:2112.07945; used-by arXiv:2209.11163; cited-by arXiv:2211.07600; cited-by arXiv:2211.10440
+arXiv:1907.05600 (2019) "Generative Modeling by Estimating Gradients of the Data Distribution" [cs] (cited-by 213 in-topic, era 1)
+    primary_objective: Generative modeling via estimating gradients of the data distribution
+    efficiency_technique: Annealed Langevin dynamics using gradually decreasing noise levels
+    data_modality: Images (MNIST, CelebA, CIFAR-10)
+    technical_novelty: Jointly estimating scores for data perturbed with different levels of Gaussian noise to handle low-dimensional manifolds
+    relations: cites arXiv:1809.11096; extends arXiv:1905.07088; cites arXiv:1710.10196; cites arXiv:1812.04948; cites arXiv:1312.6114; uses arXiv:1411.7766; cited-by arXiv:2303.02490; cited-by arXiv:2303.08320; motivates arXiv:2305.16213; cited-by arXiv:2305.19066; cited-by arXiv:2311.14900; extended-by arXiv:2402.16369
+arXiv:1912.04958 (2019) "Analyzing and Improving the Image Quality of StyleGAN" [cs] (cited-by 67 in-topic, era 1)
+    model_architecture: style-based GAN architecture
+    primary_objective: improving image quality and addressing characteristic artifacts
+    conditioning_mechanism: mapping from latent codes to images
+    efficiency_technique: redesign of generator normalization, revisiting progressive growing, and path length regularizer
+    data_modality: image
+    technical_novelty: path length regularizer and redesigned generator normalization
+    relations: uses arXiv:1710.10196; cites arXiv:1809.11096; extends arXiv:1812.04948; uses arXiv:1406.2661; cites arXiv:1706.08500; extends arXiv:1904.06991; cited-by arXiv:2303.02490; extended-by arXiv:2006.06676; used-by arXiv:2006.11239; used-by arXiv:2105.05233; used-by arXiv:2112.07945; compared-by arXiv:2112.10752
+arXiv:1904.06991 (2019) "Improved Precision and Recall Metric for Assessing Generative Models" [stat] (cited-by 50 in-topic, era 1)
+    primary_objective: Automatically estimate the quality (precision) and coverage (recall) of samples produced by generative models.
+    data_modality: Image
+    technical_novelty: Formation of explicit, non-parametric representations of the manifolds of real and generated data to separately measure precision and recall.
+    relations: uses arXiv:1812.04948; uses arXiv:1809.11096; uses arXiv:1807.03039; cites arXiv:1710.10196; compares-with arXiv:1706.08500; cites arXiv:1606.03498; cited-by arXiv:2402.16369; cited-by arXiv:2006.06676; used-by arXiv:2102.09672; cited-by arXiv:2209.03003; extended-by arXiv:1912.04958; cited-by arXiv:2105.05233
+arXiv:1905.07088 (2019) "Sliced Score Matching: A Scalable Approach to Density and Score
+  Estimation" [cs] (cited-by 31 in-topic, era 1)
+    model_architecture: deep energy-based models
+    primary_objective: density and score estimation for complex models and high-dimensional data
+    efficiency_technique: projecting scores onto random vectors to utilize Hessian-vector products via reverse-mode automatic differentiation
+    technical_novelty: sliced score matching objective which replaces the full Hessian with projections onto random vectors
+    relations: cites arXiv:1312.6114; uses arXiv:1411.7766; uses arXiv:1706.08500; critiqued-by arXiv:2402.16369; extended-by arXiv:1907.05600; cited-by arXiv:2006.09011; used-by arXiv:2011.13456; used-by arXiv:2101.09258; extended-by arXiv:2106.05931
+arXiv:2006.11239 (2020) "Denoising Diffusion Probabilistic Models" [cs] (cited-by 466 in-topic, era 1)
+    model_architecture: latent variable models
+    primary_objective: high quality image synthesis
+    efficiency_technique: progressive lossy decompression scheme
+    data_modality: image
+    technical_novelty: connection between diffusion probabilistic models and denoising score matching with Langevin dynamics
+    relations: cites arXiv:1809.11096; cites arXiv:2006.06676; uses arXiv:1503.03585; compares-with arXiv:2006.09011; compares-with arXiv:1907.05600; cites arXiv:1710.10196; cited-by arXiv:2302.02398; cited-by arXiv:2303.02490; used-by arXiv:2303.08320; compared-by arXiv:2305.16213; used-by arXiv:2305.19066; used-by arXiv:2306.13720
+arXiv:2011.13456 (2020) "Score-Based Generative Modeling through Stochastic Differential
+  Equations" [cs] (cited-by 342 in-topic, era 1)
+    model_architecture: Stochastic Differential Equations (SDE) and equivalent Neural ODE
+    primary_objective: Generative modeling (transforming a known prior distribution back into a complex data distribution)
+    efficiency_technique: Predictor-corrector framework and Neural ODE for exact likelihood computation and improved sampling efficiency
+    data_modality: Image
+    technical_novelty: Unified framework using SDEs to encapsulate score-based and diffusion probabilistic modeling, utilizing the time-dependent gradient field (score) for reverse-time SDE sampling
+    relations: extends arXiv:2006.11239; cites arXiv:2009.00713; uses arXiv:1907.05600; cites arXiv:1503.03585; uses arXiv:2006.09011; cites arXiv:2009.09761; cited-by arXiv:2302.02398; used-by arXiv:2303.02490; cited-by arXiv:2303.08320; motivates arXiv:2305.16213; used-by arXiv:2306.13720; used-by arXiv:2307.01952
+arXiv:2010.02502 (2020) "Denoising Diffusion Implicit Models" [cs] (cited-by 309 in-topic, era 1)
+    model_architecture: non-Markovian diffusion process (implicit probabilistic models)
+    primary_objective: accelerate sampling speed
+    efficiency_technique: non-Markovian reverse process construction
+    data_modality: image
+    technical_novelty: construction of a class of non-Markovian diffusion processes that share the same training objective as DDPMs but allow for faster sampling
+    relations: uses arXiv:2006.11239; compares-with arXiv:2011.13456; cites arXiv:2009.00713; cites arXiv:1912.04958; cites arXiv:1312.6114; uses arXiv:1812.04948; cited-by arXiv:2303.02490; used-by arXiv:2303.08320; used-by arXiv:2305.19066; cited-by arXiv:2306.13720; used-by arXiv:2307.01952; cited-by arXiv:2311.14900
+arXiv:2009.09761 (2020) "DiffWave: A Versatile Diffusion Model for Audio Synthesis" [eess] (cited-by 107 in-topic, era 1)
+    model_architecture: non-autoregressive diffusion probabilistic model (Markov chain)
+    primary_objective: high-fidelity waveform generation (neural vocoding, class-conditional, and unconditional generation)
+    conditioning_mechanism: mel spectrogram (for vocoding) or class-conditional labels
+    efficiency_technique: non-autoregressive synthesis with a constant number of steps
+    data_modality: audio waveform
+    technical_novelty: optimizing a variant of variational bound on the data likelihood for waveform diffusion
+    relations: cited-by arXiv:2302.02398; cited-by arXiv:2305.19066; cited-by arXiv:2406.18459; cited-by arXiv:2501.13349; cited-by arXiv:2011.13456; cited-by arXiv:2101.09258
+arXiv:2006.09011 (2020) "Improved Techniques for Training Score-Based Generative Models" [cs] (cited-by 91 in-topic, era 1)
+    model_architecture: score-based generative models
+    primary_objective: scaling score-based models to high resolutions (64x64 to 256x256) and improving training stability
+    efficiency_technique: maintaining an exponential moving average of model weights
+    data_modality: images
+    technical_novelty: new theoretical analysis of learning and sampling in high dimensional spaces to explain failure modes
+    relations: extends arXiv:1907.05600; uses arXiv:1812.04948; compares-with arXiv:1710.10196; cites arXiv:1905.07088; uses arXiv:1706.08500; uses arXiv:1411.7766; extended-by arXiv:2306.13720; cited-by arXiv:2311.14900; extended-by arXiv:2402.16369; compared-by arXiv:2006.11239; cited-by arXiv:2101.02388; cited-by arXiv:2107.03006
+arXiv:2009.00713 (2020) "WaveGrad: Estimating Gradients for Waveform Generation" [eess] (cited-by 79 in-topic, era 1)
+    model_architecture: score matching and diffusion probabilistic model
+    primary_objective: waveform generation
+    conditioning_mechanism: mel-spectrogram
+    efficiency_technique: adjusting the number of refinement steps (as few as six iterations)
+    data_modality: audio waveform
+    technical_novelty: estimating gradients of the data density for iterative signal refinement
+    relations: cited-by arXiv:2303.11328; cited-by arXiv:2306.13720; cited-by arXiv:2406.18459; used-by arXiv:2104.02600; cited-by arXiv:2010.02502; cited-by arXiv:2011.13456
+arXiv:2012.09841 (2020) "Taming Transformers for High-Resolution Image Synthesis" [cs] (cited-by 55 in-topic, era 1)
+    model_architecture: Hybrid CNN-Transformer (CNN for vocabulary learning and Transformer for composition)
+    primary_objective: High-resolution image synthesis
+    conditioning_mechanism: Non-spatial information (e.g., object classes) and spatial information (e.g., segmentations)
+    efficiency_technique: Using CNNs to learn a context-rich vocabulary of image constituents to enable efficient transformer modeling
+    data_modality: High-resolution images
+    technical_novelty: Combining CNN inductive bias for learning a constituent vocabulary with transformer expressivity for modeling composition
+    relations: cites arXiv:2006.06676; uses arXiv:2102.12092; cites arXiv:2006.11239; uses arXiv:1809.11096; uses arXiv:1801.03924; uses arXiv:1706.03762; compared-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2409.19365; cited-by arXiv:2106.05931; used-by arXiv:2112.10752; cited-by arXiv:2501.13349
+arXiv:2010.11929 (2020) "An Image is Worth 16x16 Words: Transformers for Image Recognition at
+  Scale" [cs] (cited-by 49 in-topic, era 1)
+    model_architecture: Pure Transformer applied directly to sequences of image patches
+    primary_objective: Image recognition/classification at scale
+    efficiency_technique: Substantially fewer computational resources to train compared to state-of-the-art CNNs when pre-trained on large amounts of data
+    data_modality: Image
+    technical_novelty: Eliminating the reliance on convolutional networks by applying a pure transformer directly to sequences of image patches
+    relations: uses arXiv:1706.03762; compares-with arXiv:1412.6980; cited-by arXiv:2409.19365; used-by arXiv:2103.00020; used-by arXiv:2212.09748; cited-by arXiv:2012.09841; used-by arXiv:2112.10741; used-by arXiv:2204.06125
+arXiv:2006.06676 (2020) "Training Generative Adversarial Networks with Limited Data" [cs] (cited-by 34 in-topic, era 1)
+    primary_objective: stabilizing GAN training in limited data regimes to prevent discriminator overfitting
+    efficiency_technique: adaptive discriminator augmentation mechanism
+    data_modality: images
+    technical_novelty: adaptive discriminator augmentation that does not require changes to loss functions or network architectures
+    relations: uses arXiv:1710.10196; uses arXiv:1406.2661; compares-with arXiv:1809.11096; cites arXiv:1904.06991; extends arXiv:1912.04958; extends arXiv:1812.04948; cited-by arXiv:2006.11239; cited-by arXiv:2012.09841; cited-by arXiv:2101.02388; cited-by arXiv:2106.05931; cited-by arXiv:2107.03006; used-by arXiv:2112.07945
+arXiv:2007.03898 (2020) "NVAE: A Deep Hierarchical Variational Autoencoder" [stat] (cited-by 34 in-topic, era 1)
+    model_architecture: Deep hierarchical variational autoencoder (VAE) using depth-wise separable convolutions and batch normalization
+    primary_objective: High-quality image generation and improving VAE performance to compete with normalizing flows and autoregressive models
+    efficiency_technique: Depth-wise separable convolutions and spectral regularization for training stability
+    data_modality: Images (MNIST, CIFAR-10, CelebA 64, CelebA HQ, FFHQ)
+    technical_novelty: Residual parameterization of Normal distributions within a deep hierarchical VAE structure
+    relations: uses arXiv:1710.10196; uses arXiv:1807.03039; uses arXiv:1312.6114; uses arXiv:1411.7766; uses arXiv:1812.04948; cites arXiv:1809.11096; compared-by arXiv:2101.02388; cited-by arXiv:2102.09672; extended-by arXiv:2106.05931; cited-by arXiv:2107.00630; cited-by arXiv:2201.06503; compared-by arXiv:2012.09841
+arXiv:2112.10752 (2021) "High-Resolution Image Synthesis with Latent Diffusion Models" [cs] (cited-by 369 in-topic, era 1)
+    model_architecture: Latent diffusion models (LDMs) using pretrained autoencoders and cross-attention layers
+    primary_objective: High-resolution image synthesis with reduced computational requirements
+    conditioning_mechanism: Cross-attention layers for general conditioning inputs (e.g., text or bounding boxes)
+    efficiency_technique: Operating in the latent space of pretrained autoencoders to reduce complexity
+    data_modality: Image
+    technical_novelty: Applying diffusion models in the latent space of powerful pretrained autoencoders combined with cross-attention for flexible conditioning
+    relations: cites arXiv:1503.03585; extends arXiv:2105.05233; uses arXiv:2207.12598; uses arXiv:2104.07636; uses arXiv:1706.08500; uses arXiv:2006.11239; used-by arXiv:2302.05543; cited-by arXiv:2303.02490; cited-by arXiv:2303.08320; used-by arXiv:2303.11328; used-by arXiv:2303.13873; motivates arXiv:2305.16213
+arXiv:2105.05233 (2021) "Diffusion Models Beat GANs on Image Synthesis" [cs] (cited-by 287 in-topic, era 1)
+    model_architecture: diffusion models
+    primary_objective: unconditional and conditional image synthesis
+    conditioning_mechanism: classifier guidance (using gradients from a classifier)
+    data_modality: image
+    technical_novelty: classifier guidance for trading off diversity for fidelity
+    relations: uses arXiv:2006.11239; uses arXiv:2102.09672; uses arXiv:1812.04948; uses arXiv:1912.04958; uses arXiv:1809.11096; compares-with arXiv:2104.07636; used-by arXiv:2302.02398; cited-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2305.16213; cited-by arXiv:2305.19066; cited-by arXiv:2306.13720
+arXiv:2103.00020 (2021) "Learning Transferable Visual Models From Natural Language Supervision" [cs] (cited-by 185 in-topic, era 1)
+    primary_objective: learning transferable visual models from natural language supervision for zero-shot transfer
+    conditioning_mechanism: natural language (text captions)
+    data_modality: image and text
+    technical_novelty: pre-training task of predicting which caption goes with which image using 400 million (image, text) pairs
+    relations: uses arXiv:2010.11929; cites arXiv:1412.6980; cites arXiv:1711.05101; cites arXiv:1405.0312; uses arXiv:1706.03762; used-by arXiv:2302.05543; used-by arXiv:2303.08320; used-by arXiv:2303.11328; cited-by arXiv:2305.16213; used-by arXiv:2307.01952; cited-by arXiv:2308.16512
+arXiv:2102.09672 (2021) "Improved Denoising Diffusion Probabilistic Models" [cs] (cited-by 169 in-topic, era 1)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPM)
+    primary_objective: Improving log-likelihoods and sampling speed while maintaining high sample quality
+    efficiency_technique: Learning variances of the reverse diffusion process to allow sampling with an order of magnitude fewer forward passes
+    technical_novelty: Learning the variances of the reverse diffusion process
+    relations: cites arXiv:1807.03039; cites arXiv:2007.03898; extends arXiv:2006.11239; cites arXiv:2011.13456; uses arXiv:1904.06991; compares-with arXiv:1809.11096; cited-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2305.19066; cited-by arXiv:2306.13720; cited-by arXiv:2311.14900; cited-by arXiv:2408.08306
+arXiv:2112.10741 (2021) "GLIDE: Towards Photorealistic Image Generation and Editing with
+  Text-Guided Diffusion Models" [cs] (cited-by 113 in-topic, era 1)
+    model_architecture: text-conditional diffusion model
+    primary_objective: text-conditional image synthesis and editing
+    conditioning_mechanism: CLIP guidance and classifier-free guidance
+    data_modality: image
+    technical_novelty: comparison of CLIP guidance vs. classifier-free guidance for text-conditional diffusion and fine-tuning for text-driven image inpainting
+    relations: uses arXiv:2108.01073; uses arXiv:2006.11239; uses arXiv:2105.05233; uses arXiv:2102.12092; uses arXiv:1503.03585; uses arXiv:1907.05600; compared-by arXiv:2302.05543; cited-by arXiv:2303.08320; cited-by arXiv:2303.11328; motivates arXiv:2303.13873; used-by arXiv:2307.01952; cited-by arXiv:2312.13253
+arXiv:2107.00630 (2021) "Variational Diffusion Models" [cs] (cited-by 98 in-topic, era 1)
+    model_architecture: diffusion-based generative models
+    primary_objective: improving likelihood-based density estimation and compression
+    efficiency_technique: joint optimization of the noise schedule and minimizing the variance of the VLB estimator
+    data_modality: image
+    technical_novelty: simplification of the VLB in terms of signal-to-noise ratio and proving equivalence between existing models
+    relations: uses arXiv:2011.13456; extends arXiv:2006.11239; compares-with arXiv:1907.05600; uses arXiv:2102.09672; cites arXiv:2007.03898; cites arXiv:1807.03039; cited-by arXiv:2302.05543; used-by arXiv:2306.13720; cited-by arXiv:2410.01540; used-by arXiv:2605.18736; cited-by arXiv:2605.30553; used-by arXiv:2202.00512
+arXiv:2106.15282 (2021) "Cascaded Diffusion Models for High Fidelity Image Generation" [cs] (cited-by 91 in-topic, era 1)
+    model_architecture: Cascaded diffusion model pipeline (standard diffusion model followed by one or more super-resolution diffusion models)
+    primary_objective: High fidelity class-conditional image generation
+    conditioning_mechanism: Class-conditional and conditioning via lower resolution images
+    efficiency_technique: Conditioning augmentation (data augmentation of lower resolution conditioning inputs to prevent compounding error)
+    data_modality: Image
+    technical_novelty: Conditioning augmentation to prevent compounding error during sampling in cascaded pipelines
+    relations: uses arXiv:2102.09672; compares-with arXiv:2105.05233; uses arXiv:1809.11096; uses arXiv:2104.07636; uses arXiv:1907.05600; uses arXiv:2006.11239; cited-by arXiv:2306.13720; compared-by arXiv:2406.18459; cited-by arXiv:2409.19365; cited-by arXiv:2410.02667; cited-by arXiv:2501.13349; cited-by arXiv:2505.24222
+arXiv:2101.02388 (2021) "Knowledge Distillation in Iterative Generative Models for Improved
+  Sampling Speed" [cs] (cited-by 83 in-topic, era 1)
+    model_architecture: Iterative generative models (noise conditional score networks and denoising diffusion probabilistic models)
+    primary_objective: Improving sampling speed by reducing the number of denoising steps
+    efficiency_technique: Knowledge distillation of a multi-step denoising process into a single-step 'Denoising Student'
+    data_modality: Images (CIFAR-10, CelebA, and 256 x 256 LSUN)
+    technical_novelty: Distilling a multi-step denoising process into a single step to achieve single-step generation without adversarial training
+    relations: compares-with arXiv:2007.03898; cites arXiv:1809.11096; cites arXiv:2006.06676; cites arXiv:2006.09011; uses arXiv:2006.11239; cites arXiv:2011.13456; cited-by arXiv:2306.13720; compared-by arXiv:2202.00512; cited-by arXiv:2209.03003; compared-by arXiv:2510.12220; cited-by arXiv:2509.15342; compared-by arXiv:2104.02600
+arXiv:2106.05931 (2021) "Score-based Generative Modeling in Latent Space" [stat] (cited-by 70 in-topic, era 1)
+    model_architecture: Latent Score-based Generative Model (LSGM) using a variational autoencoder (VAE) framework
+    primary_objective: Improving sampling speed and enabling application to non-continuous data
+    efficiency_technique: Training in a smaller latent space to reduce network evaluations and sampling time (outperforming previous SGMs by two orders of magnitude on CelebA-HQ-256)
+    data_modality: Images (CIFAR-10, CelebA-HQ-256, and binary images like OMNIGLOT)
+    technical_novelty: A new score-matching objective for latent space, a novel parameterization of the score function focusing on distribution mismatch, and analytically derived variance reduction techniques
+    relations: extends arXiv:2007.03898; extends arXiv:1907.05600; extends arXiv:2006.11239; extends arXiv:2102.09672; extends arXiv:2011.13456; cites arXiv:2006.06676; used-by arXiv:2305.19066; cited-by arXiv:2306.13720; cited-by arXiv:2402.16907; cited-by arXiv:2410.02667; cited-by arXiv:2107.00630; cited-by arXiv:2202.00512
+arXiv:2104.07636 (2021) "Image Super-Resolution via Iterative Refinement" [eess] (cited-by 69 in-topic, era 1)
+    model_architecture: U-Net
+    primary_objective: Image Super-Resolution
+    conditioning_mechanism: Conditional image generation via stochastic denoising process
+    data_modality: Image
+    technical_novelty: Adapting denoising diffusion probabilistic models to conditional image generation for iterative super-resolution
+    relations: extends arXiv:2006.11239; extends arXiv:1809.11096; uses arXiv:1710.10196; uses arXiv:1812.04948; uses arXiv:2009.00713; uses arXiv:1503.03585; cited-by arXiv:2302.02398; used-by arXiv:2303.08320; cited-by arXiv:2402.16369; cited-by arXiv:2402.16907; used-by arXiv:2409.19365; used-by arXiv:2112.10752
+arXiv:2108.01073 (2021) "SDEdit: Guided Image Synthesis and Editing with Stochastic Differential
+  Equations" [cs] (cited-by 69 in-topic, era 1)
+    model_architecture: diffusion model generative prior using stochastic differential equations (SDE)
+    primary_objective: guided image synthesis and editing (balancing faithfulness to user input and realism)
+    conditioning_mechanism: adding noise to an input image and subsequently denoising it through an SDE prior
+    data_modality: image
+    technical_novelty: iterative denoising through an SDE prior to synthesize realistic images from noisy inputs without task-specific training or inversions
+    relations: uses arXiv:2011.13456; uses arXiv:2105.05233; uses arXiv:1812.04948; uses arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:2010.02502; cited-by arXiv:2302.02398; cited-by arXiv:2302.05543; used-by arXiv:2305.19066; used-by arXiv:2307.01952; cited-by arXiv:2402.16907; motivates arXiv:2406.18459
+arXiv:2101.09258 (2021) "Maximum Likelihood Training of Score-Based Diffusion Models" [stat] (cited-by 65 in-topic, era 1)
+    model_architecture: score-based diffusion models
+    primary_objective: approximate maximum likelihood training
+    efficiency_technique: specific weighting scheme that upper bounds the negative log-likelihood
+    data_modality: image (CIFAR-10 and ImageNet 32x32)
+    technical_novelty: connection to continuous normalizing flows to enable a weighting scheme that upper bounds the negative log-likelihood
+    relations: uses arXiv:2011.13456; motivated-by arXiv:1907.05600; motivated-by arXiv:2006.09011; extends arXiv:1503.03585; extends arXiv:2006.11239; cites arXiv:2105.05233; cited-by arXiv:2306.13720; compared-by arXiv:2204.13902; cited-by arXiv:2107.00630; compared-by arXiv:2206.00927; compared-by arXiv:2210.02747; extended-by arXiv:2106.05931
+arXiv:2103.01458 (2021) "Diffusion Probabilistic Models for 3D Point Cloud Generation" [cs] (cited-by 64 in-topic, era 1)
+    model_architecture: Markov chain conditioned on shape latent
+    primary_objective: 3D point cloud generation (shape completion, upsampling, synthesis, and data augmentation)
+    conditioning_mechanism: Conditioned on certain shape latent
+    data_modality: 3D point clouds
+    technical_novelty: Modeling the reverse diffusion process for point clouds as a Markov chain with a closed-form variational bound
+    relations: uses arXiv:2006.11239; uses arXiv:1312.6114; cites arXiv:1806.07366; uses arXiv:1503.03585; cited-by arXiv:2402.16369; cited-by arXiv:2106.00132; cited-by arXiv:2106.05931; cited-by arXiv:2108.02938; cited-by arXiv:2202.09778; cited-by arXiv:2211.01324
+arXiv:2102.12092 (2021) "Zero-Shot Text-to-Image Generation" [cs] (cited-by 62 in-topic, era 1)
+    model_architecture: transformer that autoregressively models text and image tokens as a single stream
+    primary_objective: zero-shot text-to-image generation
+    conditioning_mechanism: autoregressive modeling of text and image tokens as a single stream
+    data_modality: image
+    technical_novelty: modeling text and image tokens as a single stream of data
+    relations: cites arXiv:1406.2661; uses arXiv:1706.03762; uses arXiv:1711.00937; uses arXiv:1312.6114; uses arXiv:1412.6980; extends arXiv:1405.0312; cited-by arXiv:2302.05543; compared-by arXiv:2303.11328; cited-by arXiv:2307.01952; cited-by arXiv:2402.16369; cited-by arXiv:2406.18459; cited-by arXiv:2409.19365
+arXiv:2105.14080 (2021) "Gotta Go Fast When Generating Data with Score-Based Models" [cs] (cited-by 60 in-topic, era 1)
+    model_architecture: score-based (denoising diffusion) generative models
+    primary_objective: accelerate the data generation process (speed)
+    efficiency_technique: SDE solver with adaptive step sizes tailored to score-based models
+    data_modality: images
+    technical_novelty: an adaptive step size SDE solver that requires only two score function evaluations and requires no step size tuning
+    relations: cites arXiv:1907.05600; uses arXiv:2006.09011; uses arXiv:2011.13456; cites arXiv:2006.11239; cites arXiv:2009.00713; cites arXiv:2009.09761; cited-by arXiv:2402.16907; cited-by arXiv:2408.08306; cited-by arXiv:2505.24222; cited-by arXiv:2202.00512; compared-by arXiv:2204.13902; used-by arXiv:2206.00927
+arXiv:2112.07945 (2021) "Efficient Geometry-aware 3D Generative Adversarial Networks" [cs] (cited-by 51 in-topic, era 1)
+    model_architecture: hybrid explicit-implicit network architecture
+    primary_objective: improving computational efficiency and image quality of 3D GANs for multi-view-consistent image and 3D shape generation
+    efficiency_technique: decoupling feature generation and neural rendering to leverage 2D CNN generators (e.g., StyleGAN2)
+    data_modality: multi-view-consistent images and 3D shapes
+    technical_novelty: expressive hybrid explicit-implicit network architecture that decouples feature generation from neural rendering
+    relations: compares-with arXiv:1812.04948; uses arXiv:2006.06676; uses arXiv:1912.04958; cites arXiv:1610.07584; cites arXiv:1812.02822; cites arXiv:1710.10196; cited-by arXiv:2308.16512; used-by arXiv:2209.11163; cited-by arXiv:2209.14988; cited-by arXiv:2211.07600; cited-by arXiv:2211.10440
+arXiv:2107.03006 (2021) "Structured Denoising Diffusion Models in Discrete State-Spaces" [cs] (cited-by 45 in-topic, era 1)
+    model_architecture: Discrete Denoising Diffusion Probabilistic Models (D3PMs)
+    primary_objective: Generative modeling for discrete data
+    data_modality: Image and text
+    technical_novelty: Generalization of multinomial diffusion via customizable transition matrices (Gaussian-like kernels, nearest neighbors in embedding space, and absorbing states) and a loss function combining variational lower bound with auxiliary cross entropy loss.
+    relations: uses arXiv:2102.05379; cites arXiv:1907.05600; cites arXiv:2006.09011; cites arXiv:2006.06676; uses arXiv:1503.03585; uses arXiv:2006.11239; cited-by arXiv:2111.05826; cited-by arXiv:2202.00512; cited-by arXiv:2202.09778; cited-by arXiv:2204.13902
+arXiv:2111.05826 (2021) "Palette: Image-to-Image Diffusion Models" [cs] (cited-by 44 in-topic, era 1)
+    model_architecture: conditional diffusion models with self-attention
+    primary_objective: unified image-to-image translation (colorization, inpainting, uncropping, and JPEG restoration)
+    conditioning_mechanism: conditional diffusion models
+    data_modality: image
+    technical_novelty: unified framework for multiple image-to-image tasks using a single generalist model without task-specific tuning or auxiliary losses
+    relations: uses arXiv:2011.13456; uses arXiv:2006.11239; uses arXiv:2104.07636; uses arXiv:2105.05233; uses arXiv:2009.00713; cites arXiv:1406.2661; cited-by arXiv:2302.05543; used-by arXiv:2305.19066; cited-by arXiv:2402.16369; cited-by arXiv:2402.16907; cited-by arXiv:2406.18459; cited-by arXiv:2409.19365
+arXiv:2111.04276 (2021) "Deep Marching Tetrahedra: a Hybrid Representation for High-Resolution 3D
+  Shape Synthesis" [cs] (cited-by 42 in-topic, era 1)
+    model_architecture: hybrid representation consisting of a deformable tetrahedral grid encoding a discretized signed distance function and a differentiable marching tetrahedra layer
+    primary_objective: high-resolution 3D shape synthesis with arbitrary topology
+    conditioning_mechanism: coarse voxels
+    data_modality: 3D shapes (complex 3D animal shapes)
+    technical_novelty: a hybrid representation that marries implicit and explicit 3D representations by optimizing directly for the reconstructed surface via a differentiable marching tetrahedra layer
+    relations: cites arXiv:1812.02822; cites arXiv:1610.07584; motivates arXiv:2303.13873; used-by arXiv:2305.16213; compared-by arXiv:2308.16512; used-by arXiv:2209.11163; cited-by arXiv:2211.07600; used-by arXiv:2211.10440
+arXiv:2106.00132 (2021) "On Fast Sampling of Diffusion Probabilistic Models" [cs] (cited-by 39 in-topic, era 1)
+    primary_objective: fast sampling in diffusion probabilistic models
+    efficiency_technique: FastDPM (unified framework for fast sampling)
+    data_modality: image or audio
+    relations: uses arXiv:1706.08500; uses arXiv:2006.11239; extends arXiv:2010.02502; cites arXiv:1503.03585; cites arXiv:2011.13456; cites arXiv:2105.05233; cited-by arXiv:2303.08320; cited-by arXiv:2407.10897; cited-by arXiv:2202.00512; cited-by arXiv:2112.10752; cited-by arXiv:2202.09778; compared-by arXiv:2204.13902
+arXiv:2108.02938 (2021) "ILVR: Conditioning Method for Denoising Diffusion Probabilistic Models" [cs] (cited-by 31 in-topic, era 1)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPM)
+    primary_objective: Controlling the generative process to achieve desired semantics and high-quality image generation based on a reference image
+    conditioning_mechanism: Iterative Latent Variable Refinement (ILVR)
+    data_modality: image
+    technical_novelty: Iterative refinement of the latent variables during the DDPM generative process to guide sampling toward a reference image without additional training
+    relations: uses arXiv:2006.11239; uses arXiv:2105.05233; cites arXiv:2102.09672; extends arXiv:1812.04948; extends arXiv:1506.03365; uses arXiv:2006.06676; cited-by arXiv:2108.01073; cited-by arXiv:2201.06503; cited-by arXiv:2202.09778; cited-by arXiv:2208.12242; cited-by arXiv:2209.03003
+arXiv:2102.05379 (2021) "Argmax Flows and Multinomial Diffusion: Learning Categorical
+  Distributions" [stat] (cited-by 30 in-topic, era 1)
+    model_architecture: Argmax Flows (composition of continuous distribution and argmax function) and Multinomial Diffusion
+    primary_objective: Learning categorical distributions (e.g., language or image segmentation)
+    efficiency_technique: Learning a probabilistic inverse for the argmax to lift categorical data to a continuous space
+    data_modality: Categorical data (e.g., text, image segmentation maps)
+    technical_novelty: Introduction of Argmax Flows via probabilistic inverses and Multinomial Diffusion via gradual categorical noise addition
+    relations: extends arXiv:2006.11239; cites arXiv:2010.02502; cites arXiv:2011.13456; used-by arXiv:2107.03006; cited-by arXiv:2104.02600; cited-by arXiv:2106.00132; cited-by arXiv:2111.05826; cited-by arXiv:2202.00512; cited-by arXiv:2204.13902
+arXiv:2104.02600 (2021) "Noise Estimation for Generative Diffusion Models" [cs] (cited-by 27 in-topic, era 1)
+    model_architecture: generative diffusion models
+    primary_objective: improving synthesis results for a small number of denoising steps without retraining weights
+    efficiency_technique: step-by-step adjustment of noise parameters for any given number of steps
+    data_modality: speech and image
+    technical_novelty: a learning scheme that adjusts noise parameters step-by-step to accommodate varying numbers of denoising steps without modifying model weights
+    relations: uses arXiv:2009.00713; uses arXiv:2006.11239; uses arXiv:2010.02502; uses arXiv:1411.7766; uses arXiv:1506.03365; uses arXiv:1412.6980; cited-by arXiv:2105.14080; cited-by arXiv:2106.00132; extended-by arXiv:2106.05931; cited-by arXiv:2112.10752; cited-by arXiv:2201.06503; cited-by arXiv:2202.00512
+arXiv:2206.00364 (2022) "Elucidating the Design Space of Diffusion-Based Generative Models" [cs] (cited-by 201 in-topic, era 1)
+    model_architecture: diffusion-based score networks
+    primary_objective: improving sampling speed and generation quality (FID)
+    conditioning_mechanism: class-conditional and unconditional settings
+    efficiency_technique: changes to sampling and training processes and preconditioning of score networks (35 network evaluations per image)
+    data_modality: images (CIFAR-10, ImageNet-64)
+    technical_novelty: a design space that separates concrete design choices in sampling, training, and preconditioning
+    relations: cited-by arXiv:2306.13720; used-by arXiv:2307.01952; cited-by arXiv:2402.16907; cited-by arXiv:2406.18459; cited-by arXiv:2409.19365; extended-by arXiv:2502.21278
+arXiv:2205.11487 (2022) "Photorealistic Text-to-Image Diffusion Models with Deep Language
+  Understanding" [cs] (cited-by 189 in-topic, era 1)
+    model_architecture: Large transformer language models (e.g., T5) combined with diffusion models
+    primary_objective: Photorealistic text-to-image generation with deep language understanding
+    conditioning_mechanism: Text encoding via large pretrained language models
+    data_modality: Image
+    technical_novelty: Discovery that increasing the size of the text-only pretrained language model improves sample fidelity and image-text alignment more effectively than increasing the image diffusion model size
+    relations: compares-with arXiv:2102.12092; compares-with arXiv:2112.10741; compares-with arXiv:2204.06125; extends arXiv:2112.10752; compares-with arXiv:1405.0312; critiques arXiv:2103.00020; cited-by arXiv:2302.05543; used-by arXiv:2303.08320; cited-by arXiv:2303.11328; motivates arXiv:2303.13873; motivates arXiv:2305.16213; used-by arXiv:2305.19066
+arXiv:2207.12598 (2022) "Classifier-Free Diffusion Guidance" [cs] (cited-by 178 in-topic, era 1)
+    model_architecture: conditional and unconditional diffusion models
+    primary_objective: trade off mode coverage and sample fidelity
+    conditioning_mechanism: joint training of conditional and unconditional score estimates
+    data_modality: image
+    technical_novelty: performing guidance by combining conditional and unconditional score estimates without a separate classifier
+    relations: uses arXiv:1809.11096; uses arXiv:2006.11239; compares-with arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:1503.03585; cites arXiv:1907.05600; cited-by arXiv:2302.05543; cited-by arXiv:2303.02490; cited-by arXiv:2303.08320; used-by arXiv:2303.11328; cited-by arXiv:2305.16213; used-by arXiv:2305.19066
+arXiv:2209.14988 (2022) "DreamFusion: Text-to-3D using 2D Diffusion" [cs] (cited-by 176 in-topic, era 1)
+    model_architecture: Neural Radiance Field (NeRF) optimized via a pretrained 2D diffusion model
+    primary_objective: Text-to-3D synthesis without large-scale 3D datasets
+    conditioning_mechanism: Text prompts via a pretrained 2D text-to-image diffusion model
+    efficiency_technique: Probability density distillation loss used as a prior for optimization
+    data_modality: 3D models (viewable from any angle)
+    technical_novelty: Using a 2D diffusion model as a prior for optimizing a parametric image generator via a probability density distillation loss
+    relations: extends arXiv:2112.10741; cites arXiv:2102.12092; extends arXiv:2204.06125; extends arXiv:2205.11487; cites arXiv:2111.05826; cites arXiv:2104.07636; used-by arXiv:2303.11328; used-by arXiv:2303.13873; used-by arXiv:2305.16213; extended-by arXiv:2308.16512; cited-by arXiv:2406.18459; used-by arXiv:2211.07600
+arXiv:2204.06125 (2022) "Hierarchical Text-Conditional Image Generation with CLIP Latents" [cs] (cited-by 173 in-topic, era 1)
+    model_architecture: Two-stage model consisting of a prior (autoregressive or diffusion) and a decoder (diffusion)
+    primary_objective: Hierarchical text-conditional image generation with improved diversity and style/semantic preservation
+    conditioning_mechanism: Conditioning the decoder on CLIP image embeddings generated from text captions
+    efficiency_technique: Using diffusion models for the prior instead of autoregressive models
+    data_modality: Image
+    technical_novelty: Explicitly generating CLIP image representations as an intermediate step between text and image to enable semantic/style-preserving variations and zero-shot language-guided manipulations
+    relations: uses arXiv:2102.12092; extends arXiv:2112.10741; uses arXiv:2201.06503; uses arXiv:2102.09672; uses arXiv:2010.02502; uses arXiv:2103.00020; cited-by arXiv:2302.05543; extended-by arXiv:2303.08320; motivates arXiv:2303.13873; motivates arXiv:2305.16213; used-by arXiv:2305.19066; used-by arXiv:2307.01952
+arXiv:2202.00512 (2022) "Progressive Distillation for Fast Sampling of Diffusion Models" [cs] (cited-by 158 in-topic, era 1)
+    model_architecture: deterministic diffusion sampler
+    primary_objective: reducing slow sampling time
+    efficiency_technique: progressive distillation (halving the number of required sampling steps iteratively)
+    data_modality: image
+    technical_novelty: new parameterizations for stability with few sampling steps and a progressive distillation method to reduce steps from 8192 to 4
+    relations: cites arXiv:1907.05600; uses arXiv:2102.09672; uses arXiv:2011.13456; uses arXiv:2107.00630; uses arXiv:1806.07366; uses arXiv:2010.02502; used-by arXiv:2305.16213; cited-by arXiv:2305.19066; cited-by arXiv:2306.13720; cited-by arXiv:2307.01952; cited-by arXiv:2407.10897; cited-by arXiv:2409.19365
+arXiv:2206.00927 (2022) "DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling
+  in Around 10 Steps" [cs] (cited-by 152 in-topic, era 1)
+    primary_objective: Fast sampling of diffusion probabilistic models by solving diffusion ODEs
+    efficiency_technique: High-order ODE solver (DPM-Solver) that analytically computes the linear part of the solution via change-of-variable
+    data_modality: Images (tested on CIFAR10)
+    technical_novelty: An exact formulation of the diffusion ODE solution that simplifies the problem to an exponentially weighted integral of the neural network
+    relations: uses arXiv:2010.02502; uses arXiv:2105.05233; uses arXiv:2006.11239; uses arXiv:2011.13456; compares-with arXiv:2101.09258; uses arXiv:2105.14080; compared-by arXiv:2305.16213; cited-by arXiv:2305.19066; cited-by arXiv:2306.13720; cited-by arXiv:2406.18459; cited-by arXiv:2409.19365; cited-by arXiv:2501.13349
+arXiv:2212.09748 (2022) "Scalable Diffusion Models with Transformers" [cs] (cited-by 108 in-topic, era 1)
+    model_architecture: Latent diffusion models using a transformer backbone that operates on latent patches (Diffusion Transformers/DiTs)
+    primary_objective: Scalability of diffusion models
+    conditioning_mechanism: Class-conditional
+    data_modality: Images (ImageNet 512x512 and 256x256)
+    technical_novelty: Replacing the standard U-Net backbone with a transformer architecture operating on latent patches
+    relations: uses arXiv:2010.11929; uses arXiv:1809.11096; uses arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:2112.10752; uses arXiv:1706.08500; used-by arXiv:2305.19066; cited-by arXiv:2307.01952; cited-by arXiv:2406.18459; cited-by arXiv:2408.08306; cited-by arXiv:2501.13349; used-by arXiv:2605.18736
+arXiv:2211.10440 (2022) "Magic3D: High-Resolution Text-to-3D Content Creation" [cs] (cited-by 107 in-topic, era 1)
+    model_architecture: Two-stage optimization framework: sparse 3D hash grid for coarse model and textured 3D mesh model for high-resolution refinement.
+    primary_objective: High-resolution text-to-3D content creation with improved speed and quality compared to NeRF optimization.
+    conditioning_mechanism: Text-to-3D via diffusion priors and image-conditioned generation.
+    efficiency_technique: Sparse 3D hash grid structure for coarse optimization and an efficient differentiable renderer.
+    data_modality: 3D models (textured 3D mesh).
+    technical_novelty: A two-stage optimization process transitioning from a low-resolution diffusion prior/hash grid to a high-resolution latent diffusion model interacting with a textured 3D mesh via a differentiable renderer.
+    relations: extends arXiv:2209.14988; cites arXiv:2208.12242; uses arXiv:2211.01324; uses arXiv:2112.10752; extends arXiv:2205.11487; cites arXiv:2112.10741; cited-by arXiv:2303.11328; used-by arXiv:2303.13873; used-by arXiv:2305.16213; used-by arXiv:2308.16512
+arXiv:2209.03003 (2022) "Flow Straight and Fast: Learning to Generate and Transfer Data with
+  Rectified Flow" [cs] (cited-by 98 in-topic, era 1)
+    model_architecture: Neural Ordinary Differential Equation (ODE)
+    primary_objective: Transport between two empirically observed distributions $\pi_0$ and $\pi_1$ for generative modeling and domain transfer
+    efficiency_technique: Learning straight paths to allow exact simulation without time discretization or coarse time discretization
+    data_modality: Image
+    technical_novelty: Rectified flow via nonlinear least squares optimization to learn ODEs following straight paths, and recursive rectification to increase path straightness
+    relations: extends arXiv:2011.13456; uses arXiv:2006.06676; cites arXiv:2101.02388; extends arXiv:2006.11239; cites arXiv:1904.06991; cites arXiv:1312.6114; cited-by arXiv:2305.19066; used-by arXiv:2501.13349; extended-by arXiv:2502.21278; cited-by arXiv:2605.18736; cited-by arXiv:2210.02747
+arXiv:2212.08051 (2022) "Objaverse: A Universe of Annotated 3D Objects" [cs] (cited-by 92 in-topic, era 1)
+    primary_objective: Addressing the lack of large-scale, diverse 3D datasets for AI research
+    data_modality: 3D objects (models, captions, tags, and animations)
+    technical_novelty: Creation of Objaverse 1.0, a large-scale dataset containing 800K+ 3D models with descriptive metadata
+    relations: cites arXiv:2103.00020; cites arXiv:2210.08402; cites arXiv:1412.6980; uses arXiv:2209.11163; cites arXiv:2112.10752; cites arXiv:1405.0312; used-by arXiv:2303.11328; used-by arXiv:2308.16512
+arXiv:2210.02747 (2022) "Flow Matching for Generative Modeling" [cs] (cited-by 84 in-topic, era 1)
+    model_architecture: Continuous Normalizing Flows (CNFs)
+    primary_objective: Training CNFs at scale via a simulation-free approach
+    conditioning_mechanism: Regressing vector fields of fixed conditional probability paths
+    efficiency_technique: Optimal Transport (OT) displacement interpolation and simulation-free training
+    data_modality: Images (ImageNet)
+    technical_novelty: Flow Matching (FM) paradigm based on regressing vector fields of fixed conditional probability paths
+    relations: uses arXiv:2104.07636; uses arXiv:1806.07366; compares-with arXiv:2101.09258; compares-with arXiv:2006.11239; uses arXiv:2011.13456; cites arXiv:2204.06125; extended-by arXiv:2502.21278; cited-by arXiv:2505.24222; cited-by arXiv:2605.18736; cited-by arXiv:2509.15342
+arXiv:2202.09778 (2022) "Pseudo Numerical Methods for Diffusion Models on Manifolds" [cs] (cited-by 83 in-topic, era 1)
+    primary_objective: accelerate the inference process while keeping sample quality
+    efficiency_technique: pseudo numerical methods (PNDMs) treating diffusion as solving differential equations on manifolds
+    data_modality: image
+    technical_novelty: treating DDPMs as solving differential equations on manifolds and introducing pseudo linear multi-step methods
+    relations: uses arXiv:2011.13456; uses arXiv:2010.02502; uses arXiv:2006.11239; cites arXiv:1503.03585; cites arXiv:2107.03006; cites arXiv:2103.01458; cited-by arXiv:2303.02490; cited-by arXiv:2305.19066; cited-by arXiv:2311.14900; used-by arXiv:2505.24222; compared-by arXiv:2204.13902; used-by arXiv:2210.08402
+arXiv:2204.13902 (2022) "Fast Sampling of Diffusion Models with Exponential Integrator" [cs] (cited-by 82 in-topic, era 1)
+    primary_objective: Fast sampling of Diffusion Models (DMs) with fewer discretization steps while retaining high sample quality.
+    efficiency_technique: Diffusion Exponential Integrator Sampler (DEIS) based on Exponential Integrator for ODE discretization, leveraging the semilinear structure of the learned diffusion process.
+    data_modality: Images (e.g., CIFAR10).
+    technical_novelty: Leveraging the semilinear structure of the learned diffusion process using an Exponential Integrator to reduce discretization error.
+    relations: compares-with arXiv:2101.09258; cites arXiv:2112.10752; compares-with arXiv:2011.13456; cites arXiv:2006.11239; compares-with arXiv:2105.14080; compares-with arXiv:2105.05233; cited-by arXiv:2306.13720; cited-by arXiv:2406.18459; cited-by arXiv:2408.08306; cited-by arXiv:2409.19365; cited-by arXiv:2505.24222; cited-by arXiv:2211.01324
+arXiv:2204.03458 (2022) "Video Diffusion Models" [cs] (cited-by 76 in-topic, era 1)
+    model_architecture: Natural extension of standard image diffusion architecture
+    primary_objective: Generating temporally coherent high fidelity video
+    conditioning_mechanism: Text-conditioned and conditional sampling for spatial and temporal video extension
+    efficiency_technique: Joint training from image and video data to reduce minibatch gradient variance and speed up optimization
+    data_modality: Video
+    technical_novelty: New conditional sampling technique for spatial and temporal video extension
+    relations: extends arXiv:2011.13456; cites arXiv:2009.00713; uses arXiv:2107.00630; uses arXiv:2105.05233; cites arXiv:2106.15282; uses arXiv:1503.03585; cited-by arXiv:2303.02490; compared-by arXiv:2303.08320; cited-by arXiv:2303.11328; cited-by arXiv:2206.00927; cited-by arXiv:2209.03003; cited-by arXiv:2209.14988
+arXiv:2210.03142 (2022) "On Distillation of Guided Diffusion Models" [cs] (cited-by 73 in-topic, era 1)
+    primary_objective: reducing inference time/computational expense of classifier-free guided diffusion models
+    conditioning_mechanism: classifier-free guidance (conditional and unconditional models)
+    efficiency_technique: progressive distillation to match the output of combined conditional and unconditional models
+    data_modality: image
+    technical_novelty: distilling a single model to match the combined output of conditional and unconditional models for fewer sampling steps
+    relations: cited-by arXiv:2306.13720; cited-by arXiv:2307.01952; cited-by arXiv:2409.19365; compared-by arXiv:2509.13936; cited-by arXiv:2509.15342; extended-by arXiv:2210.02303
+arXiv:2210.08402 (2022) "LAION-5B: An open large-scale dataset for training next generation
+  image-text models" [cs] (cited-by 72 in-topic, era 1)
+    primary_objective: democratize research on large-scale multi-modal models by providing an open large-scale dataset
+    efficiency_technique: CLIP-filtering
+    data_modality: image-text pairs
+    technical_novelty: provision of a large-scale dataset consisting of 5.85 billion CLIP-filtered image-text pairs
+    relations: uses arXiv:2103.00020; uses arXiv:2202.09778; cites arXiv:2102.12092; uses arXiv:2112.10741; cites arXiv:2205.11487; cites arXiv:2204.06125; used-by arXiv:2302.05543; cited-by arXiv:2303.11328; cited-by arXiv:2303.13873; motivates arXiv:2305.16213; used-by arXiv:2308.16512; used-by arXiv:2406.18459
+arXiv:2210.02303 (2022) "Imagen Video: High Definition Video Generation with Diffusion Models" [cs] (cited-by 66 in-topic, era 1)
+    model_architecture: Cascade of video diffusion models (base model followed by interleaved spatial and temporal super-resolution models)
+    primary_objective: High definition text-to-video generation
+    conditioning_mechanism: Text-conditional (text prompts)
+    efficiency_technique: Progressive distillation and v-parameterization
+    data_modality: Video
+    technical_novelty: Use of fully-convolutional temporal and spatial super-resolution models and v-parameterization in a cascaded diffusion framework
+    relations: uses arXiv:2107.00630; uses arXiv:2102.09672; uses arXiv:2006.11239; extends arXiv:2202.00512; uses arXiv:1907.05600; extends arXiv:2205.11487; cited-by arXiv:2307.01952; used-by arXiv:2308.16512; cited-by arXiv:2402.16369; cited-by arXiv:2406.18459; cited-by arXiv:2501.13349; cited-by arXiv:2211.01324
+arXiv:2212.00774 (2022) "Score Jacobian Chaining: Lifting Pretrained 2D Diffusion Models for 3D
+  Generation" [cs] (cited-by 58 in-topic, era 1)
+    model_architecture: Voxel radiance field (differentiable renderer) integrated with pretrained 2D diffusion models
+    primary_objective: Lifting pretrained 2D diffusion models for 3D generation
+    conditioning_mechanism: Back-propagation of 2D scores through the Jacobian of a differentiable renderer from multiple camera viewpoints
+    efficiency_technique: Repurposing pretrained 2D models to avoid training 3D models from scratch
+    data_modality: 3D (voxels/radiance fields) generated from 2D images
+    technical_novelty: Score Jacobian Chaining (applying the chain rule to learned gradients via a differentiable renderer) and a novel estimation mechanism to resolve distribution mismatch
+    relations: used-by arXiv:2303.11328; used-by arXiv:2305.16213; cited-by arXiv:2308.16512
+arXiv:2211.07600 (2022) "Latent-NeRF for Shape-Guided Generation of 3D Shapes and Textures" [cs] (cited-by 50 in-topic, era 1)
+    model_architecture: Latent-NeRF (NeRF operating within the latent space of a pretrained autoencoder)
+    primary_objective: Shape-guided generation of 3D shapes and textures with increased control
+    conditioning_mechanism: Text guidance (via score distillation) and Sketch-Shape (abstract geometry defining coarse structure)
+    efficiency_technique: Latent score distillation (applying diffusion in a compact latent space rather than image space)
+    data_modality: 3D shapes and textures
+    technical_novelty: Bringing the NeRF into the latent space to avoid encoding to the latent space at each guidance step
+    relations: cites arXiv:2205.11487; uses arXiv:2209.14988; cites arXiv:2112.10752; cites arXiv:2102.12092; cites arXiv:2103.00020; cites arXiv:2105.05233; compared-by arXiv:2303.13873; used-by arXiv:2305.16213
+arXiv:2201.06503 (2022) "Analytic-DPM: an Analytic Estimate of the Optimal Reverse Variance in
+  Diffusion Probabilistic Models" [cs] (cited-by 49 in-topic, era 1)
+    model_architecture: Diffusion Probabilistic Models (DPMs) / score-based models
+    primary_objective: Improving inference efficiency and log-likelihood by estimating the optimal reverse variance
+    efficiency_technique: Training-free inference framework using Monte Carlo method and variance clipping (lower/upper bounds) to achieve 20x to 80x speed up
+    technical_novelty: Derivation of analytic forms for the optimal reverse variance and optimal KL divergence with respect to the score function
+    relations: uses arXiv:2006.11239; uses arXiv:2010.02502; uses arXiv:2102.09672; cites arXiv:1809.11096; cites arXiv:2006.06676; cites arXiv:2007.03898; cited-by arXiv:2402.16907; cited-by arXiv:2406.18459; used-by arXiv:2204.06125; compared-by arXiv:2204.13902; used-by arXiv:2206.00927; cited-by arXiv:2209.03003
+arXiv:2209.11163 (2022) "GET3D: A Generative Model of High Quality 3D Textured Shapes Learned
+  from Images" [cs] (cited-by 47 in-topic, era 1)
+    model_architecture: 2D Generative Adversarial Networks (GANs) combined with differentiable surface modeling and differentiable rendering
+    primary_objective: Synthesizing high-quality, explicit textured 3D meshes with complex topology from 2D image collections
+    data_modality: 3D textured meshes (derived from 2D images)
+    technical_novelty: Bridging differentiable surface modeling and differentiable rendering with 2D GANs to directly generate explicit textured 3D meshes
+    relations: uses arXiv:2112.07945; uses arXiv:2111.04276; uses arXiv:1812.04948; uses arXiv:1912.04958; cites arXiv:2012.09841; cites arXiv:2105.05233; cited-by arXiv:2303.11328; cited-by arXiv:2308.16512; used-by arXiv:2212.08051; cited-by arXiv:2211.07600; cited-by arXiv:2211.10440
+arXiv:2211.01324 (2022) "eDiff-I: Text-to-Image Diffusion Models with an Ensemble of Expert
+  Denoisers" [cs] (cited-by 45 in-topic, era 1)
+    model_architecture: Ensemble of expert denoisers (specialized diffusion models for different synthesis stages)
+    primary_objective: Improving text alignment in text-to-image diffusion models
+    conditioning_mechanism: T5 text, CLIP text, and CLIP image embeddings; 'paint-with-words' capability via word selection and canvas painting
+    efficiency_technique: Initial training of a single model which is then split into specialized models
+    data_modality: Image
+    technical_novelty: Training an ensemble of diffusion models specialized for different stages of the iterative generation process to address the decay of text conditioning in later sampling stages
+    relations: uses arXiv:2112.10741; uses arXiv:2204.06125; uses arXiv:2112.10752; uses arXiv:2205.11487; cites arXiv:2204.13902; uses arXiv:2010.02502; motivates arXiv:2303.13873; motivates arXiv:2305.16213; used-by arXiv:2305.19066; used-by arXiv:2307.01952; compared-by arXiv:2308.16512; cited-by arXiv:2312.13253
+arXiv:2208.12242 (2022) "DreamBooth: Fine Tuning Text-to-Image Diffusion Models for
+  Subject-Driven Generation" [cs] (cited-by 43 in-topic, era 1)
+    model_architecture: pretrained text-to-image diffusion model
+    primary_objective: subject-driven generation (personalization)
+    conditioning_mechanism: unique identifier bound to a specific subject via text prompts
+    data_modality: image
+    technical_novelty: autogenous class-specific prior preservation loss
+    relations: compares-with arXiv:2204.06125; compares-with arXiv:2205.11487; cites arXiv:2103.00020; cites arXiv:2209.14988; cites arXiv:1809.11096; cites arXiv:1812.04948; cited-by arXiv:2302.05543; extended-by arXiv:2308.16512; cited-by arXiv:2406.18459; cited-by arXiv:2409.19365; cited-by arXiv:2605.27343; cited-by arXiv:2211.01324
+arXiv:2305.16213 (2023) "ProlificDreamer: High-Fidelity and Diverse Text-to-3D Generation with
+  Variational Score Distillation" [cs] (cited-by 104 in-topic, era 2)
+    model_architecture: particle-based variational framework (modeling 3D parameters as a random variable)
+    primary_objective: addressing over-saturation, over-smoothing, and low-diversity in text-to-3D generation
+    conditioning_mechanism: text-to-image diffusion models via variational score distillation (VSD)
+    efficiency_technique: distillation time schedule and density initialization
+    data_modality: 3D (NeRF and meshes)
+    technical_novelty: Variational Score Distillation (VSD), which treats 3D parameters as a random variable rather than a constant
+    relations: uses arXiv:2209.14988; uses arXiv:2211.10440; motivated-by arXiv:2204.06125; motivated-by arXiv:1503.03585; compares-with arXiv:2006.11239; uses arXiv:2303.13873; compared-by arXiv:2308.16512; cited-by arXiv:2406.18459
+arXiv:2302.05543 (2023) "Adding Conditional Control to Text-to-Image Diffusion Models" [cs] (cited-by 89 in-topic, era 2)
+    model_architecture: Neural network architecture that locks a pretrained large diffusion model and reuses its encoding layers via a trainable copy connected by zero convolutions.
+    primary_objective: Adding spatial conditioning controls to large, pretrained text-to-image diffusion models.
+    conditioning_mechanism: Spatial conditioning controls such as edges, depth, segmentation, and human pose.
+    efficiency_technique: Reuse of pretrained deep encoding layers and the use of 'zero convolutions' (zero-initialized convolution layers) to ensure stable fine-tuning.
+    data_modality: Image
+    technical_novelty: Introduction of 'zero convolutions' to progressively grow parameters from zero, preventing harmful noise during the fine-tuning of a locked pretrained backbone.
+    relations: uses arXiv:2112.10752; cites arXiv:2208.12242; uses arXiv:2210.08402; uses arXiv:2103.00020; cites arXiv:1710.10196; cites arXiv:1812.04948; cited-by arXiv:2307.01952; cited-by arXiv:2312.13253; cited-by arXiv:2409.19365; used-by arXiv:2505.24222
+arXiv:2308.16512 (2023) "MVDream: Multi-view Diffusion for 3D Generation" [cs] (cited-by 89 in-topic, era 2)
+    model_architecture: multi-view diffusion model
+    primary_objective: consistent multi-view image generation for 3D generation
+    conditioning_mechanism: text prompt
+    data_modality: multi-view images
+    technical_novelty: learning from both 2D and 3D data to create a generalizable 3D prior agnostic to 3D representations
+    relations: extends arXiv:2209.14988; uses arXiv:2211.10440; extends arXiv:2208.12242; cites arXiv:1312.6114; cites arXiv:2112.07945; cites arXiv:2209.11163; cited-by arXiv:2406.18459
+arXiv:2303.11328 (2023) "Zero-1-to-3: Zero-shot One Image to 3D Object" [cs] (cited-by 86 in-topic, era 2)
+    model_architecture: conditional diffusion model
+    primary_objective: novel view synthesis and 3D reconstruction from a single RGB image
+    conditioning_mechanism: relative camera viewpoint controls
+    data_modality: RGB image
+    technical_novelty: leveraging geometric priors from large-scale diffusion models trained on natural images for viewpoint-conditioned generation
+    relations: cites arXiv:2209.11163; cites arXiv:2210.08402; cites arXiv:2205.11487; uses arXiv:2112.10752; cites arXiv:2112.10741; compares-with arXiv:2102.12092; cited-by arXiv:2305.16213; compared-by arXiv:2308.16512
+arXiv:2303.13873 (2023) "Fantasia3D: Disentangling Geometry and Appearance for High-quality
+  Text-to-3D Content Creation" [cs] (cited-by 77 in-topic, era 2)
+    model_architecture: Hybrid scene representation with disentangled geometry and appearance modeling
+    primary_objective: High-quality text-to-3D content creation by disentangling geometry and appearance
+    conditioning_mechanism: Surface normals extracted from the representation encoded as input to the image diffusion model
+    data_modality: 3D assets
+    technical_novelty: Disentangled modeling using surface normal encoding for geometry and spatially varying bidirectional reflectance distribution function (BRDF) for appearance
+    relations: uses arXiv:2211.10440; uses arXiv:2209.14988; motivated-by arXiv:2204.06125; compares-with arXiv:2211.07600; motivated-by arXiv:2205.11487; motivated-by arXiv:2112.10741; used-by arXiv:2305.16213; cited-by arXiv:2308.16512; cited-by arXiv:2406.18459
+arXiv:2307.01952 (2023) "SDXL: Improving Latent Diffusion Models for High-Resolution Image
+  Synthesis" [cs] (cited-by 74 in-topic, era 2)
+    model_architecture: Latent diffusion model with a 3x larger UNet backbone featuring more attention blocks and a larger cross-attention context using a second text encoder.
+    primary_objective: High-resolution image synthesis.
+    conditioning_mechanism: Multiple novel conditioning schemes and a second text encoder for larger cross-attention context.
+    data_modality: Image
+    technical_novelty: Introduction of a refinement model using a post-hoc image-to-image technique and training on multiple aspect ratios.
+    relations: cites arXiv:1405.0312; uses arXiv:2205.11487; cites arXiv:2210.03142; uses arXiv:2207.12598; extends arXiv:2112.10752; uses arXiv:2204.06125; compared-by arXiv:2308.16512; compared-by arXiv:2406.18459; cited-by arXiv:2501.13349; used-by arXiv:2505.24222
+arXiv:2303.02490 (2023) "Diffusion Models Generate Images Like Painters: an Analytical Theory of
+  Outline First, Details Later" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: latent space models (e.g., Stable Diffusion)
+    primary_objective: understanding the reverse diffusion process and its trajectory properties
+    efficiency_technique: skipping reverse diffusion steps based on the derived closed-form solution
+    data_modality: image
+    technical_novelty: derivation of a closed-form solution to the probability flow ODE for a Gaussian distribution showing rotation towards a target on the image manifold
+    relations: uses arXiv:2011.13456; cites arXiv:1503.03585; cites arXiv:1907.05600; cites arXiv:2204.03458; cites arXiv:2112.10752; cites arXiv:2006.11239
+arXiv:2303.08320 (2023) "VideoFusion: Decomposed Diffusion Models for High-Quality Video
+  Generation" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: Decomposed diffusion probabilistic model (DPM) using two jointly-learned networks
+    primary_objective: High-quality video generation by addressing high-dimensional data spaces and temporal correlation
+    conditioning_mechanism: Text-conditioned
+    efficiency_technique: Decomposed diffusion process (resolving per-frame noise into shared base noise and time-varying residual noise)
+    data_modality: Video
+    technical_novelty: Decomposed diffusion process that resolves noise into a shared base noise and a temporal residual noise to leverage content redundancy
+    relations: cites arXiv:2106.00132; uses arXiv:2006.11239; cites arXiv:1907.05600; uses arXiv:2010.02502; cites arXiv:2102.09672; compares-with arXiv:2204.03458
+arXiv:2301.07485 (2023) "Image Embedding for Denoising Generative Models" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Denoising Diffusion Implicit Models (DDIM)
+    primary_objective: Embedding an image into the latent space of Denoising Diffusion Models (finding a 'noisy' image that denoises to the original image)
+    data_modality: image
+    technical_novelty: Demonstrating the independence of the latent representation from the specific networks implementing the reverse diffusion process
+    relations: (none in-topic)
+arXiv:2311.14900 (2023) "Resfusion: Denoising Diffusion Probabilistic Models for Image
+  Restoration Based on Prior Residual Noise" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPM) with a modified forward process incorporating a residual term
+    primary_objective: Image restoration
+    conditioning_mechanism: Using degraded images as conditional input to guide the reverse generation process
+    efficiency_technique: Starting the reverse process directly from noisy degraded images via a residual term to reduce sampling steps (achieving results in only 5 steps)
+    data_modality: Image
+    technical_novelty: Introduction of 'resnoise' (weighted residual noise) as the prediction target and a smooth equivalence transformation to link the residual term and noise term
+    relations: cites arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:2207.12598; cites arXiv:1406.2661; cites arXiv:2204.06125; cites arXiv:2102.09672
+arXiv:2302.02398 (2023) "Diffusion Model for Generative Image Denoising" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: diffusion model
+    primary_objective: generative image denoising
+    conditioning_mechanism: conditioned on noisy images
+    data_modality: image
+    technical_novelty: redefined diffusion process based on specific noise models (Gaussian, Gamma, and Poisson) to estimate the posterior distribution of clean images
+    relations: cites arXiv:1503.03585; cites arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:2009.09761; cites arXiv:2104.07636; cites arXiv:2108.01073
+arXiv:2312.13253 (2023) "Conditional Image Generation with Pretrained Generative Model" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Pretrained unconditional diffusion models
+    primary_objective: Reduce time-required and computational overhead introduced by the addition of guidance in diffusion models
+    conditioning_mechanism: Additional guidance
+    efficiency_technique: Empirical analysis-based methods resulting in approximately threefold reduction in computation time
+    data_modality: Image
+    relations: cites arXiv:2302.05543; uses arXiv:2105.05233; cites arXiv:2010.02502; cites arXiv:2006.11239; cites arXiv:2112.10741; cites arXiv:2211.01324
+arXiv:2305.19066 (2023) "Nested Diffusion Processes for Anytime Image Generation" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: two nested diffusion processes
+    primary_objective: anytime image generation (generating viable images when stopped at arbitrary times)
+    conditioning_mechanism: text-based (Stable Diffusion) and inverse problem solving
+    efficiency_technique: recomposing pretrained diffusion models into nested processes for fast iterative refinement
+    data_modality: image
+    technical_novelty: recomposing existing pretrained diffusion models as two nested diffusion processes to enable anytime generation
+    relations: cites arXiv:2202.00512; cites arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:1907.05600; uses arXiv:2108.01073; cites arXiv:2009.09761
+arXiv:2302.09378 (2023) "Modelos Generativos basados en Mecanismos de Difusi\'on" [cs] (cited-by 0 in-topic, era 2)
+    primary_objective: generating new images from processes analogous to non-equilibrium thermodynamics
+    data_modality: image and audio signals
+    technical_novelty: reversal of a physical diffusion process (progressive pixel corruption via random noise)
+    relations: (none in-topic)
+arXiv:2306.13720 (2023) "Simultaneous Image-to-Zero and Zero-to-Noise: Diffusion Models with
+  Analytical Image Attenuation" [cs] (cited-by 0 in-topic, era 2)
+    primary_objective: high-quality (un)conditioned image generation with significantly fewer denoising steps
+    conditioning_mechanism: image-conditioned downstream tasks (super-resolution, saliency detection, edge detection, and image inpainting)
+    efficiency_technique: analytical image attenuation process allowing sampling with arbitrary step size and avoiding ODE-based accelerators
+    data_modality: image
+    technical_novelty: simultaneous image-to-zero and zero-to-noise mapping via an analytical attenuation function
+    relations: uses arXiv:2006.11239; cites arXiv:2102.09672; cites arXiv:2207.12598; cites arXiv:2105.05233; cites arXiv:2206.00364; cites arXiv:2009.00713
+arXiv:2402.16907 (2024) "Diffusion Posterior Proximal Sampling for Image Restoration" [eess] (cited-by 2 in-topic, era 2)
+    primary_objective: image restoration
+    conditioning_mechanism: sampling selection consistent with the measurement identity and initialization combined with the measurement signal
+    efficiency_technique: adaptively determining the number of candidate samples based on the signal-to-noise ratio of the timestep
+    data_modality: image
+    technical_novelty: Diffusion Posterior Proximal Sampling (DPPS) paradigm that replaces pure white noise initialization and random noise injection with measurement-consistent sample selection
+    relations: uses arXiv:2105.05233; cites arXiv:2104.07636; cites arXiv:2111.05826; cites arXiv:1503.03585; cites arXiv:2112.10752; cites arXiv:2106.05931
+arXiv:2410.02667 (2024) "GUD: Generation with Unified Diffusion" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Unified framework incorporating flexible representations (pixel, PCA, Fourier, or wavelet-basis), variable prior distributions, and component-wise noise scheduling.
+    primary_objective: To enhance design freedom in diffusion generative models by exploring representation, prior distribution, and noise scheduling.
+    conditioning_mechanism: Soft-conditioning models that smoothly interpolate between standard diffusion models and autoregressive models.
+    technical_novelty: A unified framework inspired by renormalization group concepts that allows for flexible basis selection, prior distribution choice, and component-wise noise scheduling, alongside the introduction of soft-conditioning to bridge diffusion and autoregressive models.
+    relations: cites arXiv:1503.03585; extends arXiv:1907.05600; uses arXiv:2006.11239; cites arXiv:2106.15282; motivated-by arXiv:2112.10752; cites arXiv:2106.05931
+arXiv:2406.18459 (2024) "DiffuseHigh: Training-free Progressive High-Resolution Image Synthesis
+  through Structure Guidance" [cs] (cited-by 1 in-topic, era 2)
+    primary_objective: High-resolution image synthesis (beyond 1K resolution) without additional training or fine-tuning
+    conditioning_mechanism: Structure guidance using generated low-resolution images to guide higher-resolution generation
+    efficiency_technique: Training-free progressive approach
+    data_modality: Image
+    technical_novelty: A progressive approach that fully utilizes generated low-resolution images to guide the generation of higher-resolution images to prevent artifacts like object repetition and distorted shapes.
+    relations: cites arXiv:2305.16213; cites arXiv:2209.14988; cites arXiv:2201.06503; cites arXiv:2009.09761; cites arXiv:2009.00713; cites arXiv:2006.11239; cited-by arXiv:2605.18736
+arXiv:2408.08306 (2024) "Accelerated Image-Aware Generative Diffusion Modeling" [eess] (cited-by 0 in-topic, era 2)
+    model_architecture: Block-sequential generative model using an autoencoder to learn diffusion coefficients on clean image structures
+    primary_objective: Acceleration of the diffusion process for rapid image synthesis
+    efficiency_technique: Exponentially time-decaying SNR in the forward process, parallel data-driven model for single-run reverse-time trajectories, and elimination of MCMC-based sub-sampling correction
+    data_modality: Image
+    technical_novelty: Analytically new construct yielding exponentially time-decaying SNR and a parallel data-driven model to generate reverse-time trajectories in a single run
+    relations: uses arXiv:2006.11239; cites arXiv:1907.05600; cites arXiv:1503.03585; uses arXiv:2011.13456; uses arXiv:1312.6114; cites arXiv:2105.14080
+arXiv:2412.14422 (2024) "Enhancing Diffusion Models for High-Quality Image Generation" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Denoising Diffusion Probabilistic Models (DDPMs), Denoising Diffusion Implicit Models (DDIMs), and Latent Diffusion Models with Variational Autoencoders (VAE)
+    primary_objective: Enhancing generative capabilities, inference speed, computational efficiency, and image quality (FID)
+    conditioning_mechanism: Classifier-Free Guidance (CFG)
+    efficiency_technique: DDIM and alternative noise scheduling strategies
+    data_modality: Image
+    relations: uses arXiv:2102.09672; uses arXiv:2006.11239; uses arXiv:2010.02502; uses arXiv:2112.10752; cites arXiv:1312.6114
+arXiv:2409.19365 (2024) "Conditional Image Synthesis with Diffusion Models: A Survey" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: diffusion-based generative modeling (denoising network and sampling process)
+    primary_objective: surveying conditional image synthesis via diffusion models
+    conditioning_mechanism: integration into the denoising network (training, re-purposing, and specialization stages) and six mainstream mechanisms in the sampling process
+    data_modality: image
+    technical_novelty: categorization of existing works based on how conditions are integrated into the denoising network and sampling process
+    relations: extends arXiv:2112.10741; extends arXiv:2205.11487; extends arXiv:2103.00020; uses arXiv:2104.07636; cites arXiv:2111.05826; cites arXiv:2106.15282
+arXiv:2410.01540 (2024) "Edge-preserving noise for diffusion models" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: hybrid noise scheme with an edge-aware scheduler
+    primary_objective: improving structural detail capture and robustness in diffusion and flow-matching frameworks
+    conditioning_mechanism: edge-preserving noise and structure-guided tasks (e.g., stroke-to-image synthesis)
+    efficiency_technique: fine-tuning existing isotropic models with edge-preserving noise
+    data_modality: image
+    technical_novelty: edge-preserving diffusion process that transitions from edge-preserving to isotropic noise via an edge-aware scheduler
+    relations: cites arXiv:2107.00630; cites arXiv:1907.05600; cites arXiv:2011.13456; extends arXiv:2006.11239; cites arXiv:1503.03585; uses arXiv:2112.10752
+arXiv:2407.10897 (2024) "Optical Diffusion Models for Image Generation" [physics] (cited-by 0 in-topic, era 2)
+    model_architecture: passive diffractive optical layers
+    primary_objective: high-speed image generation with minimal power consumption
+    efficiency_technique: optical information processing via light beam propagation through semi-transparent media
+    data_modality: image
+    technical_novelty: implementing a denoising diffusion model using programmed propagation of light through passive diffractive optical layers trained via online backpropagation to the analytical model
+    relations: cites arXiv:2112.10752; cites arXiv:1503.03585; uses arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:2205.11487; cites arXiv:2105.05233
+arXiv:2402.16369 (2024) "Generative AI in Vision: A Survey on Models, Metrics and Applications" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: diffusion models (including DDPM and score-based generative modeling) and legacy models
+    primary_objective: comprehensive overview of generative AI diffusion and legacy models, their techniques, applications, and challenges
+    data_modality: image, text, and audio
+    relations: cites arXiv:1904.06991; cites arXiv:2102.12092; cites arXiv:2104.07636; cites arXiv:1606.03498; cites arXiv:2103.00020; extends arXiv:1907.05600
+arXiv:2502.21278 (2025) "Does Generation Require Memorization? Creative Diffusion Models using Ambient Diffusion" [cs] (cited-by 2 in-topic, era 2)
+    model_architecture: diffusion models
+    primary_objective: reducing memorization without decreasing image quality (improving the fidelity-memorization trade-off)
+    conditioning_mechanism: text-conditional and unconditional
+    efficiency_technique: training using noisy data at large noise scales
+    data_modality: images
+    technical_novelty: theoretical evidence that memorization is primarily necessary for denoising at low noise scales, leading to a method that focuses on large noise scales
+    relations: extends arXiv:2209.03003; uses arXiv:2006.11239; uses arXiv:2011.13456; extends arXiv:1907.05600; extends arXiv:2206.00364; extends arXiv:2210.02747
+arXiv:2502.10236 (2025) "Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise
+  Control" [cs] (cited-by 1 in-topic, era 2)
+    model_architecture: Diffusion Probabilistic Models (DPMs)
+    primary_objective: Building inductive biases into training and sampling to better accommodate target data distributions
+    conditioning_mechanism: frequency-based noising operator
+    data_modality: images
+    technical_novelty: A frequency-based noising operator designed to manipulate inductive biases by controlling information at particular frequencies during the forward process
+    relations: uses arXiv:2006.11239; cites arXiv:1503.03585; cites arXiv:1411.7766
+arXiv:2502.01189 (2025) "Compressed Image Generation with Denoising Diffusion Codebook Models" [eess] (cited-by 0 in-topic, era 2)
+    model_architecture: Denoising Diffusion Codebook Model (DDCM) using pre-defined codebooks of fixed iid Gaussian vectors
+    primary_objective: Compressed image generation and lossy image compression
+    conditioning_mechanism: Selecting noise samples from codebooks that best match a given image
+    efficiency_technique: Replacing standard Gaussian noise sampling with selection from pre-defined codebooks to produce condensed bit-stream representations
+    data_modality: Image
+    technical_novelty: Replacing standard Gaussian noise sampling in reverse diffusion with selection from codebooks of fixed iid Gaussian vectors, establishing a connection with score-based approximations of posterior samplers
+    relations: cites arXiv:1503.03585; cites arXiv:2006.11239; cites arXiv:2102.12092; uses arXiv:2112.10752; cites arXiv:2205.11487; cites arXiv:2108.01073
+arXiv:2501.13349 (2025) "MSF: Efficient Diffusion Model Via Multi-Scale Latent Factorize" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Multi-scale latent factorization (decomposing latent features into low-frequency base and high-frequency residual signals)
+    primary_objective: Efficiency and speed in high-resolution image generation
+    conditioning_mechanism: Class-conditional (ImageNet benchmarks)
+    efficiency_technique: Two-stage generation process (low-resolution base followed by high-resolution residual) and reduced sampling steps during residual learning
+    data_modality: Image
+    technical_novelty: Decomposition of the denoising target into a low-frequency base signal and a high-frequency residual signal, conceptually akin to wavelet analysis
+    relations: cites arXiv:2205.11487; cites arXiv:2307.01952; cites arXiv:2210.02303; cites arXiv:2009.09761; cites arXiv:2212.09748; cites arXiv:2011.13456
+arXiv:2510.12220 (2025) "Hierarchical Koopman Diffusion: Fast Generation with Interpretable Diffusion Trajectory" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Hierarchical architecture with scale-specific Koopman subspaces
+    primary_objective: Achieving one-step sampling while maintaining interpretable generative trajectories
+    conditioning_mechanism: Manual intervention during generation via access to intermediate states
+    efficiency_technique: Lifting nonlinear dynamics into a latent space governed by globally linear operators for closed-form trajectory solutions
+    data_modality: Image
+    technical_novelty: Integration of Koopman operator theory with hierarchical diffusion to enable one-step generation and spectral analysis of generative dynamics
+    relations: cites arXiv:1503.03585; compares-with arXiv:2006.11239; compares-with arXiv:2010.02502; cites arXiv:2105.05233; compares-with arXiv:2101.02388; compares-with arXiv:2202.00512
+arXiv:2505.24222 (2025) "Unleashing High-Quality Image Generation in Diffusion Sampling Using Second-Order Levenberg-Marquardt-Langevin" [cs] (cited-by 0 in-topic, era 2)
+    primary_objective: improving image generation quality in diffusion sampling
+    efficiency_technique: low-rank approximation of the diffusion Hessian and a damping mechanism
+    data_modality: image
+    technical_novelty: Levenberg-Marquardt-Langevin (LML) method which approximates diffusion Hessian geometry in a training-free manner using low-rank approximation and a damping mechanism
+    relations: uses arXiv:2112.10752; uses arXiv:2011.13456; uses arXiv:1907.05600; cites arXiv:2105.05233; cites arXiv:2006.11239; cites arXiv:1503.03585
+arXiv:2509.13936 (2025) "Noise-Level Diffusion Guidance: Well Begun is Half Done" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: diffusion models
+    primary_objective: refining initial noise to improve image quality and prompt adherence
+    conditioning_mechanism: general guidance (compatible with both conditional and unconditional diffusion models)
+    efficiency_technique: noise-level optimization that requires no additional training data, auxiliary networks, or backpropagation
+    data_modality: image
+    technical_novelty: Noise Level Guidance (NLG), a framework that refines initial noise by increasing the likelihood of its alignment with general guidance
+    relations: uses arXiv:2112.10752; compares-with arXiv:1505.04597; cites arXiv:1503.03585; cites arXiv:2006.11239; cites arXiv:2011.13456; cites arXiv:2205.11487
+arXiv:2510.10149 (2025) "Robust Learning of Diffusion Models with Extremely Noisy Conditions" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Conditional diffusion models
+    primary_objective: Robustness to extremely noisy conditions (e.g., corrupted labels or unreliable observations)
+    conditioning_mechanism: External conditions (e.g., class labels or observations/states)
+    efficiency_technique: Temporal ensembling for progressive refinement of pseudo conditions
+    data_modality: Images and visuomotor policies
+    technical_novelty: Learning pseudo conditions as surrogates and the Reverse-time Diffusion Condition (RDC) technique to diffuse pseudo conditions
+    relations: uses arXiv:2206.00364; cites arXiv:2006.11239; uses arXiv:2011.13456; cites arXiv:2010.02502; cites arXiv:2105.05233; uses arXiv:2207.12598
+arXiv:2509.15342 (2025) "LowDiff: Efficient Diffusion Sampling with Low-Resolution Condition" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: cascaded approach using a unified model to progressively refine images from low to high resolution
+    primary_objective: improving sampling speed/efficiency
+    efficiency_technique: generating increasingly higher resolution outputs via a unified model to reduce high-resolution sampling steps
+    data_modality: image
+    technical_novelty: a cascaded framework that leverages multiple input resolutions within a unified model to refine images from low to high resolution
+    relations: cites arXiv:2211.01324; cites arXiv:2006.11239; cites arXiv:2010.02502; cites arXiv:2011.13456; cites arXiv:2107.00630; cites arXiv:2102.09672
+arXiv:2605.27343 (2026) "Towards Controllable Image Generation through Representation-Conditioned Diffusion Models" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Diffusion models conditioned on representations from a pre-trained self-supervised model
+    primary_objective: Controllable image generation and editing
+    conditioning_mechanism: Representations from a pre-trained self-supervised model
+    data_modality: Image
+    technical_novelty: Self-conditioning mechanism using self-supervised representation spaces to identify directions of variation for control
+    relations: cites arXiv:2112.10752; cites arXiv:2208.12242; uses arXiv:1506.03365; uses arXiv:1711.00937
+arXiv:2605.18736 (2026) "Spectral Progressive Diffusion for Efficient Image and Video Generation" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Spectral progressive framework applied to pretrained diffusion models
+    primary_objective: Efficient image and video generation (speedup)
+    efficiency_technique: Spectral noise expansion mechanism and optimal resolution scheduling based on the model's power spectrum
+    data_modality: Image and video
+    technical_novelty: Progressive resolution growth along the denoising trajectory using a spectral noise expansion mechanism and a power spectrum-derived resolution schedule
+    relations: uses arXiv:2212.09748; cites arXiv:2406.18459; critiques arXiv:2106.15282; cites arXiv:2202.00512; cites arXiv:2006.11239; cites arXiv:2011.13456
+arXiv:2606.00094 (2026) "Diffusion Image Generation with Explicit Modeling of Data Manifold Geometry" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Continuous diffusion model integrated with discrete patch tokenization
+    primary_objective: Explicit modeling of data manifold geometry for improved image generation
+    efficiency_technique: Multi-stage transition sampling scheme that dynamically adjusts based on timestep
+    data_modality: Image
+    technical_novelty: Integration of discrete patch tokenization into the score function, soft top-k aggregation mechanism, and dual-branch high-frequency feature embedding layers
+    relations: (none in-topic)
+arXiv:2605.30553 (2026) "Destruction is a General Strategy to Learn Generation; Diffusion's Strength is to Take it Seriously; Exploration is the Future" [cs] (cited-by 0 in-topic, era 2)
+    primary_objective: Analyzing diffusion models as a family of information-withholding techniques and exploring their potential in data-scarce settings and reinforcement learning contexts.
+    technical_novelty: Introduction of a novel kind of probabilistic graphical models to facilitate the exposition of the destroy-then-generate perspective.
+    relations: cites arXiv:2107.00630; cites arXiv:2011.13456; cites arXiv:2006.11239
+arXiv:2604.09560 (2026) "The Diffusion-Attention Connection" [cs] (cited-by 0 in-topic, era 2)
+    model_architecture: Markov geometry built from pre-softmax query-scores
+    primary_objective: Unifying Transformers, diffusion-maps, and magnetic Laplacians into a single framework
+    technical_novelty: Definition of a QK 'bidivergence' whose exponentiated and normalized forms yield attention, diffusion-maps, and magnetic diffusion; connection via product of experts and Schrödinger-bridges
+    relations: (none in-topic)
+
+MAIN PATH (oldest -> newest):
+  arXiv:1312.6114 (2013) -> arXiv:1406.2661 (2014) -> arXiv:1710.10196 (2017) -> arXiv:1812.04948 (2018) -> arXiv:1912.04958 (2019) -> arXiv:2006.06676 (2020) -> arXiv:2101.02388 (2021) -> arXiv:2202.00512 (2022) -> arXiv:2305.16213 (2023) -> arXiv:2406.18459 (2024) -> arXiv:2605.18736 (2026)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2006.09011 compares [negative] arXiv:1710.10196
+  arXiv:2011.13456 compares [negative] arXiv:1812.04948
+  arXiv:2205.11487 compares [negative] arXiv:2207.12598
+  arXiv:2206.00927 compares [negative] arXiv:2202.00512
+  arXiv:2209.03003 compares [negative] arXiv:2206.00364
+  arXiv:2312.13253 critiques [negative] arXiv:2207.12598
+  arXiv:2402.16369 critiques [negative] arXiv:1905.07088
+  arXiv:2102.09672 critiques [negative] arXiv:1706.08500
+  arXiv:2102.09672 critiques [negative] arXiv:1606.03498
+  arXiv:2202.09778 critiques [negative] arXiv:2202.00512
+  arXiv:2205.11487 critiques [negative] arXiv:2103.00020
+  arXiv:2209.14988 critiques [negative] arXiv:2210.08402
+  arXiv:2302.05543 compares [neutral] arXiv:2012.09841
+  arXiv:2302.05543 compares [neutral] arXiv:2112.10741
+  arXiv:2303.08320 compares [neutral] arXiv:2204.03458
+  arXiv:2303.11328 compares [neutral] arXiv:2102.12092
+  arXiv:2303.11328 compares [neutral] arXiv:1801.03924
+  arXiv:2303.11328 compares [neutral] arXiv:1706.08500
+  arXiv:2303.13873 compares [positive] arXiv:2211.07600
+  arXiv:2305.16213 compares [positive] arXiv:2206.00927
+  arXiv:2308.16512 compares [positive] arXiv:2303.11328
+  arXiv:2308.16512 compares [neutral] arXiv:2305.16213
+  arXiv:2308.16512 compares [neutral] arXiv:2211.01324
+  arXiv:2308.16512 compares [neutral] arXiv:2111.04276
+  arXiv:2308.16512 compares [positive] arXiv:2307.01952
+  arXiv:2402.16907 compares [neutral] arXiv:1706.08500
+  arXiv:2406.18459 compares [neutral] arXiv:2205.11487
+  arXiv:2406.18459 compares [neutral] arXiv:2307.01952
+  arXiv:2406.18459 compares [neutral] arXiv:2106.15282
+  arXiv:2502.01189 compares [neutral] arXiv:1706.08500
+  arXiv:2502.01189 compares [neutral] arXiv:2207.12598
+  arXiv:2502.01189 compares [neutral] arXiv:1405.0312
+  arXiv:2502.01189 compares [neutral] arXiv:1801.03924
+  arXiv:2502.01189 compares [neutral] arXiv:2103.00020
+  arXiv:2502.01189 compares [neutral] arXiv:2010.02502
+  arXiv:2502.21278 compares [positive] arXiv:2210.08402
+  arXiv:2505.24222 compares [positive] arXiv:2206.00364
+  arXiv:2505.24222 compares [neutral] arXiv:1710.10196
+  arXiv:2505.24222 compares [neutral] arXiv:2210.08402
+  arXiv:2605.18736 compares [neutral] arXiv:2108.01073
+  arXiv:2107.00630 compares [neutral] arXiv:1907.05600
+  arXiv:1812.02822 compares [positive] arXiv:1610.07584
+  arXiv:1812.02822 compares [neutral] arXiv:1312.6114
+  arXiv:1812.04948 compares [positive] arXiv:1807.03039
+  arXiv:2204.13902 compares [positive] arXiv:2101.09258
+  arXiv:2006.06676 compares [neutral] arXiv:1809.11096
+  arXiv:2101.02388 compares [positive] arXiv:2007.03898
+  arXiv:2102.09672 compares [neutral] arXiv:1809.11096
+  arXiv:2105.05233 compares [neutral] arXiv:2104.07636
+  arXiv:2106.15282 compares [positive] arXiv:2105.05233
+  arXiv:2107.03006 compares [positive] arXiv:2102.09672
+  arXiv:2107.03006 compares [positive] arXiv:2011.13456
+  arXiv:2112.07945 compares [neutral] arXiv:1812.04948
+  arXiv:2112.10752 compares [neutral] arXiv:2010.02502
+  arXiv:2112.10752 compares [neutral] arXiv:1912.04958
+  arXiv:2202.00512 compares [neutral] arXiv:2101.02388
+  arXiv:2204.13902 compares [neutral] arXiv:2011.13456
+  arXiv:2204.13902 compares [neutral] arXiv:2105.14080
+  arXiv:2204.13902 compares [neutral] arXiv:2105.05233
+  arXiv:2204.13902 compares [neutral] arXiv:2201.06503
+  arXiv:2204.13902 compares [neutral] arXiv:2202.09778
+  arXiv:2205.11487 compares [positive] arXiv:2102.12092
+  arXiv:2205.11487 compares [positive] arXiv:2112.10741
+  arXiv:2205.11487 compares [positive] arXiv:2204.06125
+  arXiv:2206.00927 compares [neutral] arXiv:2101.09258
+  arXiv:2207.12598 compares [positive] arXiv:2105.05233
+  arXiv:2208.12242 compares [neutral] arXiv:2204.06125
+  arXiv:2208.12242 compares [neutral] arXiv:2205.11487
+  arXiv:2210.02747 compares [neutral] arXiv:2101.09258
+  arXiv:2510.12220 compares [neutral] arXiv:2010.02502
+  arXiv:2510.12220 compares [neutral] arXiv:2101.02388
+  arXiv:2510.12220 compares [neutral] arXiv:2202.00512
+  arXiv:2509.13936 compares [positive] arXiv:1505.04597
+  arXiv:2509.13936 compares [neutral] arXiv:2210.03142
+  arXiv:2108.01073 compares [neutral] arXiv:2006.06676
+  arXiv:1706.08500 compares [positive] arXiv:1606.03498
+  arXiv:1710.10196 compares [neutral] arXiv:1606.03498
+  arXiv:1711.00937 compares [neutral] arXiv:1412.6980
+  arXiv:1806.07366 compares [neutral] arXiv:1412.6980
+  arXiv:1807.03039 compares [neutral] arXiv:1506.03365
+  arXiv:1809.11096 compares [neutral] arXiv:1710.10196
+  arXiv:1809.11096 compares [neutral] arXiv:1606.03498
+  arXiv:1812.04948 compares [positive] arXiv:1706.08500
+  arXiv:1904.06991 compares [neutral] arXiv:1706.08500
+  arXiv:1907.05600 compares [neutral] arXiv:1503.03585
+  arXiv:2010.02502 compares [neutral] arXiv:2011.13456
+  arXiv:2010.11929 compares [positive] arXiv:1412.6980
+  arXiv:2011.13456 compares [positive] arXiv:1710.10196
+  arXiv:2012.09841 compares [neutral] arXiv:1710.10196
+  arXiv:2012.09841 compares [neutral] arXiv:1807.03039
+  arXiv:2012.09841 compares [neutral] arXiv:2007.03898
+  arXiv:2012.09841 compares [neutral] arXiv:1912.04958
+  arXiv:2101.02388 compares [positive] arXiv:1706.08500
+  arXiv:2101.02388 compares [positive] arXiv:1606.03498
+  arXiv:2101.09258 compares [positive] arXiv:1706.08500
+  arXiv:2101.09258 compares [positive] arXiv:2102.09672
+  arXiv:2101.09258 compares [neutral] arXiv:2007.03898
+  arXiv:2102.12092 compares [neutral] arXiv:1606.03498
+  arXiv:2102.12092 compares [neutral] arXiv:1706.08500
+  arXiv:2104.02600 compares [positive] arXiv:2101.02388
+  arXiv:2105.14080 compares [neutral] arXiv:2010.02502
+  arXiv:2105.14080 compares [neutral] arXiv:1706.08500
+  arXiv:2105.14080 compares [neutral] arXiv:1606.03498
+  arXiv:2106.15282 compares [positive] arXiv:1506.03365
+  arXiv:2107.03006 compares [neutral] arXiv:1706.08500
+  arXiv:2108.02938 compares [neutral] arXiv:1912.04958
+  arXiv:2112.07945 compares [neutral] arXiv:1706.08500
+  arXiv:2112.10752 compares [positive] arXiv:2106.05931
+  arXiv:2201.06503 compares [positive] arXiv:1706.08500
+  arXiv:2202.00512 compares [neutral] arXiv:1706.08500
+  arXiv:2204.06125 compares [positive] arXiv:2207.12598
+  arXiv:2204.06125 compares [neutral] arXiv:1706.08500
+  arXiv:2204.06125 compares [neutral] arXiv:1405.0312
+  arXiv:2204.13902 compares [neutral] arXiv:2106.00132
+  arXiv:2204.13902 compares [neutral] arXiv:1411.7766
+  arXiv:2204.13902 compares [neutral] arXiv:1506.03365
+  arXiv:2205.11487 compares [positive] arXiv:1405.0312
+  arXiv:2205.11487 compares [positive] arXiv:2104.07636
+  arXiv:2206.00927 compares [neutral] arXiv:1503.03585
+  arXiv:2206.00927 compares [neutral] arXiv:2202.09778
+  arXiv:2206.00927 compares [neutral] arXiv:2106.00132
+  arXiv:2210.02747 compares [neutral] arXiv:1907.05600
+  arXiv:2210.02747 compares [neutral] arXiv:2107.00630
+  arXiv:2210.02747 compares [neutral] arXiv:1706.08500
+  arXiv:2605.18736 critiques [neutral] arXiv:2106.15282
+  arXiv:2303.13873 motivates [positive] arXiv:2204.06125
+  arXiv:2303.13873 motivates [positive] arXiv:2205.11487
+  arXiv:2303.13873 motivates [positive] arXiv:2112.10741
+  arXiv:2303.13873 motivates [positive] arXiv:2111.04276
+  arXiv:2303.13873 motivates [neutral] arXiv:2211.01324
+  arXiv:2305.16213 motivates [positive] arXiv:2204.06125
+  arXiv:2305.16213 motivates [positive] arXiv:1503.03585
+  arXiv:2305.16213 motivates [positive] arXiv:2011.13456
+  arXiv:2305.16213 motivates [positive] arXiv:2205.11487
+  arXiv:2305.16213 motivates [positive] arXiv:2112.10752
+  arXiv:2305.16213 motivates [positive] arXiv:2211.01324
+  arXiv:2305.16213 motivates [positive] arXiv:2210.08402
+  arXiv:2305.16213 motivates [positive] arXiv:1907.05600
+  arXiv:2406.18459 motivates [neutral] arXiv:2108.01073
+  arXiv:2410.02667 motivates [neutral] arXiv:2112.10752
+  arXiv:2101.09258 motivates [neutral] arXiv:1907.05600
+  arXiv:2101.09258 motivates [neutral] arXiv:2006.09011
+  arXiv:2104.07636 motivates [neutral] arXiv:1505.04597
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2010.02502:
+NOVELTY: Generalization of the forward diffusion process from Markovian to non-Markovian trajectories that share the same training objective, enabling deterministic, implicit generative modeling.
+STRENGTHS: Achieves 10× to 50× faster sampling in wall-clock time compared to DDPMs while maintaining high quality (e.g., CIFAR10 FID of 4.16 at 100 steps) and enabling semantic latent space interpolation.
+WEAKNESSES: Sample quality inherently trades off with computational speed, and the empirical investigation of non-Gaussian forward processes is deferred to future work.
+RELEVANCE: Directly addresses the primary bottleneck of diffusion models—slow sampling—by providing a method to accelerate inference using pretrained models without retraining.
+arXiv:2011.13456:
+NOVELTY: Unifies score-based modeling and DDPM into a continuous-time framework using Stochastic Differential Equations (SDEs), introducing the probability flow ODE for exact likelihood and deterministic sampling.
+STRENGTHS: Achieves state-of-the-art performance on CIFAR-10 with an Inception Score of 9.89 and FID of 2.20, while setting a record likelihood of 2.99 bits/dim.
+WEAKNESSES: Sampling remains significantly slower than GANs, and the framework introduces a high number of hyperparameters related to SDE selection and sampler tuning.
+RELEVANCE: Provides a mathematical foundation that generalizes discrete diffusion processes, enabling new sampling algorithms (Predictor-Corrector) and controllable generation (inpainting/colorization).
+arXiv:2605.27343:
+NOVELTY: Investigating self-supervised (DINO) representation spaces as a structured latent space for semantic control in diffusion models.
+STRENGTHS: Qualitative evidence shows smoother semantic interpolation than Stable Diffusion and higher stability under perturbation ($\lambda > 0.4$) than Diffusion Inversion.
+WEAKNESSES: Lacks quantitative metrics and demonstrates significant attribute entanglement, such as the correlation between baldness and gender in supervised directions.
+RELEVANCE: Proposes a mechanism for fine-grained, non-textual image control that bypasses the limitations of prompt engineering.
+arXiv:2006.11239:
+NOVELTY: Establishes the first high-quality image synthesis using diffusion models and proves the mathematical equivalence between the variational bound, denoising score matching, and Langevin dynamics.
+STRENGTHS: Achieves state-of-the-art FID of 3.17 on CIFAR10 using a simplified $\epsilon$-prediction objective ($L_{simple}$) that significantly outperforms the $\tilde{\mu}$ baseline.
+WEAKNESSES: Fails to achieve competitive log-likelihoods compared to other likelihood-based models and relies on a simplified objective that discards the weighting of the true variational bound.
+RELEVANCE: Provides the foundational proof-of-concept that diffusion models are viable, high-quality competitors to GANs and autoregressive models for image generation.
+arXiv:2112.10752:
+NOVELTY: Decoupling perceptual compression (via autoencoders) from semantic generation (via diffusion) and introducing cross-attention for flexible, multi-modal conditioning.
+STRENGTHS: Drastic reduction in computational cost with improved fidelity; e.g., LDM-8 shows a 38 FID gap improvement over pixel-based LDM-1 after 2M steps.
+WEAKNESSES: Generative quality is inherently bounded by the autoencoder's reconstruction fidelity; excessive downsampling ($f$) causes stagn
+arXiv:2605.18736:
+NOVELTY: A spectral-domain progressive resolution framework that uses a principled noise expansion mechanism and a power-spectrum-derived schedule to exploit the spectral autoregression property of diffusion models.
+STRENGTHS: Demonstrates significant efficiency gains, achieving up to 7$\times$ speedup in image generation and 2.5$\times$ in video generation while outperforming spatial acceleration baselines (RALU, Bottleneck) in the speed-quality tradeoff.
+WEAKNESSES: Implicitly assumes that pretrained models can generalize to the intermediate, potentially unseen resolutions and continuous schedules used during the progressive denoising trajectory.
+RELEVANCE: Directly addresses the scaling crisis of Diffusion Transformers (DiTs) by reducing token counts during early denoising steps where high-frequency computation is redundant.

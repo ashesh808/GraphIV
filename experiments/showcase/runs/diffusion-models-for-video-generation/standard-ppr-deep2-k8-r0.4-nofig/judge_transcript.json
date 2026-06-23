@@ -1,0 +1,38 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5
+  },
+  "gaps": [
+   "diffusion transformer architecture video generation",
+   "video diffusion models vs autoregressive video generation",
+   "scaling laws for video diffusion models",
+   "motion-conditioned video diffusion models"
+  ],
+  "assessment": "The review is excellent and covers the frontier well, but needs to explicitly address the architectural shift from U-Net to Diffusion Transformers (DiT)."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 4
+  },
+  "gaps": [
+   "diffusion transformer DiT video generation",
+   "video generation state space models Mamba",
+   "autoregressive vs diffusion video synthesis 2024",
+   "large scale video generation world models"
+  ],
+  "assessment": "A highly professional review that captures the major architectural shifts but could be strengthened by more explicit coverage of the Diffusion Transformer (DiT) paradigm and the emerging 'world model' perspective."
+ }
+]
