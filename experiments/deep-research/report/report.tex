@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{../results/macros.tex}
+
+\title{\vspace{-2em}\textbf{Deep-research --- the flagship, before vs after}}
+\author{arxivkg · the deployed pipeline, dogfooded}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{What this is}
+The flagship demonstration --- \emph{not} a single-lever ablation but the holistic before/after of the
+whole system, over the deep panel. \textbf{\texttt{before-2023}} mimics the old default (single-pass,
+raw in-degree, recency$=0$, frontier-pull off); \textbf{\texttt{after-deep}} is the full deployed
+pipeline with every shipped lever on (deep judge-loop, PPR, recency$=0.5$, frontier-pull, critique,
+vision figures). The long md/tex reviews $+$ figure galleries under \texttt{results/runs/} are the
+primary artifact; the table quantifies the jump. Scored with the 4-axis judge, faithfulness, and an
+order-debiased pairwise.
+
+\section*{Results (deep panel, 27 topics)}
+\begin{center}\input{../results/table.tex}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
+
+\section*{The jump}
+\textbf{The deployed pipeline is preferred over the old default \pairOverall{} (W/T/L) on overall ---
+and \pairGround{} on grounding (a clean sweep, win-rate 1.0).} Concretely it surfaces \afterDelta{}
+2026 papers per topic where the old default surfaced \emph{zero}, triples frontier coverage
+($\beforeFront\rightarrow\afterFront$), writes a full review ($\beforeWords\rightarrow\afterWords$
+words vs an abstract-length blurb), nearly doubles grounded citations, and ships \afterFig{} verified
+figures (caption-faithfulness 0.93) where the old default had none. \textbf{Honest nuance:} gold
+landmark recall dips slightly ($0.96\rightarrow0.85$) --- the old lineage-only pipeline over-indexes on
+pre-2026 canonical papers, while the deep pipeline reallocates attention toward the frontier; the
+pairwise judge nonetheless prefers the deep review almost unanimously, so the trade is clearly worth
+it. \textbf{This is the artifact that gets deployed.} \textbf{Caveat:} the absolute judge axes are
+compressed and near-ceiling for both; the discriminating signal is the pairwise (1.0 grounding, 0.85
+overall) plus the objective coverage/length/figure deltas.
+
+\end{document}

@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{../results/macros.tex}
+
+\title{\vspace{-2em}\textbf{Subgraph relevance / role judge}}
+\author{arxivkg · retrieval · precision + composition, gold-free}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{What we did}
+Where \texttt{02-01} measures \emph{recall} against curated gold (3 topics), this measures the two
+things recall cannot: \textbf{precision} (how much of the retrieved subgraph is off-topic noise) and
+\textbf{composition} (does it span a field's lineage). It needs no gold, so it runs the whole
+27-topic battery. For every committed landmark (induce/PPR), a self-hosted Gemma-4-26B judge (@T$=0$)
+sees \emph{only} the topic + the paper's title/year/abstract --- not our PPR/in-degree scores, so its
+label is an independent check --- and assigns one role: \texttt{foundational}, \texttt{core},
+\texttt{frontier}, \texttt{peripheral}, \texttt{unrelated}. Derived: \texttt{relevance\_rate} $= 1 -$
+unrelated-frac; \texttt{lineage\_span} ($\geq 1$ foundational AND $\geq 1$ frontier); and mean
+in-degree per role (a structure-agreement check vs PPR).
+
+\section*{Results (27 topics, 1080 landmarks)}
+\begin{center}\input{../results/table.tex}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
+
+\section*{Conclusion}
+\textbf{$\sim$78\% of retrieved landmarks are on-topic (relevance $=\relRate$), and \lineageSpan{} of
+topics span their full lineage} --- compositionally complete enough to ground a review. \textbf{But
+$\sim$22\% is off-topic noise (\unrelFrac{}), and it is structurally invisible to PPR}: unrelated
+papers carry mean in-degree \indegUnrel{} --- as high as \texttt{core} --- because they are famous
+cross-field hubs (GPT-3 / StyleGAN under ``diffusion'') that ride in on citation fame, not relevance.
+PPR cannot tell them from genuine core work; only the content judge can. This is the precise failure
+\texttt{02-03} targets: the noise enters through the most-cited-ancestor injection, and a cosine floor
+removes it. \textbf{Caveat:} the role judge is the measurement instrument; its fairness is validated
+separately (judge-validity, in \texttt{03-generation}).
+
+\end{document}

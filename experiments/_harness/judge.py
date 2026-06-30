@@ -109,3 +109,42 @@ def judge_pairwise(
         r = flip[rev[k]]  # map reverse-pass verdict back to original A/B labels
         out[k] = fwd[k] if fwd[k] == r else "tie"
     return out
+
+
+# ---------------------------------------------------------------------------
+# Per-paper RELEVANCE role (precision instrument): foundational / core / frontier /
+# peripheral / unrelated. Used as a metric (exp-15) and as a selection filter (exp-16/selection).
+# Judges by content (title+year+abstract) only — independent of our PPR/centrality scores. The
+# 5-label prompt was copy-pasted across exp-15/16 + scratchpads; this is the canonical version.
+
+ROLE_LABELS: tuple[str, ...] = (
+    "foundational",
+    "core",
+    "frontier",
+    "peripheral",
+    "unrelated",
+)
+
+_ROLE_SYS = (
+    "You categorize ONE research paper by its ROLE relative to a TOPIC. Given the topic and the "
+    "paper's title, year, and abstract, assign exactly one label: foundational (seminal origin), "
+    "core (central widely-built-on method), frontier (recent leading edge), peripheral (related but "
+    "tangential: adjacent-domain application / survey / benchmark), unrelated (off-topic for THIS "
+    "topic). Judge by content, not fame. "
+    'Output ONLY JSON: {"label":"<one of the five>"}.'
+)
+
+
+def role_judge(
+    question: str, arxiv_id: str, title: str, year: int | None, abstract: str
+) -> str:
+    """One of ROLE_LABELS for this paper relative to `question` (defaults to 'peripheral' on a
+    miss). Independent of retrieval scores; caching is the caller's responsibility."""
+    user = (
+        f"TOPIC: {question}\n\nPAPER\ntitle: {title}\n"
+        f"year: {year if year is not None else '?'}\narXiv: {arxiv_id}\n"
+        f"abstract: {abstract[:3000] or '(abstract unavailable)'}"
+    )
+    obj = parse_json(chat(JUDGE_MODEL, _ROLE_SYS, user, temperature=0.0, max_tokens=80))
+    label = str(obj.get("label", "")).strip().lower() if isinstance(obj, dict) else ""
+    return label if label in ROLE_LABELS else "peripheral"

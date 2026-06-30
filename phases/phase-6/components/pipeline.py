@@ -47,10 +47,33 @@ from topic_anchor import TopicTree
 OUT = Path(__file__).resolve().parents[1] / "output" / "research"
 # effort -> (n_pool, drill target, landmark count m, run extraction?)
 TIERS: dict[str, tuple[int, int, int, bool]] = {
+    "tiny": (200, 150, 30, False),
     "fast": (400, 280, 40, False),
     "standard": (400, 280, 80, True),
     "deep": (600, 360, 120, True),
 }
+
+# numeric effort 0-5 (a single master dial) -> (tier_key, max_rounds, critique_k, figures).
+# string names alias to a level for back-compat; experiments still pass the tier strings directly.
+EFFORT_ALIAS: dict[str, int] = {"fast": 1, "standard": 2, "deep": 4}
+EFFORT_PROFILE: dict[int, tuple[str, int, int, bool]] = {
+    0: ("tiny", 1, 0, False),
+    1: ("fast", 1, 0, False),
+    2: ("standard", 1, 0, False),
+    3: ("standard", 2, 4, True),
+    4: ("deep", 4, 4, True),
+    5: ("deep", 6, 6, True),
+}
+
+
+def effort_profile(effort: str | int) -> tuple[str, int, int, bool]:
+    """Map an effort level (0-5, or a fast/standard/deep alias) to its tier + deep-loop defaults."""
+    lvl = (
+        EFFORT_ALIAS[effort]
+        if isinstance(effort, str) and effort in EFFORT_ALIAS
+        else int(effort)
+    )
+    return EFFORT_PROFILE[max(0, min(5, lvl))]
 
 
 def _slug(text: str) -> str:
@@ -203,23 +226,29 @@ def run(
     no_graph: bool = False,
     recency: float = 0.4,
     no_frontier_pull: bool = False,
+    embed_mode: str = "sym",
+    use_hyde: bool = True,
 ) -> dict[str, object]:
     n_pool, target, m, do_extract = TIERS[effort]
     print(
         f"[research] '{question}' effort={effort} rank={rank} recency={recency} "
-        f"no_cluster={no_cluster} no_graph={no_graph} no_frontier_pull={no_frontier_pull}",
+        f"no_cluster={no_cluster} no_graph={no_graph} no_frontier_pull={no_frontier_pull} "
+        f"embed={embed_mode} hyde={use_hyde}",
         flush=True,
     )
 
-    hyde = hyde_query(
-        question
-    )  # doc-shaped query (router LLM) — before freeing its VRAM
+    # Query construction is format-dependent: HyDE shapes a doc-like query for the SYMMETRIC space
+    # (a bare phrase embeds poorly there); the ASYMMETRIC space embeds the raw question with nomic's
+    # native search_query prompt. Both the query and every store lookup use `embed_mode`.
+    qtext = (
+        hyde_query(question) if use_hyde else question
+    )  # router LLM — before freeing VRAM
     _free_router_vram()  # reclaim VRAM from any resident LLM before loading nomic
-    qvec = embed_query(hyde)
+    qvec = embed_query(qtext, mode=embed_mode)
     free_model()
     tree = TopicTree()
     now = datetime.now()
-    store = Store(PG_DSN)
+    store = Store(PG_DSN, emb_space=embed_mode)
     try:
         p = retrieve_rank(
             store,
@@ -273,7 +302,7 @@ def run(
     )
 
     cfg = (
-        f"{effort}-{rank}-r{recency}"
+        f"{effort}-{rank}-r{recency}-{embed_mode}{'-hyde' if use_hyde else '-raw'}"
         f"{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
         f"{'-nofpull' if no_frontier_pull else ''}"
     )
@@ -319,6 +348,8 @@ def run(
         "no_graph": no_graph,
         "recency": recency,
         "no_frontier_pull": no_frontier_pull,
+        "embed_mode": embed_mode,
+        "use_hyde": use_hyde,
         "config": cfg,
         "schema": schema.fields,
         "n_pool": len(pool),

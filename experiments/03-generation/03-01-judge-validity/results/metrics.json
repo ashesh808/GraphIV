@@ -1,0 +1,55 @@
+{
+ "facts": {
+  "overall": 1.0,
+  "true": 1.0,
+  "false_topic": 1.0,
+  "false_subtle": 1.0
+ },
+ "degrade": {
+  "res": {
+   "identical": {
+    "full": 0,
+    "tie": 3,
+    "variant": 0
+   },
+   "truncated_75": {
+    "full": 3,
+    "tie": 0,
+    "variant": 0
+   },
+   "truncated_50": {
+    "full": 3,
+    "tie": 0,
+    "variant": 0
+   },
+   "truncated_25": {
+    "full": 3,
+    "tie": 0,
+    "variant": 0
+   },
+   "citations_stripped": {
+    "full": 3,
+    "tie": 0,
+    "variant": 0
+   },
+   "shuffled": {
+    "full": 3,
+    "tie": 0,
+    "variant": 0
+   },
+   "chronology_corrupted": {
+    "full": 1,
+    "tie": 2,
+    "variant": 0
+   },
+   "verbose_pad": {
+    "full": 0,
+    "tie": 3,
+    "variant": 0
+   }
+  },
+  "n": 3,
+  "pos_bias": 0,
+  "pos_total": 6
+ }
+}

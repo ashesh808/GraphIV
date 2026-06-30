@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{../results/macros.tex}
+
+\title{\vspace{-2em}\textbf{Selection flags --- the count doesn't matter}}
+\author{arxivkg · retrieval · ablation}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{What we did}
+\texttt{02-03} cleaned the pool with a cosine gate; this asks how to pick the final landmark set and
+\textbf{whether the cap must grow}. Four arms at cap 50, over all 27 topics, scoring \emph{every}
+selected paper $-2..+2$ on its \textbf{salient full text} (Gemma-4-26B @T$=0$): \texttt{sum} penalizes
+drift/noise (count-confounded), \texttt{mean} $=$ per-paper quality (count-independent),
+\texttt{neg2\_per\_list} $=$ outright-unrelated papers kept. Arms: \texttt{fixed50} (PPR top-50),
+\texttt{gate50} (0.35 cosine gate), \texttt{llm50} (drop role$=$unrelated over PPR-80, capped 50 ---
+same count), \texttt{llm\_dyn} (same filter, soft cap 75 --- more count). Scores cached per
+\texttt{(topic, arxiv\_id)}, config-independent.
+
+\section*{Results (27 topics)}
+\begin{center}\input{../results/table.tex}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
+
+\section*{Conclusion --- the count doesn't matter; the filters are independent flags}
+\textbf{Filtering raises both sum and mean}: \texttt{fixed50}$\rightarrow$\texttt{gate50} lifts sum
+$\fixedSum\rightarrow\gateSum$ ($+42\%$) and mean $\fixedMean\rightarrow\gateMean$ ($+40\%$); the
+unfiltered top-50 carries 5.6 unrelated papers per list, the gate halves that, the LLM filter zeroes
+it. \textbf{Going bigger raises sum via clean relevant mass while mean holds}:
+\texttt{llm50}$\rightarrow$\texttt{llm\_dyn} adds $\sim$22 papers, sum jumps
+$\llmSum\rightarrow\llmdynSum$ ($+48\%$) while mean is flat ($\llmMean\rightarrow\llmdynMean$) --- the
+extra papers are genuine on-topic mass, not dilution, but they make no \emph{paper} better. \textbf{So
+the count is not a lever}: \texttt{sum} rises with clean count (recall-flavored); \texttt{mean} --- the
+count-independent quality --- saturates at $\sim$0.88 once you filter, exactly where the compose-judge
+(\texttt{landmark-selection}, in \texttt{03-generation}) said the review saturates.
+
+\medskip
+\noindent\textbf{This makes cosine-gate and LLM-filter two independent on/off flags, not a tuned
+size:} the 0.35 cosine gate alone gets $\sim$95\% of the mean win for free (no LLM); the LLM filter
+drives residual unrelated papers from $\sim$3 to 0 (precision-max); either can be enabled without
+touching the cap. \textbf{Caveat:} \texttt{sum} is count-confounded by construction; \texttt{mean} is
+the fair cross-arm comparison. Downstream review quality is judged in \texttt{03-generation}.
+
+\end{document}

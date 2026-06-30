@@ -1,0 +1,67 @@
+[
+ {
+  "recency": "0.0",
+  "n_topics": 27,
+  "frontier_count": 5.15,
+  "ge_2025": 1.26,
+  "n_2026": 0.78,
+  "n_edges": 4994.04,
+  "grounded": 21.11,
+  "off_digest": 0.19,
+  "landmark_recall": 0.09,
+  "gold_recall": 0.81,
+  "gold_spine_recall": 1.0
+ },
+ {
+  "recency": "0.2",
+  "n_topics": 27,
+  "frontier_count": 10.56,
+  "ge_2025": 4.0,
+  "n_2026": 1.56,
+  "n_edges": 4994.04,
+  "grounded": 22.07,
+  "off_digest": 0.22,
+  "landmark_recall": 0.09,
+  "gold_recall": 0.81,
+  "gold_spine_recall": 1.0
+ },
+ {
+  "recency": "0.4",
+  "n_topics": 27,
+  "frontier_count": 16.78,
+  "ge_2025": 7.0,
+  "n_2026": 2.07,
+  "n_edges": 4994.04,
+  "grounded": 23.74,
+  "off_digest": 0.04,
+  "landmark_recall": 0.09,
+  "gold_recall": 0.81,
+  "gold_spine_recall": 1.0
+ },
+ {
+  "recency": "0.6",
+  "n_topics": 27,
+  "frontier_count": 23.56,
+  "ge_2025": 9.7,
+  "n_2026": 2.26,
+  "n_edges": 4994.04,
+  "grounded": 23.85,
+  "off_digest": 0.26,
+  "landmark_recall": 0.05,
+  "gold_recall": 0.46,
+  "gold_spine_recall": 0.55
+ },
+ {
+  "recency": "0.8",
+  "n_topics": 27,
+  "frontier_count": 30.81,
+  "ge_2025": 12.59,
+  "n_2026": 2.44,
+  "n_edges": 4994.04,
+  "grounded": 22.37,
+  "off_digest": 0.07,
+  "landmark_recall": 0.04,
+  "gold_recall": 0.35,
+  "gold_spine_recall": 0.4
+ }
+]

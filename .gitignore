@@ -15,6 +15,9 @@ wheels/
 # data
 data
 
+# nomic model weights (gitignored like data/)
+model/
+
 # ai stuff
 .claude/
 CLAUDE.md
@@ -25,10 +28,17 @@ CLAUDE.md
 # phase output / caches
 phases/**/output/
 
-# experiment raw runs (reproducible reports + figure PNGs); keep metrics/plots/READMEs + showcase
+# experiment raw runs (reproducible reports + figure PNGs); keep metrics/plots/READMEs
 experiments/**/results/runs/
 experiments/**/results/run.log
-!experiments/**/results/showcase/
+# bulky deep-run dumps (49M+, regenerable via experiments/rerun.sh)
+experiments/showcase/runs/
+
+# scratch workspace (prototypes + large generated outputs, multi-GB)
+scratchpad/
+
+# nix direnv build cache
+.direnv/
 
 # LaTeX build intermediates (keep .tex/.pdf/.md; drop the rest)
 *.aux
@@ -36,3 +46,8 @@ experiments/**/results/run.log
 *.fls
 *.synctex.gz
 *.out
+
+# per-experiment caches are kept (small, and the LLM judge labels are expensive to regenerate)
+
+# ad-hoc manual phase-6 output samples (use experiments/showcase instead)
+test/

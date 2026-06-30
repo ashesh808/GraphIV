@@ -47,12 +47,27 @@ def free_model() -> None:
             torch.cuda.empty_cache()
 
 
-def embed_query(text: str) -> list[float]:
-    """Encode a query into the document embedding space (normalized, 768D)."""
-    vec = _get_model().encode(
-        [text],
-        prompt=NOMIC_PROMPT,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-    )[0]
+def embed_query(text: str, mode: str = "sym") -> list[float]:
+    """Encode a query into a 768D embedding space (normalized).
+
+    `mode="sym"` uses the symmetric Instruct prompt the corpus was encoded with — pair it with a
+    HyDE-shaped `text` (the production default). `mode="asym"` uses nomic's native asymmetric
+    `search_query:` prompt (registered prompt_name "query"); pair it with the raw question and the
+    `embedding_asym` column — no HyDE needed.
+    """
+    enc = _get_model().encode
+    if mode == "asym":
+        vec = enc(
+            [text],
+            prompt_name="query",
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+        )[0]
+    else:
+        vec = enc(
+            [text],
+            prompt=NOMIC_PROMPT,
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+        )[0]
     return [float(x) for x in vec]

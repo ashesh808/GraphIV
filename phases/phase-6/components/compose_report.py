@@ -26,6 +26,11 @@ _SYS = (
     "specifics (methods, datasets, numbers). Never invent an id or a fact not in the digest.\n"
     "- Organize with headers; compare and contrast papers; surface tensions/open problems from "
     "the compare/critique/motivate edges. If coverage is thin somewhere, say so plainly.\n"
+    "- Stay specific to THIS topic: do NOT spend a section or paragraph on generic, ubiquitous "
+    "background (e.g. a 'rise of transformers' arc, general-purpose backbones, optimizers, or base "
+    "language models) merely because such papers are widely cited. Reference a shared general-purpose "
+    "method only briefly and only where it is directly load-bearing for this specific question; spend "
+    "the review on the topic's OWN methods, results, and lineage.\n"
     "- Be detailed and specific; length should match the evidence."
 )
 

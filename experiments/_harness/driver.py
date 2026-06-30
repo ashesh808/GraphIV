@@ -165,5 +165,14 @@ def run_experiment(
     )
     write_table(agg, table_cols, results_dir / "metrics.md")
     bar_chart(agg, label_key, plot_metrics, results_dir / "ablation.png", title)
+    # live booktabs table for the report (re-run-refreshed); reports \input it instead of stale macros.
+    from .tables import booktabs
+
+    tex_cols = [(label_key, label_key)] + [
+        (c, c.replace("_", " ")) for c in table_cols if c not in (label_key, "n_topics")
+    ]
+    _ = (results_dir / "table.tex").write_text(
+        booktabs(agg, tex_cols), encoding="utf-8"
+    )
     print(f"\n[exp] done -> {results_dir}/metrics.md + ablation.png", flush=True)
     return rows, agg

@@ -17,7 +17,7 @@ map arxiv_id<->id through the `paper` table once per call.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, LiteralString, cast
 
 import psycopg
 
@@ -42,9 +42,19 @@ def _node(r: tuple[Any, ...]) -> PoolNode:
 
 class Store:
     conn: psycopg.Connection[tuple[Any, ...]]
+    emb_table: str
+    emb_col: str
 
-    def __init__(self, dsn: str) -> None:
+    def __init__(self, dsn: str, emb_space: str = "sym") -> None:
         self.conn = psycopg.connect(dsn, autocommit=True)
+        # hot-swap the embedding space by TABLE: asym lives in a separate paper_embedding_asym
+        # (filling a 2nd column on paper_embedding rewrites every row -> forces sym-HNSW
+        # maintenance per row -> pathologically slow). Both tables are (arxiv_id, <vec>) so the
+        # downstream paper/paper_meta joins are identical.
+        if emb_space == "asym":
+            self.emb_table, self.emb_col = "paper_embedding_asym", "embedding_asym"
+        else:
+            self.emb_table, self.emb_col = "paper_embedding", "embedding"
 
     def close(self) -> None:
         self.conn.close()
@@ -56,16 +66,30 @@ class Store:
         ).fetchall()
         return {str(a): int(i) for a, i in rows}
 
+    def global_citations(self, arxiv_ids: list[str]) -> dict[str, int]:
+        """Corpus-wide citation count per paper (global popularity, for the hub-specificity penalty)."""
+        idmap = self._ids_for(arxiv_ids)
+        inv = {i: a for a, i in idmap.items()}
+        if not idmap:
+            return {}
+        rows: list[tuple[Any, ...]] = self.conn.execute(
+            "SELECT cited_id, count(*) FROM citation WHERE cited_id = ANY(%s) GROUP BY cited_id",
+            (list(idmap.values()),),
+        ).fetchall()
+        return {inv[int(c)]: int(n) for c, n in rows if int(c) in inv}
+
     # --- vector pools -----------------------------------------------------
     def vector_pool(self, qvec: list[float], n: int) -> dict[str, PoolNode]:
         """Top-`n` papers by cosine similarity (HNSW), keyed by arxiv_id."""
         v = _vec(qvec)
+        q = (
+            f"SELECT e.arxiv_id, m.title, m.year, m.primary_category, "
+            f"1 - (e.{self.emb_col} <=> %s::halfvec) "
+            f"FROM {self.emb_table} e JOIN paper_meta m USING (arxiv_id) "
+            f"ORDER BY e.{self.emb_col} <=> %s::halfvec LIMIT %s"
+        )
         rows: list[tuple[Any, ...]] = self.conn.execute(
-            "SELECT e.arxiv_id, m.title, m.year, m.primary_category, "
-            "1 - (e.embedding <=> %s::halfvec) "
-            "FROM paper_embedding e JOIN paper_meta m USING (arxiv_id) "
-            "ORDER BY e.embedding <=> %s::halfvec LIMIT %s",
-            (v, v, n),
+            cast(LiteralString, q), (v, v, n)
         ).fetchall()
         return {str(r[0]): _node(r) for r in rows}
 
@@ -78,13 +102,15 @@ class Store:
         newest-cohort-first downstream — leaf-independent, the only path for leaf-less work.
         """
         v = _vec(qvec)
+        q = (
+            f"SELECT k.arxiv_id, m.title, m.year, m.primary_category, k.sim FROM "
+            f"(SELECT arxiv_id, 1 - ({self.emb_col} <=> %s::halfvec) AS sim "
+            f" FROM {self.emb_table} ORDER BY {self.emb_col} <=> %s::halfvec LIMIT %s) k "
+            f"JOIN paper_meta m USING (arxiv_id) "
+            f"WHERE m.year >= %s ORDER BY k.sim DESC"
+        )
         rows: list[tuple[Any, ...]] = self.conn.execute(
-            "SELECT k.arxiv_id, m.title, m.year, m.primary_category, k.sim FROM "
-            "(SELECT arxiv_id, 1 - (embedding <=> %s::halfvec) AS sim "
-            " FROM paper_embedding ORDER BY embedding <=> %s::halfvec LIMIT %s) k "
-            "JOIN paper_meta m USING (arxiv_id) "
-            "WHERE m.year >= %s ORDER BY k.sim DESC",
-            (v, v, probe, year_min),
+            cast(LiteralString, q), (v, v, probe, year_min)
         ).fetchall()
         return [_node(r) for r in rows]
 
@@ -149,13 +175,15 @@ class Store:
         params: list[Any] = [v, anc_int]
         if cat:
             params.append(cat)
+        q = (
+            f"SELECT p.arxiv_id, m.title, m.year, m.primary_category, "
+            f"1 - (e.{self.emb_col} <=> %s::halfvec) "
+            f"FROM paper p JOIN paper_meta m ON m.arxiv_id = p.arxiv_id "
+            f"JOIN {self.emb_table} e ON e.arxiv_id = p.arxiv_id "
+            f"WHERE p.id = ANY(%s) {clause}"
+        )
         rows: list[tuple[Any, ...]] = self.conn.execute(
-            "SELECT p.arxiv_id, m.title, m.year, m.primary_category, "
-            "1 - (e.embedding <=> %s::halfvec) "
-            "FROM paper p JOIN paper_meta m ON m.arxiv_id = p.arxiv_id "
-            "JOIN paper_embedding e ON e.arxiv_id = p.arxiv_id "
-            f"WHERE p.id = ANY(%s) {clause}",
-            tuple(params),
+            cast(LiteralString, q), tuple(params)
         ).fetchall()
         return [_node(r) for r in rows]
 
@@ -182,13 +210,15 @@ class Store:
         if not hit_ids:
             return []
         v = _vec(qvec)
+        q = (
+            f"SELECT p.arxiv_id, m.title, m.year, m.primary_category, "
+            f"1 - (e.{self.emb_col} <=> %s::halfvec) AS sim "
+            f"FROM paper p JOIN paper_meta m ON m.arxiv_id = p.arxiv_id "
+            f"JOIN {self.emb_table} e ON e.arxiv_id = p.arxiv_id "
+            f"WHERE p.id = ANY(%s) ORDER BY sim DESC LIMIT %s"
+        )
         rows: list[tuple[Any, ...]] = self.conn.execute(
-            "SELECT p.arxiv_id, m.title, m.year, m.primary_category, "
-            "1 - (e.embedding <=> %s::halfvec) AS sim "
-            "FROM paper p JOIN paper_meta m ON m.arxiv_id = p.arxiv_id "
-            "JOIN paper_embedding e ON e.arxiv_id = p.arxiv_id "
-            "WHERE p.id = ANY(%s) ORDER BY sim DESC LIMIT %s",
-            (v, hit_ids, limit),
+            cast(LiteralString, q), (v, hit_ids, limit)
         ).fetchall()
         return [_node(r) for r in rows]
 
@@ -199,12 +229,14 @@ class Store:
         if not cand:
             return []
         v = _vec(qvec)
+        q = (
+            f"SELECT m.arxiv_id, m.title, m.year, m.primary_category, "
+            f"1 - (e.{self.emb_col} <=> %s::halfvec) "
+            f"FROM paper_meta m JOIN {self.emb_table} e USING (arxiv_id) "
+            f"WHERE m.arxiv_id = ANY(%s) AND m.year >= %s"
+        )
         rows: list[tuple[Any, ...]] = self.conn.execute(
-            "SELECT m.arxiv_id, m.title, m.year, m.primary_category, "
-            "1 - (e.embedding <=> %s::halfvec) "
-            "FROM paper_meta m JOIN paper_embedding e USING (arxiv_id) "
-            "WHERE m.arxiv_id = ANY(%s) AND m.year >= %s",
-            (v, cand, year_min),
+            cast(LiteralString, q), (v, cand, year_min)
         ).fetchall()
         return [_node(r) for r in rows]
 

@@ -80,6 +80,8 @@
         pg-start
         pg-stop
         pg-console
+        # LaTeX for the experiment reports + paper (latexmk + the packages they use)
+        (texlive.combined.scheme-medium)
       ];
       DEV_SHELL = "arxiv_kg";
       LD_LIBRARY_PATH = "/run/opengl-driver/lib:" + lib.makeLibraryPath (with pkgs; [ stdenv.cc.cc.lib zlib libGL cudaPackages.cuda_cudart cudaPackages.libcublas cudaPackages.cuda_cccl ]);

@@ -52,10 +52,12 @@ M_MAX = 260  # hard cap on landmark count
 COMPOSE_TOKENS = 14000  # large budget: thinking-on -code writes a long review
 
 
-def _embed_gaps(gaps: list[str]) -> list[tuple[str, list[float]]]:
+def _embed_gaps(
+    gaps: list[str], embed_mode: str = "sym"
+) -> list[tuple[str, list[float]]]:
     """Embed gap queries in one nomic load, then free it (hand VRAM back to Gemma)."""
     _free_router_vram()
-    out = [(g, embed_query(g)) for g in gaps]
+    out = [(g, embed_query(g, mode=embed_mode)) for g in gaps]
     free_model()
     return out
 
@@ -135,6 +137,8 @@ def run_deep(
     figures: bool = True,
     no_frontier_pull: bool = False,
     out_root: Path | None = None,
+    embed_mode: str = "sym",
+    use_hyde: bool = True,
 ) -> dict[str, object]:
     """Run the judge-driven deep-research loop and write report.md / report.tex / run.json."""
     n_pool, target, m0, _ = TIERS[effort]
@@ -142,20 +146,21 @@ def run_deep(
     qhash = hashlib.sha1(question.encode()).hexdigest()[:12]
     print(
         f"[deep] '{question}' effort={effort} rank={rank} recency={recency} "
-        f"max_rounds={max_rounds} critique_k={critique_k} figures={figures}",
+        f"max_rounds={max_rounds} critique_k={critique_k} figures={figures} "
+        f"embed={embed_mode} hyde={use_hyde}",
         flush=True,
     )
 
-    hyde = hyde_query(
-        question
-    )  # doc-shaped query (router LLM) — before freeing its VRAM
+    qtext = (
+        hyde_query(question) if use_hyde else question
+    )  # router LLM — before freeing VRAM
     _free_router_vram()
-    qvec = embed_query(hyde)
+    qvec = embed_query(qtext, mode=embed_mode)
     free_model()
     tree = TopicTree()
 
     # round 0 retrieval + rank
-    store = Store(PG_DSN)
+    store = Store(PG_DSN, emb_space=embed_mode)
     p = retrieve_rank(
         store,
         qvec,
@@ -239,7 +244,7 @@ def run_deep(
             print("[deep] no fresh gaps; stopping", flush=True)
             break
         seen_gaps.update(g.lower() for g in fresh)
-        gap_vecs = _embed_gaps(fresh)
+        gap_vecs = _embed_gaps(fresh, embed_mode)
         added = _expand(store, pool, gap_vecs, tree, fr.frontier_year)
         print(f"[deep] expanded pool by {added} (gaps: {len(fresh)})", flush=True)
 
@@ -294,7 +299,8 @@ def run_deep(
     # output dir (needed before figures so vision PNGs land beside the report)
     root = out_root or OUT
     cfg = (
-        f"{effort}-{rank}-deep{max_rounds}-k{critique_k}-r{recency}"
+        f"{effort}-{rank}-deep{max_rounds}-k{critique_k}-r{recency}-{embed_mode}"
+        f"{'-hyde' if use_hyde else '-raw'}"
         f"{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
         f"{'-nofig' if not figures else ''}{'-nofpull' if no_frontier_pull else ''}"
     )
@@ -362,6 +368,8 @@ def run_deep(
         "n_critiques": len(critiques),
         "figures_enabled": figures,
         "no_frontier_pull": no_frontier_pull,
+        "embed_mode": embed_mode,
+        "use_hyde": use_hyde,
         "n_figures": len(figs),
         "figures": figs,
         "config": cfg,

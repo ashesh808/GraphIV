@@ -1,0 +1,79 @@
+[
+ {
+  "rep": "flat_list",
+  "n": 8,
+  "grounding": 4.625,
+  "coverage": 3.75,
+  "lineage": 4.75,
+  "coherence": 5.0,
+  "overall": 4.531,
+  "grounded_frac": 0.991,
+  "prompt_tokens": 9380,
+  "pair_net": 0.0
+ },
+ {
+  "rep": "adjacency_list",
+  "n": 8,
+  "grounding": 4.75,
+  "coverage": 3.75,
+  "lineage": 4.625,
+  "coherence": 5.0,
+  "overall": 4.531,
+  "grounded_frac": 1.0,
+  "prompt_tokens": 6351,
+  "pair_net": 0.25,
+  "pair_wtl": "3/4/1"
+ },
+ {
+  "rep": "adj_roles",
+  "n": 8,
+  "grounding": 4.875,
+  "coverage": 4.0,
+  "lineage": 3.375,
+  "coherence": 3.125,
+  "overall": 3.844,
+  "grounded_frac": 1.0,
+  "prompt_tokens": 6844,
+  "pair_net": 0.0,
+  "pair_wtl": "1/6/1"
+ },
+ {
+  "rep": "adj_extracted",
+  "n": 8,
+  "grounding": 4.875,
+  "coverage": 4.375,
+  "lineage": 4.625,
+  "coherence": 4.875,
+  "overall": 4.688,
+  "grounded_frac": 1.0,
+  "prompt_tokens": 6664,
+  "pair_net": 0.625,
+  "pair_wtl": "5/3/0"
+ },
+ {
+  "rep": "adj_alias",
+  "n": 8,
+  "grounding": 4.625,
+  "coverage": 3.625,
+  "lineage": 4.25,
+  "coherence": 4.875,
+  "overall": 4.344,
+  "grounded_frac": 0.991,
+  "prompt_tokens": 4862,
+  "pair_net": 0.875,
+  "pair_wtl": "7/1/0"
+ },
+ {
+  "rep": "adj_roles_extracted",
+  "n": 8,
+  "grounding": 5.0,
+  "coverage": 4.625,
+  "lineage": 4.625,
+  "coherence": 4.75,
+  "overall": 4.75,
+  "grounded_frac": 1.0,
+  "prompt_tokens": 6798,
+  "pair_net": 0.875,
+  "pair_wtl": "7/1/0"
+ }
+]

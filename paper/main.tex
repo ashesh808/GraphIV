@@ -1,0 +1,122 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\title{\textbf{arxivkg: A Grounded, Citation-Graph-Native Literature-Review Engine over arXiv}}
+\author{arxivkg contributors}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present \textbf{arxivkg}, a system that builds a knowledge graph over the entire arXiv corpus --- a
+173M-edge citation graph with classified citation \emph{intent}, 3.07M dense embeddings, and a
+density-aware topic tree --- and serves it as a research endpoint that turns a natural-language question
+into a grounded, cited, chronological literature review. Unlike generic retrieval-augmented generation,
+arxivkg is \emph{citation-graph-native}: it induces a bounded on-topic subgraph, ranks landmark papers
+by Personalized PageRank with topic-adaptive recency, and composes a review whose every claim is tied
+to an arXiv id. We back every design choice with a measured experiment suite (preprocessing, retrieval,
+generation), and report a recurring failure mode of citation-graph retrieval --- \emph{generic-hub
+dominance}, where globally-ubiquitous papers (e.g.\ ``Attention Is All You Need'', cited in 27/27 of our
+deep reports) hijack niche reviews --- which we show is not cleanly solvable in retrieval and address
+with a validated compose-side guard. End to end, the full pipeline is preferred over a strong
+single-pass baseline 5/2/1 (win/tie/loss) on overall and a clean 8/0/0 on grounding by an order-debiased pairwise judge (deep panel, n=8).
+\end{abstract}
+
+\section{Introduction}
+Keeping up with a fast-moving field means reading its literature as a \emph{development} --- origins,
+key advances, current frontier --- not as a ranked list. Large language models can write fluent surveys
+but hallucinate citations and lack the structural signal that a citation graph carries. We ask: can a
+system over the \emph{whole} arXiv corpus produce a literature review that is (i) grounded in real
+papers with verifiable citations, (ii) chronologically and causally organized via the citation graph,
+and (iii) specific to a niche query rather than padded with generic background?
+
+arxivkg answers this with a six-phase pipeline on a single Postgres+pgvector store. Phases 1--5 acquire
+PDFs/HTML, parse and intent-classify the corpus-wide citation graph, consolidate metadata + 3.07M nomic
+embeddings, and build a density-aware topic tree. Phase 6 is the live endpoint. Our contributions:
+(1) a citation-graph-native retrieve--rank--compose pipeline that grounds every claim;
+(2) a measured experiment suite that justifies each lever as a metric \emph{vector} rather than a single
+gameable number; and (3) a diagnosis and validated fix of \emph{generic-hub dominance}.
+
+\section{System}
+\textbf{The store.} One project-local Postgres+pgvector database holds \texttt{paper} (id$\leftrightarrow$
+arxiv\_id), \texttt{citation} (173M edges with intent/polarity), \texttt{paper\_meta}, \texttt{paper\_embedding}
+(3.07M $\times$ 768-d nomic vectors, HNSW), and \texttt{paper\_topic}/\texttt{leaf} (3{,}582 leaves over
+2.92M papers). A DistilBERT student (distilled from a Gemma teacher over 100k pseudo-labels) classifies
+every citation's intent (background / uses / extends / compares / critiques / motivates) and polarity.
+
+\textbf{The endpoint.} A question is embedded with an asymmetric query/document encoder; retrieval fuses
+a vector pool, lexical signals, a topic-tree leaf anchor, an induced citation subgraph, and a
+leaf-independent recent-paper pull (the topic tree predates the corpus delta). Landmarks are ranked by
+Personalized PageRank seeded by query similarity, with a topic-adaptive frontier reservation. Per-paper
+schema fields are extracted from full text, and a Gemma-Code model composes a chronological, grounded
+review; an \texttt{effort} dial (0--5) trades latency for a judge-driven deep loop with full-PDF critique
+and a caption-faithfulness-checked figure gallery. Invalid arXiv ids are stripped post-hoc.
+
+\section{Evaluation methodology}
+We evaluate over a 27-topic battery (broad fields + niche compositional probes) with three gold topics
+(diffusion, transformers, test-time compute) carrying curated canonical/spine sets. Every experiment
+reports a metric \emph{vector}: retrieval recall/precision, citation grounding, an independent 4-axis
+LLM judge (grounding/coverage/lineage/coherence) plus an order-debiased pairwise, a faithfulness
+tripwire, and caption-faithfulness. We validate the judge itself (known-fact accuracy, no
+position/verbosity bias; lineage is its weak axis) before trusting it downstream.
+
+\section{Key results}
+\textbf{Retrieval.} The committed subgraph recipe recovers 0.74 of canonical landmarks and 0.92 of the
+foundational spine against a 0.85 pool ceiling. A role judge finds $\sim$78\% of landmarks on-topic; the
+$\sim$22\% off-topic remainder are famous cross-field hubs that carry high in-degree. A 0.35 cosine floor
+on the most-cited-ancestor injection is a Pareto win (precision and recall both up).
+
+\textbf{Generation.} Component ablation confirms no single metric can be trusted: dropping the citation
+graph \emph{maximizes} a surface ``frontier'' count while zeroing edges and recall and producing the
+worst judge score. An asymmetric encoder without HyDE wins on recall at no extra cost. The judge-driven
+deep loop is a real quality lever: pairwise 0.75 over single-pass, with the thinking judge
+self-terminating. Full-PDF critique depth beyond a few is a documented null.
+
+\textbf{Generic-hub dominance (Section~\ref{sec:hub}).} The flagship's dominant rough edge.
+
+\textbf{Flagship.} The full deep pipeline vs.\ a strong single-pass baseline: preferred \textbf{5/2/1}
+on overall (and a clean 8/0/0 on grounding), surfacing ~9 2026 papers/topic where the baseline
+surfaces zero, with $\sim$5$\times$ the length and verified figures.
+
+\section{Generic-hub dominance}
+\label{sec:hub}
+Reading real outputs, ``Attention Is All You Need'' appears in \textbf{27 of 27} deep reports, BERT in
+17, GPT-3 in 16, the Adam optimizer in 11 --- regardless of topic. A theorem-proving review devotes a
+section to Attention$\rightarrow$BERT$\rightarrow$GPT-3 and cites Adam as ``foundational to theorem
+proving''. Cause: these hubs accrue high \emph{in-topic} in-degree, so PPR floats them to top landmarks.
+This is a \emph{specificity} problem, and we require a fix with no hand-curated blocklist.
+
+We swept every data-derived demotion signal (global IDF, topic-lift $P(\text{cited}\mid\text{topic})/
+P(\text{cited})$, citation-intent background-ratio, a personalized-PR$/$global-popularity penalty, and a
+topic-conditioned ``demote iff popular AND background-cited-here'' hybrid), scored against gold-recall
+(tripwire) and an independent topic-conditioned LLM oracle. The result is a genuine
+recall$\leftrightarrow$specificity \emph{frontier}: the topic-conditioned penalty holds recall perfectly
+but is gentle; topic-blind penalties move the oracle most but drop papers that are canonical for hub-y
+topics. \textbf{No purely-structural signal removes a hub that is genuinely \emph{used} in a niche} ---
+theorem-proving papers really do use transformers --- so ``generic for this topic'' is partly a
+\emph{narrative} judgment. The shipped fix is therefore a one-line compose guard forbidding a
+generic-foundations section unless directly load-bearing. A deep A/B removes the boilerplate section and
+drops Attention/BERT/GPT-3/Adam from $3/1/3/1$ to $\mathbf{0/0/0/0}$ mentions while preserving the
+topic-specific coverage; validated on three further niche topics.
+
+\section{Limitations}
+Curated gold exists for only three topics (recall numbers are $n{=}3$); the LLM judge, though validated,
+compresses on its absolute scale (we lean on order-debiased pairwise and objective metrics). The topic
+tree predates the most recent corpus delta (mitigated by the frontier pull). The hub fix is narrative,
+not structural; a recall-safe retrieval lever for the milder generic-\emph{method} residue is available
+but not enabled by default.
+
+\section{Conclusion}
+arxivkg shows that a citation-graph-native, fully-measured pipeline can turn a question into a grounded,
+specific, chronological literature review over all of arXiv, and that the dominant quality failure of
+such systems --- generic-hub dominance --- is best understood and fixed at the composition stage. The
+system, the experiment suite, and the open resource are released under the GNU GPLv3.
+
+\end{document}

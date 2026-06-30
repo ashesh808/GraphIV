@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{../results/macros.tex}
+
+\title{\vspace{-2em}\textbf{Judge-driven deep loop --- test-time compute that works}}
+\author{arxivkg · generation · judge loop}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{What we did}
+Vary only the judge/gap-expansion round cap \texttt{max\_rounds} $\in \{1,2,4,6\}$, all on the deep
+path (long-compose $+$ critique held constant, figures off to isolate the loop), over the 27-topic
+battery. A thinking judge owns termination, so the cap is only a ceiling. Scored on the metric vector
+$+$ 4-axis judge $+$ an order-debiased \textbf{pairwise} of \texttt{rounds-6} vs \texttt{rounds-1}.
+
+\section*{Results (mean over 27 topics)}
+\begin{center}\input{../results/table.tex}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
+
+\section*{Conclusion}
+\textbf{The deep loop is a real quality lever --- spending inference-time compute on iterative
+critique-and-retrieve measurably broadens the review.} Landmarks nearly double
+($\rOneLm\rightarrow\rFourLm$), frontier coverage doubles, and gold recall climbs to \rFourRecall{}
+(at \texttt{rounds-4}). The absolute judge axes are compressed ($\sim$4.6--4.9, the known collapse),
+but the \textbf{pairwise discriminates sharply: \texttt{rounds-6} beats \texttt{rounds-1} 21--2--4 on
+overall (win-rate 0.78), and 0.78 on lineage}. \textbf{The judge self-regulates}: even at cap 6 the
+mean rounds actually run is $\sim$\rFourRun{}--2.8, so it stops when a topic is saturated.
+\textbf{Diminishing returns after $\sim$3 rounds} (gold recall dips at \texttt{rounds-6}, within
+run-to-run variance). \textbf{Ship deep with cap $\approx 4$}; the judge handles early termination.
+\textbf{Caveat:} more rounds $=$ more landmarks but \emph{not} more words (length is set by
+long-compose, not the loop) --- the loop adds breadth, not padding.
+
+\end{document}

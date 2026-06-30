@@ -29,7 +29,7 @@
   "embeddings": {
     "nomic_npy": "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy",
     "nomic_umap50_npy": "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic_umap50.npy",
-    "nomic_model": "data/models/nomic-embed-text-v2-moe",
+    "nomic_model": "model/nomic-embed-text-v2-moe",
     "old_sqlite": "/mnt/Vault-Academics/the-great-arxiv-db/data/arxiv_latest.db",
     "prompt": "Instruct: classifying the research topic of a paper's abstract.\nQuery:",
     "dim": 768,

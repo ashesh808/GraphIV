@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{../results/macros.tex}
+
+\title{\vspace{-2em}\textbf{Embedding format --- asymmetric + raw query}}
+\author{arxivkg · generation · embedding format}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2em}
+
+\section*{What we did}
+Four query-embedding conditions, full pipeline each (graph drill $+$ PPR $+$ compose), judged
+end-to-end over the 3 gold topics: \texttt{sym}/\texttt{asym} (symmetric vs nomic asymmetric
+\texttt{search\_query}/\texttt{search\_document}) $\times$ \texttt{hyde}/\texttt{raw} (a HyDE
+hypothetical-document expansion vs the raw question). The committed choice is \texttt{asym\_raw}.
+
+\section*{Results (3 gold topics)}
+\begin{center}\input{../results/table.tex}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
+
+\section*{Conclusion}
+\textbf{The committed \texttt{asym\_raw} ties for best} --- landmark recall \asymRecall{}, spine
+recall \asymSpine{}, top judge --- at \emph{no} extra generation. \textbf{\texttt{sym\_raw} is the
+worst} (recall \symrawRecall{}): a symmetric embedding on a bare question under-retrieves the
+document space. \textbf{HyDE rescues the symmetric space} (\texttt{sym\_hyde} recall \symhydeRecall{},
+matching asym) but \textbf{adds nothing to the asymmetric space} (\texttt{asym\_hyde} $\leq$
+\texttt{asym\_raw}) while costing a hypothetical-document generation per query. So the asymmetric
+query/document encoding already does what HyDE does --- aligns the query into document space --- making
+HyDE redundant. \textbf{Ship \texttt{asym\_raw}}: best recall, no HyDE latency. \textbf{Caveat:} n$=3$
+gold; the judge axes are compressed, but recall/spine (objective) agree with the judge here.
+
+\end{document}

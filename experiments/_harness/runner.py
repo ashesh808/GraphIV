@@ -44,6 +44,8 @@ def run_phase6(
     critique_k: int = 8,
     figures: bool = True,
     deep: bool = False,
+    embed_mode: str = "asym",
+    use_hyde: bool = False,
     cache: bool = True,
 ) -> tuple[dict[str, Any], Path]:
     """Run one condition. Returns (run.json meta, output dir).
@@ -65,6 +67,8 @@ def run_phase6(
         "critique_k": critique_k,
         "figures": figures,
         "deep": deep,
+        "embed_mode": embed_mode,
+        "use_hyde": use_hyde,
     }
     manifest = out_root / "_cache.json"
     key = _cache_key(question, cfg)
@@ -93,6 +97,8 @@ def run_phase6(
             figures,
             no_frontier_pull,
             out_root,
+            embed_mode,
+            use_hyde,
         )
     else:
         meta = pipeline.run(
@@ -103,6 +109,8 @@ def run_phase6(
             no_graph,
             recency,
             no_frontier_pull,
+            embed_mode,
+            use_hyde,
         )
     out_dir = _resolve_out_dir(meta, out_root)
     if cache:

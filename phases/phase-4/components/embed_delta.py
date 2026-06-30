@@ -24,7 +24,7 @@ import psycopg  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 PG_DSN = os.environ.get("ARXIVKG_PG_DSN", f"host={REPO}/.pg port=5433 dbname=arxivkg")
-MODEL = REPO / "data" / "models" / "nomic-embed-text-v2-moe"
+MODEL = REPO / "model" / "nomic-embed-text-v2-moe"
 PROMPT = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
 LLM_ROUTER = "http://localhost:11434"
 BATCH = 64  # nomic-v2-moe is memory-heavy; 512 OOMs a 24GB 3090 on long abstracts

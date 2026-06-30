@@ -35,9 +35,7 @@ OLD_SQLITE = Path("/mnt/Vault-Academics/the-great-arxiv-db/data/arxiv_latest.db"
 NOMIC_NPY = Path(
     "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy"
 )
-NOMIC_MODEL = Path(
-    "/mnt/Vault-Academics/the-great-arxiv-db/embedding-models/nomic-ai/nomic-embed-text-v2-moe"
-)
+NOMIC_MODEL = REPO / "model" / "nomic-embed-text-v2-moe"
 NOMIC_PROMPT = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
 
 SRC_DSN = "dbname=arxiv-citations host=/run/postgresql"

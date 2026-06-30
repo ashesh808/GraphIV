@@ -1,0 +1,11 @@
+**Overall resolution rate: 40.18%** (71,092,951 / 176,934,085).
+
+| layer (method) | resolved | share of resolved |
+|---|--:|--:|
+| text | 19,771,730 | 27.8% |
+| title-exact | 14,739,377 | 20.7% |
+| jref | 13,142,240 | 18.5% |
+| link | 9,275,517 | 13.0% |
+| title-fuzzy | 8,022,721 | 11.3% |
+| doi | 3,917,784 | 5.5% |
+| title-exact-noyr | 2,223,582 | 3.1% |

@@ -55,6 +55,10 @@ _OUTLINE_SYS = (
     "advances -> current frontier. Assign each paper id to exactly one section; every section "
     "needs >=3 papers; order sections logically. Make at least one section about the LATEST "
     "(most recent years) work.\n"
+    "- Keep every section specific to THIS topic. Do NOT create a generic-foundations section "
+    "(e.g. 'the rise of transformers', backbones, optimizers, base language models) built from "
+    "ubiquitous papers that are merely widely cited; fold any genuinely-needed shared method "
+    "briefly into a topic-specific section instead.\n"
     'Output ONLY JSON: [{"title":"..","ids":["id1","id2",..]}, ...].'
 )
 
@@ -259,7 +263,7 @@ def compose_long(
         f"- {t}" for t, _ in outline
     )
     intro, _, _ = asyncio.run(
-        chat(NARRATOR, _INTRO_SYS, intro_user, 0.4, 1500, extra_body=THINK)
+        chat(NARRATOR, _INTRO_SYS, intro_user, 0.4, 4000, extra_body=THINK)
     )
     if (
         not intro.strip()
@@ -285,7 +289,7 @@ def compose_long(
         + "\n".join(recent_lines)
     )
     close, _, _ = asyncio.run(
-        chat(NARRATOR, _CLOSE_SYS, close_user, 0.4, 2000, extra_body=THINK)
+        chat(NARRATOR, _CLOSE_SYS, close_user, 0.4, 4000, extra_body=THINK)
     )
 
     report = (

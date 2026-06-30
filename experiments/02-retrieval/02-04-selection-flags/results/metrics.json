@@ -1,0 +1,30 @@
+[
+ {
+  "arm": "fixed50",
+  "count": 50.0,
+  "sum": 31.93,
+  "mean": 0.639,
+  "neg2_per_list": 5.56
+ },
+ {
+  "arm": "gate50",
+  "count": 49.7,
+  "sum": 45.33,
+  "mean": 0.896,
+  "neg2_per_list": 2.89
+ },
+ {
+  "arm": "llm50",
+  "count": 48.3,
+  "sum": 44.3,
+  "mean": 0.866,
+  "neg2_per_list": 0.0
+ },
+ {
+  "arm": "llm_dyn",
+  "count": 70.5,
+  "sum": 65.74,
+  "mean": 0.876,
+  "neg2_per_list": 0.0
+ }
+]

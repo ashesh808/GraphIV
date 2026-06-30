@@ -1,0 +1,31 @@
+{
+ "grounding": {
+  "top_wins": 4,
+  "baseline_wins": 2,
+  "ties": 2,
+  "n": 8,
+  "win_rate": 0.5
+ },
+ "coverage": {
+  "top_wins": 1,
+  "baseline_wins": 1,
+  "ties": 6,
+  "n": 8,
+  "win_rate": 0.12
+ },
+ "lineage": {
+  "top_wins": 2,
+  "baseline_wins": 2,
+  "ties": 4,
+  "n": 8,
+  "win_rate": 0.25
+ },
+ "overall": {
+  "top_wins": 2,
+  "baseline_wins": 2,
+  "ties": 4,
+  "n": 8,
+  "win_rate": 0.25
+ },
+ "compare": "k8 (A) vs k0 (B)"
+}

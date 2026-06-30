@@ -1,0 +1,38 @@
+[
+ {
+  "variant": "baseline",
+  "floor": 0.0,
+  "cat": false,
+  "relevance_rate_27": 0.781,
+  "unrelated_frac_27": 0.219,
+  "landmark_recall_gold3": 0.742,
+  "spine_recall_gold3": 0.917
+ },
+ {
+  "variant": "floor35",
+  "floor": 0.35,
+  "cat": false,
+  "relevance_rate_27": 0.837,
+  "unrelated_frac_27": 0.163,
+  "landmark_recall_gold3": 0.808,
+  "spine_recall_gold3": 1.0
+ },
+ {
+  "variant": "floor45",
+  "floor": 0.45,
+  "cat": false,
+  "relevance_rate_27": 0.896,
+  "unrelated_frac_27": 0.104,
+  "landmark_recall_gold3": 0.522,
+  "spine_recall_gold3": 0.6
+ },
+ {
+  "variant": "floor45_cat",
+  "floor": 0.45,
+  "cat": true,
+  "relevance_rate_27": 0.902,
+  "unrelated_frac_27": 0.098,
+  "landmark_recall_gold3": 0.522,
+  "spine_recall_gold3": 0.6
+ }
+]
