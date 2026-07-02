@@ -3,10 +3,11 @@
 The serve path needs three things: the Postgres store, the embedding model, and an LLM endpoint.
 Nothing outside `./data` + `./model` is required at query time.
 
-## 1. The store (~17 GB dump → ~100 GB restored)
+## 1. The store (~23 GB dump → ~105 GB restored)
 
-Download the dump: **link pending** (will be hosted on Hugging Face; the tracked filename is
-`arxivkg-<date>.dump`, `pg_dump -Fc` format). Then:
+Download the dump: **link pending** (will be hosted on Hugging Face; current build
+`graphiv-2026-07-03.dump`, `pg_dump -Fc` format — 8 tables incl. both embedding spaces and
+per-paper author lists). Then:
 
 ```bash
 nix develop                        # provides postgres17+pgvector and the pg-* helpers
@@ -58,6 +59,27 @@ instead, run phases 1–2.
 uv sync
 uv run python phases/phase-6/run.py "your question" --set-effort 4
 ```
+
+## 6. Serve as an MCP tool (optional)
+
+`phases/phase-6/serve_mcp.py` exposes one MCP tool, `deep_research(question, effort=4)`, over
+stdio — point any MCP client (librechat, Claude Desktop, …) at it:
+
+```json
+{
+  "mcpServers": {
+    "graphiv": {
+      "command": "uv",
+      "args": ["run", "python", "phases/phase-6/serve_mcp.py"],
+      "cwd": "/path/to/GraphIV"
+    }
+  }
+}
+```
+
+Calls are serialized (single GPU); each run is subprocess-isolated and returns the finished
+`report.md`. A cold-cache effort-4 deep run measures ~9 minutes on one RTX 3090 — keep client
+tool timeouts generous.
 
 Figures use the repo `theme.json`
 ([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme) Material palette).

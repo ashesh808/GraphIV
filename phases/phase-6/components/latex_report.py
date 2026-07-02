@@ -105,10 +105,13 @@ def _bib_title(title: str) -> str:
 
 
 def _bib_authors(raw: str) -> str:
-    """Kaggle comma-separated author string -> bibtex 'A and B and C'."""
-    parts = [
-        p.strip() for p in re.split(r",\s*|\s+and\s+", _bib_title(raw)) if p.strip()
-    ]
+    """Kaggle comma-separated author string -> bibtex 'A and B and C'.
+
+    Names keep their TeX accent commands (G\\^arbacea, A\\"aron) — valid bibtex; stripping
+    the backslash leaves bare ^/" which break the compile. Only whitespace is normalized.
+    """
+    clean = re.sub(r"\s+", " ", raw).strip()
+    parts = [p.strip() for p in re.split(r",\s*|\s+and\s+", clean) if p.strip()]
     return " and ".join(parts)
 
 

@@ -11,6 +11,8 @@ Why it's different:
   store; every citation is an `arXiv:<id>` checked against the corpus, not a web-search snippet.
 - **Up to date** — a judge-driven deep loop surfaces the newest work (9 verified 2026 papers per
   report on our panel, where a strong single-pass baseline surfaces none).
+- **Fast** — a full deep report (effort 4: 3 judge rounds, 200 landmarks, PDF critiques, 14 verified
+  figures, ~30k chars) takes **under 9 minutes cold-cache on a single RTX 3090**.
 - **Measured** — a four-bucket `experiments/` suite justifies every design choice with a metric
   vector, including the negative results.
 
