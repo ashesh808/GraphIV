@@ -63,7 +63,8 @@ number is gameable). Four buckets; full index + per-experiment write-ups (md/tex
 [`experiments/README.md`](experiments/README.md):
 
 - **`01-preprocessing`** — resolver quality, label quality, graph structure, clustering, topic tree.
-- **`02-retrieval`** — the subgraph recipe, off-topic-noise role judge, the 0.35 ancestor gate, selection flags.
+- **`02-retrieval`** — the subgraph recipe, off-topic-noise role judge, the 0.35 ancestor gate
+  (sensitivity-swept: a recall plateau, now the shipped default), selection flags.
 - **`03-generation`** — judge validity, component ablation, embedding format, recency, frontier-pull,
   landmark selection, graph representation, the deep loop, critique depth, vision figures, and
   **hub-suppression** (keeping generic hubs like *Attention* from hijacking niche reviews).

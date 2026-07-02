@@ -178,7 +178,7 @@ def retrieve_rank(
         print(f"[research] frontier_pull added {n_front} recent papers", flush=True)
     else:
         print("[research] frontier_pull DISABLED (ablation)", flush=True)
-    _ = augment_with_ancestors(store, pool, qvec, max_add=120)
+    _ = augment_with_ancestors(store, pool, qvec, max_add=120, min_cosine=0.35)
     edges = [] if no_graph else induce_subgraph(store, list(pool))
     print(f"[research] pool {len(pool)} · edges {len(edges)} · leaf {leaf}", flush=True)
     if no_graph or rank == "indegree":

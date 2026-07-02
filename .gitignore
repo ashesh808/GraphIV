@@ -12,8 +12,11 @@ wheels/
 # project-local postgres socket dir (datadir lives under data/ which is already ignored)
 .pg/
 
-# data
+# data (large stores; the small schema files ARE tracked via force-add)
 data
+!data/metadata/schemas.sql
+!data/metadata/pg_schema.sql
+!data/metadata/citation_schema.sql
 
 # nomic model weights (gitignored like data/)
 model/
@@ -54,3 +57,4 @@ test/
 
 # latex log (aux/fls/etc already covered)
 paper/*.log
+experiments/**/report/*.log

@@ -263,6 +263,7 @@ def run_deep(
     # ... then the FINAL deliverable: sectioned long-form compose (one focused call per
     # themed section, integrating the critiques) so the review is long AND analytical.
     abstracts_final = store.abstracts([lm.arxiv_id for lm in landmarks])
+    authors_final = store.authors([lm.arxiv_id for lm in landmarks])
     store.close()
     extractions.update(
         asyncio.run(
@@ -346,7 +347,11 @@ def run_deep(
         f"frontier≥{fr.frontier_year}: {frontier} · {len(critiques)} full-PDF critiques · "
         f"grounded {len(grounded)} · off-digest {len(off_digest)}*\n\n"
     )
-    lm_meta = [asdict(lm) for lm in landmarks]
+    lm_meta: list[dict[str, object]] = []
+    for lm in landmarks:
+        d: dict[str, object] = asdict(lm)
+        d["authors"] = authors_final.get(lm.arxiv_id)
+        lm_meta.append(d)
     _ = (out_dir / "report.md").write_text(header + report, encoding="utf-8")
     _ = (out_dir / "digest.txt").write_text(digest, encoding="utf-8")
     abstract = last_verdict.assessment if last_verdict else ""

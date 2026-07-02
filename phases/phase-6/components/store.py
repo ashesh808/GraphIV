@@ -251,6 +251,17 @@ class Store:
         ).fetchall()
         return {str(a): str(ab or "") for a, ab in rows}
 
+    def authors(self, arxiv_ids: list[str]) -> dict[str, str]:
+        """Raw comma-separated author string by arxiv_id (for the bibliography)."""
+        if not arxiv_ids:
+            return {}
+        rows: list[tuple[Any, ...]] = self.conn.execute(
+            "SELECT arxiv_id, authors FROM paper_meta"
+            " WHERE arxiv_id = ANY(%s) AND authors IS NOT NULL",
+            (arxiv_ids,),
+        ).fetchall()
+        return {str(a): str(au) for a, au in rows}
+
     # --- existence check (narrate id verification) ------------------------
     def existing(self, arxiv_ids: list[str]) -> set[str]:
         """Subset of `arxiv_ids` present in the corpus (paper table)."""

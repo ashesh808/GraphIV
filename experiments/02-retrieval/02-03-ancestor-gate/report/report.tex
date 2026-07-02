@@ -8,7 +8,7 @@
 \input{../results/macros.tex}
 
 \title{\vspace{-2em}\textbf{Ancestor relevance gate}}
-\author{arxivkg · retrieval · plugging the noise mechanism}
+\author{GraphIV · retrieval · plugging the noise mechanism}
 \date{}
 
 \begin{document}
@@ -20,26 +20,29 @@
 cross-field hubs (GPT-3 / StyleGAN under ``diffusion''). They enter through one mechanism:
 \texttt{augment\_with\_ancestors} $\rightarrow$ \texttt{store.ancestors} pulls the top-120
 \emph{most-cited} one-hop-back papers (ranked by citer count \emph{before} cosine), so fame beats
-relevance. We gate that injection by a cosine floor and measure \textbf{both} sides: \textbf{precision}
-(LLM \texttt{relevance\_rate} over 27 topics, reusing the \texttt{02-02} cache) and \textbf{recall}
-(\texttt{landmark\_recall} + \texttt{spine\_recall} over 3 gold topics). Only the injected ancestors
-are gated; the core pool and cosine-gated \texttt{frontier\_pull} are untouched.
+relevance. We gate that injection by a cosine floor, sensitivity-swept over a \textbf{0.25--0.45 grid}
+(step 0.05 --- the original 0.35 came from a coarse search, so the ship decision needed plateau-vs-peak),
+and measure \textbf{both} sides: \textbf{precision} (LLM \texttt{relevance\_rate} over 27 topics,
+reusing the \texttt{02-02} cache) and \textbf{recall} (\texttt{landmark\_recall} +
+\texttt{spine\_recall} over 3 gold topics). Only the injected ancestors are gated; the core pool and
+cosine-gated \texttt{frontier\_pull} are untouched.
 
 \section*{Results}
 \begin{center}\input{../results/table.tex}\end{center}
 \begin{center}\includegraphics[width=0.95\textwidth]{../results/ablation.png}\end{center}
 
 \section*{Conclusion}
-The tradeoff is \textbf{floor-dependent}. \textbf{A gentle floor (0.35) is a Pareto win, not a
-tradeoff}: precision $\baseRel\rightarrow\floorRel$ (robust, n$=27$) \emph{and} gold recall up
-($\baseRec\rightarrow\floorRec$, spine $\rightarrow\floorSpine$). Removing clearly-off-topic ancestors
-(cosine $<0.35$) frees PPR's 40 landmark slots for on-topic papers instead of famous hubs --- both
-metrics rise together. \textbf{An aggressive floor (0.45) is the real tradeoff}: precision climbs to
-0.896 but gold recall collapses to 0.522 (it cuts genuine low-cosine foundational papers --- VAE /
-Sohl-Dickstein sit $\sim$0.4--0.5). The category gate adds $\sim$nothing (0.896 $\rightarrow$ 0.902);
-drop it. \textbf{Verdict:} a \texttt{min\_cosine}$\approx$0.35 floor on
-\texttt{augment\_with\_ancestors} is worth promoting to production --- a low-risk Pareto improvement.
-\textbf{Caveat:} recall is n$=3$ gold, precision n$=27$; a wider gold set would harden the
-no-recall-loss claim.
+\textbf{Recall sits on a flat plateau across 0.25--0.35} --- landmark recall $\floorRec$ and spine
+$\floorSpine$ are \emph{identical} at all three floors while precision rises monotonically
+($0.797 \rightarrow 0.819 \rightarrow \floorRel$; baseline $\baseRel$/$\baseRec$). The gains are not
+tuned to a magic number: any gentle floor beats no floor on both metrics, and \textbf{0.35 is the
+max-precision edge of the plateau} --- the principled ship point. \textbf{The cliff starts at 0.40}
+(recall falls back to baseline) and \textbf{0.45 collapses it} (0.522, spine 0.6): those floors cut
+genuine low-cosine foundational papers (VAE / Sohl-Dickstein sit $\sim$0.4--0.5). An earlier pass
+also tested a modal-category gate at 0.45; it added $\sim$nothing and is dropped.
+\textbf{Verdict: shipped} --- \texttt{augment\_with\_ancestors(min\_cosine=0.35)} is the production
+default (\texttt{pipeline.py} + the harness recipe); 0 remains the ablation arm.
+\textbf{Caveat:} recall is n$=3$ gold, precision n$=27$; the three-floor plateau plus the mechanism
+make the no-recall-loss claim robust, but a wider gold set would harden it further.
 
 \end{document}

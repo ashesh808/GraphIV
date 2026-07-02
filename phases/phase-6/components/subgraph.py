@@ -95,18 +95,21 @@ def augment_with_ancestors(
     max_add: int = 150,
     min_citers: int = 3,
     category_prefix: str | None = None,
+    min_cosine: float = 0.0,
 ) -> int:
     """Add the pool's most-cited ancestors to `pool` (mutates). Returns # added.
 
     Ranked by how many distinct pool papers cite each ancestor; scored by true cosine sim to the
     query. If `category_prefix` is given, only ancestors in that arXiv category group are added
-    (prevents famous cross-field papers from hijacking a polysemous query's pool).
+    (prevents famous cross-field papers from hijacking a polysemous query's pool). `min_cosine`
+    gates the injection: fame ranks the candidates, so without a floor famous cross-field hubs
+    enter regardless of relevance (02-03: 0.35 is Pareto, on a 0.25-0.35 recall plateau).
     """
     if not pool:
         return 0
     added = 0
     for n in store.ancestors(list(pool), qvec, max_add, min_citers, category_prefix):
-        if n.arxiv_id in pool:
+        if n.arxiv_id in pool or n.score < min_cosine:
             continue
         pool[n.arxiv_id] = n
         added += 1

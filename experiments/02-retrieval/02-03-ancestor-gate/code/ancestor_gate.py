@@ -58,11 +58,15 @@ CACHE_DB = _EXP.parent / "02-02-relevance-judge" / "cache" / "judge_cache.db"
 LABELS = ("foundational", "core", "frontier", "peripheral", "unrelated")
 
 # (name, cosine floor on injected ancestors, use modal-category prefix)
+# 0.25-0.45 sensitivity grid: 0.35 came from a coarse search, so the ship decision needs
+# to know whether it sits on a plateau (robust) or a peak (overfit to the 3 gold topics).
 VARIANTS: list[tuple[str, float, bool]] = [
     ("baseline", 0.0, False),
+    ("floor25", 0.25, False),
+    ("floor30", 0.30, False),
     ("floor35", 0.35, False),
+    ("floor40", 0.40, False),
     ("floor45", 0.45, False),
-    ("floor45_cat", 0.45, True),
 ]
 
 _SYS = (
@@ -282,7 +286,7 @@ def run(use_cache: bool = True) -> None:
             ("unrelated_frac_27", "Unrelated fraction (lower better)"),
         ],
         out / "ablation.png",
-        title="Ancestor cosine-floor gate — gentle (0.35) is Pareto, aggressive (0.45) trades recall",
+        title="Ancestor cosine-floor sweep (0.25-0.45) — plateau vs peak around the 0.35 gate",
     )
     print("\n" + "\n".join(md), flush=True)
 

@@ -39,12 +39,12 @@ class Subgraph:
 
 
 def retrieve_subgraph(
-    store: Store, qvec: list[float], q: str, *, gate: float = 0.0, m: int | None = None
+    store: Store, qvec: list[float], q: str, *, gate: float = 0.35, m: int | None = None
 ) -> Subgraph:
-    """Committed retrieval: hybrid pool + frontier pull + (gated) ancestor augmentation + PPR top-m.
+    """Committed retrieval: hybrid pool + frontier pull + gated ancestor augmentation + PPR top-m.
 
-    `gate` > 0 applies a cosine floor on the injected ancestors (exp-16); `m` overrides the fast-tier
-    landmark cap (e.g. a wider PPR window for a downstream relevance filter).
+    `gate` is the shipped 0.35 ancestor cosine floor (02-03 sweep; 0 disables); `m` overrides the
+    fast-tier landmark cap (e.g. a wider PPR window for a downstream relevance filter).
     """
     n_pool, _, m_default, _ = TIERS["fast"]
     m = m or m_default
@@ -58,12 +58,7 @@ def retrieve_subgraph(
         0.4,
     )
     pool.update(frontier_pull(store, qvec, fr.frontier_year, want=60))
-    if gate <= 0.0:
-        _ = augment_with_ancestors(store, pool, qvec, max_add=120)
-    else:  # gated ancestor injection (exp-16 floor): inject an ancestor only if cosine >= gate
-        for n in store.ancestors(list(pool), qvec, 120, 3, None):
-            if n.arxiv_id not in pool and n.score >= gate:
-                pool[n.arxiv_id] = n
+    _ = augment_with_ancestors(store, pool, qvec, max_add=120, min_cosine=gate)
     edges = induce_subgraph(store, list(pool))
     lms = rank_landmarks_ppr(
         pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year

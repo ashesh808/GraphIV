@@ -140,13 +140,16 @@ def stage_meta(force: bool) -> None:
         _ = c.execute("TRUNCATE paper_meta")
         n = 0
         with c.cursor().copy(
-            "COPY paper_meta (arxiv_id, title, abstract, year, primary_category) FROM STDIN"
+            "COPY paper_meta (arxiv_id, title, abstract, year, primary_category, authors)"
+            " FROM STDIN"
         ) as cp:
-            for pid, title, abstract in sc.execute(
-                "SELECT id, title, abstract FROM publication"
+            for pid, title, abstract, authors in sc.execute(
+                "SELECT id, title, abstract, authors FROM publication"
             ):
                 aid = str(pid)
-                cp.write_row([aid, title, abstract, arxiv_year(aid), primary.get(aid)])
+                cp.write_row(
+                    [aid, title, abstract, arxiv_year(aid), primary.get(aid), authors]
+                )
                 n += 1
                 if n % 500_000 == 0:
                     log(f"  paper_meta {n:,}")

@@ -72,8 +72,11 @@ position/verbosity bias; lineage is its weak axis) before trusting it downstream
 \section{Key results}
 \textbf{Retrieval.} The committed subgraph recipe recovers 0.74 of canonical landmarks and 0.92 of the
 foundational spine against a 0.85 pool ceiling. A role judge finds $\sim$78\% of landmarks on-topic; the
-$\sim$22\% off-topic remainder are famous cross-field hubs that carry high in-degree. A 0.35 cosine floor
-on the most-cited-ancestor injection is a Pareto win (precision and recall both up).
+$\sim$22\% off-topic remainder are famous cross-field hubs that carry high in-degree. A cosine floor on
+the most-cited-ancestor injection is a Pareto win (precision and recall both up): a 0.25--0.45
+sensitivity sweep shows recall flat across 0.25--0.35 with precision rising monotonically, so the
+shipped default (0.35) is the max-precision edge of a plateau, not a tuned peak; the cliff starts at
+0.40.
 
 \textbf{Generation.} Component ablation confirms no single metric can be trusted: dropping the citation
 graph \emph{maximizes} a surface ``frontier'' count while zeroing edges and recall and producing the

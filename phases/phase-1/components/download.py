@@ -78,6 +78,10 @@ class Downloader:
 
         with open(schema_path) as f:
             _ = conn.executescript(f.read())
+        # authors added 2026-07 (schemas.sql has it for fresh DBs; ALTER covers existing ones)
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(publication)")}
+        if "authors" not in cols:
+            _ = conn.execute("ALTER TABLE publication ADD COLUMN authors TEXT")
 
         existing: dict[str, str | None] = {}
         rows: list[tuple[str, str | None]] = conn.execute(
@@ -120,6 +124,7 @@ class Downloader:
                 "journal-ref"
             )  # pyright: ignore[reportAny]
             license_: str | None = paper.get("license")  # pyright: ignore[reportAny]
+            authors: str | None = paper.get("authors")  # pyright: ignore[reportAny]
             update_date: str | None = paper.get(
                 "update_date"
             )  # pyright: ignore[reportAny]
@@ -139,6 +144,7 @@ class Downloader:
                         doi = ?,
                         journal_ref = ?,
                         license = ?,
+                        authors = ?,
                         update_date = ?,
                         latest_version = ?,
                         latest_version_date = ?,
@@ -152,6 +158,7 @@ class Downloader:
                         doi,
                         journal_ref,
                         license_,
+                        authors,
                         update_date,
                         latest_version,
                         latest_version_date,
@@ -163,9 +170,9 @@ class Downloader:
                 _ = conn.execute(
                     """
                     INSERT INTO publication
-                    (id, submitter, title, abstract, doi, journal_ref, license,
+                    (id, submitter, title, abstract, doi, journal_ref, license, authors,
                      update_date, latest_version, latest_version_date, downloaded)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
                 """,
                     (
                         paper_id,
@@ -175,6 +182,7 @@ class Downloader:
                         doi,
                         journal_ref,
                         license_,
+                        authors,
                         update_date,
                         latest_version,
                         latest_version_date,

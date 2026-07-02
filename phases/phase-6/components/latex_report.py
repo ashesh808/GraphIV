@@ -104,20 +104,32 @@ def _bib_title(title: str) -> str:
     return title.replace("\\", "").replace("{", "").replace("}", "").strip()
 
 
+def _bib_authors(raw: str) -> str:
+    """Kaggle comma-separated author string -> bibtex 'A and B and C'."""
+    parts = [
+        p.strip() for p in re.split(r",\s*|\s+and\s+", _bib_title(raw)) if p.strip()
+    ]
+    return " and ".join(parts)
+
+
 def refs_bib(landmarks: list[dict[str, object]]) -> str:
     """A refs.bib of @misc arXiv entries keyed by arxiv id, from the landmark metadata.
 
-    The store carries no author lists, so entries are title/year/eprint/url — bibtex
-    still resolves, numbers, and hyperlinks them; an unresolvable key is a compile error
-    (a second grounding tripwire)."""
+    An unresolvable key is a compile error (a second grounding tripwire)."""
     out: list[str] = []
     for lm in sorted(landmarks, key=_year_key):
         aid = str(lm.get("arxiv_id", ""))
         if not aid:
             continue
         year = lm.get("year")
+        authors = lm.get("authors")
         fields = [
             f"  title = {{{{{_bib_title(str(lm.get('title', '')))}}}}}",
+            (
+                f"  author = {{{_bib_authors(str(authors))}}}"
+                if isinstance(authors, str) and authors.strip()
+                else ""
+            ),
             f"  year = {{{year}}}" if isinstance(year, int) else "",
             f"  eprint = {{{aid}}}",
             "  archivePrefix = {arXiv}",
