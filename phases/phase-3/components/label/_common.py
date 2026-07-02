@@ -29,6 +29,7 @@ import sys as _sys
 
 _sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[3]))
 from _framework import REPO_ROOT as _REPO_ROOT  # noqa: E402
+from _framework import pg_dsn as _pg_dsn  # noqa: E402
 
 BASE_PATH: Path = _REPO_ROOT / "data"
 ARXIV_SQLITE: Path = BASE_PATH / "metadata" / "arxiv.db"
@@ -55,9 +56,7 @@ def pin_hf_cache() -> None:
     os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
 
 
-ARXIVKG_PG_DSN: str = os.environ.get(
-    "ARXIVKG_PG_DSN", "dbname=arxiv-citations host=/run/postgresql"
-)
+ARXIVKG_PG_DSN: str = _pg_dsn()
 
 # Taxonomy used by the teacher prompt and validated on parse.
 INTENTS: tuple[str, ...] = (

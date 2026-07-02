@@ -1,4 +1,4 @@
-# tasks.md — arxivkg handoff (2026-06-22)
+# tasks.md — GraphIV (né arxivkg) handoff (2026-06-22)
 
 Status snapshot + what's left. The project is now a **self-contained single Postgres+pgvector store
 under `./data`**, Neo4j-free, secret-free, compressed, with a validated 11-experiment suite.

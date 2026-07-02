@@ -14,6 +14,7 @@ separately; bare (non --) args are returned as positionals (e.g. phase-6's quest
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,18 @@ def load_global() -> dict[str, Any]:
     with open(GLOBAL_CONFIG) as f:
         data: dict[str, Any] = json.load(f)  # pyright: ignore[reportExplicitAny]
     return data
+
+
+def pg_dsn() -> str:
+    """Single-store DSN: `ARXIVKG_PG_DSN` env override, else the project-local
+    socket built from global-config `postgres` (flake-launched, peer auth)."""
+    env = os.environ.get("ARXIVKG_PG_DSN")
+    if env:
+        return env
+    pg: dict[str, Any] = load_global()["postgres"]
+    return (
+        f"host={gpath(str(pg['socket_dir']))} port={pg['port']} dbname={pg['dbname']}"
+    )
 
 
 def gpath(value: str) -> Path:

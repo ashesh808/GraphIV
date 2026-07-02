@@ -51,3 +51,9 @@ scratchpad/
 
 # ad-hoc manual phase-6 output samples (use experiments/showcase instead)
 test/
+
+# latex log (aux/fls/etc already covered)
+paper/*.log
+
+# planning scratch note
+/reply.md

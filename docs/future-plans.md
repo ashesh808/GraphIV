@@ -1,4 +1,4 @@
-# arxivkg — analysis, limitations & future plans
+# GraphIV — analysis, limitations & future plans
 
 Synthesis of the deep-lever experiment campaign (experiments 9–12), run across the full **27-topic
 battery** on a single 3090 (2026-06-24/25). This is an honest engineering post-mortem, not a pitch:

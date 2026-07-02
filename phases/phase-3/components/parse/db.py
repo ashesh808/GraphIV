@@ -5,7 +5,6 @@ Connection params come from env (or sensible local defaults).
 
 from __future__ import annotations
 
-import os
 from collections.abc import Iterable
 from pathlib import Path
 from typing import cast
@@ -13,11 +12,9 @@ from typing import cast
 import psycopg
 from psycopg import sql
 
-from ._common import BASE_PATH
+from ._common import BASE_PATH, PG_DSN
 
-DB_DSN: str = os.environ.get(
-    "ARXIVKG_PG_DSN", "dbname=arxiv-citations host=/run/postgresql"
-)
+DB_DSN: str = PG_DSN
 
 SCHEMA_PATH: Path = BASE_PATH / "metadata" / "citation_schema.sql"
 

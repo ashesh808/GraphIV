@@ -7,19 +7,19 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
 
-\title{\textbf{arxivkg: A Grounded, Citation-Graph-Native Literature-Review Engine over arXiv}}
-\author{arxivkg contributors}
+\title{\textbf{GraphIV: A Grounded, Citation-Graph-Native Literature-Review Engine over arXiv}}
+\author{GraphIV contributors}
 \date{}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We present \textbf{arxivkg}, a system that builds a knowledge graph over the entire arXiv corpus --- a
+We present \textbf{GraphIV} (graph + ar\emph{Xiv}), a system that builds a knowledge graph over the entire arXiv corpus --- a
 173M-edge citation graph with classified citation \emph{intent}, 3.07M dense embeddings, and a
 density-aware topic tree --- and serves it as a research endpoint that turns a natural-language question
 into a grounded, cited, chronological literature review. Unlike generic retrieval-augmented generation,
-arxivkg is \emph{citation-graph-native}: it induces a bounded on-topic subgraph, ranks landmark papers
+GraphIV is \emph{citation-graph-native}: it induces a bounded on-topic subgraph, ranks landmark papers
 by Personalized PageRank with topic-adaptive recency, and composes a review whose every claim is tied
 to an arXiv id. We back every design choice with a measured experiment suite (preprocessing, retrieval,
 generation), and report a recurring failure mode of citation-graph retrieval --- \emph{generic-hub
@@ -37,7 +37,7 @@ system over the \emph{whole} arXiv corpus produce a literature review that is (i
 papers with verifiable citations, (ii) chronologically and causally organized via the citation graph,
 and (iii) specific to a niche query rather than padded with generic background?
 
-arxivkg answers this with a six-phase pipeline on a single Postgres+pgvector store. Phases 1--5 acquire
+GraphIV answers this with a six-phase pipeline on a single Postgres+pgvector store. Phases 1--5 acquire
 PDFs/HTML, parse and intent-classify the corpus-wide citation graph, consolidate metadata + 3.07M nomic
 embeddings, and build a density-aware topic tree. Phase 6 is the live endpoint. Our contributions:
 (1) a citation-graph-native retrieve--rank--compose pipeline that grounds every claim;
@@ -114,7 +114,7 @@ not structural; a recall-safe retrieval lever for the milder generic-\emph{metho
 but not enabled by default.
 
 \section{Conclusion}
-arxivkg shows that a citation-graph-native, fully-measured pipeline can turn a question into a grounded,
+GraphIV shows that a citation-graph-native, fully-measured pipeline can turn a question into a grounded,
 specific, chronological literature review over all of arXiv, and that the dominant quality failure of
 such systems --- generic-hub dominance --- is best understood and fixed at the composition stage. The
 system, the experiment suite, and the open resource are released under the GNU GPLv3.

@@ -1,13 +1,21 @@
-# arxivkg — a grounded literature-review engine over all of arXiv
+# GraphIV — a grounded literature-review engine over all of arXiv
 
-**arxivkg** builds a knowledge graph over the entire arXiv corpus — metadata, a **173M-edge citation
-graph** with classified intent, and **3.07M** dense embeddings — and serves it as a research endpoint
-that turns a question into a **grounded, cited, chronological literature review** (Markdown + LaTeX,
-with an optional figure gallery).
+**GraphIV** (graph + ar**Xiv** — the *IV* is arXiv's tail) builds a knowledge graph over the entire
+arXiv corpus — metadata, a **173M-edge citation graph** with classified intent, and **3.07M** dense
+embeddings — and serves it as a research endpoint that turns a question into a **grounded, cited,
+chronological literature review** (Markdown + LaTeX, with an optional figure gallery).
 
-It is organized as a uniform **`phases/` pipeline** (phases 1–5 build the graph; **phase 6 is the live
-research endpoint**) on a single self-contained **Postgres + pgvector** store, plus a measured
-**`experiments/` suite** that justifies every design choice.
+Why it's different:
+
+- **Local and verifiable** — runs on one consumer GPU against a self-contained Postgres+pgvector
+  store; every citation is an `arXiv:<id>` checked against the corpus, not a web-search snippet.
+- **Up to date** — a judge-driven deep loop surfaces the newest work (9 verified 2026 papers per
+  report on our panel, where a strong single-pass baseline surfaces none).
+- **Measured** — a four-bucket `experiments/` suite justifies every design choice with a metric
+  vector, including the negative results.
+
+It is organized as a uniform **`phases/` pipeline** (phases 1–5 build the graph; **phase 6 is the
+live research endpoint**).
 
 ```
 question ──▶ retrieve (vector + lexical + topic-tree + citation subgraph + frontier pull)
@@ -56,7 +64,8 @@ number is gameable). Four buckets; full index + per-experiment write-ups (md/tex
 - **`03-generation`** — judge validity, component ablation, embedding format, recency, frontier-pull,
   landmark selection, graph representation, the deep loop, critique depth, vision figures, and
   **hub-suppression** (keeping generic hubs like *Attention* from hijacking niche reviews).
-- **`deep-research`** — the flagship before/after: the deployed pipeline is preferred **23/4/0** overall.
+- **`deep-research`** — the flagship before/after: the deployed pipeline wins **8/0/0 on grounding**
+  and **5/2/1 overall** (pairwise, n=8), surfacing 9 verified 2026 papers/topic where the baseline finds none.
 
 ## Reproduce
 
@@ -70,10 +79,11 @@ uv run python phases/phase-1/run.py --dry-run   # every phase: --dry-run first
 uv run python phases/phase-6/run.py "your question here" --set-effort 4
 ```
 
-The large stores (PDFs, HTML, the Postgres datadir, embeddings) live on external mounts and are
-**not committed**; `docs/` documents how to build or download them (the served path is fully under
-`./data`, target footprint < 100 GB). Lint gate: `ruff check phases/ experiments/ ; black … ; pyright …`
-— all clean.
+To **restore the prebuilt store** instead of building it (a ~17 GB `pg_dump`, download link pending),
+and to point the LLM layer at any OpenAI-compatible endpoint, see [`docs/restore.md`](docs/restore.md).
+The large stores (PDFs, HTML, the Postgres datadir, embeddings) are **not committed**; the served path
+is fully under `./data`, target footprint < 100 GB. Lint gate:
+`ruff check phases/ experiments/ ; black … ; pyright …` — all clean.
 
 ## License
 

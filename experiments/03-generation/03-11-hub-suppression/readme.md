@@ -15,4 +15,5 @@ for generic-*method* residue.
 
 Full write-up: [`report/report.md`](report/report.md) · [`report/report.tex`](report/report.tex) →
 `report/report.pdf`. Run: `uv run python run.py` (regenerates table+figure from the committed
-`results/{structural,oracle}.json`; the heavy sweep/oracle scripts are in `scratchpad/`).
+`results/{structural,oracle}.json`); reproduce those with `code/hub_sweep.py` then `code/hub_oracle.py`
+(GPU + LLM heavy).

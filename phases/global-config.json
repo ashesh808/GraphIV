@@ -1,11 +1,15 @@
 {
-  "_doc": "Data locations + endpoint APIs shared by all phases. Repo-relative paths (no leading /) resolve against the repo root; absolute paths are used as-is. Single store = project Postgres+pgvector at ./data/pg (no Neo4j; no committed secrets — peer-auth socket).",
+  "_doc": "Data locations + endpoint APIs shared by all phases. Repo-relative paths (no leading /) resolve against the repo root; absolute paths are used as-is. Single store = project Postgres+pgvector at ./data/pg (flake pg-init/pg-start; peer-auth socket, no secrets). `llm` is any OpenAI-compatible endpoint (we serve via llama-router: https://git.kuroma.dev/kkuroma/llama-router). `embeddings` absolute paths are BUILD-TIME inputs only (phases 4-5); the serve path needs nothing outside ./data + ./model.",
   "sqlite": {
     "db": "data/metadata/arxiv.db",
     "schemas": "data/metadata/schemas.sql"
   },
   "postgres": {
-    "dsn": "dbname=arxiv-citations",
+    "dsn_env": "ARXIVKG_PG_DSN",
+    "socket_dir": ".pg",
+    "port": 5433,
+    "dbname": "arxivkg",
+    "pg_schema": "data/metadata/pg_schema.sql",
     "citation_schema": "data/metadata/citation_schema.sql"
   },
   "llm": {
@@ -24,7 +28,8 @@
     "citation_stats": "data/citation_stats",
     "citation_labels": "data/citation_labels",
     "models": "data/models",
-    "hf_cache": "data/models/hf_cache"
+    "hf_cache": "data/models/hf_cache",
+    "theme": "theme.json"
   },
   "embeddings": {
     "nomic_npy": "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy",
@@ -35,8 +40,5 @@
     "dim": 768,
     "rows": 2918448,
     "max_seq": 2048
-  },
-  "viz": {
-    "haruhana": "/home/kuroma/System/nixos-configs/config/noctalia/palettes/Haruhana.json"
   }
 }

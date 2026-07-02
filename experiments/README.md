@@ -64,14 +64,15 @@ experiments/` — all clean. Each `code/` dir is registered in `pyrightconfig.js
 | 03-05 | frontier-pull | the only path to the 2026 corpus delta (1.9/topic vs 0), free |
 | 03-06 | landmark-selection | the win is the filter, not the count |
 | 03-07 | graph-representation | production digest = adjacency-list + extracted content + roles + alias |
-| 03-08 | judge-loop | test-time compute works (pairwise 0.78); the judge self-stops |
+| 03-08 | judge-loop | test-time compute works (pairwise 0.75, 6/0/2); the judge self-stops |
 | 03-09 | critique-depth | a documented near-null — depth beyond ~4 adds cost, not quality |
 | 03-10 | vision-figures | enrichment, not a text lever — value is caption-faithfulness (0.93) |
 | 03-11 | hub-suppression | generic hubs (Attention 27/27) hijack niche reviews; no structural silver bullet → a compose guard removes them (3/1/3/1 → 0/0/0/0) at zero recall cost |
 
 ### `deep-research/` — the flagship (the deployed pipeline, dogfooded)
-Old single-pass default vs the full deep pipeline: preferred **23/4/0 overall, 1.0 on grounding** —
-3.3 2026-papers/topic (vs 0), 3× frontier, 5× length, 12 verified figures. **This is what gets deployed.**
+Old single-pass default vs the full deep pipeline (deep panel, n=8): pairwise **8/0/0 on grounding,
+5/2/1 overall** — 9.0 2026-papers/topic (vs 0), 2.4× frontier, 5× length, 13 verified figures.
+**This is what gets deployed.**
 
 ## Reproduce
 ```bash

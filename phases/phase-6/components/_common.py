@@ -7,13 +7,12 @@ component allowed a sys.path bootstrap — it is the bridge to the framework con
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # phases/ -> _framework
-from _framework import gpath, load_global  # noqa: E402
+from _framework import gpath, load_global, pg_dsn  # noqa: E402
 
 _G: dict[str, Any] = load_global()
 _PATHS: dict[str, str] = _G["paths"]
@@ -42,29 +41,12 @@ PDF_DIR = gpath(_PATHS["pdf_dir"])
 MAP_MODEL: str = _LLM["map_model"]
 
 # --- postgres (single project store; flake socket, env-overridable) -------
-PG_DSN: str = os.environ.get(
-    "ARXIVKG_PG_DSN", f"host={REPO_ROOT}/.pg port=5433 dbname=arxivkg"
-)
+PG_DSN: str = pg_dsn()
 
-# --- LLM router (llama.cpp, OpenAI-compatible) ----------------------------
+# --- LLM endpoint (any OpenAI-compatible server; served via llama-router) --
 LLM_BASE_URL: str = _LLM["base_url"]
 LLM_ROUTER: str = _LLM["router"]
 NARRATOR_MODEL: str = _LLM["narrator_model"]
-
-# --- visualization (Haruhana palette + per-intent edge colors) ------------
-HARUHANA_PATH = gpath(_G["viz"]["haruhana"])
-HARUHANA_SURFACE = "#0C0F1E"
-HARUHANA_ON_SURFACE = "#D4D0EA"
-HARUHANA_SURFACE_VARIANT = "#171D36"
-HARUHANA_OUTLINE = "#232E4C"
-INTENT_COLORS: dict[str, str] = {
-    "uses": "#6FC898",
-    "extends": "#82AAFF",
-    "compares": "#F8D06A",
-    "critiques": "#FF5370",
-    "motivates": "#B4A2E8",
-    "background": "#8B95A8",
-}
 
 
 def arxiv_year(arxiv_id: str) -> int | None:
