@@ -4,6 +4,24 @@ Converged plan (from `reply.md` + vetting, 2026-07-03). Remote: `ssh://forgejo@m
 Name: **GraphIV** (graph + ar**Xiv** — the IV is arXiv's tail, same wordplay lineage as arXiv itself).
 Prose uses GraphIV; internal identifiers (`arxivkg` DB name, DSN env var, dump filename) stay as-is.
 
+## STATUS (2026-07-03, all pushed to main through `3354376`)
+
+Steps 1–6 **done**; step 7 done except the two user-side items + the paper narrative:
+- ✅ 1 pre-push batch → `35d74a2` · 2+3 mechanical guard + bibtex + lazy fetch → `88bec7c`
+  · 4 judge robustness → `83b75f7` · 5 floor sweep + authors backfill → `8479102`
+  · 6 MCP + dump regen + cold timing → `7aae766` · 7 dogfood + h2h GraphIV side → `1267832`, `3354376`
+- **Headline numbers now:** flagship pairwise **8/0/0 on ALL axes, 3 judges, untruncated**
+  (`deep-research/results/multi_judge.md`; old 5/2/1 was a 16k-truncation artifact); 0.35 ancestor
+  floor = max-precision edge of a 0.25–0.35 recall plateau, shipped (02-03); h2h GraphIV side
+  **267/267 citations verified, 0 fabricated, 40× 2026 papers** (`deep-research/results/h2h/`);
+  cold-cache effort-4 = **8:38**; dogfood exhibit committed (`deep-research/results/dogfood/`).
+- **User queue:** (a) run the 5 h2h strings in Claude+Gemini deep research (strings + protocol in
+  `results/h2h/graphiv_counts.md`; decline refinement; save outputs, then `h2h_verify.py` on them);
+  (b) HF upload of `data/release/graphiv-2026-07-03.dump` (23 GB — the Jun-22 dump is superseded,
+  deletable); (c) librechat-on-zaphkiel nix service (MCP config in `docs/restore.md`).
+- **Next Claude deliverable:** full paper narrative rewrite for user veto (user explicitly asked);
+  best written after the commercial h2h outputs land so the comparison table ships in one pass.
+
 ## Positioning (pitch order)
 
 1. **Local + verifiable** — one consumer GPU, open weights, a 17 GB dump; every citation resolves
