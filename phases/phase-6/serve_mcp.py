@@ -13,9 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import re
-import subprocess
 import sys
-import threading
 from pathlib import Path
 from typing import Any
 
@@ -32,7 +30,7 @@ _OUT = _HERE / "output" / "research"
 _DONE = re.compile(r"done -> (\S+/report\.md)")
 
 mcp = FastMCP("graphiv")
-_slot = threading.Lock()
+_slot = asyncio.Lock()
 
 _REFINE_SYS = (
     "You refine a freeform research interest into ONE focused literature-review question "
@@ -44,7 +42,7 @@ _REFINE_SYS = (
 
 
 @mcp.tool()
-def refine_question(text: str) -> str:
+async def refine_question(text: str) -> str:
     """Turn a freeform research interest into one focused literature-review question.
 
     Call this FIRST when the user's request is broad or ambiguous; relay any
@@ -54,9 +52,7 @@ def refine_question(text: str) -> str:
     """
     from llm import NO_THINK, chat, parse_json  # noqa: PLC0415
 
-    out, _, _ = asyncio.run(
-        chat(MAP_MODEL, _REFINE_SYS, text, 0.2, 400, extra_body=NO_THINK)
-    )
+    out, _, _ = await chat(MAP_MODEL, _REFINE_SYS, text, 0.2, 400, extra_body=NO_THINK)
     obj = parse_json(out)
     if not isinstance(obj, dict) or not obj.get("focused_question"):
         obj = {"focused_question": text.strip(), "clarifying_aspects": []}
@@ -64,7 +60,7 @@ def refine_question(text: str) -> str:
 
 
 @mcp.tool()
-def deep_research(question: str, effort: int = 4) -> str:
+async def deep_research(question: str, effort: int = 4) -> str:
     """Run GraphIV deep research: a grounded, cited literature review over all of arXiv.
 
     effort 0-5 trades latency for depth (3+ = judge-driven deep loop with full-PDF critique
@@ -72,19 +68,29 @@ def deep_research(question: str, effort: int = 4) -> str:
     id cited in the result exists in the corpus. Returns the review as markdown.
     """
     effort = max(0, min(5, effort))
-    with _slot:
-        proc = subprocess.run(
-            [sys.executable, str(_RUN), question, f"--set-effort={effort}"],
-            capture_output=True,
-            text=True,
-            timeout=7200,
+    async with _slot:  # one 3090: runs serialize, the server stays responsive
+        proc = await asyncio.create_subprocess_exec(
+            sys.executable,
+            str(_RUN),
+            question,
+            f"--set-effort={effort}",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
+        try:
+            out_b, err_b = await asyncio.wait_for(proc.communicate(), timeout=7200)
+        except TimeoutError:
+            proc.terminate()
+            return "ERROR: run exceeded the 2h timeout and was terminated."
+    stdout, stderr = out_b.decode(errors="replace"), err_b.decode(errors="replace")
     m = None
-    for m in _DONE.finditer(proc.stdout):
+    for m in _DONE.finditer(stdout):
         pass  # keep the last "done ->" (the deep loop logs intermediate rounds)
     if m is None:
-        tail = (proc.stdout + proc.stderr)[-2000:]
-        return f"ERROR: run produced no report (exit {proc.returncode}).\n\n{tail}"
+        return (
+            f"ERROR: run produced no report (exit {proc.returncode}).\n\n"
+            + (stdout + stderr)[-2000:]
+        )
     return Path(m.group(1)).read_text(encoding="utf-8")
 
 
