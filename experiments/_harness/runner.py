@@ -126,10 +126,9 @@ def _resolve_out_dir(meta: dict[str, Any], out_root: Path) -> Path:
     """The endpoint writes to <root>/<slug>/<cfg>; the deep path honors out_root, single-pass
     writes to the live OUT root. Relocate a single-pass result into out_root so every cell of an
     experiment lands in the same store (keeps the run dirs colocated + browsable)."""
-    import re
     import shutil
 
-    slug = re.sub(r"[^a-z0-9]+", "-", str(meta["question"]).lower()).strip("-")[:48]
+    slug = pipeline._slug(str(meta["question"]))  # pyright: ignore[reportPrivateUsage]
     cfg = str(meta["config"])
     cand = out_root / slug / cfg
     if cand.exists():

@@ -10,6 +10,7 @@ compose one long, chronological, grounded report. Effort knob trades breadth/dep
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
@@ -77,7 +78,13 @@ def effort_profile(effort: str | int) -> tuple[str, int, int, bool]:
 
 
 def _slug(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:48] or "topic"
+    """Filesystem slug; a truncated slug gets a hash suffix so long questions sharing a
+    48-char prefix (e.g. a fixed instruction template) cannot collide and overwrite."""
+    s = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    if len(s) <= 48:
+        return s or "topic"
+    h = hashlib.sha1(text.encode()).hexdigest()[:8]
+    return f"{s[:39]}-{h}"
 
 
 def _free_router_vram() -> None:

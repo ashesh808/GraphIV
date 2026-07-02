@@ -62,8 +62,14 @@ uv run python phases/phase-6/run.py "your question" --set-effort 4
 
 ## 6. Serve as an MCP tool (optional)
 
-`phases/phase-6/serve_mcp.py` exposes one MCP tool, `deep_research(question, effort=4)`, over
-stdio — point any MCP client (librechat, Claude Desktop, …) at it:
+`phases/phase-6/serve_mcp.py` exposes GraphIV over stdio to any MCP client (librechat, Claude
+Desktop, …). Tools: `deep_research(question, effort)` (the endpoint), `refine_question`
+(server-side question refinement on the local LLM — the host model only relays, so a small
+local host works), `search_papers` / `paper_details` (grounded follow-ups, no GPU),
+`list_reports` / `get_report` (reload past runs), plus a `deep_research_flow` prompt template
+packaging the refine → run → follow-up loop. The host chat model shares the GPU with the
+pipeline: it gets evicted during a deep run and reloads on demand afterward (Gemma-4-26B works
+well as the host — MoE, fast reload).
 
 ```json
 {
