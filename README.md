@@ -67,8 +67,9 @@ number is gameable). Four buckets; full index + per-experiment write-ups (md/tex
 - **`03-generation`** — judge validity, component ablation, embedding format, recency, frontier-pull,
   landmark selection, graph representation, the deep loop, critique depth, vision figures, and
   **hub-suppression** (keeping generic hubs like *Attention* from hijacking niche reviews).
-- **`deep-research`** — the flagship before/after: the deployed pipeline wins **8/0/0 on grounding**
-  and **5/2/1 overall** (pairwise, n=8), surfacing 9 verified 2026 papers/topic where the baseline finds none.
+- **`deep-research`** — the flagship before/after: the deployed pipeline wins the pairwise **8/0/0 on
+  overall and grounding** (n=8, confirmed by two disjoint-family judges), surfacing 9 verified 2026
+  papers/topic where the baseline finds none.
 
 ## Reproduce
 

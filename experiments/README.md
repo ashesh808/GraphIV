@@ -70,9 +70,9 @@ experiments/` — all clean. Each `code/` dir is registered in `pyrightconfig.js
 | 03-11 | hub-suppression | generic hubs (Attention 27/27) hijack niche reviews; no structural silver bullet → a compose guard removes them (3/1/3/1 → 0/0/0/0) at zero recall cost |
 
 ### `deep-research/` — the flagship (the deployed pipeline, dogfooded)
-Old single-pass default vs the full deep pipeline (deep panel, n=8): pairwise **8/0/0 on grounding,
-5/2/1 overall** — 9.0 2026-papers/topic (vs 0), 2.4× frontier, 5× length, 13 verified figures.
-**This is what gets deployed.**
+Old single-pass default vs the full deep pipeline (deep panel, n=8): pairwise **8/0/0 on overall AND
+grounding**, judged untruncated and confirmed unanimously by two disjoint-family judges — 9.0
+2026-papers/topic (vs 0), 2.4× frontier, 5× length, 13 verified figures. **This is what gets deployed.**
 
 ## Reproduce
 ```bash

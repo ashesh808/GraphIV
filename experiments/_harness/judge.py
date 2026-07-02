@@ -39,7 +39,7 @@ def _clamp(v: Any) -> int:  # pyright: ignore[reportAny]
 def _judge_once(question: str, report: str, canonical: list[str]) -> dict[str, Any]:
     user = (
         f"TOPIC: {question}\nCANONICAL arXiv ids: {', '.join(canonical) or '(none given)'}\n\n"
-        f"REVIEW:\n{report[:24000]}"
+        f"REVIEW:\n{report[:32768]}"
     )
     txt = chat(JUDGE_MODEL, _SYS, user, temperature=0.0, max_tokens=2000)
     obj = parse_json(txt)
@@ -80,9 +80,9 @@ _PAIR_SYS = (
 def _pair_once(question: str, a: str, b: str, canonical: list[str]) -> dict[str, str]:
     user = (
         f"TOPIC: {question}\nCANONICAL arXiv ids: {', '.join(canonical) or '(none given)'}\n\n"
-        f"REVIEW A:\n{a[:16000]}\n\nREVIEW B:\n{b[:16000]}"
+        f"REVIEW A:\n{a[:32768]}\n\nREVIEW B:\n{b[:32768]}"
     )
-    txt = chat(JUDGE_MODEL, _PAIR_SYS, user, temperature=0.0, max_tokens=400)
+    txt = chat(JUDGE_MODEL, _PAIR_SYS, user, temperature=0.0, max_tokens=4000)
     obj = parse_json(txt)
     keys = ("grounding", "coverage", "lineage", "overall")
     if not isinstance(obj, dict):

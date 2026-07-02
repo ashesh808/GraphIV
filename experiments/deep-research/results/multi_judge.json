@@ -1,0 +1,236 @@
+{
+ "_doc": "Flagship pairwise (after-deep A vs before-2023 B, deep panel n=8), UNTRUNCATED reports (32768-char cap, both fit fully), order-debiased. Primary judge + two disjoint-family judges. GPT-OSS needs max_tokens=4000 (reasoning channel); its first pass at 400 starved to empty -> ties (kept in _gptoss_at_400_tokens).",
+ "judges": {
+  "Gemma-4-26B": {
+   "tally": {
+    "grounding": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "coverage": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "lineage": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "overall": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    }
+   },
+   "per_topic": {
+    "diffusion": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "testtime": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "transformer": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "ssm": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "llm_agents": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "diffusion_video": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn_drug": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    }
+   },
+   "secs": 59
+  },
+  "GLM-4.7-Flash": {
+   "tally": {
+    "grounding": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "coverage": {
+     "A": 6,
+     "B": 0,
+     "tie": 2
+    },
+    "lineage": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "overall": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    }
+   },
+   "per_topic": {
+    "diffusion": {
+     "grounding": "A",
+     "coverage": "tie",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "testtime": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "transformer": {
+     "grounding": "A",
+     "coverage": "tie",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "ssm": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "llm_agents": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "diffusion_video": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn_drug": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    }
+   },
+   "secs": 86
+  },
+  "GPT-OSS-20B": {
+   "tally": {
+    "grounding": {
+     "A": 7,
+     "B": 0,
+     "tie": 1
+    },
+    "coverage": {
+     "A": 7,
+     "B": 0,
+     "tie": 1
+    },
+    "lineage": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    },
+    "overall": {
+     "A": 8,
+     "B": 0,
+     "tie": 0
+    }
+   },
+   "per_topic": {
+    "diffusion": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "testtime": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "transformer": {
+     "grounding": "tie",
+     "coverage": "tie",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "ssm": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "llm_agents": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "diffusion_video": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    },
+    "gnn_drug": {
+     "grounding": "A",
+     "coverage": "A",
+     "lineage": "A",
+     "overall": "A"
+    }
+   },
+   "secs": 102
+  }
+ },
+ "_gptoss_at_400_tokens": {
+  "grounding": "1/7/0",
+  "coverage": "1/7/0",
+  "lineage": "1/7/0",
+  "overall": "1/7/0"
+ }
+}

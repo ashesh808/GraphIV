@@ -26,7 +26,9 @@ generation), and report a recurring failure mode of citation-graph retrieval ---
 dominance}, where globally-ubiquitous papers (e.g.\ ``Attention Is All You Need'', cited in 27/27 of our
 deep reports) hijack niche reviews --- which we show is not cleanly solvable in retrieval and address
 with a validated compose-side guard. End to end, the full pipeline is preferred over a strong
-single-pass baseline 5/2/1 (win/tie/loss) on overall and a clean 8/0/0 on grounding by an order-debiased pairwise judge (deep panel, n=8).
+single-pass baseline \textbf{8/0/0} (win/tie/loss) on overall and on grounding by an order-debiased
+pairwise judge reading the full reports, a verdict confirmed unanimously by two disjoint-family judges
+(deep panel, $n{=}8$; sign test $p \approx 0.008$ per judge).
 \end{abstract}
 
 \section{Introduction}
@@ -81,9 +83,13 @@ self-terminating. Full-PDF critique depth beyond a few is a documented null.
 
 \textbf{Generic-hub dominance (Section~\ref{sec:hub}).} The flagship's dominant rough edge.
 
-\textbf{Flagship.} The full deep pipeline vs.\ a strong single-pass baseline: preferred \textbf{5/2/1}
-on overall (and a clean 8/0/0 on grounding), surfacing ~9 2026 papers/topic where the baseline
-surfaces zero, with $\sim$5$\times$ the length and verified figures.
+\textbf{Flagship.} The full deep pipeline vs.\ a strong single-pass baseline: preferred \textbf{8/0/0}
+on overall and on grounding when the pairwise judge reads the \emph{full} reports, confirmed
+unanimously by two disjoint-family judges (zero baseline wins across 96 axis-verdicts); it surfaces
+$\sim$9 2026 papers/topic where the baseline surfaces zero, at $\sim$5$\times$ the length with
+verified figures. Notably, an earlier 16k-character judge truncation --- which saw only half of each
+deep report --- yielded a much softer 5/2/1: a measurement-instrument artifact worth reporting in its
+own right.
 
 \section{Generic-hub dominance}
 \label{sec:hub}
@@ -108,7 +114,9 @@ topic-specific coverage; validated on three further niche topics.
 
 \section{Limitations}
 Curated gold exists for only three topics (recall numbers are $n{=}3$); the LLM judge, though validated,
-compresses on its absolute scale (we lean on order-debiased pairwise and objective metrics). The topic
+compresses on its absolute scale (we lean on order-debiased pairwise and objective metrics), and its
+primary instance shares a model family with the generator --- mitigated for the flagship result by the
+unanimous disjoint-family confirmation. The topic
 tree predates the most recent corpus delta (mitigated by the frontier pull). The hub fix is narrative,
 not structural; a recall-safe retrieval lever for the milder generic-\emph{method} residue is available
 but not enabled by default.
