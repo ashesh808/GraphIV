@@ -50,8 +50,11 @@ uv run python phases/phase-6/run.py "<question>" --dry-run        # read-only pl
 Retrieval fuses a vector pool, lexical signals, a topic-tree anchor, an induced citation subgraph, and
 a leaf-independent recent-paper pull; ranking is Personalized PageRank with topic-adaptive recency. The
 deep loop (effort ≥ 3) adds judge-driven gap expansion, per-paper full-PDF critique, sectioned
-long-form compose, and a caption-faithfulness-checked figure gallery. Output is a grounded review with
-every claim cited as `arXiv:<id>` (hallucinated ids are stripped post-hoc).
+long-form compose, and a caption-faithfulness-checked figure gallery. Output is a grounded review
+(md + tex/bibtex) with every claim cited as `arXiv:<id>` — and **every cited id verified against the
+corpus by construction**: typo'd ids are fuzzy-corrected to the retrieved pool, sections citing
+invalid ids get one repair pass, and fabricated survivors are stripped, so a report cannot cite a
+nonexistent paper. Full text (PDF/HTML) is fetched per-paper on demand when not stored locally.
 
 ## The evidence (`experiments/`)
 

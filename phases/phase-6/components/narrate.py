@@ -257,3 +257,86 @@ def classify_citations(
     off_real = sorted(i for i in off if i in real)
     fabricated = sorted(i for i in off if i not in real)
     return grounded, off_real, fabricated
+
+
+def _edit_distance_le(a: str, b: str, cap: int = 2) -> int:
+    """Levenshtein distance, early-exited at cap+1 (band DP; ids are short)."""
+    if abs(len(a) - len(b)) > cap:
+        return cap + 1
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[-1] + 1, prev[j - 1] + (ca != cb)))
+        if min(cur) > cap:
+            return cap + 1
+        prev = cur
+    return prev[-1]
+
+
+def _fuzzy_target(bad: str, allowed_lc: dict[str, str]) -> str | None:
+    """The digest id `bad` is a typo of: unique at distance 1, else unique at distance 2
+    for ids long enough that two edits still identify one paper. None if ambiguous."""
+    d1 = [v for k, v in allowed_lc.items() if _edit_distance_le(bad, k, 1) <= 1]
+    if len(d1) == 1:
+        return d1[0]
+    if d1 or len(bad) < 8:
+        return None
+    d2 = [v for k, v in allowed_lc.items() if _edit_distance_le(bad, k, 2) <= 2]
+    return d2[0] if len(d2) == 1 else None
+
+
+def _strip_id_mentions(story: str, ids: set[str]) -> str:
+    """Remove `arXiv:<id>` mentions (with wrapping brackets) for every id in `ids`."""
+    out: list[str] = []
+    last = 0
+    pat = re.compile(
+        r"\s*[\[(]?\s*arXiv:\s?([a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5}|\d{7})\s*[\])]?",
+        re.IGNORECASE,
+    )
+    for m in pat.finditer(story):
+        if m.group(1).lower() not in ids:
+            continue
+        out.append(story[last : m.start()])
+        out.append(" ")  # keep neighbouring words separated
+        last = m.end()
+    out.append(story[last:])
+    s = "".join(out)
+    s = re.sub(r"\(\s*\)|\[\s*\]", "", s)
+    s = re.sub(r" {2,}", " ", s)
+    s = re.sub(r"\s+([.,;])", r"\1", s)
+    return s
+
+
+def ground_report(
+    story: str, allowed: set[str]
+) -> tuple[str, list[str], list[str], dict[str, str], list[str]]:
+    """Mechanical grounding guard: every arXiv id in the returned text exists in the corpus.
+
+    (1) fuzzy-correct — an unknown id within edit distance 1-2 of a digest id is a typo,
+    fixed in place; (2) corpus-check the rest (real-but-off-digest ids are kept);
+    (3) strip fabricated survivors. Returns (clean_story, grounded, off_digest_real,
+    corrections, stripped)."""
+    allowed_lc = {a.lower(): a for a in allowed}
+    _, off = check_citations(story, allowed)
+    corrections: dict[str, str] = {}
+    for bad in off:
+        good = _fuzzy_target(bad, allowed_lc)
+        if good is not None:
+            corrections[bad] = good
+            story = re.sub(
+                rf"arXiv:\s?{re.escape(bad)}",
+                f"arXiv:{good}",
+                story,
+                flags=re.IGNORECASE,
+            )
+    grounded, off_real, fabricated = classify_citations(story, allowed)
+    if fabricated:
+        story = _strip_id_mentions(story, set(fabricated))
+    if corrections or fabricated:
+        print(
+            f"  [ground] corrected {len(corrections)} typo id(s), "
+            f"stripped {len(fabricated)} fabricated id(s)",
+            flush=True,
+        )
+    return story, grounded, off_real, corrections, fabricated

@@ -350,9 +350,9 @@ def run_deep(
     _ = (out_dir / "report.md").write_text(header + report, encoding="utf-8")
     _ = (out_dir / "digest.txt").write_text(digest, encoding="utf-8")
     abstract = last_verdict.assessment if last_verdict else ""
-    _ = (out_dir / "report.tex").write_text(
-        to_tex(question, report, lm_meta, abstract), encoding="utf-8"
-    )
+    tex, bib = to_tex(question, report, lm_meta, abstract)
+    _ = (out_dir / "report.tex").write_text(tex, encoding="utf-8")
+    _ = (out_dir / "refs.bib").write_text(bib, encoding="utf-8")
     _ = (out_dir / "judge_transcript.json").write_text(
         json.dumps(transcript, indent=1), encoding="utf-8"
     )

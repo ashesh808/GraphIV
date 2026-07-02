@@ -21,6 +21,7 @@ from typing import Any
 import fitz  # PyMuPDF  # pyright: ignore[reportMissingTypeStubs]
 
 from _common import PDF_DIR  # noqa: E402
+from fetch import fetch_pdf  # noqa: E402
 
 _VER: re.Pattern[str] = re.compile(r"v(\d+)\.pdf$")
 
@@ -34,21 +35,22 @@ def _stem_and_dir(arxiv_id: str) -> tuple[str, Path]:
 
 
 def pdf_path(arxiv_id: str) -> Path | None:
-    """Resolve the highest-version on-disk PDF for an arxiv id, or None if absent."""
+    """Resolve the highest-version on-disk PDF; on a local miss, lazily fetch from arXiv."""
     stem, ddir = _stem_and_dir(arxiv_id)
-    if not ddir.is_dir():
-        return None
-    best: tuple[int, Path] | None = None
-    for p in ddir.glob(f"{stem}v*.pdf"):
-        m = _VER.search(p.name)
-        ver = int(m.group(1)) if m else 0
-        if best is None or ver > best[0]:
-            best = (ver, p)
-    if best is not None:
-        return best[1]
-    # some dumps drop the version suffix entirely
-    flat = ddir / f"{stem}.pdf"
-    return flat if flat.exists() else None
+    if ddir.is_dir():
+        best: tuple[int, Path] | None = None
+        for p in ddir.glob(f"{stem}v*.pdf"):
+            m = _VER.search(p.name)
+            ver = int(m.group(1)) if m else 0
+            if best is None or ver > best[0]:
+                best = (ver, p)
+        if best is not None:
+            return best[1]
+        # some dumps drop the version suffix entirely
+        flat = ddir / f"{stem}.pdf"
+        if flat.exists():
+            return flat
+    return fetch_pdf(arxiv_id)
 
 
 def page_count(arxiv_id: str) -> int:

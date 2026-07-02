@@ -46,10 +46,11 @@ opportunistically and failures are non-fatal on plain servers.
 
 ## 4. Full text (PDFs / HTML)
 
-The dump ships **no full text**. The deep path's per-paper extraction reads
-`data/pdf/<YYMM>/` and `data/html/<YYMM>/` when present and degrades to abstract-only otherwise
-(on-demand fetching from arXiv is planned; see `docs/release-plan.md` step 3). To bulk-build these
-stores instead, run phases 1–2.
+The dump ships **no full text** — none is needed up front. Per-paper extraction reads
+`data/pdf/<YYMM>/` and `data/html/<YYMM>/` when present and otherwise **fetches on demand** from
+arXiv/ar5iv (rate-limited ~1 req/3 s, written through to the same layout, cached forever; disable
+with `--set-fetch false`). Missing full text degrades to abstract-only. To bulk-build these stores
+instead, run phases 1–2.
 
 ## 5. Run
 

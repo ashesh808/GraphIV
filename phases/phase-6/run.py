@@ -103,6 +103,12 @@ def main() -> None:
     if r.dry_run:
         _plan(r, question)
         return
+    import fetch  # noqa: PLC0415
+
+    # --set-fetch false/0/off all disable (values arrive as strings or ints)
+    fetch.set_enabled(
+        str(r.config.get("fetch", True)).lower() not in ("false", "0", "off")
+    )
     tier_key, max_rounds, critique_k, figures = _effort_settings(r, sys.argv[1:])
     # max_rounds > 1 -> judge-driven deep loop (PDF critique + md/tex); else the single pass.
     if max_rounds > 1:

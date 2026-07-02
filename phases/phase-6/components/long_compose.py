@@ -14,39 +14,13 @@ assembled whole.
 from __future__ import annotations
 
 import asyncio
-import re
 
 from llm import THINK, chat, parse_json
-from narrate import _relations, check_citations
+from narrate import _relations, check_citations, ground_report
 from schema import Schema
 from subgraph import Edge, Landmark
 
 NARRATOR = "Gemma-4-26B-Code"
-
-# modern arXiv id whose month field is out of 01-12 (e.g. 2300.00352) -> a hallucinated id.
-_MODERN_ID = re.compile(
-    r"\s*[\[(]?\s*arXiv:\s?(\d{2})(\d{2})\.\d{4,5}\s*[\])]?", re.IGNORECASE
-)
-
-
-def _drop_invalid_ids(report: str) -> str:
-    """Remove citations to malformed modern arXiv ids (invalid month) and tidy the gaps.
-
-    Legacy ids (archive/YYMMNNN) use a different shape and are left untouched.
-    """
-    out: list[str] = []
-    last = 0
-    for m in _MODERN_ID.finditer(report):
-        if "01" <= m.group(2) <= "12":
-            continue  # valid month -> keep
-        out.append(report[last : m.start()])
-        last = m.end()
-    out.append(report[last:])
-    s = "".join(out)
-    s = re.sub(r"\(\s*\)|\[\s*\]", "", s)  # empty brackets left behind
-    s = re.sub(r" {2,}", " ", s)
-    s = re.sub(r"\s+([.,;])", r"\1", s)  # space before punctuation
-    return s
 
 
 _OUTLINE_SYS = (
@@ -138,6 +112,7 @@ async def _section(
     schema: Schema,
     abstracts: dict[str, str],
     question: str,
+    pool_ids: set[str],
 ) -> str:
     blocks = [
         _paper_block(by_id[i], edges, lm_ids, extractions, critiques, schema, abstracts)
@@ -174,6 +149,25 @@ async def _section(
         cont, _, _ = await chat(NARRATOR, _CONT_SYS, cont_user, 0.4, 1500)
         if cont.strip():
             out = out + " " + cont.strip()
+    # grounding feedback: one bounded rewrite if the draft cites ids outside the pool
+    # (the assembly-level ground_report strips whatever survives this).
+    _, off = check_citations(out, pool_ids)
+    if off:
+        bad = ", ".join(f"arXiv:{i}" for i in off)
+        fix_user = (
+            user
+            + f"\n\nREVISION: your previous draft cited ids that do NOT exist: {bad}. "
+            "Rewrite the section citing ONLY arXiv ids from the papers listed above; "
+            "keep the analysis otherwise intact.\n\nPREVIOUS DRAFT:\n" + out
+        )
+        text3, _, _ = await chat(NARRATOR, _SECTION_SYS, fix_user, 0.3, 4000)
+        _, off3 = check_citations(text3, pool_ids)
+        if text3.strip() and len(off3) < len(off):
+            print(
+                f"[long]   section '{title}': repaired {len(off) - len(off3)} bad id(s)",
+                flush=True,
+            )
+            out = text3.strip()
     return out
 
 
@@ -252,6 +246,7 @@ def compose_long(
                 schema,
                 abstracts,
                 question,
+                pool_ids,
             )
         )
         if txt:
@@ -295,8 +290,6 @@ def compose_long(
     report = (
         intro.strip() + "\n\n" + "\n\n".join(section_texts) + "\n\n" + close.strip()
     )
-    report = _drop_invalid_ids(
-        report
-    )  # strip malformed arXiv ids (e.g. invalid month) inline
-    grounded, off_digest = check_citations(report, pool_ids)
+    # mechanical guard: fuzzy-correct typo ids -> corpus-verify -> strip fabricated
+    report, grounded, off_digest, _, _ = ground_report(report, pool_ids)
     return report, grounded, off_digest

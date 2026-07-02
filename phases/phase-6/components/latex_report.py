@@ -100,18 +100,48 @@ def _year_key(lm: dict[str, object]) -> int:
     return y if isinstance(y, int) else 0
 
 
-def _references(landmarks: list[dict[str, object]]) -> str:
-    """A plain enumerated reference list from the landmark metadata (year-ordered)."""
-    rows = sorted(landmarks, key=_year_key)
-    out: list[str] = [r"\section*{References}", r"\begin{enumerate}\small"]
-    for lm in rows:
+def _bib_title(title: str) -> str:
+    return title.replace("\\", "").replace("{", "").replace("}", "").strip()
+
+
+def refs_bib(landmarks: list[dict[str, object]]) -> str:
+    """A refs.bib of @misc arXiv entries keyed by arxiv id, from the landmark metadata.
+
+    The store carries no author lists, so entries are title/year/eprint/url — bibtex
+    still resolves, numbers, and hyperlinks them; an unresolvable key is a compile error
+    (a second grounding tripwire)."""
+    out: list[str] = []
+    for lm in sorted(landmarks, key=_year_key):
         aid = str(lm.get("arxiv_id", ""))
-        title = _esc(str(lm.get("title", "")))
+        if not aid:
+            continue
         year = lm.get("year")
-        yr = f" ({year})" if year else ""
-        out.append(rf"  \item {title}{yr}. \texttt{{arXiv:{aid}}}")
-    out.append(r"\end{enumerate}")
-    return "\n".join(out)
+        fields = [
+            f"  title = {{{{{_bib_title(str(lm.get('title', '')))}}}}}",
+            f"  year = {{{year}}}" if isinstance(year, int) else "",
+            f"  eprint = {{{aid}}}",
+            "  archivePrefix = {arXiv}",
+            f"  howpublished = {{\\url{{https://arxiv.org/abs/{aid}}}}}",
+        ]
+        out.append(f"@misc{{{aid},\n" + ",\n".join(f for f in fields if f) + ",\n}")
+    return "\n\n".join(out) + "\n"
+
+
+def _cite_pass(body: str, landmarks: list[dict[str, object]]) -> str:
+    """Rewrite `\\texttt{arXiv:<id>}` -> `\\citep{<id>}` for ids in the landmark set."""
+    known = {
+        str(lm.get("arxiv_id", "")).lower(): str(lm.get("arxiv_id", ""))
+        for lm in landmarks
+    }
+    pat = re.compile(r"\\texttt\{arXiv:([^}]+)\}")
+    return pat.sub(
+        lambda m: (
+            rf"\citep{{{known[m.group(1).lower()]}}}"
+            if m.group(1).lower() in known
+            else m.group(0)
+        ),
+        body,
+    )
 
 
 def to_tex(
@@ -119,34 +149,39 @@ def to_tex(
     report_md: str,
     landmarks: list[dict[str, object]],
     abstract: str,
-) -> str:
-    """Wrap the narrated markdown report into a compilable review-structured LaTeX doc."""
+) -> tuple[str, str]:
+    """Wrap the narrated markdown into a compilable LaTeX doc -> (report.tex, refs.bib).
+
+    Landmark ids become real `\\citep` citations against the generated bibliography;
+    non-landmark ids stay as monospace text."""
     preamble = (
         "\\documentclass[11pt]{article}\n"
         "\\usepackage[margin=1in]{geometry}\n"
         "\\usepackage[T1]{fontenc}\n"
         "\\usepackage{graphicx}\n"
+        "\\usepackage[numbers]{natbib}\n"
         "\\usepackage{hyperref}\n"
-        "\\usepackage{enumitem}\n"
         "\\setlength{\\parskip}{0.5em}\n"
         "\\setlength{\\parindent}{0pt}\n"
     )
     title = _esc(question)
-    body = _md_to_tex(report_md)
+    body = _cite_pass(_md_to_tex(report_md), landmarks)
     abs_tex = (
         _inline(abstract)
         if abstract
         else "A grounded, chronological literature review."
     )
-    return (
+    tex = (
         f"{preamble}\n"
         f"\\title{{{title}}}\n"
-        "\\author{arXiv GraphRAG --- phase-6 deep research}\n"
+        "\\author{GraphIV --- deep research}\n"
         "\\date{\\today}\n\n"
         "\\begin{document}\n"
         "\\maketitle\n\n"
         f"\\begin{{abstract}}\n{abs_tex}\n\\end{{abstract}}\n\n"
         f"{body}\n\n"
-        f"{_references(landmarks)}\n\n"
+        "\\bibliographystyle{unsrtnat}\n"
+        "\\bibliography{refs}\n\n"
         "\\end{document}\n"
     )
+    return tex, refs_bib(landmarks)

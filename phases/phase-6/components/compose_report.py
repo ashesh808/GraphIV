@@ -11,7 +11,7 @@ import asyncio
 
 
 from llm import NO_THINK, THINK, chat  # noqa: E402
-from narrate import _relations, check_citations  # noqa: E402
+from narrate import _relations, ground_report  # noqa: E402
 from schema import Schema  # noqa: E402
 from subgraph import Edge, Era, Landmark  # noqa: E402
 
@@ -123,5 +123,5 @@ def compose(
             extra_body=THINK if think else NO_THINK,
         )
     )
-    grounded, off_digest = check_citations(report, pool_ids)
+    report, grounded, off_digest, _, _ = ground_report(report, pool_ids)
     return report, grounded, off_digest

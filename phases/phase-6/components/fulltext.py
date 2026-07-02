@@ -19,7 +19,8 @@ from pathlib import Path
 
 from selectolax.lexbor import LexborHTMLParser  # pyright: ignore[reportMissingImports]
 
-HTML_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "html"
+from _common import HTML_DIR
+from fetch import fetch_html
 
 _WS = re.compile(r"\s+")
 _LEAD_NUM = re.compile(r"^\s*\d+(\.\d+)*\s*")  # "4Experiments" / "4.1 Setup" -> strip
@@ -53,7 +54,7 @@ _BUCKETS: list[tuple[str, tuple[str, ...]]] = [
 
 
 def html_path(arxiv_id: str) -> Path | None:
-    """Resolve the on-disk HTML path for an arxiv id (modern or legacy)."""
+    """Resolve the on-disk HTML for an arxiv id; on a local miss, lazily fetch from ar5iv."""
     if "/" in arxiv_id:
         arch, num = arxiv_id.split("/", 1)
         yymm = num[:4]
@@ -61,7 +62,7 @@ def html_path(arxiv_id: str) -> Path | None:
     else:
         yymm = arxiv_id[:4]
         p = HTML_DIR / yymm / f"{arxiv_id}.html"
-    return p if p.exists() else None
+    return p if p.exists() else fetch_html(arxiv_id)
 
 
 def _clean(text: str) -> str:
