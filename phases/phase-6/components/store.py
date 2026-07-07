@@ -55,6 +55,9 @@ class Store:
             self.emb_table, self.emb_col = "paper_embedding_asym", "embedding_asym"
         else:
             self.emb_table, self.emb_col = "paper_embedding", "embedding"
+        # pgvector HNSW returns at most hnsw.ef_search rows regardless of LIMIT; the default
+        # (40) silently truncated every KNN below its LIMIT. 1000 is the parameter's maximum.
+        _ = self.conn.execute("SET hnsw.ef_search = 1000")
 
     def close(self) -> None:
         self.conn.close()
@@ -261,6 +264,38 @@ class Store:
             (arxiv_ids,),
         ).fetchall()
         return {str(a): str(au) for a, au in rows}
+
+    def embeddings(self, arxiv_ids: list[str]) -> dict[str, list[float]]:
+        """Raw embedding vectors by arxiv_id (current emb space) — for set-selection math."""
+        if not arxiv_ids:
+            return {}
+        q = (
+            f"SELECT arxiv_id, {self.emb_col}::text FROM {self.emb_table} "
+            f"WHERE arxiv_id = ANY(%s)"
+        )
+        rows: list[tuple[Any, ...]] = self.conn.execute(
+            cast(LiteralString, q), (arxiv_ids,)
+        ).fetchall()
+        out: dict[str, list[float]] = {}
+        for aid, txt in rows:
+            out[str(aid)] = [float(x) for x in str(txt).strip("[]").split(",")]
+        return out
+
+    def meta_for(self, arxiv_id: str) -> tuple[str, int | None, str | None, str] | None:
+        """(title, year, category, abstract) for one paper, or None if unknown (seed lookup)."""
+        row: tuple[Any, ...] | None = self.conn.execute(
+            "SELECT title, year, primary_category, abstract FROM paper_meta"
+            " WHERE arxiv_id = %s",
+            (arxiv_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return (
+            str(row[0] or ""),
+            int(row[1]) if row[1] is not None else None,
+            str(row[2]) if row[2] is not None else None,
+            str(row[3] or ""),
+        )
 
     # --- existence check (narrate id verification) ------------------------
     def existing(self, arxiv_ids: list[str]) -> set[str]:

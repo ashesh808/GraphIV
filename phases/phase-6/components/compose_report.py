@@ -1,8 +1,9 @@
 """P2 / R3 — compose the filled schemas + graph structure into one long report.
 
-Reduce stage: a per-paper block (schema fields + citation relations), ordered chronologically
-via the induced subgraph's eras/main-path, narrated by Gemma-4-26B-Code into a grounded,
-story-like literature review. References are arXiv ids (pdf:page anchors arrive with P3 figures).
+Reduce stage: the digest is the 03-07 winner (`adj_roles_extracted`, pairwise 7/1/0): a NODES
+table (year + reader role + extracted fields per paper) + an ADJACENCY list grouped by citation
+INTENT, plus eras, story threads, tensions, and connector one-liners. Narrated by
+Gemma-4-26B-Code into a grounded, story-like literature review.
 """
 
 from __future__ import annotations
@@ -11,9 +12,10 @@ import asyncio
 
 
 from llm import NO_THINK, THINK, chat  # noqa: E402
-from narrate import _relations, ground_report  # noqa: E402
+from narrate import ground_report  # noqa: E402
 from schema import Schema  # noqa: E402
-from subgraph import Edge, Era, Landmark  # noqa: E402
+from story_graph import Story, story_digest_block  # noqa: E402
+from subgraph import Edge, Era, Landmark, PoolNode  # noqa: E402
 
 NARRATOR = "Gemma-4-26B-Code"
 
@@ -35,6 +37,26 @@ _SYS = (
 )
 
 
+K_ADJ = 6  # per-intent out-citation cap per node line
+
+
+def _adjacency_lines(ordered: list[Landmark], edges: list[Edge]) -> list[str]:
+    """03-07 adjacency-by-intent encoding: each paper -> papers it cites, grouped by intent."""
+    lm_ids = {lm.arxiv_id for lm in ordered}
+    out_by: dict[str, dict[str, list[str]]] = {a: {} for a in lm_ids}
+    for e in edges:
+        if e.src in lm_ids and e.dst in lm_ids and e.src != e.dst:
+            out_by[e.src].setdefault(e.intent or "cites", []).append(f"arXiv:{e.dst}")
+    lines = ["ADJACENCY (each paper -> papers it cites, grouped by intent):"]
+    for lm in ordered:
+        grp = out_by[lm.arxiv_id]
+        parts = [f"{k}[{', '.join(v[:K_ADJ])}]" for k, v in grp.items()]
+        lines.append(
+            f"arXiv:{lm.arxiv_id}: {' '.join(parts) or '(no out-citations in-graph)'}"
+        )
+    return lines
+
+
 def build_digest(
     question: str,
     landmarks: list[Landmark],
@@ -45,8 +67,9 @@ def build_digest(
     extractions: dict[str, dict[str, str]],
     schema: Schema,
     abstracts: dict[str, str],
+    story: Story | None = None,
+    pool: dict[str, PoolNode] | None = None,
 ) -> str:
-    lm_ids = {lm.arxiv_id for lm in landmarks}
     by_id = {lm.arxiv_id: lm for lm in landmarks}
     ordered = sorted(landmarks, key=lambda lm: (lm.year or 0, -lm.in_degree))
 
@@ -60,12 +83,13 @@ def build_digest(
     for era in eras:
         parts.append(f"  [{era.index}] {era.label}: {era.year_lo}-{era.year_hi}")
     parts.append("")
-    parts.append("PAPERS (chronological; extracted fields per paper):")
+    parts.append("NODES (chronological; role + extracted fields per paper):")
     for lm in ordered:
         yr = lm.year if lm.year is not None else "?"
         cat = f" [{lm.category}]" if lm.category else ""
+        role = f" [{lm.role}]" if lm.role else ""
         parts.append(
-            f'arXiv:{lm.arxiv_id} ({yr}) "{lm.title}"{cat} '
+            f'arXiv:{lm.arxiv_id} ({yr}){role} "{lm.title}"{cat} '
             f"(cited-by {lm.in_degree} in-topic, era {lm.era})"
         )
         ext = extractions.get(lm.arxiv_id)
@@ -78,16 +102,22 @@ def build_digest(
             ab = (abstracts.get(lm.arxiv_id) or "").strip()
             if ab:
                 parts.append(f"    abstract: {ab[:300]}")
-        parts.append(f"    relations: {_relations(lm, edges, lm_ids)}")
     parts.append("")
-    parts.append("MAIN PATH (oldest -> newest):")
-    if spine:
-        parts.append(
-            "  "
-            + " -> ".join(f"arXiv:{i} ({by_id[i].year})" for i in spine if i in by_id)
-        )
+    parts.extend(_adjacency_lines(ordered, edges))
+    parts.append("")
+    if story is not None and pool is not None:
+        parts.append(story_digest_block(story, by_id, pool))
     else:
-        parts.append("  (no single dominant chain)")
+        parts.append("MAIN PATH (oldest -> newest):")
+        if spine:
+            parts.append(
+                "  "
+                + " -> ".join(
+                    f"arXiv:{i} ({by_id[i].year})" for i in spine if i in by_id
+                )
+            )
+        else:
+            parts.append("  (no single dominant chain)")
     parts.append("")
     parts.append("TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):")
     if tens:
@@ -97,6 +127,59 @@ def build_digest(
     else:
         parts.append("  (none surfaced)")
     return "\n".join(parts)
+
+
+_SKEL_SYS = (
+    "You draft ONE section of a literature-review SKELETON: a ~120-word synopsis of what the "
+    "section will argue, followed by a CLAIMS list — one line per paper, 'arXiv:<id> — <the "
+    "single most important claim/number this paper contributes>'. Cover every paper given. "
+    "No prose beyond the synopsis; no headings other than '## <title>'."
+)
+
+
+def compose_skeleton(
+    question: str,
+    landmarks: list[Landmark],
+    extractions: dict[str, dict[str, str]],
+    schema: Schema,
+    abstracts: dict[str, str],
+    pool_ids: set[str],
+    top_n: int = 120,
+    per_section: int = 20,
+) -> tuple[str, list[str], list[str]]:
+    """Cheap structured draft for the judge's mid-loop reads (never the deliverable).
+
+    Era-bucketed sections over the top-`top_n` landmarks by score; each section is one small
+    thinking-off call (collapse-proof — the monolithic 14k-token compose degenerated into
+    repetition at pool ~1700). Returns (skeleton_md, grounded, off_digest)."""
+    top = sorted(landmarks, key=lambda lm: -lm.score)[:top_n]
+    top.sort(key=lambda lm: (lm.year or 0))
+    chunks = [top[i : i + per_section] for i in range(0, len(top), per_section)]
+    parts: list[str] = []
+    for chunk in chunks:
+        lines: list[str] = []
+        for lm in chunk:
+            ext = extractions.get(lm.arxiv_id) or {}
+            fields = "; ".join(
+                f"{k}: {v}" for k, v in ext.items() if v and v.lower() != "n/a"
+            )
+            fallback = (abstracts.get(lm.arxiv_id) or "")[:200]
+            lines.append(
+                f'arXiv:{lm.arxiv_id} ({lm.year or "?"}) "{lm.title[:80]}" :: '
+                f"{fields[:400] or fallback}"
+            )
+        yrs = [lm.year for lm in chunk if lm.year]
+        title = f"{min(yrs)}-{max(yrs)}" if yrs else "undated"
+        user = (
+            f"Review question: {question}\nSection title: {title}\n\nPAPERS:\n"
+            + "\n".join(lines)
+        )
+        text, _, _ = asyncio.run(chat(NARRATOR, _SKEL_SYS, user, 0.3, 900, NO_THINK))
+        if text.strip():
+            parts.append(text.strip())
+    skeleton = "\n\n".join(parts)
+    skeleton, grounded, off_digest, _, _ = ground_report(skeleton, pool_ids)
+    return skeleton, grounded, off_digest
 
 
 def compose(

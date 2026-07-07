@@ -46,6 +46,8 @@ def run_phase6(
     deep: bool = False,
     embed_mode: str = "asym",
     use_hyde: bool = False,
+    no_grade: bool = False,
+    fuse: bool = True,
     cache: bool = True,
 ) -> tuple[dict[str, Any], Path]:
     """Run one condition. Returns (run.json meta, output dir).
@@ -69,6 +71,8 @@ def run_phase6(
         "deep": deep,
         "embed_mode": embed_mode,
         "use_hyde": use_hyde,
+        "no_grade": no_grade,
+        "fuse": fuse,
     }
     manifest = out_root / "_cache.json"
     key = _cache_key(question, cfg)
@@ -99,6 +103,8 @@ def run_phase6(
             out_root,
             embed_mode,
             use_hyde,
+            no_grade=no_grade,
+            fuse=fuse,
         )
     else:
         meta = pipeline.run(
@@ -111,6 +117,8 @@ def run_phase6(
             no_frontier_pull,
             embed_mode,
             use_hyde,
+            no_grade=no_grade,
+            fuse=fuse,
         )
     out_dir = _resolve_out_dir(meta, out_root)
     if cache:

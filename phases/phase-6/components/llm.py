@@ -13,7 +13,17 @@ from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionMessageParam
 
 from _common import LLM_BASE_URL  # noqa: E402
-from narrate import model_status, restart_router  # noqa: E402
+from narrate import dated, model_status, restart_router  # noqa: E402
+
+__all__ = [
+    "THINK",
+    "NO_THINK",
+    "dated",
+    "chat",
+    "chat_sync",
+    "ensure_loaded",
+    "parse_json",
+]
 
 # server-side chat-template knobs for the thinking channel (llama.cpp / jinja).
 THINK: dict[str, object] = {"chat_template_kwargs": {"enable_thinking": True}}
@@ -53,7 +63,7 @@ async def chat(
         await restart_router(model)
     msgs: list[ChatCompletionMessageParam] = cast(
         list[ChatCompletionMessageParam],
-        ([{"role": "system", "content": system}] if system else [])
+        ([{"role": "system", "content": dated(system)}] if system else [])
         + [{"role": "user", "content": _user_content(user, images)}],
     )
     # `async with` closes the underlying httpx client before asyncio.run() tears the

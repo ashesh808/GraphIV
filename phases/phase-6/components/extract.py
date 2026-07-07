@@ -76,11 +76,13 @@ async def _one(
         snip = extract_salient(aid) or fallback
         if not snip:
             return aid, None
+        from llm import dated  # noqa: PLC0415
+
         try:
             resp = await client.chat.completions.create(
                 model=MAP_MODEL,
                 messages=[
-                    {"role": "system", "content": _sys_prompt(schema)},
+                    {"role": "system", "content": dated(_sys_prompt(schema))},
                     {"role": "user", "content": f"Title: {title}\n\n{snip}"},
                 ],
                 temperature=0.2,

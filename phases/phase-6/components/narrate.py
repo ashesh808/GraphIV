@@ -127,6 +127,18 @@ def build_digest(
 # Step 5b — narrate (gentle lazy-load + restart-on-failure)
 
 
+def dated(system: str) -> str:
+    """Prefix a system prompt with today's date — models otherwise treat post-cutoff years
+    (e.g. real 2026 arXiv ids) as implausible and flag them as hallucinations."""
+    from datetime import date
+
+    today = date.today()
+    return (
+        f"Today is {today.year}-{today.month:02d}. arXiv ids and publication years "
+        f"through {today.year} are valid and real.\n\n{system}"
+    )
+
+
 async def model_status(model: str) -> str | None:
     """Return the router's status string for `model`, or None if unreachable/absent.
 
@@ -187,7 +199,7 @@ async def narrate(
             resp = await client.chat.completions.create(
                 model=model,
                 messages=[
-                    {"role": "system", "content": system_prompt},
+                    {"role": "system", "content": dated(system_prompt)},
                     {"role": "user", "content": user_msg},
                 ],
                 temperature=temperature,
@@ -306,6 +318,90 @@ def _strip_id_mentions(story: str, ids: set[str]) -> str:
     s = re.sub(r" {2,}", " ", s)
     s = re.sub(r"\s+([.,;])", r"\1", s)
     return s
+
+
+# number+unit tokens worth verifying (7.7x, 31%, 3×); bare integers are too noisy to check.
+_NUM_RE: re.Pattern[str] = re.compile(r"(\d+(?:\.\d+)?)\s?([x×%])")
+
+
+def _num_matches(tok: str, source: str) -> bool:
+    """Boundary-aware: '3' must not match inside '3.7' or '31'; 3.70 ~ 3.7; 31 ~ 31.0."""
+    variants = {tok}
+    if "." in tok:
+        variants.add(tok.rstrip("0").rstrip("."))
+    else:
+        variants.add(tok + ".0")
+    # lookahead blocks digit continuations AND decimal continuations ('3' inside '3.7'),
+    # while allowing sentence punctuation ('3.7.' at sentence end still matches '3.7')
+    return any(
+        re.search(rf"(?<![\d.]){re.escape(v)}(?!\.?\d)", source) for v in variants
+    )
+
+
+def check_numbers(
+    report: str,
+    extractions: dict[str, dict[str, str]],
+    abstracts: dict[str, str],
+) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
+    """Echo-check: every number+unit in a sentence with exactly one cited paper must appear
+    in that paper's extraction fields or abstract. Returns (verified, unverified) as
+    (arxiv_id, number-token) pairs. Multi-citation sentences are skipped (attribution is
+    ambiguous); bare integers are skipped (too noisy)."""
+    verified: list[tuple[str, str]] = []
+    unverified: list[tuple[str, str]] = []
+    for sentence in re.split(r"(?<=[.!?])\s+|\n", report):
+        ids = {m.group(1).lower() for m in _ARXIV_RE.finditer(sentence)}
+        if len(ids) != 1:
+            continue
+        aid = next(iter(ids))
+        source = " ".join(str(v) for v in (extractions.get(aid) or {}).values())
+        source = source + " " + (abstracts.get(aid) or "")
+        for m in _NUM_RE.finditer(sentence):
+            num, unit = m.group(1), m.group(2)
+            ok = _num_matches(num, source)
+            (verified if ok else unverified).append((aid, f"{num}{unit}"))
+    return verified, unverified
+
+
+def flag_numbers(report: str, unverified: list[tuple[str, str]]) -> str:
+    """Append a dagger to unverified number tokens (first occurrence per sentence-id pair)."""
+    for aid, tok in unverified:
+        pat = re.compile(rf"(?<![\d.])({re.escape(tok)})(?!†)")
+        report = pat.sub(r"\1†", report, count=1)
+    if unverified:
+        report += (
+            "\n\n---\n*† number could not be verified against the cited paper's "
+            "abstract or extracted fields (figure- or full-text-sourced).*"
+        )
+    return report
+
+
+_LINKIFY_RE: re.Pattern[str] = re.compile(
+    r"[\[(]?\s*arXiv:\s?([a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5})(?:\s*[\])])?",
+    re.IGNORECASE,
+)
+
+
+def linkify(md: str) -> str:
+    """Output-boundary formatting: every arXiv citation (any bracket style) becomes one
+    consistent markdown hyperlink `[arXiv:<id>](https://arxiv.org/abs/<id>)`. Idempotent —
+    already-linked mentions (followed by an open paren) are left alone. The internal report
+    string stays bare; apply this only when writing report.md or returning over MCP."""
+    out: list[str] = []
+    last = 0
+    for m in _LINKIFY_RE.finditer(md):
+        if m.end() < len(md) and md[m.end()] == "(":
+            continue  # already a markdown link target
+        aid = m.group(1)
+        pre = md[last : m.start()]
+        out.append(pre)
+        # keep a separating space if the match swallowed one before a word boundary
+        if pre and not pre[-1].isspace() and m.group(0)[0] in " ([":
+            out.append(" ")
+        out.append(f"[arXiv:{aid}](https://arxiv.org/abs/{aid})")
+        last = m.end()
+    out.append(md[last:])
+    return "".join(out)
 
 
 def ground_report(

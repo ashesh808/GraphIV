@@ -104,6 +104,39 @@ async def _caption_one(sem: asyncio.Semaphore, title: str, png: bytes) -> str | 
         return " ".join(txt.split()).strip() or None
 
 
+def figure_block(aid: str, title: str, info: dict[str, object]) -> str:
+    return (
+        f"**{title}** — arXiv:{aid} p.{info['page']}\n\n"
+        f"![{aid}]({info['file']})\n\n{info['caption']}\n"
+    )
+
+
+def place_inline(
+    report: str, figs: dict[str, dict[str, object]], titles: dict[str, str]
+) -> tuple[str, list[str]]:
+    """Insert each captioned figure at the end of the first section citing its paper.
+
+    Returns (report_with_inline_figures, leftover_ids) — leftovers go to the end gallery.
+    """
+    parts = re.split(r"(?m)(^## .*$)", report)  # [pre, header, body, header, body, ...]
+    leftovers: list[str] = []
+    for aid, info in figs.items():
+        placed = False
+        for i in range(2, len(parts), 2):  # section bodies follow their headers
+            if f"arXiv:{aid}" in parts[i] or f"abs/{aid}" in parts[i]:
+                parts[i] = (
+                    parts[i].rstrip()
+                    + "\n\n"
+                    + figure_block(aid, titles.get(aid, aid), info)
+                    + "\n"
+                )
+                placed = True
+                break
+        if not placed:
+            leftovers.append(aid)
+    return "".join(parts), leftovers
+
+
 async def figures_for(
     items: list[tuple[str, str]], out_dir: Path, top_n: int = 10
 ) -> dict[str, dict[str, object]]:

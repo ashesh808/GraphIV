@@ -20,16 +20,21 @@ from pathlib import Path
 from _common import LLM_ROUTER, NARRATOR_MODEL, PG_DSN
 from compose_report import build_digest, compose
 from extract import extract_many
-from figures import figures_for
+from figures import figure_block, figures_for, place_inline
 from frontier_rank import rank_landmarks_frontier
+from graph_viz import render_story
 from llm import NO_THINK, chat_sync
+from narrate import linkify
 from pagerank import rank_landmarks_ppr
+from reader_grade import Grade, candidates, fused_score, grade_many
 from recency import FrontierSpec, detect_frontier
 from retrieval_hybrid import hybrid_pool
 from retrieval_refined import frontier_pull, refined_pool
 from retrieve import embed_query, free_model
+from run_progress import StageTimer
 from store import Store
 from schema import propose_schema
+from story_graph import Story, build_story
 from subgraph import (
     Edge,
     Era,
@@ -49,7 +54,7 @@ OUT = Path(__file__).resolve().parents[1] / "output" / "research"
 # effort -> (n_pool, drill target, landmark count m, run extraction?)
 TIERS: dict[str, tuple[int, int, int, bool]] = {
     "tiny": (200, 150, 30, False),
-    "fast": (400, 280, 40, False),
+    "fast": (400, 280, 60, False),
     "standard": (400, 280, 80, True),
     "deep": (600, 360, 120, True),
 }
@@ -138,6 +143,73 @@ class Pass:
     tens: list[Edge]
     leaf: str | None
     fr: FrontierSpec
+    grades: dict[str, Grade]
+    story: Story
+
+
+def _grade_pool(
+    question: str,
+    store: Store,
+    pool: dict[str, PoolNode],
+    edges: list[Edge],
+    m: int,
+    grades: dict[str, Grade],
+) -> None:
+    """Reader grading pass over the landmark candidates (cache-first, incremental)."""
+    qhash = hashlib.sha1(question.encode()).hexdigest()[:12]
+    indeg: dict[str, int] = {}
+    for e in edges:
+        indeg[e.dst] = indeg.get(e.dst, 0) + 1
+    cand = [a for a in candidates(pool, indeg, m) if a not in grades]
+    if not cand:
+        return
+    abstracts = store.abstracts(cand)
+    grades.update(asyncio.run(grade_many(question, qhash, pool, cand, abstracts)))
+    n_bad = sum(1 for a in cand if grades.get(a) and grades[a].relevance <= -2)
+    print(
+        f"[research] graded {len(cand)} candidates ({n_bad} rated -2/unrelated)",
+        flush=True,
+    )
+
+
+def _rank_graded(
+    pool: dict[str, PoolNode],
+    edges: list[Edge],
+    m: int,
+    rank: str,
+    no_graph: bool,
+    fr: FrontierSpec,
+    grades: dict[str, Grade],
+    fuse: bool,
+) -> list[Landmark]:
+    """Rank landmarks, optionally on the fused (cosine x graded-relevance) score.
+
+    With `fuse`, relevance -2 papers leave the ranking pool entirely (they remain in the
+    caller's pool as graph connectors) and every candidate's seed score becomes fused.
+    Returned landmarks always carry the original cosine in `.score` plus role/relevance.
+    """
+    rank_pool_nodes = pool
+    if fuse and grades:
+        rank_pool_nodes = {}
+        for a, n in pool.items():
+            g = grades.get(a)
+            if g is not None and g.relevance <= -2:
+                continue
+            rank_pool_nodes[a] = PoolNode(
+                n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g)
+            )
+    if no_graph or rank == "indegree":
+        landmarks = rank_landmarks(rank_pool_nodes, edges, m)
+    else:
+        landmarks = _RANKERS[rank](
+            rank_pool_nodes, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
+        )
+    for lm in landmarks:
+        lm.score = pool[lm.arxiv_id].score  # restore true cosine after fused ranking
+        g = grades.get(lm.arxiv_id)
+        if g is not None:
+            lm.role, lm.relevance = g.role, g.relevance
+    return landmarks
 
 
 def retrieve_rank(
@@ -154,14 +226,25 @@ def retrieve_rank(
     recency: float,
     now: datetime,
     no_frontier_pull: bool = False,
+    grade: bool = False,
+    fuse: bool = False,
+    seed: str | None = None,
 ) -> Pass:
-    """Hybrid pool -> topic-adaptive frontier -> refined drill -> induce subgraph -> rank.
+    """Hybrid pool -> topic-adaptive frontier -> refined drill -> induce subgraph ->
+    (reader grade) -> rank -> story.
 
     The single source of the recency logic; both run() and deep_loop reuse it so the
     frontier handling never diverges between the single-pass and iterative paths.
-    `no_frontier_pull` disables the leaf-independent recent-paper pull (ablation lever).
+    `no_frontier_pull` disables the leaf-independent recent-paper pull (ablation lever);
+    `grade` runs the reader role/relevance pass; `fuse` ranks on cosine x graded relevance;
+    `seed` force-injects one paper into the pool at top similarity.
     """
     pool = hybrid_pool(store, qvec, question, n_pool)
+    if seed:
+        meta = store.meta_for(seed)
+        if meta is not None:
+            title, year, cat, _ = meta
+            pool[seed] = PoolNode(seed, title, year, cat, 1.0)
     years0 = [n.year for n in pool.values() if n.year is not None]
     fr = detect_frontier(years0, now.year, now.month, m, recency)
     print(
@@ -185,19 +268,18 @@ def retrieve_rank(
         print(f"[research] frontier_pull added {n_front} recent papers", flush=True)
     else:
         print("[research] frontier_pull DISABLED (ablation)", flush=True)
-    _ = augment_with_ancestors(store, pool, qvec, max_add=120, min_cosine=0.35)
+    _ = augment_with_ancestors(store, pool, qvec, max_add=120, min_cosine=0.30)
     edges = [] if no_graph else induce_subgraph(store, list(pool))
     print(f"[research] pool {len(pool)} · edges {len(edges)} · leaf {leaf}", flush=True)
-    if no_graph or rank == "indegree":
-        landmarks = rank_landmarks(pool, edges, m)
-    else:
-        landmarks = _RANKERS[rank](
-            pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-        )
+    grades: dict[str, Grade] = {}
+    if grade:
+        _grade_pool(question, store, pool, edges, m, grades)
+    landmarks = _rank_graded(pool, edges, m, rank, no_graph, fr, grades, fuse)
     eras = assign_eras(landmarks)
     spine = main_path(landmarks, edges)
     tens = tensions(landmarks, edges)
-    return Pass(pool, landmarks, edges, eras, spine, tens, leaf, fr)
+    story = build_story(landmarks, edges, tens, pool)
+    return Pass(pool, landmarks, edges, eras, spine, tens, leaf, fr, grades, story)
 
 
 def rank_pool(
@@ -207,22 +289,115 @@ def rank_pool(
     rank: str,
     no_graph: bool,
     fr: FrontierSpec,
+    question: str = "",
+    grades: dict[str, Grade] | None = None,
+    grade: bool = False,
+    fuse: bool = False,
 ) -> Pass:
     """Induce + rank an already-built pool (the deep loop's re-rank after gap expansion).
 
-    Reuses the round-0 frontier `fr` so the topic frontier stays stable across rounds.
+    Reuses the round-0 frontier `fr` so the topic frontier stays stable across rounds;
+    incrementally grades any new (gap-expansion) candidates when `grade` is on.
     """
     edges = [] if no_graph else induce_subgraph(store, list(pool))
-    if no_graph or rank == "indegree":
-        landmarks = rank_landmarks(pool, edges, m)
-    else:
-        landmarks = _RANKERS[rank](
-            pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-        )
+    grades = grades if grades is not None else {}
+    if grade:
+        _grade_pool(question, store, pool, edges, m, grades)
+    landmarks = _rank_graded(pool, edges, m, rank, no_graph, fr, grades, fuse)
     eras = assign_eras(landmarks)
     spine = main_path(landmarks, edges)
     tens = tensions(landmarks, edges)
-    return Pass(pool, landmarks, edges, eras, spine, tens, None, fr)
+    story = build_story(landmarks, edges, tens, pool)
+    return Pass(pool, landmarks, edges, eras, spine, tens, None, fr, grades, story)
+
+
+def seed_slug(seed: str) -> str:
+    return seed.replace("/", "_").replace(".", "")
+
+
+def pick_figure_items(
+    landmarks: list[Landmark],
+    report: str,
+    frontier_year: int,
+    cap: int = 14,
+) -> list[tuple[str, str]]:
+    """Figure candidates: papers actually cited in the report, role-gated when graded
+    (foundational/core/frontier with relevance >= 1) — spine-fame alone no longer qualifies.
+    Ordered frontier-first then by in-degree; ungraded landmarks pass the old gate (cited).
+    """
+    cited = [lm for lm in landmarks if f"arXiv:{lm.arxiv_id}" in report]
+    ok: list[Landmark] = []
+    for lm in cited:
+        if lm.role is not None:
+            if lm.role in ("foundational", "core", "frontier") and (
+                lm.relevance is not None and lm.relevance >= 1
+            ):
+                ok.append(lm)
+        else:
+            ok.append(lm)
+    ok.sort(
+        key=lambda lm: (
+            lm.year is not None and lm.year >= frontier_year,
+            lm.in_degree,
+            lm.score,
+        ),
+        reverse=True,
+    )
+    return [(lm.arxiv_id, lm.title) for lm in ok[:cap]]
+
+
+def attach_figures(
+    report: str, figs: dict[str, dict[str, object]], landmarks: list[Landmark]
+) -> str:
+    """Place figures inline after the first section citing them; leftovers in an end gallery."""
+    if not figs:
+        return report
+    titles = {lm.arxiv_id: lm.title for lm in landmarks}
+    report, leftovers = place_inline(report, figs, titles)
+    if leftovers:
+        gal = ["\n\n---\n\n## Key Figures\n"]
+        for aid in leftovers:
+            gal.append(figure_block(aid, titles.get(aid, aid), figs[aid]))
+        report = report + "\n".join(gal)
+    return report
+
+
+def write_pool(
+    out_dir: Path,
+    pool: dict[str, PoolNode],
+    grades: dict[str, Grade],
+    landmark_ids: set[str],
+) -> None:
+    """Persist the full retrieval pool (pool.json) so pool-cut vs selection-loss stays
+    distinguishable post-hoc (the SimPO/KTO ambiguity: absent from landmarks, but was it
+    ever retrieved?)."""
+    rows: list[dict[str, object]] = []
+    for a, n in sorted(pool.items(), key=lambda kv: -kv[1].score):
+        g = grades.get(a)
+        rows.append(
+            {
+                "arxiv_id": a,
+                "title": n.title,
+                "year": n.year,
+                "cosine": round(n.score, 4),
+                "role": g.role if g else None,
+                "relevance": g.relevance if g else None,
+                "landmark": a in landmark_ids,
+            }
+        )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _ = (out_dir / "pool.json").write_text(json.dumps(rows, indent=0), encoding="utf-8")
+
+
+def graph_section(viz_meta: dict[str, object]) -> str:
+    """The citation-graph block placed right after the report banner."""
+    return (
+        "![citation graph](graph.png)\n\n"
+        f"*The citation story graph behind this review — {viz_meta['nodes']} papers, "
+        f"{viz_meta['edges']} intent-typed edges, {viz_meta['threads']} lineage threads "
+        "(gold). Node size = in-topic citations, color = role. "
+        "[Interactive version](graph.html).*\n\n---\n\n"
+    )
 
 
 def run(
@@ -235,43 +410,71 @@ def run(
     no_frontier_pull: bool = False,
     embed_mode: str = "sym",
     use_hyde: bool = True,
+    no_grade: bool = False,
+    fuse: bool = False,
+    seed: str | None = None,
 ) -> dict[str, object]:
     n_pool, target, m, do_extract = TIERS[effort]
+    # Seed mode: the paper's real Title+Abstract is already doc-shaped, so it replaces HyDE;
+    # an empty question derives one from the seed title (resolved BEFORE slug/cfg).
+    qtext = question
+    if seed:
+        s = Store(PG_DSN, emb_space=embed_mode)
+        meta_row = s.meta_for(seed)
+        s.close()
+        if meta_row is None:
+            raise SystemExit(f"seed arXiv id not in corpus: {seed}")
+        qtext = f"Title: {meta_row[0]}\nAbstract: {meta_row[3]}"
+        if not question.strip():
+            question = f"the development of: {meta_row[0]}"
     print(
         f"[research] '{question}' effort={effort} rank={rank} recency={recency} "
         f"no_cluster={no_cluster} no_graph={no_graph} no_frontier_pull={no_frontier_pull} "
-        f"embed={embed_mode} hyde={use_hyde}",
+        f"embed={embed_mode} hyde={use_hyde} grade={not no_grade} fuse={fuse} seed={seed}",
         flush=True,
     )
+    cfg = (
+        f"{effort}-{rank}-r{recency}-{embed_mode}{'-hyde' if use_hyde else '-raw'}"
+        f"{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
+        f"{'-nofpull' if no_frontier_pull else ''}{'-nograde' if no_grade else ''}"
+        f"{'-fuse' if fuse else ''}{f'-seed{seed_slug(seed)}' if seed else ''}"
+    )
+    out_dir = OUT / _slug(question) / cfg
+    timer = StageTimer(out_dir, question)
+    grade = do_extract and not no_grade  # reader pass rides the extraction tiers
 
     # Query construction is format-dependent: HyDE shapes a doc-like query for the SYMMETRIC space
     # (a bare phrase embeds poorly there); the ASYMMETRIC space embeds the raw question with nomic's
     # native search_query prompt. Both the query and every store lookup use `embed_mode`.
-    qtext = (
-        hyde_query(question) if use_hyde else question
-    )  # router LLM — before freeing VRAM
-    _free_router_vram()  # reclaim VRAM from any resident LLM before loading nomic
-    qvec = embed_query(qtext, mode=embed_mode)
-    free_model()
+    with timer.stage("embed"):
+        if not seed and use_hyde:
+            qtext = hyde_query(question)  # router LLM — before freeing VRAM
+        _free_router_vram()  # reclaim VRAM from any resident LLM before loading nomic
+        qvec = embed_query(qtext, mode=embed_mode)
+        free_model()
     tree = TopicTree()
     now = datetime.now()
     store = Store(PG_DSN, emb_space=embed_mode)
     try:
-        p = retrieve_rank(
-            store,
-            qvec,
-            question,
-            tree,
-            n_pool,
-            target,
-            m,
-            rank,
-            no_cluster,
-            no_graph,
-            recency,
-            now,
-            no_frontier_pull,
-        )
+        with timer.stage("retrieve+grade+rank"):
+            p = retrieve_rank(
+                store,
+                qvec,
+                question,
+                tree,
+                n_pool,
+                target,
+                m,
+                rank,
+                no_cluster,
+                no_graph,
+                recency,
+                now,
+                no_frontier_pull,
+                grade=grade,
+                fuse=fuse,
+                seed=seed,
+            )
         pool, landmarks, edges = p.pool, p.landmarks, p.edges
         eras, spine, tens, fr = p.eras, p.spine, p.tens, p.fr
         abstracts = store.abstracts([lm.arxiv_id for lm in landmarks])
@@ -290,62 +493,59 @@ def run(
         print(
             f"[research] extracting {len(landmarks)} papers (full text) ...", flush=True
         )
-        extractions = asyncio.run(
-            extract_many(
-                [(lm.arxiv_id, lm.title) for lm in landmarks], schema, abstracts
+        with timer.stage("extract"):
+            extractions = asyncio.run(
+                extract_many(
+                    [(lm.arxiv_id, lm.title) for lm in landmarks], schema, abstracts
+                )
             )
-        )
         print(f"[research] extracted {len(extractions)}/{len(landmarks)}", flush=True)
 
     digest = build_digest(
-        question, landmarks, edges, eras, spine, tens, extractions, schema, abstracts
+        question,
+        landmarks,
+        edges,
+        eras,
+        spine,
+        tens,
+        extractions,
+        schema,
+        abstracts,
+        story=p.story,
+        pool=pool,
     )
     print("[research] composing report ...", flush=True)
-    report, grounded, off_digest = compose(question, digest, set(pool))
+    with timer.stage("compose"):
+        report, grounded, off_digest = compose(question, digest, set(pool))
     print(
         f"[research] report chars={len(report)} grounded={len(grounded)} "
         f"off_digest={len(off_digest)}",
         flush=True,
     )
 
-    cfg = (
-        f"{effort}-{rank}-r{recency}-{embed_mode}{'-hyde' if use_hyde else '-raw'}"
-        f"{'-nocluster' if no_cluster else ''}{'-nograph' if no_graph else ''}"
-        f"{'-nofpull' if no_frontier_pull else ''}"
-    )
-    out_dir = OUT / _slug(question) / cfg
     out_dir.mkdir(parents=True, exist_ok=True)
+    write_pool(out_dir, pool, p.grades, {lm.arxiv_id for lm in landmarks})
     frontier = sum(
         1 for lm in landmarks if lm.year is not None and lm.year >= fr.frontier_year
     )
+    with timer.stage("viz"):
+        viz_meta = render_story(question, landmarks, edges, p.story, pool, out_dir)
 
-    # P3: deep tier reads + embeds key figures (vision model) for the most-cited landmarks.
+    # P3: deep tier reads + embeds key figures (vision model) for the report-cited landmarks.
     figs: dict[str, dict[str, object]] = {}
     if effort == "deep":
-        top = sorted(landmarks, key=lambda lm: -lm.in_degree)
-        print(
-            f"[research] reading figures for top {min(12, len(top))} papers ...",
-            flush=True,
-        )
-        figs = asyncio.run(
-            figures_for([(lm.arxiv_id, lm.title) for lm in top], out_dir, top_n=12)
-        )
+        fig_items = pick_figure_items(landmarks, report, fr.frontier_year, cap=12)
+        print(f"[research] reading figures for {len(fig_items)} papers ...", flush=True)
+        with timer.stage("figures"):
+            figs = asyncio.run(figures_for(fig_items, out_dir, top_n=len(fig_items)))
         print(f"[research] captioned {len(figs)} figures", flush=True)
-        if figs:
-            by_id = {lm.arxiv_id: lm for lm in landmarks}
-            gal = ["\n\n---\n\n## Key Figures\n"]
-            for aid, info in figs.items():
-                title = by_id[aid].title if aid in by_id else aid
-                gal.append(
-                    f"**{title}** — arXiv:{aid} p.{info['page']}\n\n"
-                    f"![{aid}]({info['file']})\n\n{info['caption']}\n"
-                )
-            report = report + "\n".join(gal)
+        report = attach_figures(report, figs, landmarks)
     header = (
         f"# {question}\n\n*effort {effort} · pool {len(pool)} · landmarks {len(landmarks)} · "
         f"schema {schema.names()} · grounded {len(grounded)} · off-digest {len(off_digest)}*\n\n---\n\n"
     )
-    _ = (out_dir / "report.md").write_text(header + report, encoding="utf-8")
+    body = graph_section(viz_meta) + report
+    _ = (out_dir / "report.md").write_text(linkify(header + body), encoding="utf-8")
     _ = (out_dir / "digest.txt").write_text(digest, encoding="utf-8")
     meta = {
         "question": question,
@@ -357,6 +557,9 @@ def run(
         "no_frontier_pull": no_frontier_pull,
         "embed_mode": embed_mode,
         "use_hyde": use_hyde,
+        "grade": grade,
+        "fuse": fuse,
+        "seed": seed,
         "config": cfg,
         "schema": schema.fields,
         "n_pool": len(pool),
@@ -368,7 +571,9 @@ def run(
         "off_digest": off_digest,
         "n_figures": len(figs),
         "figures": figs,
+        "graph": viz_meta,
         "report_chars": len(report),
+        "timings": timer.timings(),
         "landmarks": [asdict(lm) for lm in landmarks],
     }
     _ = (out_dir / "run.json").write_text(json.dumps(meta, indent=1), encoding="utf-8")

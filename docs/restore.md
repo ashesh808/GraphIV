@@ -62,14 +62,26 @@ uv run python phases/phase-6/run.py "your question" --set-effort 4
 
 ## 6. Serve as an MCP tool (optional)
 
-`phases/phase-6/serve_mcp.py` exposes GraphIV over stdio to any MCP client (librechat, Claude
-Desktop, …). Tools: `deep_research(question, effort)` (the endpoint), `refine_question`
-(server-side question refinement on the local LLM — the host model only relays, so a small
-local host works), `search_papers` / `paper_details` (grounded follow-ups, no GPU),
-`list_reports` / `get_report` (reload past runs), plus a `deep_research_flow` prompt template
-packaging the refine → run → follow-up loop. The host chat model shares the GPU with the
-pipeline: it gets evicted during a deep run and reloads on demand afterward (Gemma-4-26B works
-well as the host — MoE, fast reload).
+`phases/phase-6/serve_mcp.py` exposes GraphIV to any MCP client (librechat, Claude Desktop, …)
+over stdio (default) or loopback streamable-http (`--http`, port `$GRAPHIV_MCP_PORT`, default
+8756 — for sandboxed clients that can't spawn a process in the repo). Tools:
+`deep_research(question, effort, seed_arxiv_id)` (the endpoint; seeding retrieves from a
+specific paper's title+abstract), `refine_question` (corpus-probed candidate questions on the
+local LLM — the host model only relays, so a small local host works), `search_papers` /
+`paper_details` (grounded follow-ups, no GPU), `list_reports` / `get_report` (reload past runs),
+`list_report_papers` (a deep run's cohort: per-paper reader summaries + role/relevance grades
+from `papers.json`), `ask_paper` (QA over one paper's full text) and `ask_report` (QA over a
+finished review + its cohort — follow-ups without re-running), plus a `deep_research_flow`
+prompt template packaging the refine → run → follow-up loop. The host chat model shares the GPU
+with the pipeline: it gets evicted during a deep run and reloads on demand afterward
+(Gemma-4-26B works well as the host — MoE, fast reload).
+
+The http transport additionally serves run artifacts at `/files/<slug>/<cfg>/…` (figures,
+`graph.png`, the interactive `graph.html`, `papers.json`, `report.pdf`) and a **run dashboard**
+at `/` (all runs, per-stage timings, live progress) with per-run control centers at
+`/run/<slug>/<cfg>` (report/papers/graph/judge/timings tabs + delete / purge-caches /
+compile-pdf actions). Markdown returned over MCP rewrites relative asset links to
+`$GRAPHIV_PUBLIC_URL` (default `http://127.0.0.1:<port>`) so images render in the client.
 
 ```json
 {
@@ -83,9 +95,15 @@ well as the host — MoE, fast reload).
 }
 ```
 
+Or, for a client that can't spawn stdio servers (e.g. a systemd-hardened librechat), run
+`uv run python phases/phase-6/serve_mcp.py --http` and point the client at
+`http://127.0.0.1:8756/mcp` with `type: streamable-http`. A NixOS reference deployment
+(librechat + a `graphiv-mcp` unit wrapping this in the project dev shell) lives in the
+author's nixos-configs (`parts/services/{librechat,graphiv}.nix`).
+
 Calls are serialized (single GPU); each run is subprocess-isolated and returns the finished
 `report.md`. A cold-cache effort-4 deep run measures ~9 minutes on one RTX 3090 — keep client
-tool timeouts generous.
+tool timeouts generous (the librechat wiring uses 7,200,000 ms).
 
 Figures use the repo `theme.json`
 ([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme) Material palette).

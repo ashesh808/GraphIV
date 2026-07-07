@@ -8,7 +8,9 @@ effort is a single 0-5 master dial (fast/standard/deep alias to 1/2/4): it sets 
 single-vs-deep loop, judge rounds, critique depth, and figures. 0=instant .. 5=exhaustive; 3+ is
 the judge-driven deep loop. Per-knob overrides still win (--set-max-rounds / --set-critique-k /
 --include-figures). Other keys: rank {ppr,frontier,indegree}, no_cluster, no_graph, recency
-(0..1 frontier emphasis; the frontier year itself is detected per-topic).
+(0..1 frontier emphasis; the frontier year itself is detected per-topic), no_grade (skip the
+reader role/relevance pass), fuse (rank on cosine x graded relevance — measure-gated), and
+--set-seed <arxiv_id> (seed retrieval from a paper; the question may then be omitted).
 """
 
 from __future__ import annotations
@@ -94,12 +96,15 @@ def main() -> None:
             "no_frontier_pull",
             "embed_mode",
             "use_hyde",
+            "no_grade",
+            "fuse",
         ),
     )
     print_config("phase-6", r)
-    if not r.positionals:
-        raise SystemExit("phase-6 needs a question (positional arg)")
-    question = r.positionals[0]
+    seed = str(r.config.get("seed", "")).strip() or None
+    if not r.positionals and not seed:
+        raise SystemExit("phase-6 needs a question (positional arg) or --set-seed <id>")
+    question = r.positionals[0] if r.positionals else ""
     if r.dry_run:
         _plan(r, question)
         return
@@ -127,6 +132,9 @@ def main() -> None:
             bool(r.config["no_frontier_pull"]),
             embed_mode=str(r.config["embed_mode"]),
             use_hyde=bool(r.config["use_hyde"]),
+            no_grade=bool(r.config["no_grade"]),
+            fuse=bool(r.config["fuse"]),
+            seed=seed,
         )
         return
     _ = pipeline.run(
@@ -139,6 +147,9 @@ def main() -> None:
         bool(r.config["no_frontier_pull"]),
         str(r.config["embed_mode"]),
         bool(r.config["use_hyde"]),
+        no_grade=bool(r.config["no_grade"]),
+        fuse=bool(r.config["fuse"]),
+        seed=seed,
     )
 
 

@@ -69,6 +69,27 @@ def fetch_html(arxiv_id: str) -> Path | None:
     return dest
 
 
+def local_pdf(arxiv_id: str) -> Path | None:
+    """Best on-disk PDF for an id: highest phase-1 version, else the lazy-fetched copy."""
+    stem, yymm = _stem_yymm(arxiv_id)
+    d = PDF_DIR / yymm
+    if not d.is_dir():
+        return None
+    best: Path | None = None
+    best_v = -1
+    for p in d.glob(f"{stem}v*.pdf"):
+        try:
+            v = int(p.stem[len(stem) + 1 :])
+        except ValueError:
+            continue
+        if v > best_v:
+            best_v, best = v, p
+    if best is not None:
+        return best
+    plain = d / f"{stem}.pdf"
+    return plain if plain.is_file() else None
+
+
 def fetch_pdf(arxiv_id: str) -> Path | None:
     """Fetch the latest-version PDF into `PDF_DIR/<YYMM>/` and return the path, or None."""
     if not _enabled:

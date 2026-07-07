@@ -59,6 +59,8 @@ class Landmark:
     score: float
     in_degree: int  # # of distinct pool papers citing this one
     era: int = -1  # filled by assign_eras
+    role: str | None = None  # reader_grade 6-class label, when graded
+    relevance: int | None = None  # reader_grade -2..2, when graded
 
 
 @dataclass

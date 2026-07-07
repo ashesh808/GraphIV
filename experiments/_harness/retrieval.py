@@ -39,11 +39,12 @@ class Subgraph:
 
 
 def retrieve_subgraph(
-    store: Store, qvec: list[float], q: str, *, gate: float = 0.35, m: int | None = None
+    store: Store, qvec: list[float], q: str, *, gate: float = 0.30, m: int | None = None
 ) -> Subgraph:
     """Committed retrieval: hybrid pool + frontier pull + gated ancestor augmentation + PPR top-m.
 
-    `gate` is the shipped 0.35 ancestor cosine floor (02-03 sweep; 0 disables); `m` overrides the
+    `gate` is the shipped 0.30 ancestor cosine floor (02-03 sweep at 0.35; relaxed to 0.30 by the
+    02-07 knob sweep — safe only with fast m>=60; 0 disables); `m` overrides the
     fast-tier landmark cap (e.g. a wider PPR window for a downstream relevance filter).
     """
     n_pool, _, m_default, _ = TIERS["fast"]

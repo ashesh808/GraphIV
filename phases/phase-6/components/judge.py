@@ -13,6 +13,7 @@ import json
 from dataclasses import dataclass, field
 
 from llm import THINK, chat_sync
+from subgraph import Landmark
 
 JUDGE_MODEL = "Gemma-4-26B-Code"
 
@@ -49,19 +50,24 @@ class Verdict:
 
 _SYS = (
     "You are a meticulous senior researcher reviewing a DRAFT literature review for "
-    "completeness. You are given the question, the draft, and the structured digest of "
-    "papers it was built from. Judge it on five axes (1-5): grounding (claims trace to cited "
-    "papers), coverage (breadth of the subfield), lineage (origins->frontier story is "
-    "coherent), coherence (well-organized prose), and frontier (genuinely covers the LATEST "
-    "work, not just classics).\n"
+    "completeness. You are given the question, the draft, the structured digest of papers it "
+    "was built from, and RETRIEVAL CONTEXT describing everything the pipeline found. Judge "
+    "the draft on six axes (1-5): grounding (claims trace to cited papers — every arXiv id "
+    "has ALREADY been mechanically verified against the corpus, so never judge grounding by "
+    "whether an id or its year looks plausible; judge whether CLAIMS match the digest "
+    "evidence), coverage (breadth relative to what the RETRIEVAL CONTEXT shows was found — "
+    "high-relevance papers left uncited cap coverage), lineage (origins->frontier story is "
+    "coherent), coherence (well-organized prose), frontier (genuinely covers the LATEST "
+    "work, not just classics), and focus (every section serves THE question; a section spent "
+    "on an off-domain subfield or generic background caps focus at 2).\n"
     "Then decide: is the review SATURATED (thorough enough to stop), or are there concrete "
-    "GAPS? If gaps, list up to 4 specific follow-up search queries (short topical phrases) "
-    "that would retrieve the missing papers — prefer ones targeting under-covered recent "
-    "directions. Be demanding: a review missing recent methods or a whole sub-area is NOT "
-    "saturated.\n"
+    "GAPS? Gaps may be search queries (short topical phrases) OR specific uncited papers "
+    "from the retrieval context, written as 'arXiv:<id>' — prefer naming the uncited papers "
+    "when they exist. Be demanding: a review missing recent methods, a whole sub-area, or "
+    "the named high-relevance uncited papers is NOT saturated.\n"
     "Reason as needed, then end your reply with ONE JSON object on its own line:\n"
-    '{"scores":{"grounding":N,"coverage":N,"lineage":N,"coherence":N,"frontier":N},'
-    '"saturated":true|false,"gaps":["query 1","query 2"],"assessment":"one sentence"}'
+    '{"scores":{"grounding":N,"coverage":N,"lineage":N,"coherence":N,"frontier":N,"focus":N},'
+    '"saturated":true|false,"gaps":["query or arXiv:<id>", "..."],"assessment":"one sentence"}'
 )
 
 
@@ -99,6 +105,43 @@ def _parse_verdict(text: str) -> Verdict:
     return Verdict(saturated=False, assessment="(judge output unparseable)")
 
 
+def retrieval_context(
+    report: str,
+    landmarks: list[Landmark],
+    frontier_year: int,
+    frontier_count: int,
+    top_uncited: int = 10,
+) -> str:
+    """Cohort stats + named high-relevance uncited landmarks — the coverage anchor."""
+    roles: dict[str, int] = {}
+    for lm in landmarks:
+        roles[lm.role or "ungraded"] = roles.get(lm.role or "ungraded", 0) + 1
+    cited = [lm for lm in landmarks if f"arXiv:{lm.arxiv_id}" in report]
+    uncited = sorted(
+        (
+            lm
+            for lm in landmarks
+            if lm.relevance is not None
+            and lm.relevance >= 1
+            and f"arXiv:{lm.arxiv_id}" not in report
+        ),
+        key=lambda lm: (-(lm.relevance or 0), -lm.in_degree),
+    )
+    lines = [
+        f"landmarks {len(landmarks)} · draft cites {len(cited)}/{len(landmarks)} · "
+        f"frontier_year {frontier_year} · {frontier_count} landmarks at/after it",
+        "roles: " + ", ".join(f"{k} {v}" for k, v in sorted(roles.items())),
+    ]
+    if uncited:
+        lines.append("highest-value UNCITED landmarks:")
+        for lm in uncited[:top_uncited]:
+            lines.append(
+                f"  arXiv:{lm.arxiv_id} (rel {lm.relevance}, cited-by {lm.in_degree} "
+                f'in-topic) "{lm.title[:70]}"'
+            )
+    return "\n".join(lines)
+
+
 def judge_report(
     question: str,
     report: str,
@@ -106,17 +149,28 @@ def judge_report(
     frontier_year: int,
     round_idx: int,
     max_rounds: int,
+    context: str = "",
 ) -> Verdict:
-    """One judging pass (thinking on, -code). Returns the saturation/gaps verdict."""
+    """One judging pass (thinking on, -code). Returns the saturation/gaps verdict.
+
+    Round 1 of a multi-round run may never saturate — one guaranteed second look is cheap
+    insurance against a generous first verdict (observed: instant 5.0 on an uncovered draft).
+    """
+    ctx = f"\nRETRIEVAL CONTEXT:\n{context}\n" if context else ""
     user = (
         f"QUESTION: {question}\n"
         f"This is round {round_idx + 1} of at most {max_rounds}. The topic's detected "
         f"frontier starts at year {frontier_year}; demand real coverage of {frontier_year}+ "
-        f"work.\n\nDRAFT REVIEW:\n{report}\n\n---\nDIGEST (paper evidence):\n{digest[:12000]}"
+        f"work.\n{ctx}\nDRAFT REVIEW:\n{report}\n\n---\nDIGEST (paper evidence):"
+        f"\n{digest[:12000]}"
     )
     try:
         text, _, _ = chat_sync(JUDGE_MODEL, _SYS, user, 0.3, 4000, extra_body=THINK)
     except Exception as e:  # noqa: BLE001
         print(f"  [judge] error: {type(e).__name__}; stopping loop", flush=True)
         return Verdict(saturated=True, assessment="(judge call failed; stopping)")
-    return _parse_verdict(text)
+    v = _parse_verdict(text)
+    if v.saturated and round_idx == 0 and max_rounds > 1:
+        v.saturated = False
+        v.assessment = "(round-1 saturation overridden — one more look) " + v.assessment
+    return v
