@@ -1,0 +1,1104 @@
+{
+ "conditions": [
+  {
+   "condition": "A_old_shipped",
+   "ef_search": 40,
+   "floor": 0.35,
+   "m": 40,
+   "landmark_recall_gold3": 0.753,
+   "spine_recall_gold3": 0.917,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 0.857,
+   "litmus_landmark_hit": 0.524,
+   "frontier_mean": 18.0,
+   "edges_per_landmark": 4.75,
+   "wall_seconds": 34.6
+  },
+  {
+   "condition": "B_ef_fix",
+   "ef_search": 1000,
+   "floor": 0.35,
+   "m": 40,
+   "landmark_recall_gold3": 0.753,
+   "spine_recall_gold3": 0.917,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 0.952,
+   "litmus_landmark_hit": 0.476,
+   "frontier_mean": 18.8,
+   "edges_per_landmark": 4.78,
+   "wall_seconds": 114.7
+  },
+  {
+   "condition": "C_floor_only",
+   "ef_search": 1000,
+   "floor": 0.3,
+   "m": 40,
+   "landmark_recall_gold3": 0.711,
+   "spine_recall_gold3": 0.85,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 1.0,
+   "litmus_landmark_hit": 0.476,
+   "frontier_mean": 17.5,
+   "edges_per_landmark": 4.79,
+   "wall_seconds": 117.4
+  },
+  {
+   "condition": "D_shipped",
+   "ef_search": 1000,
+   "floor": 0.3,
+   "m": 60,
+   "landmark_recall_gold3": 0.753,
+   "spine_recall_gold3": 0.917,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 1.0,
+   "litmus_landmark_hit": 0.619,
+   "frontier_mean": 29.4,
+   "edges_per_landmark": 6.19,
+   "wall_seconds": 117.4
+  },
+  {
+   "condition": "E_paid_upgrade",
+   "ef_search": 1000,
+   "floor": 0.3,
+   "m": 80,
+   "landmark_recall_gold3": 0.819,
+   "spine_recall_gold3": 0.917,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 1.0,
+   "litmus_landmark_hit": 0.714,
+   "frontier_mean": 44.0,
+   "edges_per_landmark": 7.03,
+   "wall_seconds": 117.4
+  },
+  {
+   "condition": "F_floor_abl",
+   "ef_search": 1000,
+   "floor": 0.35,
+   "m": 60,
+   "landmark_recall_gold3": 0.753,
+   "spine_recall_gold3": 0.917,
+   "relevance_rate": 1.0,
+   "litmus_pool_hit": 0.952,
+   "litmus_landmark_hit": 0.571,
+   "frontier_mean": 31.3,
+   "edges_per_landmark": 6.12,
+   "wall_seconds": 114.7
+  }
+ ],
+ "litmus_detail": {
+  "kv": [
+   {
+    "condition": "A_old_shipped",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 7,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 18,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 26,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 25,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 33,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 51,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 41,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2405.12981",
+    "in_pool": false,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 12,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 26,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 31,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 63,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 97,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 45,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 38,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2405.12981",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 95,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 12,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 26,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 31,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 63,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 97,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 45,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 38,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2405.12981",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 95,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 29,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 27,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 85,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 90,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 46,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 44,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2405.12981",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 82,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 16,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 28,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 29,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 80,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 84,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 41,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 39,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2405.12981",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 73,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2306.14048",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2309.06180",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 29,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2401.18079",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 27,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2402.02750",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 85,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2406.10774",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 90,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2407.02490",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 46,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2410.10819",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 44,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2405.12981",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 82,
+    "landmark": false
+   }
+  ],
+  "rl": [
+   {
+    "condition": "A_old_shipped",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 2,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 15,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 11,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 20,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2405.14734",
+    "in_pool": false,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 100,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 84,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 1,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 20,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 12,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 14,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 23,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2405.14734",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 84,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 110,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 66,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 18,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 14,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 25,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2405.14734",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 88,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 111,
+    "landmark": false
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 66,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 18,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 14,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 24,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2405.14734",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 79,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 105,
+    "landmark": false
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 82,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 17,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 15,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 24,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2405.14734",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 70,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 96,
+    "landmark": false
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 78,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "1707.06347",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 1,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2305.18290",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 19,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2402.03300",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 12,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2501.12948",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 14,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2305.20050",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 23,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2405.14734",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 78,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2402.01306",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 104,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2310.12036",
+    "in_pool": true,
+    "grade": "core/+1",
+    "ppr_rank": 80,
+    "landmark": false
+   }
+  ],
+  "jepa": [
+   {
+    "condition": "A_old_shipped",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 2,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 7,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 3,
+    "landmark": true
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2006.07733",
+    "in_pool": false,
+    "grade": "foundational/+2",
+    "ppr_rank": null,
+    "landmark": false
+   },
+   {
+    "condition": "A_old_shipped",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 2,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 6,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 3,
+    "landmark": true
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2006.07733",
+    "in_pool": false,
+    "grade": "foundational/+2",
+    "ppr_rank": null,
+    "landmark": false
+   },
+   {
+    "condition": "B_ef_fix",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 5,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 13,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 20,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2006.07733",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "C_floor_only",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 5,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 12,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 19,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2006.07733",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "D_shipped",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 5,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 14,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 18,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2006.07733",
+    "in_pool": true,
+    "grade": "foundational/+2",
+    "ppr_rank": 4,
+    "landmark": true
+   },
+   {
+    "condition": "E_paid_upgrade",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2301.08243",
+    "in_pool": true,
+    "grade": "core/+2",
+    "ppr_rank": 2,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2404.08471",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": 7,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2202.03555",
+    "in_pool": true,
+    "grade": "adjacent/+1",
+    "ppr_rank": 3,
+    "landmark": true
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2006.07733",
+    "in_pool": false,
+    "grade": "foundational/+2",
+    "ppr_rank": null,
+    "landmark": false
+   },
+   {
+    "condition": "F_floor_abl",
+    "id": "2410.19560",
+    "in_pool": true,
+    "grade": "frontier/+2",
+    "ppr_rank": null,
+    "landmark": true
+   }
+  ]
+ }
+}

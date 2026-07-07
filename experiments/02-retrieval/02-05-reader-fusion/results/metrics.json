@@ -1,0 +1,47 @@
+[
+ {
+  "variant": "baseline",
+  "fuse": false,
+  "norm_floor": 0.0,
+  "relevance_rate_27": 0.945,
+  "unrelated_frac_27": 0.057,
+  "landmark_recall_gold3": 0.808,
+  "spine_recall_gold3": 1.0,
+  "frac_foundational": 0.095,
+  "frac_core": 0.27,
+  "frac_frontier": 0.224,
+  "frac_adjacent": 0.266,
+  "frac_survey": 0.087,
+  "frac_unrelated": 0.057
+ },
+ {
+  "variant": "fuse",
+  "fuse": true,
+  "norm_floor": 0.0,
+  "relevance_rate_27": 1.0,
+  "unrelated_frac_27": 0.0,
+  "landmark_recall_gold3": 0.808,
+  "spine_recall_gold3": 1.0,
+  "frac_foundational": 0.099,
+  "frac_core": 0.307,
+  "frac_frontier": 0.257,
+  "frac_adjacent": 0.241,
+  "frac_survey": 0.095,
+  "frac_unrelated": 0.0
+ },
+ {
+  "variant": "fuse_mild",
+  "fuse": true,
+  "norm_floor": 0.5,
+  "relevance_rate_27": 0.95,
+  "unrelated_frac_27": 0.051,
+  "landmark_recall_gold3": 0.808,
+  "spine_recall_gold3": 1.0,
+  "frac_foundational": 0.096,
+  "frac_core": 0.285,
+  "frac_frontier": 0.244,
+  "frac_adjacent": 0.229,
+  "frac_survey": 0.095,
+  "frac_unrelated": 0.051
+ }
+]
