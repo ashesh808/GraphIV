@@ -1,11 +1,11 @@
 # GraphIV — a grounded literature-review engine over all of arXiv
 
-**GraphIV** (graph + ar**Xiv** — the *IV* is arXiv's tail) builds a knowledge graph over the entire
+**GraphIV** (graph + ar**Xiv** — the _IV_ is arXiv's tail) builds a knowledge graph over the entire
 arXiv corpus — metadata, a **173M-edge citation graph** with classified intent, and **3.07M** dense
 embeddings — and serves it as a research endpoint that turns a question into a **grounded, cited,
 chronological literature review** (Markdown + LaTeX, with an optional figure gallery).
 
-Why it's different:
+Novelty:
 
 - **Local and verifiable** — runs on one consumer GPU against a self-contained Postgres+pgvector
   store; every citation is an `arXiv:<id>` checked against the corpus, not a web-search snippet.
@@ -28,14 +28,14 @@ question ──▶ retrieve (vector + lexical + topic-tree + citation subgraph +
 
 ## The pipeline (`phases/`)
 
-| phase | does one thing |
-|---|---|
-| **1** | PDF acquisition (GCS → vault, `aria2c`) |
-| **2** | HTML acquisition (ar5iv) |
+| phase | does one thing                                                                                                                                                                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | PDF acquisition (GCS → vault, `aria2c`)                                                                                                                                                                                     |
+| **2** | HTML acquisition (ar5iv)                                                                                                                                                                                                    |
 | **3** | Citation graph: parse → match each citation to an arXiv id + context; classify **intent** (background/uses/extends/compares/critiques/motivates) and polarity via a Gemma teacher → DistilBERT student over the full corpus |
-| **4** | Graph store: consolidate metadata + 173M citations + 3.07M nomic embeddings (HNSW) into one Postgres+pgvector DB |
-| **5** | Semantic index: density-aware topic tree (3,582 leaves / 2.92M papers) |
-| **6** | **Research endpoint**: question → grounded literature review (md + tex), topic-adaptive recency, a judge-driven deep loop with full-PDF critique, and a vision figure gallery |
+| **4** | Graph store: consolidate metadata + 173M citations + 3.07M nomic embeddings (HNSW) into one Postgres+pgvector DB                                                                                                            |
+| **5** | Semantic index: density-aware topic tree (3,582 leaves / 2.92M papers)                                                                                                                                                      |
+| **6** | **Research endpoint**: question → grounded literature review (md + tex), topic-adaptive recency, a judge-driven deep loop with full-PDF critique, and a vision figure gallery                                               |
 
 Every phase has the same `run.py` contract (`--dry-run` first, idempotent, config-driven); each
 phase's `config.json` is the single place its parameters + component toggles live. See
@@ -69,7 +69,7 @@ number is gameable). Four buckets; full index + per-experiment write-ups (md/tex
   (sensitivity-swept: a recall plateau, now the shipped default), selection flags.
 - **`03-generation`** — judge validity, component ablation, embedding format, recency, frontier-pull,
   landmark selection, graph representation, the deep loop, critique depth, vision figures, and
-  **hub-suppression** (keeping generic hubs like *Attention* from hijacking niche reviews).
+  **hub-suppression** (keeping generic hubs like _Attention_ from hijacking niche reviews).
 - **`deep-research`** — the flagship before/after: the deployed pipeline wins the pairwise **8/0/0 on
   overall and grounding** (n=8, confirmed by two disjoint-family judges), surfacing 9 verified 2026
   papers/topic where the baseline finds none.

@@ -1,5 +1,5 @@
 {
-  description = "arxiv_kg";
+  description = "GraphIV";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/8a1b0127302ea51e05bf4ea5a291743fac442406";
   outputs = { self, nixpkgs }:
   let
@@ -83,7 +83,7 @@
         # LaTeX for the experiment reports + paper (latexmk + the packages they use)
         (texlive.combined.scheme-medium)
       ];
-      DEV_SHELL = "arxiv_kg";
+      DEV_SHELL = "GraphIV";
       LD_LIBRARY_PATH = "/run/opengl-driver/lib:" + lib.makeLibraryPath (with pkgs; [ stdenv.cc.cc.lib zlib libGL cudaPackages.cuda_cudart cudaPackages.libcublas cudaPackages.cuda_cccl ]);
       shellHook = ''
         export PGHOST="''${PGHOST:-$PWD/.pg}"
