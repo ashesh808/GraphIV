@@ -19,6 +19,12 @@ Steps 1–6 **done**; step 7 done except the two user-side items + the paper nar
   `results/h2h/graphiv_counts.md`; decline refinement; save outputs, then `h2h_verify.py` on them);
   (b) HF upload of `data/release/graphiv-2026-07-03.dump` (23 GB — the Jun-22 dump is superseded,
   deletable); (c) librechat-on-zaphkiel nix service (MCP config in `docs/restore.md`).
+- **2026-07-11 MCP research-reuse update** (post-`3354376`, tool surface changed): runs addressed
+  by `research_id` (= slug, optional `slug/config`); `get_report`/`ask_report` →
+  `retrieve_research(research_ids)` / `ask_research(research_ids, question)` (1-3 ids, cross-report
+  synthesis); new `similar_reports` + a `deep_research` guard that LLM-matches the question against
+  past runs and offers reuse before burning a GPU run (`force_new` overrides). Tool list in
+  `docs/restore.md` + CLAUDE.md.
 - **Next Claude deliverable:** full paper narrative rewrite for user veto (user explicitly asked);
   best written after the commercial h2h outputs land so the comparison table ships in one pass.
 

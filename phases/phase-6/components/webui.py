@@ -905,6 +905,16 @@ function authorsShort(a){
   const parts=deTeX(a).split(/,\s*|\s+and\s+/).filter(Boolean);
   return parts.length>3?parts.slice(0,3).join(', ')+' et al.':parts.join(', ');
 }
+function mathify(el){
+  if(!window.renderMathInElement)return;
+  renderMathInElement(el,{delimiters:[
+    {left:'$$',right:'$$',display:true},
+    {left:'\\[',right:'\\]',display:true},
+    {left:'\\(',right:'\\)',display:false},
+    {left:'$',right:'$',display:false}],
+   ignoredTags:['script','noscript','style','textarea','pre','code'],
+   throwOnError:false});
+}
 function fixRelUrls(el){
   el.querySelectorAll('img').forEach(i=>{
     const s=i.getAttribute('src');
@@ -1019,7 +1029,7 @@ async function load(){
   const md=await tfetch('report.md');
   const rel=document.getElementById('report-md');
   if(md){rel.innerHTML=marked.parse(md);fixRelUrls(rel);hookCitations(rel);
-    if(window.Prism)Prism.highlightAllUnder(rel);}
+    if(window.Prism)Prism.highlightAllUnder(rel);mathify(rel);}
   else rel.innerHTML='<p class="byline">no report.md in this run</p>';
   renderRefs();
   renderFigs(run);
@@ -1292,6 +1302,11 @@ def _run_html(slug: str, cfg: str, question: str = "", public: bool = False) -> 
         'prism-core.min.js"></script>'
         '<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/autoloader/'
         'prism-autoloader.min.js"></script>'
+        '<link rel="stylesheet" '
+        'href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css">'
+        '<script src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.js"></script>'
+        '<script src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/contrib/'
+        'auto-render.min.js"></script>'
     )
     title = f"GraphIV — {html_mod.escape(question) if question else slug}"
     return _page(title, body, head=head, script=GRAPH_JS + "\n" + run_js, public=public)

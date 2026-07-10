@@ -65,13 +65,19 @@ uv run python phases/phase-6/run.py "your question" --set-effort 4
 `phases/phase-6/serve_mcp.py` exposes GraphIV to any MCP client (librechat, Claude Desktop, …)
 over stdio (default) or loopback streamable-http (`--http`, port `$GRAPHIV_MCP_PORT`, default
 8756 — for sandboxed clients that can't spawn a process in the repo). Tools:
-`deep_research(question, effort, seed_arxiv_id)` (the endpoint; seeding retrieves from a
-specific paper's title+abstract), `refine_question` (corpus-probed candidate questions on the
-local LLM — the host model only relays, so a small local host works), `search_papers` /
-`paper_details` (grounded follow-ups, no GPU), `list_reports` / `get_report` (reload past runs),
+`deep_research(question, effort, seed_arxiv_id, force_new)` (the endpoint; seeding retrieves
+from a specific paper's title+abstract; when finished reports already cover a similar question
+it returns `{"status":"similar_reports_exist", reports:[…]}` instead of running — the host asks
+the user reuse-vs-fresh, `force_new` reruns), `refine_question` (corpus-probed candidate
+questions on the local LLM — the host model only relays, so a small local host works),
+`search_papers` / `paper_details` (grounded follow-ups, no GPU), `list_reports` /
+`similar_reports` (past runs; the latter LLM-matches a question against past run questions),
+`retrieve_research(research_ids)` (reload 1-3 past reports by research_id = report slug,
+optionally `slug/config`; multiple ids come back banner-joined for side-by-side reading),
 `list_report_papers` (a deep run's cohort: per-paper reader summaries + role/relevance grades
-from `papers.json`), `ask_paper` (QA over one paper's full text) and `ask_report` (QA over a
-finished review + its cohort — follow-ups without re-running), plus a `deep_research_flow`
+from `papers.json`), `ask_paper` (QA over one paper's full text) and
+`ask_research(research_ids, question)` (QA over 1-3 finished reviews + cohorts — follow-ups
+and cross-report synthesis without re-running), plus a `deep_research_flow`
 prompt template packaging the refine → run → follow-up loop. The host chat model shares the GPU
 with the pipeline: it gets evicted during a deep run and reloads on demand afterward
 (Gemma-4-26B works well as the host — MoE, fast reload).

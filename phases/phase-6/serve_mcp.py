@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -59,6 +60,72 @@ _REFINE_SYS = (
     'Output ONLY JSON: {"candidates":["question 1","question 2",...],'
     '"clarifying_question":"" }'
 )
+
+
+_SIMILAR_SYS = (
+    "You match a NEW research question against questions answered by previously completed "
+    "literature reviews. Return the indices of past reviews that would substantially answer "
+    "the new question (same topic AND scope — sharing a broad field is not a match).\n"
+    'Output ONLY JSON: {"matches":[0,2,...]} — empty list if none apply.'
+)
+
+
+def _runs_index() -> list[dict[str, object]]:
+    """Finished runs, oldest first: research_id (slug), configs, latest config, question,
+    date, n_papers."""
+    out: list[dict[str, object]] = []
+    if not _OUT.is_dir():
+        return out
+    for d in sorted(_OUT.iterdir()):
+        if not d.is_dir():
+            continue
+        cfgs = sorted(c.name for c in d.iterdir() if (c / "report.md").exists())
+        if not cfgs:
+            continue
+        latest = d / cfgs[-1]
+        question, n_papers = "", 0
+        rj = latest / "run.json"
+        if rj.exists():
+            try:
+                obj: dict[str, Any] = json.loads(  # pyright: ignore[reportExplicitAny]
+                    rj.read_text()
+                )
+                question = str(obj.get("question", ""))
+                marks = obj.get("landmarks")
+                n_papers = len(marks) if isinstance(marks, list) else 0
+            except Exception:  # noqa: BLE001
+                pass
+        mtime = (latest / "report.md").stat().st_mtime
+        out.append(
+            {
+                "research_id": d.name,
+                "configs": cfgs,
+                "config": cfgs[-1],
+                "question": question,
+                "date": time.strftime("%Y-%m-%d", time.localtime(mtime)),
+                "n_papers": n_papers,
+            }
+        )
+    return out
+
+
+async def _similar_runs(question: str) -> list[dict[str, object]]:
+    """LLM-match a question against past run questions (no embedding model in-process)."""
+    from llm import NO_THINK, chat, parse_json  # noqa: PLC0415
+
+    runs = [r for r in _runs_index() if r["question"]]
+    if not runs:
+        return []
+    listing = "\n".join(f"{i}. {r['question']}" for i, r in enumerate(runs))
+    user = f"NEW QUESTION: {question}\n\nPAST REVIEWS:\n{listing}"
+    out, _, _ = await chat(MAP_MODEL, _SIMILAR_SYS, user, 0.0, 200, extra_body=NO_THINK)
+    obj = parse_json(out)
+    if not isinstance(obj, dict):
+        return []
+    idxs = obj.get("matches")
+    if not isinstance(idxs, list):
+        return []
+    return [runs[i] for i in idxs if isinstance(i, int) and 0 <= i < len(runs)]
 
 
 def _rewrite_assets(md: str, slug: str, cfg: str) -> str:
@@ -105,21 +172,45 @@ async def refine_question(text: str) -> str:
 
 
 @mcp.tool()
-async def deep_research(question: str, effort: int = 4, seed_arxiv_id: str = "") -> str:
+async def deep_research(
+    question: str, effort: int = 4, seed_arxiv_id: str = "", force_new: bool = False
+) -> str:
     """Run GraphIV deep research: a grounded, cited literature review over all of arXiv.
 
     effort 0-5 trades latency for depth (3+ = judge-driven deep loop with full-PDF critique
     and figures; effort 4 takes ~5-10 minutes — tell the user before calling). Optionally
     seed retrieval from a specific paper with seed_arxiv_id (question may then be empty —
-    it is derived from the paper). Every arXiv id cited in the result exists in the corpus;
-    citations come back as markdown links, and the report embeds a citation story graph
-    (PNG + interactive HTML). Returns the review as markdown. After it completes, use
-    list_report_papers / ask_paper / ask_report for follow-ups instead of re-running.
+    it is derived from the paper). If finished reports already cover a similar question,
+    this returns JSON {status:"similar_reports_exist", reports:[...]} WITHOUT running —
+    present those options and let the user pick reuse (retrieve_research/ask_research)
+    re-call with force_new=true to run anyway (seeded runs skip the check). Every arXiv id
+    cited in the result exists in the corpus; citations come back as markdown links, and the
+    report embeds a citation story graph (PNG + interactive HTML). Returns the review as
+    markdown. After it completes, use list_report_papers / ask_paper / ask_research for
+    follow-ups instead of re-running.
     """
     effort = max(0, min(5, effort))
     seed = seed_arxiv_id.strip()
     if not question.strip() and not seed:
         return "ERROR: provide a question, a seed_arxiv_id, or both."
+    if not force_new and not seed:
+        try:
+            similar = await _similar_runs(question)
+        except Exception:  # noqa: BLE001 — matching is advisory, never blocks research
+            similar = []
+        if similar:
+            return json.dumps(
+                {
+                    "status": "similar_reports_exist",
+                    "message": (
+                        "Finished reports already cover similar questions. Ask the user "
+                        "whether to reuse one (retrieve_research / ask_research / "
+                        "list_report_papers) or run fresh research; call deep_research "
+                        "again with force_new=true to run."
+                    ),
+                    "reports": similar,
+                }
+            )
     args = [sys.executable, str(_RUN), question, f"--set-effort={effort}"]
     if seed:
         args.append(f"--set-seed={seed}")
@@ -211,55 +302,71 @@ def paper_details(arxiv_id: str) -> str:
     )
 
 
-def _pick_run(slug: str, config: str) -> Path | None:
+def _pick_run(research_id: str) -> Path | None:
+    """research_id = report slug, optionally 'slug/config' to pin a config."""
+    slug, _, cfg = research_id.strip().strip("/").partition("/")
     d = _OUT / slug
     if not d.is_dir():
         return None
     cfgs = [c for c in sorted(d.iterdir()) if (c / "report.md").exists()]
     if not cfgs:
         return None
-    return next((c for c in cfgs if c.name == config), cfgs[-1])
+    return next((c for c in cfgs if c.name == cfg), cfgs[-1])
 
 
 @mcp.tool()
 def list_reports() -> str:
-    """List previously generated reports (slug + configs + question) for get_report /
-    list_report_papers / ask_report."""
-    out: list[dict[str, object]] = []
-    if _OUT.is_dir():
-        for d in sorted(_OUT.iterdir()):
-            cfgs = [c.name for c in d.iterdir() if (c / "report.md").exists()]
-            if not cfgs:
-                continue
-            question = ""
-            rj = d / cfgs[-1] / "run.json"
-            if rj.exists():
-                try:
-                    question = str(json.loads(rj.read_text()).get("question", ""))
-                except Exception:  # noqa: BLE001
-                    pass
-            out.append({"slug": d.name, "configs": cfgs, "question": question})
-    return json.dumps(out)
+    """List previously generated reports (slug + configs + question + date + paper count)
+    for retrieve_research / ask_research / list_report_papers."""
+    return json.dumps(_runs_index())
 
 
 @mcp.tool()
-def get_report(slug: str, config: str = "") -> str:
-    """Reload a previously generated report by slug (see list_reports). Returns markdown."""
-    pick = _pick_run(slug, config)
-    if pick is None:
-        return f"ERROR: no finished report under slug '{slug}' (use list_reports)"
-    return _finish_report(pick / "report.md")
+async def similar_reports(question: str) -> str:
+    """Find finished reports whose research question substantially covers *question*.
+
+    Cheap (one local LLM call, no GPU run). Use for 'have we already researched X?' or
+    before suggesting deep_research. Returns a JSON list (slug, config, question, date,
+    n_papers) for retrieve_research / ask_research / list_report_papers; empty = none.
+    """
+    return json.dumps(await _similar_runs(question))
 
 
 @mcp.tool()
-def list_report_papers(slug: str, config: str = "") -> str:
+def retrieve_research(research_ids: list[str]) -> str:
+    """Retrieve finished research reports by research_id (see list_reports /
+    similar_reports). Returns the full report markdown; multiple ids (max 3) come back
+    concatenated with id banners — use that to put two findings side by side. A
+    research_id is the report slug, optionally 'slug/config' to pin one config."""
+    ids = [i for i in (s.strip() for s in research_ids) if i]
+    if not ids:
+        return "ERROR: provide at least one research_id (use list_reports)."
+    if len(ids) > 3:
+        return "ERROR: at most 3 reports per call."
+    parts: list[str] = []
+    for rid in ids:
+        pick = _pick_run(rid)
+        if pick is None:
+            return (
+                f"ERROR: no finished report for research_id '{rid}' (use list_reports)."
+            )
+        parts.append(_finish_report(pick / "report.md"))
+    if len(parts) == 1:
+        return parts[0]
+    return "\n\n---\n\n".join(
+        f"[research_id: {rid}]\n\n{md}" for rid, md in zip(ids, parts, strict=True)
+    )
+
+
+@mcp.tool()
+def list_report_papers(research_id: str) -> str:
     """The cohort behind a deep run: every landmark paper with its reader summary, role
     (foundational/core/frontier/adjacent/survey), relevance grade, scores, and arxiv link.
     Use this (not the report text) to answer 'which papers did you find?'-style follow-ups.
     Returns a JSON list; 'error' if the run predates papers.json."""
-    pick = _pick_run(slug, config)
+    pick = _pick_run(research_id)
     if pick is None:
-        return json.dumps({"error": f"no finished report under slug '{slug}'"})
+        return json.dumps({"error": f"no finished report for '{research_id}'"})
     pj = pick / "papers.json"
     if not pj.exists():
         return json.dumps(
@@ -300,27 +407,48 @@ async def ask_paper(arxiv_id: str, question: str) -> str:
 
 
 @mcp.tool()
-async def ask_report(slug: str, question: str, config: str = "") -> str:
-    """Answer a follow-up question over a finished deep run (report + paper cohort) without
-    re-running research. Cites arXiv ids from the cohort. Use after deep_research for
-    'compare X and Y from the report', 'which paper had the best Z?', etc."""
+async def ask_research(research_ids: list[str], question: str) -> str:
+    """Answer a follow-up question over finished deep runs (report + paper cohort) without
+    re-running research. Cites arXiv ids from the cohorts. One id for 'compare X and Y
+    from the report'-style questions; multiple ids (max 3) answer ACROSS reports —
+    'combine the findings of A and B', 'what does A add over B?'. A research_id is the
+    report slug, optionally 'slug/config' (see list_reports / similar_reports)."""
     from llm import NO_THINK, chat  # noqa: PLC0415
 
-    pick = _pick_run(slug, config)
-    if pick is None:
-        return f"ERROR: no finished report under slug '{slug}' (use list_reports)"
-    report = (pick / "report.md").read_text(encoding="utf-8")
-    papers = ""
-    pj = pick / "papers.json"
-    if pj.exists():
-        papers = pj.read_text(encoding="utf-8")
+    ids = [i for i in (s.strip() for s in research_ids) if i]
+    if not ids:
+        return "ERROR: provide at least one research_id (use list_reports)."
+    if len(ids) > 3:
+        return "ERROR: at most 3 reports per call."
+    picks: list[tuple[str, Path]] = []
+    for rid in ids:
+        pick = _pick_run(rid)
+        if pick is None:
+            return (
+                f"ERROR: no finished report for research_id '{rid}' (use list_reports)."
+            )
+        picks.append((rid, pick))
+    r_budget, c_budget = 26000 // len(picks), 14000 // len(picks)
+    blocks: list[str] = []
+    for rid, pick in picks:
+        report = (pick / "report.md").read_text(encoding="utf-8")
+        papers = ""
+        pj = pick / "papers.json"
+        if pj.exists():
+            papers = pj.read_text(encoding="utf-8")
+        blocks.append(
+            f"=== RESEARCH {rid} ===\nREVIEW:\n{report[:r_budget]}"
+            + f"\n\nCOHORT:\n{papers[:c_budget]}"
+        )
     sys_p = (
-        "You answer questions about a literature review using ONLY the review text and the "
-        "paper cohort JSON (per-paper summaries + roles + grades). Cite arXiv:<id> for every "
-        "claim; ids must come from the provided material. If the material does not answer "
-        "the question, say so and suggest running deep_research with a sharper question."
+        "You answer questions using ONLY the provided literature review(s) and their paper "
+        "cohort JSON (per-paper summaries + roles + grades). With multiple reviews, "
+        "synthesize across them and name which review a finding came from when they "
+        "differ. Cite arXiv:<id> for every claim; ids must come from the provided "
+        "material. If the material does not answer the question, say so and suggest "
+        "running deep_research with a sharper question."
     )
-    user = f"REVIEW:\n{report[:26000]}\n\nCOHORT:\n{papers[:14000]}\n\nQUESTION: {question}"
+    user = "\n\n".join(blocks) + f"\n\nQUESTION: {question}"
     out, _, _ = await chat(MAP_MODEL, sys_p, user, 0.3, 1200, extra_body=NO_THINK)
     from narrate import linkify  # noqa: PLC0415
 
@@ -338,10 +466,14 @@ def deep_research_flow(interest: str) -> str:
         "pass its id as seed_arxiv_id instead.\n"
         "2. Tell the user the deep run takes ~5-10 minutes, then call "
         "deep_research(chosen_question, effort=4[, seed_arxiv_id=...]).\n"
-        "3. Present the returned review verbatim (it is fully cited; citations are links and "
+        "3. If deep_research returns status=similar_reports_exist instead of a review, "
+        "past reports already cover the question: show them (question, date, paper count) "
+        "and ask whether to reuse one (retrieve_research / ask_research) or run fresh "
+        "(deep_research with force_new=true).\n"
+        "4. Present the returned review verbatim (it is fully cited; citations are links and "
         "the graph link is interactive).\n"
-        "4. For follow-ups, DO NOT re-run or re-summarize the markdown: use "
-        "list_report_papers (the cohort), ask_report (questions over the review), ask_paper "
+        "5. For follow-ups, DO NOT re-run or re-summarize the markdown: use "
+        "list_report_papers (the cohort), ask_research (questions over one or MORE reports — also how to combine two findings), ask_paper "
         "(one paper, full text), or search_papers/paper_details (corpus checks)."
     )
 
