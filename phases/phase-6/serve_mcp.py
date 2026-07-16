@@ -41,8 +41,22 @@ PUBLIC_URL = os.environ.get("GRAPHIV_PUBLIC_URL", f"http://127.0.0.1:{_PORT}").r
     "/"
 )
 
+# GRAPHIV_READONLY=1 = the public-vhost instance: no MCP tools, no prompt, read-only
+# webui routes, no lazy arXiv pulls. Exposure is decided by which PORT the tunnel
+# reaches (this process simply lacks the mutating code), not by request inspection.
+_READONLY = os.environ.get("GRAPHIV_READONLY", "") == "1"
+
 mcp = FastMCP("graphiv")
 _slot = asyncio.Lock()
+
+
+def _tool():  # noqa: ANN202
+    return (lambda f: f) if _READONLY else mcp.tool()
+
+
+def _prompt():  # noqa: ANN202
+    return (lambda f: f) if _READONLY else mcp.prompt()
+
 
 _REFINE_SYS = (
     "You refine a freeform research interest into focused literature-review questions over "
@@ -143,7 +157,7 @@ def _finish_report(report_path: Path) -> str:
     return _rewrite_assets(linkify(md), cfg_dir.parent.name, cfg_dir.name)
 
 
-@mcp.tool()
+@_tool()
 async def refine_question(text: str) -> str:
     """Turn a freeform research interest into candidate literature-review questions.
 
@@ -171,7 +185,7 @@ async def refine_question(text: str) -> str:
     return json.dumps(obj)
 
 
-@mcp.tool()
+@_tool()
 async def deep_research(
     question: str, effort: int = 4, seed_arxiv_id: str = "", force_new: bool = False
 ) -> str:
@@ -211,7 +225,15 @@ async def deep_research(
                     "reports": similar,
                 }
             )
-    args = [sys.executable, str(_RUN), question, f"--set-effort={effort}"]
+    # trajectory selection (magnet-walk consensus quota over PPR): battery Pareto +
+    # pairwise-judge gate passed 2026-07-14; see trajectory_select.py.
+    args = [
+        sys.executable,
+        str(_RUN),
+        question,
+        f"--set-effort={effort}",
+        "--set-rank=trajectory",
+    ]
     if seed:
         args.append(f"--set-seed={seed}")
     async with _slot:  # one 3090: runs serialize, the server stays responsive
@@ -237,7 +259,7 @@ async def deep_research(
     return _finish_report(Path(m.group(1)))
 
 
-@mcp.tool()
+@_tool()
 def search_papers(query: str, k: int = 10) -> str:
     """Keyword-search paper titles across the 3M-paper arXiv corpus (fast, no GPU).
 
@@ -266,7 +288,7 @@ def search_papers(query: str, k: int = 10) -> str:
     )
 
 
-@mcp.tool()
+@_tool()
 def paper_details(arxiv_id: str) -> str:
     """Full metadata for one paper: title, authors, year, category, abstract, and how many
     papers cite it corpus-wide. Returns JSON; 'error' key if the id is unknown."""
@@ -314,14 +336,14 @@ def _pick_run(research_id: str) -> Path | None:
     return next((c for c in cfgs if c.name == cfg), cfgs[-1])
 
 
-@mcp.tool()
+@_tool()
 def list_reports() -> str:
     """List previously generated reports (slug + configs + question + date + paper count)
     for retrieve_research / ask_research / list_report_papers."""
     return json.dumps(_runs_index())
 
 
-@mcp.tool()
+@_tool()
 async def similar_reports(question: str) -> str:
     """Find finished reports whose research question substantially covers *question*.
 
@@ -332,7 +354,7 @@ async def similar_reports(question: str) -> str:
     return json.dumps(await _similar_runs(question))
 
 
-@mcp.tool()
+@_tool()
 def retrieve_research(research_ids: list[str]) -> str:
     """Retrieve finished research reports by research_id (see list_reports /
     similar_reports). Returns the full report markdown; multiple ids (max 3) come back
@@ -358,7 +380,7 @@ def retrieve_research(research_ids: list[str]) -> str:
     )
 
 
-@mcp.tool()
+@_tool()
 def list_report_papers(research_id: str) -> str:
     """The cohort behind a deep run: every landmark paper with its reader summary, role
     (foundational/core/frontier/adjacent/survey), relevance grade, scores, and arxiv link.
@@ -375,7 +397,7 @@ def list_report_papers(research_id: str) -> str:
     return pj.read_text(encoding="utf-8")
 
 
-@mcp.tool()
+@_tool()
 async def ask_paper(arxiv_id: str, question: str) -> str:
     """Answer a question about ONE specific paper from its full text (lazy-fetched, cached).
 
@@ -406,7 +428,7 @@ async def ask_paper(arxiv_id: str, question: str) -> str:
     return out.strip() or "(no answer produced)"
 
 
-@mcp.tool()
+@_tool()
 async def ask_research(research_ids: list[str], question: str) -> str:
     """Answer a follow-up question over finished deep runs (report + paper cohort) without
     re-running research. Cites arXiv ids from the cohorts. One id for 'compare X and Y
@@ -455,7 +477,7 @@ async def ask_research(research_ids: list[str], question: str) -> str:
     return linkify(out.strip()) or "(no answer produced)"
 
 
-@mcp.prompt()
+@_prompt()
 def deep_research_flow(interest: str) -> str:
     """Guided flow: refine a freeform interest into one question, then run deep research."""
     return (
@@ -513,7 +535,7 @@ def _register_http_routes() -> None:
         from fetch import fetch_pdf, local_pdf  # noqa: PLC0415
 
         p = local_pdf(aid)
-        if p is None and request.query_params.get("fetch"):
+        if p is None and request.query_params.get("fetch") and not _READONLY:
             p = await asyncio.to_thread(fetch_pdf, aid)
         if p is None:
             return PlainTextResponse(
@@ -523,7 +545,7 @@ def _register_http_routes() -> None:
 
     import webui  # noqa: PLC0415
 
-    webui.register(mcp, _OUT)
+    webui.register(mcp, _OUT, readonly=_READONLY)
 
 
 if __name__ == "__main__":

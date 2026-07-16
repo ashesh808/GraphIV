@@ -20,6 +20,7 @@
     "vision_model": "Gemma-4-26B-Vision"
   },
   "paths": {
+    "arxiv_json": "data/arxiv.json",
     "html_dir": "data/html",
     "pdf_dir": "data/pdf",
     "topic_tree_db": "data/metadata/topic_tree_nomic.db",

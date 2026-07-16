@@ -1,6 +1,7 @@
 {
   "exclude": ["scratchpad", "**/__pycache__", "**/.venv"],
   "executionEnvironments": [
+    { "root": "phases/phase-0", "extraPaths": ["phases", "phases/phase-0/components"] },
     { "root": "phases/phase-1", "extraPaths": ["phases", "phases/phase-1/components"] },
     { "root": "phases/phase-2", "extraPaths": ["phases", "phases/phase-2/components"] },
     {

@@ -249,7 +249,6 @@ h1,h2,h3,.q{font-family:'Newsreader',Georgia,serif;font-weight:600}
 code,pre,.mono{font-family:'JetBrains Mono','Maple Mono',ui-monospace,monospace;font-size:.86em}
 a{color:var(--primary)}
 [data-ids="off"] .tech{display:none!important}
-[data-public="on"] .adminonly{display:none!important}
 .navbar{display:flex;align-items:center;justify-content:space-between;gap:.75rem;
 padding:.55rem clamp(.9rem,3vw,1.6rem);background:var(--mantle);
 border-bottom:1px solid var(--surface1);position:sticky;top:0;z-index:1000}
@@ -580,6 +579,13 @@ function stagebar(st){
       `<div style="width:${100*g[k].t/tot}%;background:${GROUP_COLORS[k]}"`+
       ` title="${k} ${Math.round(g[k].t)}s — ${g[k].parts.join(', ')}"></div>`).join('')+
     '</div>';}
+"""
+)
+
+
+# Admin-only JS: served at /admin.js, a route that exists only when not readonly —
+# public pages never reference or receive any admin markup or code.
+_ADMIN_JS = r"""
 function modal(title,body,btns){
   return new Promise(res=>{
     const back=document.createElement('div');back.className='modal-back';
@@ -626,8 +632,17 @@ async function act(name,slug,cfg){
   await modal(name.replace(/-/g,' '),resHTML(j),[{label:'ok',value:true}]);
   return !!j.ok;
 }
+async function delRun(s,c){
+  if(await act('delete',s,c)){RUNS=RUNS.filter(r=>!(r.slug===s&&r.config===c));render();}
+}
+async function actRun(name){
+  const ok=await act(name,SLUG,CFG);
+  if(ok&&name==='delete')location.href='/';
+}
+window.GIV_ADMIN={
+ cardDelete:r=>`<button class="mi danger" onclick="delRun('${r.slug}','${r.config}')">delete…</button>`,
+};
 """
-)
 
 
 def _swatches() -> str:
@@ -664,11 +679,11 @@ def _page(
     return f"""<!doctype html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>{_FONTS}<style>{_CSS}</style>
-<script>{_THEME_JS}</script>{head}</head><body{' data-public="on"' if public else ""}>
+<script>{_THEME_JS}</script>{head}</head><body>
 <nav class="navbar">
 <a class="brand" href="/"><b>GraphIV</b><span>Research Library</span></a>
 <span class="right">{_settings_menu()}</span></nav>
-<main>{body}</main><script>{_UI_JS}{script}</script></body></html>"""
+<main>{body}</main>{'' if public else '<script src="/admin.js"></script>'}<script>{_UI_JS}{script}</script></body></html>"""
 
 
 def _scan_runs(out: Path) -> list[dict[str, Any]]:  # pyright: ignore[reportExplicitAny]
@@ -818,7 +833,7 @@ function card(r){
         <div class="menu-body">
           <a class="mi" href="/run/${r.slug}/${r.config}">open</a>
           ${r.has&&r.has.report?`<a class="mi" href="/files/${r.slug}/${r.config}/report.md" target="_blank">report.md</a>`:''}
-          <button class="mi danger adminonly" onclick="delRun('${r.slug}','${r.config}')">delete…</button>
+          ${window.GIV_ADMIN?GIV_ADMIN.cardDelete(r):''}
         </div>
       </details>
     </div></article>`;
@@ -841,9 +856,6 @@ function render(){
     (running?` · ${running} in progress`:'');
 }
 function go(d){page+=d;render();}
-async function delRun(s,c){
-  if(await act('delete',s,c)){RUNS=RUNS.filter(r=>!(r.slug===s&&r.config===c));render();}
-}
 async function tick(){
   try{RUNS=await(await fetch('/api/runs')).json();}catch(e){}
   render();
@@ -1215,10 +1227,6 @@ function renderJudge(jt){
     <td>${(r.gaps||[]).map(esc).join('; ')}<br>`+
     `<i class="byline">${esc(r.assessment||'')}</i></td></tr>`).join('')+'</table>';
 }
-async function actRun(name){
-  const ok=await act(name,SLUG,CFG);
-  if(ok&&name==='delete')location.href='/';
-}
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     if(document.getElementById('figbox')){closeFig();return;}
@@ -1257,6 +1265,15 @@ def _run_html(slug: str, cfg: str, question: str = "", public: bool = False) -> 
         )
     )
     qt = html_mod.escape(question) if question else "&hellip;"
+    admin_menu = (
+        ""
+        if public
+        else """<details class="menu"><summary class="ab-btn" title="run actions">&ctdot;</summary>
+   <div class="menu-body">
+    <button class="mi" onclick="actRun('purge-cache')">Purge caches</button>
+    <button class="mi danger" onclick="actRun('delete')">Delete run&hellip;</button>
+   </div></details>"""
+    )
     body = f"""
 <div class="runhead">
  <a class="back" href="/">&larr; Library</a>
@@ -1267,11 +1284,7 @@ def _run_html(slug: str, cfg: str, question: str = "", public: bool = False) -> 
   <button class="ab-btn primary" onclick="openReportPdf()">Read PDF</button>
   <details class="menu"><summary class="ab-btn">Download &#9662;</summary>
    <div class="menu-body">{dl}</div></details>
-  <details class="menu adminonly"><summary class="ab-btn" title="run actions">&ctdot;</summary>
-   <div class="menu-body">
-    <button class="mi" onclick="actRun('purge-cache')">Purge caches</button>
-    <button class="mi danger" onclick="actRun('delete')">Delete run&hellip;</button>
-   </div></details>
+  {admin_menu}
  </div>
 </div>
 <div class="tabs">{tab_btns}</div>
@@ -1352,8 +1365,14 @@ def _run_question(d: Path) -> str:
     return ""
 
 
-def register(mcp: FastMCP, out: Path) -> None:
-    """Attach dashboard + action routes to the FastMCP starlette app (http transport)."""
+def register(mcp: FastMCP, out: Path, readonly: bool = False) -> None:
+    """Attach dashboard + action routes to the FastMCP starlette app (http transport).
+
+    `readonly` = the GRAPHIV_READONLY public instance: only the read routes below the
+    gate get registered, so mutation is absent from the process the tunnel can reach —
+    enforcement by topology, not by request inspection (the caddy 403s stay as a
+    second layer). New READ routes go above the gate; anything mutating goes below.
+    """
     from starlette.responses import (  # noqa: PLC0415
         HTMLResponse,
         JSONResponse,
@@ -1377,7 +1396,7 @@ def register(mcp: FastMCP, out: Path) -> None:
     async def index(
         request: Request,
     ) -> Response:  # pyright: ignore[reportUnusedFunction]
-        return HTMLResponse(_index_html(_is_public(request)))
+        return HTMLResponse(_index_html(_is_public(request) or readonly))
 
     @mcp.custom_route("/api/runs", methods=["GET"])
     async def api_runs(_: Request) -> Response:  # pyright: ignore[reportUnusedFunction]
@@ -1391,7 +1410,9 @@ def register(mcp: FastMCP, out: Path) -> None:
         if d is None:
             return HTMLResponse("<h1>run not found</h1>", status_code=404)
         return HTMLResponse(
-            _run_html(d.parent.name, d.name, _run_question(d), _is_public(request))
+            _run_html(
+                d.parent.name, d.name, _run_question(d), _is_public(request) or readonly
+            )
         )
 
     @mcp.custom_route("/api/run/{slug}/{cfg}/graph-data", methods=["GET"])
@@ -1407,6 +1428,13 @@ def register(mcp: FastMCP, out: Path) -> None:
         if m is None:
             return JSONResponse({"error": "no DATA in graph.html"}, status_code=404)
         return StarletteResponse(m.group(1), media_type="application/json")
+
+    if readonly:
+        return
+
+    @mcp.custom_route("/admin.js", methods=["GET"])
+    async def admin_js(_: Request) -> Response:  # pyright: ignore[reportUnusedFunction]
+        return StarletteResponse(_ADMIN_JS, media_type="application/javascript")
 
     @mcp.custom_route("/api/run/{slug}/{cfg}/delete", methods=["POST"])
     async def run_delete(

@@ -26,6 +26,7 @@ from graph_viz import render_story
 from llm import NO_THINK, chat_sync
 from narrate import linkify
 from pagerank import rank_landmarks_ppr
+from trajectory_select import rank_landmarks_trajectory
 from reader_grade import Grade, candidates, fused_score, grade_many
 from recency import FrontierSpec, detect_frontier
 from retrieval_hybrid import hybrid_pool
@@ -200,6 +201,16 @@ def _rank_graded(
             )
     if no_graph or rank == "indegree":
         landmarks = rank_landmarks(rank_pool_nodes, edges, m)
+    elif rank == "trajectory":
+        landmarks = rank_landmarks_trajectory(
+            rank_pool_nodes,
+            edges,
+            m,
+            fr.frontier_year,
+            fr.recent_floor,
+            fr.now_year,
+            grades,
+        )
     else:
         landmarks = _RANKERS[rank](
             rank_pool_nodes, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year

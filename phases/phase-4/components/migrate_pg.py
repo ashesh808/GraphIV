@@ -125,10 +125,20 @@ def _pipe(src_sql: str, dst_sql: str) -> None:
 # paper_meta from SQLite arxiv.db.
 # ---------------------------------------------------------------------------------------------
 def stage_meta(force: bool) -> None:
-    if not force and _count(DST_DSN, "paper_meta") > 0:
-        log("paper_meta already populated; skip")
-        return
+    # Delta-aware: copies only publications missing from paper_meta (anti-join on
+    # arxiv_id), so a re-run after a phase-0/1 seed refresh ingests just the new papers.
+    # --force truncates and rebuilds the whole table.
     sc = sqlite3.connect(f"file:{ARXIV_DB}?mode=ro", uri=True)
+    with psycopg.connect(DST_DSN, autocommit=True) as c:
+        if force:
+            _ = c.execute("TRUNCATE paper_meta")
+        have: set[str] = {
+            cast(str, r[0])
+            for r in c.execute(
+                "SELECT arxiv_id FROM paper_meta"
+            )  # pyright: ignore[reportAny]
+        }
+    log(f"paper_meta has {len(have):,} rows; scanning SQLite for missing ...")
     log("building primary-category map ...")
     primary: dict[str, str] = {}
     for pid, cat in sc.execute(
@@ -137,7 +147,6 @@ def stage_meta(force: bool) -> None:
         primary.setdefault(str(pid), str(cat))
     log(f"  {len(primary):,} categorized papers")
     with psycopg.connect(DST_DSN, autocommit=True) as c:
-        _ = c.execute("TRUNCATE paper_meta")
         n = 0
         with c.cursor().copy(
             "COPY paper_meta (arxiv_id, title, abstract, year, primary_category, authors)"
@@ -147,14 +156,16 @@ def stage_meta(force: bool) -> None:
                 "SELECT id, title, abstract, authors FROM publication"
             ):
                 aid = str(pid)
+                if aid in have:
+                    continue
                 cp.write_row(
                     [aid, title, abstract, arxiv_year(aid), primary.get(aid), authors]
                 )
                 n += 1
                 if n % 500_000 == 0:
-                    log(f"  paper_meta {n:,}")
+                    log(f"  paper_meta +{n:,}")
     sc.close()
-    log(f"paper_meta rows: {_count(DST_DSN, 'paper_meta'):,}")
+    log(f"paper_meta rows: {_count(DST_DSN, 'paper_meta'):,} (+{n:,} new)")
 
 
 # ---------------------------------------------------------------------------------------------

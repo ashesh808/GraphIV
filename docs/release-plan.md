@@ -28,6 +28,35 @@ Steps 1–6 **done**; step 7 done except the two user-side items + the paper nar
 - **Next Claude deliverable:** full paper narrative rewrite for user veto (user explicitly asked);
   best written after the commercial h2h outputs land so the comparison table ships in one pass.
 
+## Prod deployment plan (2026-07-16)
+
+Machines: **zaphkiel** (dev, 20 TB vault) · **metatron** (NAS, tailnet) · **prod** (10 TB, NO
+tailscale). Measured store (zaphkiel `vault/research/arxiv`): PDFs **5.6 TB** + HTML **489 GB**
++ 48 GB misc = **~6.1 TB** total (pool at 8.93/20 TB).
+
+**Decision: carry everything to prod — no mirror, no fetch.py changes.** Full store (~6.1 TB)
++ PG restore (~105 GB) + nomic model ≈ **6.3 TB**, fits prod's 10 TB with ~3.7 TB headroom.
+Runs are fully local/on-prem; the existing lazy arXiv fetch stays as delta backfill only.
+
+Transfer plan (2026-07-16): (1) scrub zaphkiel's `vault` (May-25 scrub logged 9 unrepairable
+errors — single vdev, no redundancy; likely non-ECC RAM or link glitch, never recurred);
+(2) re-download any flagged arxiv files (all re-fetchable), `zpool clear` if stale hex entries
+linger; (3) rsync (not zfs send — path granularity, and the store spans a shared dataset) to
+**prod** (ECC + raidz: full end-to-end integrity, self-healing) and to **metatron**
+(raidz NAS → canonical backup). Zaphkiel (single vdev, non-ECC) is then the weakest copy —
+acceptable: it's the build machine and everything is re-fetchable. Wire size ≈ 6.5–7 TB logical;
+`rsync -aHW --partial --info=progress2`, no `-z` (PDFs incompressible). Scrub prod once after landing.
+
+Rejected alternatives (kept for the record):
+- ~~Metatron as a public arXiv mirror~~ — legality: most papers carry arXiv's default
+  non-exclusive license (distribution rights are arXiv's only); a public unauthenticated mirror
+  infringes. Private token-gated serving to our own machines would be fine (it's just internal
+  transfer), but is unnecessary now.
+- ~~PDF-only unification (GROBID/LaTeXML)~~ — GROBID mangles citations; local LaTeXML is
+  expensive for marginal gain. Moot: HTML is only 489 GB, not worth dropping.
+- ~~600 GB slim prod (local HTML + PDF mirror)~~ — viable fallback if prod ever shrinks:
+  extraction is HTML-driven; PDFs serve only critique (~8/run), figures, and the reading panel.
+
 ## Positioning (pitch order)
 
 1. **Local + verifiable** — one consumer GPU, open weights, a 17 GB dump; every citation resolves
