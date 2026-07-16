@@ -1,7 +1,7 @@
 # Restoring the prebuilt store (run GraphIV without building phases 1–5)
 
-The serve path needs three things: the Postgres store, the embedding model, and an LLM endpoint.
-Nothing outside `./data` + `./model` is required at query time.
+The serve path needs three things: the Postgres store, an embedding endpoint, and an LLM endpoint.
+Nothing outside `./data` is required at query time.
 
 ## 1. The store (~23 GB dump → ~105 GB restored)
 
@@ -21,14 +21,20 @@ intent/polarity), `paper_meta`, `paper_embedding` (768-d nomic, HNSW), `paper_to
 (topic tree). Peer-auth over the project-local socket — no password. Anything (a rebuild, a
 different location) can override the DSN with `ARXIVKG_PG_DSN`.
 
-## 2. The embedding model
+## 2. The embedding endpoint
 
-Queries are embedded locally with
-[nomic-ai/nomic-embed-text-v2-moe](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe):
+Queries (and delta-ingest documents) are embedded by a llama.cpp server hosting the
+[nomic-ai/nomic-embed-text-v2-moe GGUF](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF)
+(f16 recommended — verified cosine > 0.999 against the original SentenceTransformer). The server
+must expose `/v1/embeddings` plus llama.cpp's `/tokenize`/`/detokenize` (used for exact
+truncation), so it has to be llama-server, not an arbitrary OpenAI-compatible host:
 
 ```bash
-git clone https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe model/nomic-embed-text-v2-moe
+llama-server --embedding -m nomic-embed-text-v2-moe.f16.gguf --alias nomic-embed-text-v2-moe \
+  --port 11435 -ngl 99 -c 8192 -b 8192 -ub 2048 --parallel 4 --pooling mean
 ```
+
+Point `embeddings.api` in `phases/global-config.json` (or `GRAPHIV_EMBED_API`) at it.
 
 ## 3. The LLM endpoint
 

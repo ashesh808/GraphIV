@@ -38,7 +38,6 @@ from narrate import linkify
 from pipeline import (
     OUT,
     TIERS,
-    _free_router_vram,
     _slug,
     attach_figures,
     graph_section,
@@ -51,7 +50,7 @@ from pipeline import (
 )
 from reader_grade import Grade, summarize_many
 from retrieval_refined import refined_pool
-from retrieve import embed_query, free_model
+from retrieve import embed_query
 from run_progress import StageTimer
 from store import Store
 from schema import Schema, propose_schema
@@ -67,11 +66,8 @@ M_MAX = 260  # hard cap on landmark count
 def _embed_gaps(
     gaps: list[str], embed_mode: str = "sym"
 ) -> list[tuple[str, list[float]]]:
-    """Embed gap queries in one nomic load, then free it (hand VRAM back to Gemma)."""
-    _free_router_vram()
-    out = [(g, embed_query(g, mode=embed_mode)) for g in gaps]
-    free_model()
-    return out
+    """Embed gap queries via the embedding endpoint."""
+    return [(g, embed_query(g, mode=embed_mode)) for g in gaps]
 
 
 _GAP_ID = re.compile(r"arXiv:\s?([a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5})", re.IGNORECASE)
@@ -309,10 +305,8 @@ def run_deep(
 
     with timer.stage("embed"):
         if not seed and use_hyde:
-            qtext = hyde_query(question)  # router LLM — before freeing VRAM
-        _free_router_vram()
+            qtext = hyde_query(question)
         qvec = embed_query(qtext, mode=embed_mode)
-        free_model()
     tree = TopicTree()
 
     # round 0 retrieval + grade + rank

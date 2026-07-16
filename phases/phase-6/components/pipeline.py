@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
-from _common import LLM_ROUTER, NARRATOR_MODEL, PG_DSN
+from _common import NARRATOR_MODEL, PG_DSN
 from compose_report import build_digest, compose
 from extract import extract_many
 from figures import figure_block, figures_for, place_inline
@@ -31,7 +31,7 @@ from reader_grade import Grade, candidates, fused_score, grade_many
 from recency import FrontierSpec, detect_frontier
 from retrieval_hybrid import hybrid_pool
 from retrieval_refined import frontier_pull, refined_pool
-from retrieve import embed_query, free_model
+from retrieve import embed_query
 from run_progress import StageTimer
 from store import Store
 from schema import propose_schema
@@ -94,13 +94,7 @@ def _slug(text: str) -> str:
 
 
 def _free_router_vram() -> None:
-    """Unload any resident router model so the in-process nomic embed has VRAM headroom."""
-    import urllib.request
-
-    try:
-        _ = urllib.request.urlopen(f"{LLM_ROUTER}/router/restart", timeout=120)
-    except Exception:  # noqa: BLE001
-        pass
+    """No-op kept for archived experiment code: the endpoint embed needs no VRAM handoff."""
 
 
 _HYDE_SYS = (
@@ -115,7 +109,7 @@ def hyde_query(question: str) -> str:
     ('Title: ..\\nAbstract: ..'), matching how the corpus was encoded. A bare topic phrase
     embeds poorly (it lexically collides with off-topic papers — 'diffusion' -> diffusing-media
     physics); the doc-shaped hypothetical lands among real abstracts. Falls back to the bare
-    question on any LLM failure. Must run BEFORE the router VRAM is freed for the nomic embed.
+    question on any LLM failure.
     """
     try:
         text, _, _ = chat_sync(NARRATOR_MODEL, _HYDE_SYS, question, 0.5, 400, NO_THINK)
@@ -459,10 +453,8 @@ def run(
     # native search_query prompt. Both the query and every store lookup use `embed_mode`.
     with timer.stage("embed"):
         if not seed and use_hyde:
-            qtext = hyde_query(question)  # router LLM — before freeing VRAM
-        _free_router_vram()  # reclaim VRAM from any resident LLM before loading nomic
+            qtext = hyde_query(question)
         qvec = embed_query(qtext, mode=embed_mode)
-        free_model()
     tree = TopicTree()
     now = datetime.now()
     store = Store(PG_DSN, emb_space=embed_mode)

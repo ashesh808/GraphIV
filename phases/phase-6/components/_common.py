@@ -7,6 +7,7 @@ component allowed a sys.path bootstrap — it is the bridge to the framework con
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -27,7 +28,8 @@ SQLITE_DB = gpath(_G["sqlite"]["db"])
 # --- embedding source (old the-great-arxiv-db; nomic set is the indexed one) ----
 OLD_SQLITE = gpath(_EMB["old_sqlite"])
 NOMIC_NPY = gpath(_EMB["nomic_npy"])
-NOMIC_MODEL = gpath(_EMB["nomic_model"])
+EMBED_API: str = os.environ.get("GRAPHIV_EMBED_API") or _EMB["api"]
+EMBED_MODEL_NAME: str = _EMB["api_model"]
 EMB_DIM: int = _EMB["dim"]
 EMB_ROWS: int = _EMB["rows"]
 NOMIC_PROMPT: str = _EMB["prompt"]

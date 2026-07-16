@@ -6,8 +6,7 @@ subgraph *within* a similarity-ranked topical pool rather than expanding outward
 from seeds: the citation structure inside the on-topic cloud is automatically
 relevant and bounded.
 
-No LLM and no embedding model here — callers pass a pre-computed query vector
-(so VRAM can be sequenced: embed -> free_model -> load narrator).
+No LLM and no embedding call here — callers pass a pre-computed query vector.
 """
 
 from __future__ import annotations

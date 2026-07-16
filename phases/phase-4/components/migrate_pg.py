@@ -35,7 +35,6 @@ OLD_SQLITE = Path("/mnt/Vault-Academics/the-great-arxiv-db/data/arxiv_latest.db"
 NOMIC_NPY = Path(
     "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy"
 )
-NOMIC_MODEL = REPO / "model" / "nomic-embed-text-v2-moe"
 NOMIC_PROMPT = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
 
 SRC_DSN = "dbname=arxiv-citations host=/run/postgresql"
@@ -255,17 +254,13 @@ def stage_index(_force: bool) -> None:
 # alignment spot-check: recompute nomic on a sample, assert cosine ~ 1 vs the stored vector.
 # ---------------------------------------------------------------------------------------------
 def stage_check(_force: bool) -> None:
-    import torch  # noqa: PLC0415
-    from sentence_transformers import SentenceTransformer  # noqa: PLC0415
+    from embed_delta import embed_endpoint  # noqa: PLC0415
 
     sc = sqlite3.connect(f"file:{ARXIV_DB}?mode=ro", uri=True)
     with psycopg.connect(DST_DSN) as c:
         rows: list[tuple[str, Any]] = c.execute(
             "SELECT arxiv_id, embedding FROM paper_embedding ORDER BY random() LIMIT 20"
         ).fetchall()
-    dev = "cuda" if torch.cuda.is_available() else "cpu"
-    model = SentenceTransformer(str(NOMIC_MODEL), trust_remote_code=True, device=dev)
-    model.max_seq_length = 2048
     ok = 0
     for aid, stored in rows:
         r = sc.execute(
@@ -275,7 +270,7 @@ def stage_check(_force: bool) -> None:
             log(f"  {aid}: no metadata, skip")
             continue
         doc = f"Title: {r[0]}\nAbstract: {r[1] or ''}"
-        v = model.encode([doc], prompt=NOMIC_PROMPT, normalize_embeddings=True)[0]
+        v = np.array(embed_endpoint([doc], NOMIC_PROMPT, 2048)[0])
         sv = np.array([float(x) for x in stored.strip("[]").split(",")])
         cos = float(np.dot(v, sv) / (np.linalg.norm(v) * np.linalg.norm(sv)))
         flag = "OK" if cos > 0.95 else "*** LOW ***"

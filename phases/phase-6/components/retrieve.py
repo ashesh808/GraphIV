@@ -1,50 +1,51 @@
 """Query embedding for phase-6 retrieval.
 
-Loads the nomic model, encodes a query into the document embedding space, and frees the model so
-VRAM can be handed back to the LLM. The query MUST use the same nomic model + prompt prefix the
-documents were encoded with (see `_common.NOMIC_PROMPT`). Documents were encoded as
-"Title: {t}\nAbstract: {a}"; `pipeline.hyde_query` shapes the query into that form (HyDE) before
-calling `embed_query`, so a bare topic phrase doesn't drift to lexical look-alikes.
+Embeds queries via the llama.cpp embedding endpoint (`embeddings.api` in global-config; the
+`llama-embed` systemd unit serving the nomic-embed-text-v2-moe GGUF) instead of an in-process
+SentenceTransformer — no model on disk, no VRAM juggling with the router. The query MUST use
+the same prompt prefix the documents were encoded with (see `_common.NOMIC_PROMPT`). Documents
+were encoded as "Title: {t}\nAbstract: {a}"; `pipeline.hyde_query` shapes the query into that
+form (HyDE) before calling `embed_query`, so a bare topic phrase doesn't drift to lexical
+look-alikes.
 
 (Graph/vector fetches now live in `store.py` over Postgres+pgvector; this module is only the
-embedding model bridge.)
+embedding endpoint bridge.)
 """
 
 from __future__ import annotations
 
+import json
+import math
+import urllib.request
 from typing import Any
 
-from _common import NOMIC_MAX_SEQ, NOMIC_MODEL, NOMIC_PROMPT  # noqa: E402
+from _common import EMBED_API, EMBED_MODEL_NAME, NOMIC_PROMPT  # noqa: E402
 
-_MODEL: Any = None
+ASYM_QUERY_PROMPT = "search_query: "
 
 
-def _get_model() -> Any:
-    """Lazy-load the nomic SentenceTransformer onto CUDA (cached)."""
-    global _MODEL
-    if _MODEL is None:
-        import torch
-        from sentence_transformers import SentenceTransformer
-
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"[retrieve] loading nomic on {device} ...", flush=True)
-        _MODEL = SentenceTransformer(
-            str(NOMIC_MODEL), trust_remote_code=True, device=device
-        )
-        _MODEL.max_seq_length = NOMIC_MAX_SEQ
-    return _MODEL
+def embed_texts(texts: list[str], timeout: float = 120.0) -> list[list[float]]:
+    """POST prefixed texts to the endpoint's /v1/embeddings; returns L2-normalized vectors."""
+    req = urllib.request.Request(
+        f"{EMBED_API}/v1/embeddings",
+        data=json.dumps({"model": EMBED_MODEL_NAME, "input": texts}).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        payload: dict[str, Any] = json.load(r)  # pyright: ignore[reportExplicitAny]
+    rows: list[dict[str, Any]] = sorted(  # pyright: ignore[reportExplicitAny]
+        payload["data"], key=lambda d: int(d["index"])  # pyright: ignore[reportAny]
+    )
+    out: list[list[float]] = []
+    for row in rows:
+        vec = [float(x) for x in row["embedding"]]  # pyright: ignore[reportAny]
+        norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+        out.append([x / norm for x in vec])
+    return out
 
 
 def free_model() -> None:
-    """Release the embedding model + CUDA cache (to hand VRAM back to Gemma)."""
-    global _MODEL
-    if _MODEL is not None:
-        import torch
-
-        del _MODEL
-        _MODEL = None
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+    """No-op kept for archived experiment code: embedding now lives in the llama-embed server."""
 
 
 def embed_query(text: str, mode: str = "sym") -> list[float]:
@@ -52,22 +53,8 @@ def embed_query(text: str, mode: str = "sym") -> list[float]:
 
     `mode="sym"` uses the symmetric Instruct prompt the corpus was encoded with — pair it with a
     HyDE-shaped `text` (the production default). `mode="asym"` uses nomic's native asymmetric
-    `search_query:` prompt (registered prompt_name "query"); pair it with the raw question and the
-    `embedding_asym` column — no HyDE needed.
+    `search_query:` prompt; pair it with the raw question and the `embedding_asym` column — no
+    HyDE needed.
     """
-    enc = _get_model().encode
-    if mode == "asym":
-        vec = enc(
-            [text],
-            prompt_name="query",
-            normalize_embeddings=True,
-            convert_to_numpy=True,
-        )[0]
-    else:
-        vec = enc(
-            [text],
-            prompt=NOMIC_PROMPT,
-            normalize_embeddings=True,
-            convert_to_numpy=True,
-        )[0]
-    return [float(x) for x in vec]
+    prefix = ASYM_QUERY_PROMPT if mode == "asym" else NOMIC_PROMPT
+    return embed_texts([prefix + text])[0]
