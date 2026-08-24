@@ -1,0 +1,144 @@
+{
+ "best_generation": 5,
+ "generations": 8,
+ "dev_n": 601,
+ "test_n": 401,
+ "seed_test_acc": 0.5361596009975063,
+ "best_test_acc": 0.7506234413965087,
+ "best_test_macro_f1": 0.7599104023323658,
+ "structure": [
+  {
+   "digest": 1429507330,
+   "chars": 6372,
+   "lines": 107,
+   "words": 836,
+   "examples": 17,
+   "rules": 6,
+   "class_mentions": 42
+  },
+  {
+   "digest": 1064758147,
+   "chars": 5846,
+   "lines": 66,
+   "words": 869,
+   "examples": 17,
+   "rules": 6,
+   "class_mentions": 42
+  },
+  {
+   "digest": 3695254119,
+   "chars": 5521,
+   "lines": 61,
+   "words": 824,
+   "examples": 12,
+   "rules": 6,
+   "class_mentions": 36
+  },
+  {
+   "digest": 4225350720,
+   "chars": 5904,
+   "lines": 64,
+   "words": 885,
+   "examples": 14,
+   "rules": 6,
+   "class_mentions": 38
+  },
+  {
+   "digest": 438379011,
+   "chars": 6459,
+   "lines": 68,
+   "words": 968,
+   "examples": 15,
+   "rules": 6,
+   "class_mentions": 42
+  },
+  {
+   "digest": 3421780228,
+   "chars": 6552,
+   "lines": 69,
+   "words": 989,
+   "examples": 16,
+   "rules": 6,
+   "class_mentions": 43
+  },
+  {
+   "digest": 428624668,
+   "chars": 7231,
+   "lines": 74,
+   "words": 1112,
+   "examples": 19,
+   "rules": 6,
+   "class_mentions": 47
+  },
+  {
+   "digest": 428624668,
+   "chars": 7231,
+   "lines": 74,
+   "words": 1112,
+   "examples": 19,
+   "rules": 6,
+   "class_mentions": 47
+  }
+ ],
+ "repeats": [
+  7
+ ],
+ "best_per_class_f1": {
+  "uses": 0.7671232876712328,
+  "extends": 0.7933333333333333,
+  "compares": 0.7894736842105263,
+  "motivates": 0.862876254180602,
+  "background": 0.6294642857142857,
+  "critiques": 0.8055555555555556
+ },
+ "confusion": [
+  [
+   140,
+   3,
+   3,
+   1,
+   22,
+   0
+  ],
+  [
+   17,
+   119,
+   7,
+   2,
+   20,
+   1
+  ],
+  [
+   13,
+   3,
+   120,
+   0,
+   28,
+   3
+  ],
+  [
+   2,
+   3,
+   0,
+   129,
+   31,
+   0
+  ],
+  [
+   18,
+   3,
+   3,
+   2,
+   141,
+   1
+  ],
+  [
+   6,
+   3,
+   4,
+   0,
+   38,
+   116
+  ]
+ ]
+}
