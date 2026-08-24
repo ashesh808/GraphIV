@@ -1,13 +1,8 @@
-"""Drive the phase-6 endpoint for an experiment condition and return its run.json.
+"""
+Drive the endpoint for one experiment condition and return its run record
 
-Imports `pipeline.run` (single-pass) / `deep_loop.run_deep` (judge loop) via the bootstrap and
-routes on `max_rounds`. Writes each condition's output under the experiment's own results dir
-(via out_root) so runs never collide with the live endpoint output.
-
-A small config-cache (manifest under `out_root`) keys runs by a hash of (question + full config),
-so an identical cell across experiments (e.g. the deep rounds-2/k4/figs-off cell shared by exps
-9/10/11) computes ONCE and re-runs/metric-tweaks are free. Point several experiments at a shared
-`out_root` to dedup generation across them.
+It routes on max_rounds, so a condition picks the single pass or the deep loop by config
+Output lands under the experiment's own results directory, never the live endpoint's
 """
 
 from __future__ import annotations
@@ -17,15 +12,14 @@ import json
 from pathlib import Path
 from typing import Any
 
-# force the sys.path bootstrap before importing phase-6 modules by bare name
-from ._boot import REPO as _REPO  # noqa: F401
-
-import deep_loop  # noqa: E402
-import pipeline  # noqa: E402
+from graphiv.generate import loop as deep_loop
+from graphiv.generate import pipeline as pipeline
 
 
 def _cache_key(question: str, cfg: dict[str, Any]) -> str:
-    """Stable short hash of the full (question + config) so identical cells compute once."""
+    """
+    Stable short hash of the full (question + config) so identical cells compute once
+    """
     blob = json.dumps({"q": question, **cfg}, sort_keys=True)
     return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
 
@@ -50,12 +44,15 @@ def run_phase6(
     fuse: bool = True,
     cache: bool = True,
 ) -> tuple[dict[str, Any], Path]:
-    """Run one condition. Returns (run.json meta, output dir).
+    """
+    Run one condition
 
-    Uses the deep judge-loop when `max_rounds > 1` OR `deep=True` (the latter lets an experiment
-    run the loop with `max_rounds=1` to isolate it from gap-expansion while keeping long-compose +
-    critique). Otherwise the single-pass path. On a `cache` hit (same question+config already wrote
-    a valid dir) the LLM call is skipped and the prior `run.json` is loaded.
+    Returns (run.json meta, output dir).
+
+        Uses the deep judge-loop when `max_rounds > 1` OR `deep=True` (the latter lets an experiment
+        run the loop at max_rounds=1 to isolate it from gap expansion, keeping compose and critique
+        Otherwise the single-pass path runs. On a cache hit, meaning the same question and config
+        a valid dir) the LLM call is skipped and the prior `run.json` is loaded.
     """
     out_root.mkdir(parents=True, exist_ok=True)
     cfg: dict[str, Any] = {
@@ -77,9 +74,7 @@ def run_phase6(
     manifest = out_root / "_cache.json"
     key = _cache_key(question, cfg)
     if cache and manifest.exists():
-        m: dict[str, str] = json.loads(
-            manifest.read_text()
-        )  # pyright: ignore[reportAny]
+        m: dict[str, str] = json.loads(manifest.read_text())  # pyright: ignore[reportAny]
         hit = m.get(key)
         if hit:
             d = Path(hit)
@@ -122,18 +117,19 @@ def run_phase6(
         )
     out_dir = _resolve_out_dir(meta, out_root)
     if cache:
-        m2: dict[str, str] = (
-            json.loads(manifest.read_text()) if manifest.exists() else {}
-        )
+        m2: dict[str, str] = json.loads(manifest.read_text()) if manifest.exists() else {}
         m2[key] = str(out_dir)
         _ = manifest.write_text(json.dumps(m2, indent=0), encoding="utf-8")
     return meta, out_dir
 
 
 def _resolve_out_dir(meta: dict[str, Any], out_root: Path) -> Path:
-    """The endpoint writes to <root>/<slug>/<cfg>; the deep path honors out_root, single-pass
-    writes to the live OUT root. Relocate a single-pass result into out_root so every cell of an
-    experiment lands in the same store (keeps the run dirs colocated + browsable)."""
+    """
+    The endpoint writes to <root>/<slug>/<cfg>; the deep path honors out_root, single-pass
+
+        writes to the live OUT root. Relocate a single-pass result into out_root so every cell of an
+        experiment lands in the same store (keeps the run dirs colocated + browsable).
+    """
     import shutil
 
     slug = pipeline._slug(str(meta["question"]))  # pyright: ignore[reportPrivateUsage]

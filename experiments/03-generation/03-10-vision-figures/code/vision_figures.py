@@ -1,24 +1,18 @@
-"""experiment 03-10 — Vision figure augmentation.
+"""
+Whether the figure gallery earns its place, toggling it on and off
 
-Toggles the deep-loop figure gallery (`figures` on/off). When on, the vision model
-(Gemma-4-26B-Vision) crops Figure-1 from top landmarks' PDFs and captions them. We measure how
-many figures are produced and — the real question — whether the captions are FAITHFUL to the
-images, re-checked by the vision model against each saved crop.
-
-    uv run python experiments/03-generation/03-10-vision-figures/run.py
+When it is on, the vision model crops each top landmark's first figure and captions it
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-sys.path.insert(0, str(_HERE.parents[3]))
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import deep_panel  # noqa: E402
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
 
 RESULTS = _EXP / "results"
 

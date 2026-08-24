@@ -1,31 +1,24 @@
-"""experiment 03-04 — Topic-adaptive recency knob sweep.
+"""
+Sweep the recency dial and watch lineage trade against frontier coverage
 
-Sweeps `--set-recency` ∈ {0.0, 0.2, 0.4, 0.6, 0.8} over two topics (single-pass, fast effort),
-holding everything else constant, and measures how the knob trades historical lineage (citation
-edges) against frontier coverage (recent-year landmarks). Populates results/.
-
-    uv run python experiments/03-generation/03-04-recency-knob/run.py
+Everything but the dial is held constant, over two topics on the single-pass path
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-sys.path.insert(0, str(_HERE.parents[3]))  # experiments/ -> _harness
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import battery  # noqa: E402
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
 
 RESULTS = _EXP / "results"
 
 
 def run(_use_cache: bool = True) -> None:
-    conditions = [
-        (str(r), {"effort": "fast", "recency": r}) for r in (0.0, 0.2, 0.4, 0.6, 0.8)
-    ]
+    conditions = [(str(r), {"effort": "fast", "recency": r}) for r in (0.0, 0.2, 0.4, 0.6, 0.8)]
     _ = run_experiment(
         results_dir=RESULTS,
         topic_keys=battery(),

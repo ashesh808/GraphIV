@@ -1,8 +1,8 @@
-"""Global plot theme: the Material palette from `../../theme.json` + the Google Sans Flex font.
+"""
+The global plot theme, read from the project palette
 
-Call `apply_theme()` once before plotting; use SURFACE / ON_SURFACE / OUTLINE / BARS for colors.
-Dark by default (figures land in dark-surfaced reports); pass mode="light" for the light palette.
-All experiment + phase figures import this so the look is consistent.
+Call apply_theme once before plotting, then use the exported color names
+Dark is the default because the figures land in dark-surfaced reports
 """
 
 from __future__ import annotations
@@ -54,7 +54,9 @@ _FONT_NAME = "Google Sans Flex"
 
 
 def _register_font() -> str:
-    """Register Google Sans Flex if its ttf is findable; return the usable family name."""
+    """
+    Register Google Sans Flex if its ttf is findable; return the usable family name
+    """
     cands = [
         os.path.expanduser("~/.local/share/fonts/GoogleSansFlex-VariableFont.ttf"),
         *glob.glob(
@@ -74,7 +76,9 @@ def _register_font() -> str:
 
 
 def apply_theme(mode: str = "dark") -> None:
-    """Apply the global Material theme + Google Sans Flex to matplotlib rcParams (idempotent)."""
+    """
+    Apply the global Material theme + Google Sans Flex to matplotlib rcParams (idempotent)
+    """
     t = _theme(mode)
     fam = _register_font()
     plt.rcParams.update(

@@ -1,63 +1,37 @@
-"""experiment 02-02 — subgraph relevance/role judge (gold-free, all 27 topics).
+"""
+Precision and composition of the retrieved subgraph, which recall cannot see
 
-Where 02-01 measures RECALL against curated gold (only 3 topics), this measures the two
-things recall cannot: PRECISION (how much of the retrieved subgraph is off-topic noise) and
-COMPOSITION (does the subgraph span a field's lineage from roots to frontier). It needs no gold,
-so it runs over the whole 27-topic battery.
-
-For every committed landmark (induce/PPR), a self-hosted Gemma-4-26B judge (@T=0) sees ONLY the
-topic + the paper's title/year/abstract — NOT our PPR/in-degree scores, so its label is an
-independent check, not a rubber stamp — and assigns one role:
-  foundational : seminal/origin work the topic's methods are built upon.
-  core         : a central, widely-built-on method in the main line (load-bearing middle).
-  frontier     : recent work pushing the leading edge (new capabilities / SOTA / open directions).
-  peripheral   : genuinely related but tangential (adjacent-domain application, survey, benchmark).
-  unrelated    : off-topic for this topic — a retrieval error that should not be in the subgraph.
-
-Derived: relevance_rate = 1 - unrelated_frac (precision); composition fractions; lineage_span (has
->=1 foundational AND >=1 frontier); plus mean in-degree per label (structure-agreement check vs PPR).
-
-Judgments are cached by (topic, arxiv_id) in results/runs/judge_cache.db so the run is resumable.
-Visualization is deferred — this writes metrics_raw.json / metrics.json / metrics.md only.
-
-    uv run python experiments/02-retrieval/02-02-relevance-judge/run.py
+It needs no gold, so unlike 02-01 it runs over the whole topic battery
 """
 
 from __future__ import annotations
 
 import json
 import sqlite3
-import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
 from _harness._boot import JUDGE_MODEL  # noqa: E402
 from _harness._llm import chat, parse_json  # noqa: E402
 from _harness.topics import TOPICS, battery  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from recency import detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import Edge, PoolNode, augment_with_ancestors, induce_subgraph  # noqa: E402  # fmt: skip
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import Edge, PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
 
 RESULTS = _EXP / "results"
 CACHE = _EXP / "cache"
@@ -80,9 +54,7 @@ _SYS = (
 )
 
 
-def _judge(
-    topic_q: str, title: str, year: int | None, aid: str, abstract: str
-) -> dict[str, str]:
+def _judge(topic_q: str, title: str, year: int | None, aid: str, abstract: str) -> dict[str, str]:
     user = (
         f"TOPIC: {topic_q}\n\nPAPER\ntitle: {title}\nyear: {year if year is not None else '?'}\n"
         f"arXiv: {aid}\nabstract: {abstract[:3000] or '(abstract unavailable)'}"
@@ -92,17 +64,13 @@ def _judge(
     reason = str(obj.get("reason", ""))[:160] if isinstance(obj, dict) else ""
     if label not in LABELS:  # one retry on an off-menu / unparseable label
         obj = parse_json(chat(JUDGE_MODEL, _SYS, user, temperature=0.0, max_tokens=300))
-        label = (
-            str(obj.get("label", "")).strip().lower() if isinstance(obj, dict) else ""
-        )
+        label = str(obj.get("label", "")).strip().lower() if isinstance(obj, dict) else ""
         reason = str(obj.get("reason", ""))[:160] if isinstance(obj, dict) else reason
     return {"label": label if label in LABELS else "unparsed", "reason": reason}
 
 
 # --- committed retrieval (induce/PPR), same as 02-01 ------------------
-def landmarks_for(
-    store: Store, qvec: list[float], q: str
-) -> tuple[list[PoolNode], dict[str, int]]:
+def landmarks_for(store: Store, qvec: list[float], q: str) -> tuple[list[PoolNode], dict[str, int]]:
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -116,9 +84,7 @@ def landmarks_for(
     pool.update(frontier_pull(store, qvec, fr.frontier_year, want=60))
     _ = augment_with_ancestors(store, pool, qvec, max_add=120)
     edges: list[Edge] = induce_subgraph(store, list(pool))
-    lms = rank_landmarks_ppr(
-        pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+    lms = rank_landmarks_ppr(pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     chosen = {lm.arxiv_id for lm in lms}
     indeg: dict[str, int] = defaultdict(int)
     for e in edges:
@@ -147,9 +113,7 @@ def run(use_cache: bool = True) -> None:
     cache = _cache(CACHE / "judge_cache.db")
 
     # --- stage 1: retrieve every topic's landmarks (nomic loaded once) --------
-    plan: dict[str, list[tuple[str, str, int | None]]] = (
-        {}
-    )  # topic -> [(aid, title, year)]
+    plan: dict[str, list[tuple[str, str, int | None]]] = {}  # topic -> [(aid, title, year)]
     indeg_all: dict[str, dict[str, int]] = {}
     abstracts_all: dict[str, dict[str, str]] = {}
     _free_router_vram()
@@ -313,9 +277,7 @@ def _write_outputs(overall: dict[str, Any]) -> None:
         "\\midrule",
     ]
     for lab in LABELS:
-        lines.append(
-            f"{lab} & {overall[f'frac_{lab}']} & {overall[f'indeg_{lab}']} \\\\"
-        )
+        lines.append(f"{lab} & {overall[f'frac_{lab}']} & {overall[f'indeg_{lab}']} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     _ = (RESULTS / "table.tex").write_text("\n".join(lines) + "\n")
 

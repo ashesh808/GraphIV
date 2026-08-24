@@ -1,9 +1,8 @@
-"""Exp-2 — paper-list quality under a low cap: fixed-40 vs 0.35 gate vs LLM-relevance filter.
+"""
+Paper-list quality under a low cap, across four landmark sets
 
-Arms (same pool, same adjacency_list+extracted digest; only the landmark SET differs):
-  fixed40 = PPR top-40; gate40 = 0.35 cosine ancestor gate top-40; llm40 = drop role=unrelated, top-40;
-  llm_dyn = same filter, soft cap 60. Metric: direct (count/recall[gold]/precision/lineage_span) +
-  compose-judge on validated axes (grounding/coverage) + pairwise vs fixed40 (lineage asterisked).
+The pool and the digest are identical in every arm, so only the selected set differs
+Metrics pair the direct counts with a compose judge and a pairwise comparison
 """
 
 from __future__ import annotations
@@ -16,26 +15,30 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]
-_REPO = _HERE.parents[4]
-sys.path.insert(0, str(_REPO / "experiments"))
-
 from _harness.digest import adjacency_digest  # noqa: E402
-from _harness.judge import ROLE_LABELS, judge_pairwise, judge_report, role_judge  # noqa: E402  # fmt: skip
+from _harness.judge import (  # noqa: E402  # fmt: skip
+    ROLE_LABELS,
+    judge_pairwise,
+    judge_report,
+    role_judge,
+)
 from _harness.retrieval import retrieve_subgraph  # noqa: E402
 from _harness.topics import TOPICS, deep_panel  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from extract import extract_many  # noqa: E402
-from llm import NO_THINK, chat_sync  # noqa: E402
-from narrate import check_citations  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import _free_router_vram  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from schema import propose_schema  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import Edge, Landmark  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.llm import NO_THINK, chat_sync
+from graphiv.core.models import Edge, Landmark
+from graphiv.core.store import Store
+from graphiv.generate.extract import extract_many
+from graphiv.generate.narrate import check_citations
+from graphiv.generate.pipeline import _free_router_vram
+from graphiv.generate.schema import propose_schema
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]
+_REPO = _HERE.parents[4]
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -45,12 +48,7 @@ ARMS = ("fixed40", "gate40", "llm40", "llm_dyn")
 GATE, CAND, CAP40, CAPDYN = 0.35, 100, 40, 60
 TODAY = datetime.now().strftime("%Y-%m-%d")
 ROLE_CACHE = (
-    _REPO
-    / "experiments"
-    / "02-retrieval"
-    / "02-02-relevance-judge"
-    / "cache"
-    / "judge_cache.db"
+    _REPO / "experiments" / "02-retrieval" / "02-02-relevance-judge" / "cache" / "judge_cache.db"
 )
 
 _SYS = (
@@ -77,9 +75,7 @@ def _role(conn: sqlite3.Connection, topic: str, lm: Landmark, abstract: str) -> 
         lm.year,
         abstract,
     )
-    _ = conn.execute(
-        "INSERT INTO judge VALUES (?,?,?,?)", (topic, lm.arxiv_id, label, "(selexp)")
-    )
+    _ = conn.execute("INSERT INTO judge VALUES (?,?,?,?)", (topic, lm.arxiv_id, label, "(selexp)"))
     conn.commit()
     return label
 
@@ -132,22 +128,15 @@ def run() -> None:
             "abs": absd,
             "by_id": {lm.arxiv_id: lm for lm in (*cand, *gat.landmarks)},
         }
-        print(
-            f"[retrieve] {k}: cand={len(cand)} gate40={len(gat.landmarks)}", flush=True
-        )
+        print(f"[retrieve] {k}: cand={len(cand)} gate40={len(gat.landmarks)}", flush=True)
     free_model()
 
     rc = sqlite3.connect(ROLE_CACHE)
     for k in keys:
         d = data[k]
-        labels = {
-            lm.arxiv_id: _role(rc, k, lm, d["abs"].get(lm.arxiv_id, ""))
-            for lm in d["cand"]
-        }
+        labels = {lm.arxiv_id: _role(rc, k, lm, d["abs"].get(lm.arxiv_id, "")) for lm in d["cand"]}
         for lm in d["gate40"]:
-            labels.setdefault(
-                lm.arxiv_id, _role(rc, k, lm, d["abs"].get(lm.arxiv_id, ""))
-            )
+            labels.setdefault(lm.arxiv_id, _role(rc, k, lm, d["abs"].get(lm.arxiv_id, "")))
         d["labels"] = labels
         kept = [lm for lm in d["cand"] if labels.get(lm.arxiv_id) != "unrelated"]
         d["sets"] = {
@@ -187,15 +176,11 @@ def run() -> None:
     for k in keys:
         d = data[k]
         for arm in ARMS:
-            if conn.execute(
-                "SELECT 1 FROM compose WHERE topic=? AND arm=?", (k, arm)
-            ).fetchone():
+            if conn.execute("SELECT 1 FROM compose WHERE topic=? AND arm=?", (k, arm)).fetchone():
                 continue
             lms = d["sets"][arm]
             edges = d["edges_g"] if arm == "gate40" else d["edges_u"]
-            dig = adjacency_digest(
-                lms, _among(edges, {lm.arxiv_id for lm in lms}), d["ext"]
-            )
+            dig = adjacency_digest(lms, _among(edges, {lm.arxiv_id for lm in lms}), d["ext"])
             rep, ptok, _ = chat_sync(
                 NARRATOR,
                 _SYS,
@@ -204,9 +189,7 @@ def run() -> None:
                 3500,
                 extra_body=NO_THINK,
             )
-            _ = conn.execute(
-                "INSERT INTO compose VALUES (?,?,?,?)", (k, arm, rep, ptok)
-            )
+            _ = conn.execute("INSERT INTO compose VALUES (?,?,?,?)", (k, arm, rep, ptok))
             conn.commit()
             print(f"[compose] {k}/{arm}: n={len(lms)}", flush=True)
 
@@ -227,9 +210,7 @@ def run() -> None:
                 g, off = check_citations(rep, pool_ids)
                 j = judge_report(q_dated, rep, canon, passes=1)
                 j["grounded_frac"] = round(len(g) / max(1, len(g) + len(off)), 3)
-                _ = conn.execute(
-                    "INSERT INTO judged VALUES (?,?,?)", (k, arm, json.dumps(j))
-                )
+                _ = conn.execute("INSERT INTO judged VALUES (?,?,?)", (k, arm, json.dumps(j)))
                 conn.commit()
             if (
                 arm != "fixed40"
@@ -237,12 +218,8 @@ def run() -> None:
                     "SELECT 1 FROM paired WHERE topic=? AND arm=?", (k, arm)
                 ).fetchone()
             ):
-                pj = judge_pairwise(
-                    q_dated, rep_of(k, arm), rep_of(k, "fixed40"), canon
-                )
-                _ = conn.execute(
-                    "INSERT INTO paired VALUES (?,?,?)", (k, arm, json.dumps(pj))
-                )
+                pj = judge_pairwise(q_dated, rep_of(k, arm), rep_of(k, "fixed40"), canon)
+                _ = conn.execute("INSERT INTO paired VALUES (?,?,?)", (k, arm, json.dumps(pj)))
                 conn.commit()
 
     def recall(lms: list[Landmark], k: str) -> tuple[float, float]:
@@ -261,9 +238,7 @@ def run() -> None:
         for k in keys:
             labs = [
                 x
-                for x in (
-                    data[k]["labels"].get(lm.arxiv_id) for lm in data[k]["sets"][arm]
-                )
+                for x in (data[k]["labels"].get(lm.arxiv_id) for lm in data[k]["sets"][arm])
                 if x in ROLE_LABELS
             ]
             prec.append(1 - labs.count("unrelated") / len(labs) if labs else 0.0)
@@ -272,9 +247,9 @@ def run() -> None:
         spr = [recall(data[k]["sets"][arm], k)[1] for k in gold]
         js = [
             json.loads(
-                conn.execute(
-                    "SELECT js FROM judged WHERE topic=? AND arm=?", (k, arm)
-                ).fetchone()[0]
+                conn.execute("SELECT js FROM judged WHERE topic=? AND arm=?", (k, arm)).fetchone()[
+                    0
+                ]
             )
             for k in keys
         ]
@@ -310,9 +285,7 @@ def run() -> None:
     conn.close()
 
     (RESULTS).mkdir(parents=True, exist_ok=True)
-    _ = (RESULTS / "metrics.json").write_text(
-        json.dumps(rows, indent=1), encoding="utf-8"
-    )
+    _ = (RESULTS / "metrics.json").write_text(json.dumps(rows, indent=1), encoding="utf-8")
     cols = [
         "arm",
         "count",

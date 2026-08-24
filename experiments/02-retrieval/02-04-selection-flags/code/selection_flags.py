@@ -1,10 +1,8 @@
-"""Selection flags — per-paper relevance (-2..+2) of the landmark set under four selection arms.
+"""
+Per-paper relevance of the landmark set under four selection arms
 
-Scores every selected paper on its salient full text (sum penalizes drift/noise; mean = per-paper
-quality; count-independent). Arms isolate filter-type x count at cap 50: fixed50 (PPR top-50),
-gate50 (0.35 cosine ancestor gate), llm50 (drop role<-2 over PPR-80, capped 50), llm_dyn (same
-filter, soft cap 75). The ablation conclusion: the COUNT does not matter — cosine-gate and
-LLM-filter are independent on/off flags. Scores cached by (topic, arxiv_id) in cache/cache.db.
+The arms isolate filter type against count at a fixed cap
+The mean is per-paper quality, which keeps the comparison count-independent
 """
 
 from __future__ import annotations
@@ -15,29 +13,22 @@ import sys
 from pathlib import Path
 from typing import Any
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness._boot import JUDGE_MODEL  # noqa: E402
 from _harness._llm import chat, parse_json  # noqa: E402
 from _harness.retrieval import retrieve_subgraph  # noqa: E402
 from _harness.topics import TOPICS, battery  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from fulltext import extract_salient  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import _free_router_vram  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.fulltext import extract_salient
+from graphiv.generate.pipeline import _free_router_vram
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
 
 GATE, CAND, CAP, DYN = 0.35, 80, 50, 75
 ARMS = ("fixed50", "gate50", "llm50", "llm_dyn")
@@ -163,15 +154,10 @@ def run(use_cache: bool = True) -> None:
     rows: list[dict[str, Any]] = []
     for arm in ARMS:
         st = [
-            _stats([data[k]["sc"].get(lm.arxiv_id, 0) for lm in data[k]["sets"][arm]])
-            for k in keys
+            _stats([data[k]["sc"].get(lm.arxiv_id, 0) for lm in data[k]["sets"][arm]]) for k in keys
         ]
         neg2 = sum(
-            sum(
-                1
-                for lm in data[k]["sets"][arm]
-                if data[k]["sc"].get(lm.arxiv_id, 0) == -2
-            )
+            sum(1 for lm in data[k]["sets"][arm] if data[k]["sc"].get(lm.arxiv_id, 0) == -2)
             for k in keys
         )
         rows.append(
@@ -212,9 +198,7 @@ def _write_outputs(rows: list[dict[str, Any]], n_topics: int) -> None:
     )
     macros = []
     for r in rows:
-        tag = "".join(
-            c for c in r["arm"] if c.isalpha()
-        )  # letter-only: tex macro names
+        tag = "".join(c for c in r["arm"] if c.isalpha())  # letter-only: tex macro names
         macros.append(f"\\newcommand{{\\{tag}Sum}}{{{r['sum']}}}")
         macros.append(f"\\newcommand{{\\{tag}Mean}}{{{r['mean']}}}")
     _ = (RESULTS / "macros.tex").write_text("\n".join(macros) + "\n")
@@ -232,10 +216,7 @@ def _write_outputs(rows: list[dict[str, Any]], n_topics: int) -> None:
     ]
     for r in rows:
         lines.append(
-            r["arm"].replace("_", r"\_")
-            + " & "
-            + " & ".join(str(r[c[0]]) for c in show)
-            + " \\\\"
+            r["arm"].replace("_", r"\_") + " & " + " & ".join(str(r[c[0]]) for c in show) + " \\\\"
         )
     lines += ["\\bottomrule", "\\end{tabular}"]
     _ = (RESULTS / "table.tex").write_text("\n".join(lines) + "\n")

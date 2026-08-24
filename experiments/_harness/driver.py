@@ -1,14 +1,8 @@
-"""One-lever ablation driver: sweep a set of conditions over a set of gold topics, evaluate
-each run with the shared instruments, aggregate across topics, and write the paper artifacts
-(metrics_raw.json, metrics.json, metrics.md, ablation.png). Each experiment's run.py just
-declares its conditions + which metrics to tabulate/plot.
+"""
+The one-lever driver: sweep conditions across topics, aggregate, write the artifacts
 
-TWO-PHASE to avoid model thrash on a single GPU: (1) GENERATE every (topic x condition) run +
-objective metrics (phase-6 uses the Code generator + nomic); (2) EVALUATE the cached reports in
-model-grouped batches — all judge + faithfulness + pairwise calls together (Gemma-4-26B loaded
-once), then all vision caption checks together (Vision loaded once). This collapses eval-time
-26B model loads from ~2/run to ~2 total. Shared `out_root` (`shared_runs=True`) lets identical
-deep cells dedup across experiments via the runner cache.
+An experiment's run.py only declares its conditions and which metrics to tabulate
+Generation and evaluation run in two phases, so a single GPU loads each model once
 """
 
 from __future__ import annotations
@@ -23,8 +17,7 @@ from .runner import run_phase6
 from .topics import TOPICS, recall
 from .viz import bar_chart
 
-# shared run store (committed, browsable): identical cells dedup across experiments 9-12; the
-# detailed reports live here, surfaced via experiments/showcase/deep-levers-index.md
+# the shared run store, where identical cells dedup and the detailed reports stay browsable
 DEEP_RUNS = _REPO / "experiments" / "showcase" / "runs"
 
 
@@ -43,7 +36,11 @@ def run_experiment(
     pairwise: tuple[str, str] | None = None,
     shared_runs: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Run every (topic x condition), evaluate batched-by-model, aggregate. Returns (raw, agg)."""
+    """
+    Run every (topic x condition), evaluate batched-by-model, aggregate
+
+    Returns (raw, agg).
+    """
     results_dir.mkdir(parents=True, exist_ok=True)
     runs_dir = DEEP_RUNS if shared_runs else results_dir / "runs"
     raw_path = results_dir / "metrics_raw.json"
@@ -61,9 +58,7 @@ def run_experiment(
             meta, out_dir = run_phase6(topic.query, runs_dir, **kwargs)
             _, report = load_run(out_dir)
             row = metric_vector(meta, report)
-            row.update(
-                recall([lm["arxiv_id"] for lm in meta.get("landmarks", [])], topic)
-            )
+            row.update(recall([lm["arxiv_id"] for lm in meta.get("landmarks", [])], topic))
             row["topic"] = tk
             row[label_key] = label
             rows.append(row)
@@ -160,19 +155,15 @@ def run_experiment(
             a["gold_recall"] = g.get("landmark_recall")
             a["gold_spine_recall"] = g.get("spine_recall")
 
-    _ = (results_dir / "metrics.json").write_text(
-        json.dumps(agg, indent=1), encoding="utf-8"
-    )
+    _ = (results_dir / "metrics.json").write_text(json.dumps(agg, indent=1), encoding="utf-8")
     write_table(agg, table_cols, results_dir / "metrics.md")
     bar_chart(agg, label_key, plot_metrics, results_dir / "ablation.png", title)
-    # live booktabs table for the report (re-run-refreshed); reports \input it instead of stale macros.
+    # the report inputs this table live, rather than carrying a stale copy of the macros
     from .tables import booktabs
 
     tex_cols = [(label_key, label_key)] + [
         (c, c.replace("_", " ")) for c in table_cols if c not in (label_key, "n_topics")
     ]
-    _ = (results_dir / "table.tex").write_text(
-        booktabs(agg, tex_cols), encoding="utf-8"
-    )
+    _ = (results_dir / "table.tex").write_text(booktabs(agg, tex_cols), encoding="utf-8")
     print(f"\n[exp] done -> {results_dir}/metrics.md + ablation.png", flush=True)
     return rows, agg

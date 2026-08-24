@@ -1,7 +1,8 @@
-"""Grouped bar charts for ablation results (ported from kg_rag_lab/viz_eval.py).
+"""
+Grouped bar charts for ablation results (ported from kg_rag_lab/viz_eval.py)
 
-One subplot per metric, one bar per condition. Uses the global theme (theme.json Material palette +
-Google Sans Flex). Saves a single PNG.
+One subplot per metric, one bar per condition.
+Uses the global theme (theme.json Material palette + Google Sans Flex).
 """
 
 from __future__ import annotations
@@ -28,19 +29,19 @@ def bar_chart(
     out_path: Path,
     title: str = "",
 ) -> None:
-    """rows: per-condition metric dicts. metrics: list of (key, human_label) to plot."""
+    """
+    rows: per-condition metric dicts. metrics: list of (key, human_label) to plot
+    """
     apply_theme()
     labels = [str(r.get(label_key, i)) for i, r in enumerate(rows)]
     n = len(metrics)
     cols = min(2, n)
     rows_n = (n + cols - 1) // cols
-    fig, axes = plt.subplots(
-        rows_n, cols, figsize=(6.5 * cols, 4.0 * rows_n), facecolor=_SURFACE
-    )
+    fig, axes = plt.subplots(rows_n, cols, figsize=(6.5 * cols, 4.0 * rows_n), facecolor=_SURFACE)
     axlist = (
         list(axes.flat) if hasattr(axes, "flat") else [axes]
     )  # pyright: ignore[reportAttributeAccessIssue]
-    for ax, (key, human) in zip(axlist, metrics):
+    for ax, (key, human) in zip(axlist, metrics, strict=False):
         vals = [float(r.get(key) or 0) for r in rows]
         bars = ax.bar(
             range(len(vals)), vals, color=_BARS[: len(vals)]
@@ -52,7 +53,7 @@ def bar_chart(
         ax.tick_params(colors=_ON)
         for s in ax.spines.values():
             s.set_color(_OUTLINE)
-        for b, v in zip(bars, vals):  # pyright: ignore[reportAny]
+        for b, v in zip(bars, vals, strict=False):  # pyright: ignore[reportAny]
             ax.text(
                 b.get_x() + b.get_width() / 2,
                 v,

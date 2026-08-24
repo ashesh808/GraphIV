@@ -1,11 +1,16 @@
-"""experiment 01-01-resolver-quality — logic in code/resolver.py."""
+"""
+experiment 01-01-resolver-quality — logic in code/resolver.py
+"""
 
 import sys
 from pathlib import Path
 
+# this tree's directory names are not identifiers, so the harness is reached by path
+_EXPERIMENTS = next(p for p in Path(__file__).resolve().parents if p.name == "experiments")
+sys.path.insert(0, str(_EXPERIMENTS))
 sys.path.insert(0, str(Path(__file__).resolve().parent / "code"))
 
-from resolver import run  # noqa: E402
+from resolver import run
 
 if __name__ == "__main__":
     run("--no-cache" not in sys.argv[1:])

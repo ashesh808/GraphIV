@@ -1,27 +1,24 @@
-"""Topic-tree shape compute + figures + tables (experiment 05).
+"""
+Topic-tree shape: leaf sizes, depth, and how coherence tracks leaf size
 
-Reads `leaf` + `paper_topic` from the single Postgres store and shows the bisecting tree's shape: no
-noise bucket (every paper gets a leaf), the leaf-size distribution, depth, and how coherence (radius)
-tracks leaf size. Pure SQL + figures, no LLM. Cached to cache/summary.json.
+Every paper gets a leaf, so unlike a grid there is no noise bucket to report
 """
 
 from __future__ import annotations
 
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 import psycopg
+from _harness.theme import BARS, PRIMARY, SECONDARY, apply_theme  # noqa: E402
 
 _HERE = Path(__file__).resolve()
 _EXP = _HERE.parents[1]
 _REPO = _HERE.parents[4]
-sys.path.insert(0, str(_REPO / "experiments"))
-from _harness.theme import BARS, PRIMARY, SECONDARY, apply_theme  # noqa: E402
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -35,9 +32,7 @@ def _q(conn: psycopg.Connection[tuple[Any, ...]], sql: str) -> list[tuple[Any, .
 def compute(use_cache: bool) -> dict[str, Any]:
     cache = CACHE / "summary.json"
     if cache.exists() and use_cache:
-        return json.loads(
-            cache.read_text(encoding="utf-8")
-        )  # pyright: ignore[reportAny]
+        return json.loads(cache.read_text(encoding="utf-8"))  # pyright: ignore[reportAny]
     out: dict[str, Any] = {}
     with psycopg.connect(PG_DSN) as conn:
         out["n_leaves"] = _q(conn, "SELECT count(*) FROM leaf")[0][0]
@@ -52,19 +47,14 @@ def compute(use_cache: bool) -> dict[str, Any]:
         }
         out["depth_hist"] = [
             [int(d), int(n)]
-            for d, n in _q(
-                conn, "SELECT depth, count(*) FROM leaf GROUP BY depth ORDER BY depth"
-            )
+            for d, n in _q(conn, "SELECT depth, count(*) FROM leaf GROUP BY depth ORDER BY depth")
         ]
         out["radii"] = [
-            float(r[0])
-            for r in _q(conn, "SELECT radius FROM leaf WHERE radius IS NOT NULL")
+            float(r[0]) for r in _q(conn, "SELECT radius FROM leaf WHERE radius IS NOT NULL")
         ]
         out["size_radius"] = [
             [int(s), float(r)]
-            for s, r in _q(
-                conn, "SELECT size, radius FROM leaf WHERE radius IS NOT NULL"
-            )
+            for s, r in _q(conn, "SELECT size, radius FROM leaf WHERE radius IS NOT NULL")
         ]
     CACHE.mkdir(parents=True, exist_ok=True)
     _ = cache.write_text(json.dumps(out, indent=1), encoding="utf-8")
@@ -99,7 +89,7 @@ def figures(s: dict[str, Any]) -> None:
     ax.set_xlabel("tree depth")
     ax.set_ylabel("# leaves")
     ax.set_title("Leaf depth distribution (deep where dense, shallow where coherent)")
-    for b, x in zip(bars, d):
+    for b, x in zip(bars, d, strict=False):
         ax.text(
             b.get_x() + b.get_width() / 2,
             x[1],

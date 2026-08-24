@@ -1,23 +1,8 @@
-"""experiment 02-06 — the selection objective on trial (PPR is a contestant, not the incumbent).
+"""
+The selection objective on trial, with PPR entered as a contestant
 
-Adversarial dogfooding showed the two selection failures fusion can't fix: PPR's rich-get-richer
-starves relevant-but-peripheral clusters (SimPO/KTO never became landmarks for the RL question),
-and item-wise ranking optimizes "best page" where a review needs a covering SET. Six arms select
-the non-reserved landmark budget over an identical front-end (hybrid pool + 0.35-gated ancestors
-+ reader grades + fused scores + frontier reservation):
-  ppr            : shipped fused-seeded personalized PageRank (baseline)
-  fused_topk     : top-m by fused score (does the graph help selection at all?)
-  mmr            : greedy maximal marginal relevance (lambda=0.7)
-  facility       : facility-location greedy (fused-weighted semantic coverage)
-  ppr_facility   : 80% PPR + 20% facility-location fill (the reservation pattern, semanticized)
-  proportional   : cluster-proportional committee (Method-of-Equal-Shares flavor)
-
-Metrics (vector): gold landmark/spine recall (3 topics, THE gate) · relevance_rate + composition
-(reader grades; same-grader caveat) · pool_coverage + cluster_recall (the set objective) ·
-litmus named-paper hits on the 3 adversarial questions (pool-hit vs landmark-hit — instrumented
-boundaries) · frontier_count · landmark-edge density (story-graph health) · wall time.
-
-    uv run python experiments/02-retrieval/02-06-selection-objective/run.py
+Six arms select the same budget over an identical front end, so only the objective differs
+A review needs a covering set, while item-wise ranking optimizes for the single best page
 """
 
 from __future__ import annotations
@@ -25,7 +10,6 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
-import sys
 import time
 from collections import Counter
 from datetime import datetime
@@ -33,29 +17,18 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]
-_REPO = _HERE.parents[4]
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness.topics import TOPICS, battery  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from reader_grade import LABELS, Grade, candidates, fused_score, grade_many  # noqa: E402  # fmt: skip
-from recency import FrontierSpec, detect_frontier, frontier_select  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from landmark_select import (  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import Edge, Landmark, PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.grade import LABELS, Grade, candidates, fused_score, grade_many
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.landmarks import (
+    kmeans_labels,
     pool_coverage,
     select_facility,
     select_fused_topk,
@@ -63,23 +36,20 @@ from landmark_select import (  # noqa: E402
     select_ppr,
     select_ppr_facility,
     select_proportional,
-    kmeans_labels,
     unit_matrix,
 )
-from store import Store  # noqa: E402
-from subgraph import (  # noqa: E402
-    Edge,
-    Landmark,
-    PoolNode,
-    augment_with_ancestors,
-    induce_subgraph,
-)
+from graphiv.retrieve.recency import FrontierSpec, detect_frontier, frontier_select
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]
+_REPO = _HERE.parents[4]
 
 RESULTS = _EXP / "results"
 ARMS = ("ppr", "fused_topk", "mmr", "facility", "ppr_facility", "proportional")
 
-# adversarial litmus questions + must-have papers (curated from the dogfood cohorts; the
-# named-entity misses observed live). Checked at BOTH boundaries: pool-hit and landmark-hit.
+# litmus questions and their must-have papers, checked at the pool and landmark boundaries
 LITMUS: dict[str, tuple[str, list[str]]] = {
     "kv": (
         "Compare the frontier approaches to KV cache compression and memory-efficient "
@@ -91,7 +61,7 @@ LITMUS: dict[str, tuple[str, list[str]]] = {
             "2309.06180",  # PagedAttention/vLLM
             "2401.18079",  # KVQuant
             "2402.02750",  # KIVI
-            "2406.10774",  # Quest (landmark-dropped in the wild... by the writer; here: selection)
+            "2406.10774",  # Quest, dropped by the writer in the wild and by selection here
             "2407.02490",  # MInference
             "2410.10819",  # DuoAttention
             "2405.12981",  # CLA
@@ -107,8 +77,8 @@ LITMUS: dict[str, tuple[str, list[str]]] = {
             "2402.03300",  # DeepSeekMath / GRPO
             "2501.12948",  # DeepSeek-R1
             "2305.20050",  # Let's Verify Step by Step (PRM)
-            "2405.14734",  # SimPO   (missed in the wild)
-            "2402.01306",  # KTO     (missed in the wild)
+            "2405.14734",  # SimPO (missed in the wild)
+            "2402.01306",  # KTO (missed in the wild)
             "2310.12036",  # IPO/GPO
         ],
     ),
@@ -130,7 +100,9 @@ LITMUS: dict[str, tuple[str, list[str]]] = {
 def committed_pool(
     store: Store, qvec: list[float], q: str
 ) -> tuple[dict[str, PoolNode], list[Edge], FrontierSpec, int]:
-    """Shipped committed retrieval (fast tier), shared by every arm."""
+    """
+    Shipped committed retrieval (fast tier), shared by every arm
+    """
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -147,18 +119,16 @@ def committed_pool(
     return pool, edges, fr, m
 
 
-def fused_pool(
-    pool: dict[str, PoolNode], grades: dict[str, Grade]
-) -> dict[str, PoolNode]:
-    """Production fusion: fused score in .score, relevance -2 excluded (kept as connectors)."""
+def fused_pool(pool: dict[str, PoolNode], grades: dict[str, Grade]) -> dict[str, PoolNode]:
+    """
+    Production fusion: fused score in .score, relevance -2 excluded (kept as connectors)
+    """
     out: dict[str, PoolNode] = {}
     for a, n in pool.items():
         g = grades.get(a)
         if g is not None and g.relevance <= -2:
             continue
-        out[a] = PoolNode(
-            n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g)
-        )
+        out[a] = PoolNode(n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g))
     return out
 
 
@@ -170,14 +140,11 @@ def arm_landmarks(
     fr: FrontierSpec,
     m: int,
 ) -> list[str]:
-    """Frontier reservation first (settled policy), then the arm fills the remainder."""
-    lms = [
-        Landmark(n.arxiv_id, n.title, n.year, n.category, n.score, 0)
-        for n in fpool.values()
-    ]
-    reserved = [
-        lm.arxiv_id for lm in frontier_select(lms, fr.frontier_year, fr.recent_floor)
-    ]
+    """
+    Frontier reservation first (settled policy), then the arm fills the remainder
+    """
+    lms = [Landmark(n.arxiv_id, n.title, n.year, n.category, n.score, 0) for n in fpool.values()]
+    reserved = [lm.arxiv_id for lm in frontier_select(lms, fr.frontier_year, fr.recent_floor)]
     taken = set(reserved)
     want = m - len(reserved)
     rest = {a: n for a, n in fpool.items() if a not in taken}
@@ -202,7 +169,9 @@ def cluster_recall(
     embs: dict[str, list[float]],
     k: int,
 ) -> float:
-    """Fraction of fused-mass-carrying k-means clusters that got >=1 landmark."""
+    """
+    Fraction of fused-mass-carrying k-means clusters that got >=1 landmark
+    """
     ids, mat = unit_matrix(fpool, embs)
     if not ids:
         return 0.0
@@ -267,12 +236,10 @@ def run() -> None:
             cs = set(chosen)
             cover[arm][key] = pool_coverage(chosen, fpool, embs, min_score=0.15)
             clrec[arm][key] = cluster_recall(chosen, fpool, embs, k=max(2, m // 8))
-            edge_density[arm][key] = sum(
-                1 for s, d in edge_pairs if s in cs and d in cs
-            ) / max(1, len(cs))
-            frontier_n[arm][key] = sum(
-                1 for a in cs if (year_of.get(a) or 0) >= fr.frontier_year
+            edge_density[arm][key] = sum(1 for s, d in edge_pairs if s in cs and d in cs) / max(
+                1, len(cs)
             )
+            frontier_n[arm][key] = sum(1 for a in cs if (year_of.get(a) or 0) >= fr.frontier_year)
         print(
             f"[{key}] pool {len(pool)} graded {len(grades)} · "
             + " ".join(f"{a}={len(sets[a][key])}" for a in ARMS),
@@ -333,9 +300,7 @@ def run() -> None:
                 "litmus_pool_hit": pool_hit,
                 "litmus_landmark_hit": lm_hit,
                 "frontier_mean": round(sum(frontier_n[arm].values()) / n_topics, 1),
-                "edges_per_landmark": round(
-                    sum(edge_density[arm].values()) / n_topics, 2
-                ),
+                "edges_per_landmark": round(sum(edge_density[arm].values()) / n_topics, 2),
                 "select_seconds": round(times[arm], 1),
                 **{f"frac_{r}": round(comp[r] / total_roles, 3) for r in LABELS},
             }

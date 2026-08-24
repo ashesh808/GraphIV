@@ -1,28 +1,24 @@
-"""Resolver-quality compute + figures + tables (experiment 01).
+"""
+Resolver quality: how often a reference resolves, and by which tier of the ladder
 
-Reads `citation.method` (+ category/year joins) from the single Postgres store and characterizes the
-layered resolver (L0 link -> L1 text -> L2 doi -> L3 jref -> L4 title-exact -> L5 title-fuzzy, with
-rejected-*/none for misses). Pure SQL + figures, no LLM. The heavy join is cached to cache/summary.json.
+Reads citation.method out of Postgres and joins category and year onto it
+Pure SQL and figures, with no LLM anywhere in the measurement
 """
 
 from __future__ import annotations
 
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
 import matplotlib.pyplot as plt
 import psycopg
+from _harness.theme import BARS, PRIMARY, SECONDARY, apply_theme  # noqa: E402
 
 _HERE = Path(__file__).resolve()
 _EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[
-    4
-]  # repo root: code -> NN-slug -> preprocessing -> experiments -> repo
-sys.path.insert(0, str(_REPO / "experiments"))
-from _harness.theme import BARS, PRIMARY, SECONDARY, apply_theme  # noqa: E402
+_REPO = _HERE.parents[4]  # repo root: code -> NN-slug -> preprocessing -> experiments -> repo
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -46,9 +42,7 @@ def _q(conn: psycopg.Connection[tuple[Any, ...]], sql: str) -> list[tuple[Any, .
 def compute(use_cache: bool) -> dict[str, Any]:
     cache = CACHE / "summary.json"
     if cache.exists() and use_cache:
-        return json.loads(
-            cache.read_text(encoding="utf-8")
-        )  # pyright: ignore[reportAny]
+        return json.loads(cache.read_text(encoding="utf-8"))  # pyright: ignore[reportAny]
     out: dict[str, Any] = {}
     with psycopg.connect(PG_DSN) as conn:
         _ = conn.execute("SET statement_timeout='1800s'")
@@ -106,7 +100,7 @@ def figures(s: dict[str, Any]) -> None:
     ax.set_xticklabels([x[0] for x in mm], rotation=35, ha="right", fontsize=8)
     ax.set_ylabel("# citations (log)")
     ax.set_title("Resolution method mix (5-layer resolver outcomes)")
-    for b, x in zip(bars, mm):
+    for b, x in zip(bars, mm, strict=False):
         ax.text(
             b.get_x() + b.get_width() / 2,
             x[1],
@@ -148,7 +142,9 @@ def figures(s: dict[str, Any]) -> None:
 
 
 def tables(s: dict[str, Any]) -> None:
-    """Write results/metrics.md (+ metrics.tex) — the single source the reports import."""
+    """
+    Write results/metrics.md (+ metrics.tex) — the single source the reports import
+    """
     rate, res, tot = s["resolution_rate"], s["resolved"], s["total"]
     md = [
         f"**Overall resolution rate: {rate}%** ({res:,} / {tot:,}).",

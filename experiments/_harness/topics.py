@@ -1,8 +1,8 @@
-"""Gold evaluation topics — loaded from the editable `topics.json` battery.
+"""
+The gold evaluation battery, loaded from the editable topics.json
 
-`canonical` (landmarks a good review must mention) + `spine` (ordered foundational lineage, oldest
--> newest) drive the recall metrics; topics without them simply skip recall. Edit `topics.json`
-(not this file) to change/extend the battery. Kept comparable across experiments so caches stay warm.
+Canonical papers and the ordered spine drive recall, and a topic without them skips it
+Edit topics.json rather than this file to change or extend the battery
 """
 
 from __future__ import annotations
@@ -47,17 +47,20 @@ TOPICS: dict[str, GoldTopic] = _load()
 
 
 def battery() -> list[str]:
-    """Topic keys a lever runs over: env `EXP_TOPICS` (comma-sep subset) or the whole topics.json."""
+    """
+    Topic keys a lever runs over: env `EXP_TOPICS` (comma-sep subset) or the whole topics.json
+    """
     env = os.environ.get("EXP_TOPICS", "").strip()
     if env:
         return [k.strip() for k in env.split(",") if k.strip() in TOPICS]
     return list(TOPICS)
 
 
-# 8-topic validation panel for the DEEP levers (9-12): all 3 gold sets + breadth across the design
-# (foundational/frontier/compositional). Deep runs are ~10 min each, so mechanism levers validate
-# here first; widen to the full battery only once the instruments discriminate. Cache makes scaling
-# to 27 strictly incremental (these 8 are reused, not recomputed).
+"""
+The validation panel for the deep levers: every gold set plus breadth across the design
+A deep run is slow, so a mechanism validates here before it widens to the full battery
+The cache makes that widening incremental, since these topics are reused and not recomputed
+"""
 _DEEP_PANEL: tuple[str, ...] = (
     "diffusion",
     "testtime",
@@ -71,9 +74,10 @@ _DEEP_PANEL: tuple[str, ...] = (
 
 
 def deep_panel() -> list[str]:
-    """Topic keys for the deep levers: env `EXP_TOPICS` override, else the 8-topic `_DEEP_PANEL`.
+    """
+    Topic keys for the deep levers: env `EXP_TOPICS` override, else the 8-topic `_DEEP_PANEL`
 
-    Set `EXP_TOPICS=$(...)` or edit `_DEEP_PANEL`; pass the full battery once validated.
+        Set `EXP_TOPICS=$(...)` or edit `_DEEP_PANEL`; pass the full battery once validated.
     """
     env = os.environ.get("EXP_TOPICS", "").strip()
     if env:
@@ -82,7 +86,9 @@ def deep_panel() -> list[str]:
 
 
 def recall(meta_landmarks: list[str], topic: GoldTopic) -> dict[str, float]:
-    """Fraction of canonical + spine ids present among the report's landmarks."""
+    """
+    Fraction of canonical + spine ids present among the report's landmarks
+    """
     present = {a.lower() for a in meta_landmarks}
     canon = {c.lower() for c in topic.canonical}
     spine = {s.lower() for s in topic.spine}

@@ -1,24 +1,7 @@
-"""experiment 03-07 — Graph representation: how to serialize the citation subgraph into the LLM.
+"""
+Which digest structure the writer reads best, judged pairwise
 
-Not a solved problem — each encoding trades token cost, parseability, structure fidelity, and
-narrative bias. Same subgraph, same per-node content (id/year/title/abstract held CONSTANT); only
-the STRUCTURE encoding varies. Six encodings of the nodes + typed directed edges:
-  flat_list      : papers chronological, each with incident relations inline (≈ the current digest).
-  adjacency_list : a node table + per-paper out-neighbours grouped by intent.
-  dot            : a node table + a Graphviz `digraph { A -> B [type=...] }` block.
-  subtree        : the lineage tree (parent = most-recent older cited) nested + non-tree edges.
-  json           : {"nodes":[...], "edges":[...]} structured object.
-  matrix         : a node table (P0..Pn) + an adjacency MATRIX of edge-type initials.
-
-Each digest is composed by Gemma-4-26B-Code, then scored two ways: the absolute 4-axis judge
-(grounding/coverage/lineage/coherence, @T=0) AND an order-debiased PAIRWISE judge vs the flat_list
-baseline (sharper than the coarse integer scale). Plus grounded-citation rate and REAL prompt-token
-cost. No roles / no era-spine overlays here — this isolates the graph-encoding axis. Naming
-(id vs alias), per-node content (abstract vs extracted fields), and overlays (roles/era/spine) are
-the follow-on axes to layer in via the same cache (see README).
-
-    uv run python experiments/03-generation/03-07-graph-representation/run.py            # deep-panel (8)
-    uv run python experiments/03-generation/03-07-graph-representation/run.py diffusion  # one topic
+The structure axis is settled here, and the orthogonal axes land in phase two
 """
 
 from __future__ import annotations
@@ -31,32 +14,26 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 03-generation -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness.judge import judge_pairwise, judge_report  # noqa: E402
 from _harness.topics import TOPICS, deep_panel  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from llm import NO_THINK, chat_sync  # noqa: E402
-from narrate import check_citations  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from recency import detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from subgraph import Edge, Landmark, augment_with_ancestors, induce_subgraph  # noqa: E402  # fmt: skip
-from store import Store  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.llm import NO_THINK, chat_sync
+from graphiv.core.models import Edge, Landmark
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.narrate import check_citations
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 03-generation -> experiments -> repo
 
 HERE = _EXP
 NARRATOR = "Gemma-4-26B-Code"
@@ -93,9 +70,7 @@ _FMT_HINT = {
 }
 
 
-def retrieve(
-    store: Store, qvec: list[float], q: str
-) -> tuple[list[Landmark], list[Edge]]:
+def retrieve(store: Store, qvec: list[float], q: str) -> tuple[list[Landmark], list[Edge]]:
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -109,9 +84,7 @@ def retrieve(
     pool.update(frontier_pull(store, qvec, fr.frontier_year, want=60))
     _ = augment_with_ancestors(store, pool, qvec, max_add=120)
     edges = induce_subgraph(store, list(pool))
-    lms = rank_landmarks_ppr(
-        pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+    lms = rank_landmarks_ppr(pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     keep = {lm.arxiv_id for lm in lms}
     return lms, [e for e in edges if e.src in keep and e.dst in keep]
 
@@ -132,9 +105,7 @@ def _parents(lms: list[Landmark], edges: list[Edge]) -> dict[str, str | None]:
     for a, lm in by.items():
         ya = lm.year or 0
         cands = [d for d in cites[a] if (by[d].year or 0) <= ya and d != a]
-        parent[a] = (
-            max(cands, key=lambda d: ((by[d].year or 0), indeg[d])) if cands else None
-        )
+        parent[a] = max(cands, key=lambda d: ((by[d].year or 0), indeg[d])) if cands else None
     for a in list(parent):
         seen: set[str] = set()
         cur: str | None = a
@@ -162,12 +133,8 @@ def enc(rep: str, lms: list[Landmark], edges: list[Edge], absd: dict[str, str]) 
         out: list[str] = ["PAPERS (chronological):"]
         for lm in nodes:
             a = lm.arxiv_id
-            outs = [
-                f"{e.intent or 'cites'}->arXiv:{e.dst}" for e in edges if e.src == a
-            ]
-            ins = [
-                f"arXiv:{e.src} {e.intent or 'cites'}->" for e in edges if e.dst == a
-            ]
+            outs = [f"{e.intent or 'cites'}->arXiv:{e.dst}" for e in edges if e.src == a]
+            ins = [f"arXiv:{e.src} {e.intent or 'cites'}->" for e in edges if e.dst == a]
             out += [
                 head(lm),
                 f"  abstract: {snip(a)}",
@@ -191,9 +158,7 @@ def enc(rep: str, lms: list[Landmark], edges: list[Edge], absd: dict[str, str]) 
     if rep == "dot":
         out = ["NODES:"] + [f"{head(lm)} :: {snip(lm.arxiv_id)}" for lm in nodes]
         out += ["", "DOT (digraph; A -> B means A cites B):", "digraph G {"]
-        out += [
-            f'  "{e.src}" -> "{e.dst}" [type={e.intent or "cites"}];' for e in edges
-        ]
+        out += [f'  "{e.src}" -> "{e.dst}" [type={e.intent or "cites"}];' for e in edges]
         out.append("}")
         return "\n".join(out)
 
@@ -205,9 +170,7 @@ def enc(rep: str, lms: list[Landmark], edges: list[Edge], absd: dict[str, str]) 
                 kids[p].append(a)
         roots = [a for a in ids if parent.get(a) is None]
         tree_e = {(a, p) for a, p in parent.items() if p is not None}
-        out = [
-            "LINEAGE TREE (a paper is nested under the paper it cites; deeper = newer):"
-        ]
+        out = ["LINEAGE TREE (a paper is nested under the paper it cites; deeper = newer):"]
 
         def walk(a: str, d: int) -> None:
             out.append(f"{'  ' * d}- {head(by[a])} :: {snip(a)}")
@@ -236,10 +199,7 @@ def enc(rep: str, lms: list[Landmark], edges: list[Edge], absd: dict[str, str]) 
                 }
                 for lm in nodes
             ],
-            "edges": [
-                {"src": e.src, "dst": e.dst, "intent": e.intent, "polarity": e.polarity}
-                for e in edges
-            ],
+            "edges": [{"src": e.src, "dst": e.dst, "intent": e.intent} for e in edges],
         }
         return json.dumps(obj, indent=1)
 
@@ -257,9 +217,7 @@ def enc(rep: str, lms: list[Landmark], edges: list[Edge], absd: dict[str, str]) 
         "    " + " ".join(f"{pk[a]:>3}" for a in ids),
     ]
     for r in ids:
-        out.append(
-            f"{pk[r]:>3} " + " ".join(f"{cell.get((r, c), '.'):>3}" for c in ids)
-        )
+        out.append(f"{pk[r]:>3} " + " ".join(f"{cell.get((r, c), '.'):>3}" for c in ids))
     return "\n".join(out)
 
 
@@ -288,7 +246,7 @@ def run(_use_cache: bool = True) -> None:
     out = HERE / "results"
     out.mkdir(parents=True, exist_ok=True)
 
-    # stage 1: retrieve + build all digests (nomic once).
+    # stage 1: retrieve + build all digests (nomic once)
     digests: dict[str, dict[str, str]] = {}
     pools: dict[str, set[str]] = {}
     _free_router_vram()
@@ -307,23 +265,17 @@ def run(_use_cache: bool = True) -> None:
     free_model()
 
     conn = _cache()
-    # stage 2a: compose (Gemma-4-26B-Code loaded).
+    # stage 2a: compose (Gemma-4-26B-Code loaded)
     for key in keys:
         for rep in REPS:
-            if conn.execute(
-                "SELECT 1 FROM compose WHERE topic=? AND rep=?", (key, rep)
-            ).fetchone():
+            if conn.execute("SELECT 1 FROM compose WHERE topic=? AND rep=?", (key, rep)).fetchone():
                 continue
             user = (
                 f"Write the literature review answering: {TOPICS[key].query}\n\n"
                 f"FORMAT: {_FMT_HINT[rep]}\n\nGRAPH:\n{digests[key][rep]}"
             )
-            report, ptok, _ = chat_sync(
-                NARRATOR, _SYS, user, 0.4, 3500, extra_body=NO_THINK
-            )
-            _ = conn.execute(
-                "INSERT INTO compose VALUES (?,?,?,?)", (key, rep, report, ptok)
-            )
+            report, ptok, _ = chat_sync(NARRATOR, _SYS, user, 0.4, 3500, extra_body=NO_THINK)
+            _ = conn.execute("INSERT INTO compose VALUES (?,?,?,?)", (key, rep, report, ptok))
             conn.commit()
             print(f"[compose] {key}/{rep}: {len(report)}c prompt={ptok}tok", flush=True)
 
@@ -333,7 +285,7 @@ def run(_use_cache: bool = True) -> None:
         ).fetchone()
         return row[0]
 
-    # stage 2b: absolute judge (Gemma-4-26B loaded) + pairwise vs baseline.
+    # stage 2b: absolute judge (Gemma-4-26B loaded) + pairwise vs baseline
     for key in keys:
         canon = list(TOPICS[key].canonical)
         for rep in REPS:
@@ -343,12 +295,8 @@ def run(_use_cache: bool = True) -> None:
                 rep_txt = report_of(key, rep)
                 grounded, off = check_citations(rep_txt, pools[key])
                 j = judge_report(TOPICS[key].query, rep_txt, canon, passes=1)
-                j["grounded_frac"] = round(
-                    len(grounded) / max(1, len(grounded) + len(off)), 3
-                )
-                _ = conn.execute(
-                    "INSERT INTO judged VALUES (?,?,?)", (key, rep, json.dumps(j))
-                )
+                j["grounded_frac"] = round(len(grounded) / max(1, len(grounded) + len(off)), 3)
+                _ = conn.execute("INSERT INTO judged VALUES (?,?,?)", (key, rep, json.dumps(j)))
                 conn.commit()
             if rep == BASELINE:
                 continue
@@ -361,24 +309,19 @@ def run(_use_cache: bool = True) -> None:
                     report_of(key, BASELINE),
                     canon,
                 )
-                _ = conn.execute(
-                    "INSERT INTO paired VALUES (?,?,?)", (key, rep, json.dumps(pj))
-                )
+                _ = conn.execute("INSERT INTO paired VALUES (?,?,?)", (key, rep, json.dumps(pj)))
                 conn.commit()
                 print(f"[judge] {key}/{rep}: pairwise vs {BASELINE} = {pj}", flush=True)
 
-    # aggregate.
-    ptoks = {
-        (k, r): int(p)
-        for k, r, p in conn.execute("SELECT topic, rep, ptok FROM compose")
-    }
+    # aggregate
+    ptoks = {(k, r): int(p) for k, r, p in conn.execute("SELECT topic, rep, ptok FROM compose")}
     rows: list[dict[str, Any]] = []
     for rep in REPS:
         js = [
             json.loads(
-                conn.execute(
-                    "SELECT js FROM judged WHERE topic=? AND rep=?", (k, rep)
-                ).fetchone()[0]
+                conn.execute("SELECT js FROM judged WHERE topic=? AND rep=?", (k, rep)).fetchone()[
+                    0
+                ]
             )
             for k in keys
         ]

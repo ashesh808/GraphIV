@@ -1,24 +1,19 @@
-"""experiment 03-08 — Judge-driven deep loop (test-time compute for review generation).
+"""
+How many judge rounds are worth running, varying only the round cap
 
-Varies ONLY the judge/gap-expansion round cap: max_rounds ∈ {1, 2, 3}, all via the deep path
-(long-compose + critique held constant; figures off to isolate the loop). The judge still owns
-termination, so a high cap may stop early. Tests whether spending more inference-time compute on
-iterative critique-and-retrieve yields a measurably better review.
-
-    uv run python experiments/03-generation/03-08-judge-loop/run.py
+Everything else is held constant on the deep path, with figures off to isolate the loop
+The judge still owns termination, so a high cap may stop early on its own
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-sys.path.insert(0, str(_HERE.parents[3]))
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import deep_panel  # noqa: E402
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
 
 RESULTS = _EXP / "results"
 

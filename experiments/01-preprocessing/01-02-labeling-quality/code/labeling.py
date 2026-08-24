@@ -1,26 +1,22 @@
-"""Labeling-quality compute + figures + tables (experiment 02).
+"""
+Labeling quality: the teacher's prompt evolution and the student's held-out scores
 
-Two halves, no LLM (reads frozen training artifacts): teacher prompt evolution (v1->v6 char growth)
-and the distilled DistilBERT student's held-out PRF for both heads (intent 6-way, polarity 3-way),
-from data/models/student-v*/test_report.json. File reads are instant, so --use-cache is a no-op here;
-a summary is still written to cache/ for uniformity.
+Both halves read frozen training artifacts, so no model runs here
 """
 
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
+from _harness.theme import BARS, ON_SURFACE, SECONDARY, apply_theme  # noqa: E402  # fmt: skip
 
 _HERE = Path(__file__).resolve()
 _EXP = _HERE.parents[1]
 _REPO = _HERE.parents[4]
-sys.path.insert(0, str(_REPO / "experiments"))
-from _harness.theme import BARS, ON_SURFACE, SECONDARY, apply_theme  # noqa: E402  # fmt: skip
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -36,9 +32,7 @@ def _load(v: str) -> dict[str, Any]:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
-def _confusion(
-    matrix: list[list[int]], labels: list[str], title: str, out: Path
-) -> None:
+def _confusion(matrix: list[list[int]], labels: list[str], title: str, out: Path) -> None:
     apply_theme()
     m = np.array(matrix, dtype=float)
     row = m.sum(axis=1, keepdims=True)
@@ -69,21 +63,17 @@ def _confusion(
     plt.close(fig)
 
 
-def _f1_bars(
-    per_class: dict[str, float], order: list[str], title: str, out: Path
-) -> None:
+def _f1_bars(per_class: dict[str, float], order: list[str], title: str, out: Path) -> None:
     apply_theme()
     vals = [per_class.get(k, 0.0) for k in order]
     fig, ax = plt.subplots(figsize=(7.0, 4.0))
-    bars = ax.bar(
-        range(len(order)), vals, color=[BARS[i % len(BARS)] for i in range(len(order))]
-    )
+    bars = ax.bar(range(len(order)), vals, color=[BARS[i % len(BARS)] for i in range(len(order))])
     ax.set_xticks(range(len(order)))
     ax.set_xticklabels(order, rotation=25, ha="right", fontsize=9)
     ax.set_ylabel("F1")
     ax.set_ylim(0, 1)
     ax.set_title(title)
-    for b, v in zip(bars, vals):
+    for b, v in zip(bars, vals, strict=False):
         ax.text(
             b.get_x() + b.get_width() / 2,
             v,
@@ -213,9 +203,7 @@ def run(use_cache: bool) -> None:
         "intent_per_class_f1": rep["intent_per_class_f1"],
         "prompt_sizes": sizes,
     }
-    _ = (CACHE / "summary.json").write_text(
-        json.dumps(summary, indent=1), encoding="utf-8"
-    )
+    _ = (CACHE / "summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
     print(
         f"[02-labeling] student-{SHIPPED} intent macro-F1 {rep['intent_macro_f1']:.3f}; "
         f"wrote 5 figures + tables",

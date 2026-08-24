@@ -70,7 +70,7 @@ Never claim bare "better than Gemini/Claude deep research" until the pairwise co
 ## Step 1 — pre-push batch (blocks the push)
 
 - [ ] Refresh stale readmes against fresh `results/`: `experiments/README.md`,
-      `experiments/deep-research/readme.md` (23/4/0 → 5/2/1 n=8, 3.3 → 9.0 2026/topic),
+      `experiments/deep-research/README.md` (23/4/0 → 5/2/1 n=8, 3.3 → 9.0 2026/topic),
       `03-08-judge-loop` (0.78/27-topic → fresh), audit all others.
 - [ ] Name sweep: GraphIV in README/paper/docs prose; arXiv-tail etymology in README line one.
 - [ ] Consolidate `phases/global-config.json`: retire the dead `postgres.dsn=arxiv-citations` (point at

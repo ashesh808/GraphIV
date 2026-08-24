@@ -1,5 +1,8 @@
-"""Shared writers for experiment result artifacts — DRYs the per-experiment metrics.md / booktabs
-table.tex / macros.tex generation that was copy-pasted across the suite."""
+"""
+Shared writers for the result artifacts every experiment emits
+
+They exist because the metrics table and the LaTeX table were copy-pasted across the suite
+"""
 
 from __future__ import annotations
 
@@ -12,7 +15,9 @@ def _esc(s: object) -> str:
 
 
 def metrics_md(rows: list[dict[str, Any]], cols: list[str], caption: str = "") -> str:
-    """Markdown table (one dict per row, `cols` as the column keys) + optional italic caption."""
+    """
+    Markdown table (one dict per row, `cols` as the column keys) + optional italic caption
+    """
     out = [
         "| " + " | ".join(cols) + " |",
         "| " + " | ".join("---" for _ in cols) + " |",
@@ -25,7 +30,11 @@ def metrics_md(rows: list[dict[str, Any]], cols: list[str], caption: str = "") -
 
 
 def booktabs(rows: list[dict[str, Any]], cols: list[tuple[str, str]]) -> str:
-    """LaTeX booktabs tabular. `cols` is [(row_key, header)]; col 0 is the label (value escaped)."""
+    """
+    LaTeX booktabs tabular
+
+    `cols` is [(row_key, header)]; col 0 is the label (value escaped).
+    """
     lines = [
         "\\begin{tabular}{" + "l" + "r" * (len(cols) - 1) + "}",
         "\\toprule",
@@ -40,7 +49,9 @@ def booktabs(rows: list[dict[str, Any]], cols: list[tuple[str, str]]) -> str:
 
 
 def macros(pairs: list[tuple[str, object]]) -> str:
-    """`\\newcommand{\\name}{value}` lines (name must be letters-only for a valid control sequence)."""
+    r"""
+    One newcommand line per macro, where the name must be letters only to stay a valid sequence
+    """
     return "\n".join(f"\\newcommand{{\\{n}}}{{{v}}}" for n, v in pairs) + "\n"
 
 
@@ -53,14 +64,12 @@ def write(
     macro_pairs: list[tuple[str, object]] | None = None,
     caption: str = "",
 ) -> None:
-    """Write metrics.md + table.tex (+ macros.tex if given) for an experiment's report."""
+    """
+    Write metrics.md + table.tex (+ macros.tex if given) for an experiment's report
+    """
     _ = (results_dir / "metrics.md").write_text(
         metrics_md(rows, md_cols, caption), encoding="utf-8"
     )
-    _ = (results_dir / "table.tex").write_text(
-        booktabs(rows, tex_cols), encoding="utf-8"
-    )
+    _ = (results_dir / "table.tex").write_text(booktabs(rows, tex_cols), encoding="utf-8")
     if macro_pairs is not None:
-        _ = (results_dir / "macros.tex").write_text(
-            macros(macro_pairs), encoding="utf-8"
-        )
+        _ = (results_dir / "macros.tex").write_text(macros(macro_pairs), encoding="utf-8")

@@ -1,13 +1,7 @@
-"""Doom-scroll gold-label web tool — hand-label citation intent + polarity into `gold_label`.
+"""
+The gold-label web tool: hand-label citation intent and polarity one at a time
 
-Serves one unlabeled citation at a time (section + sentence + cited title) with keyboard shortcuts;
-writes to the `gold_label` table in the single Postgres store. Stage-2 of experiment-2 (the
-human-gold benchmark) reads from there. Pure stdlib http.server + psycopg, no framework.
-
-    uv run python experiments/01-preprocessing/01-02-labeling-quality/code/gold_tool.py   # -> http://localhost:8765
-
-Keys: 1 uses · 2 extends · 3 compares · 4 motivates · 5 background · 6 critiques ;
-      z negative · x neutral · c positive ; (auto-submits + loads next when both set) · s skip.
+Labels land in the gold_label table, which the human benchmark reads from
 """
 
 from __future__ import annotations

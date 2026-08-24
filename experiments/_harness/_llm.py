@@ -1,6 +1,8 @@
-"""Minimal sync chat against the llama.cpp OpenAI-compatible router, for the judge +
-faithfulness instruments. Self-contained (no phase-6 import) so the measurement tools stay
-decoupled from the system under test. Health/restart via /router/restart on connection error.
+"""
+Minimal sync chat against the router, for the judge and faithfulness instruments
+
+It imports nothing from the system under test, which keeps the instruments decoupled
+Recovery is a router restart on a connection error, never a retry loop
 """
 
 from __future__ import annotations
@@ -51,12 +53,16 @@ async def _chat_async(
 def chat(
     model: str, system: str, user: str, temperature: float = 0.0, max_tokens: int = 2000
 ) -> str:
-    """One blocking chat completion (thinking off)."""
+    """
+    One blocking chat completion (thinking off)
+    """
     return asyncio.run(_chat_async(model, system, user, temperature, max_tokens))
 
 
 def parse_json(text: str) -> Any:
-    """Strip fences / prose and parse the first JSON object or array."""
+    """
+    Strip fences / prose and parse the first JSON object or array
+    """
     s = text.strip()
     if s.startswith("```"):
         s = re.sub(r"^```(?:json)?\s*", "", s)

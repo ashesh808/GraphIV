@@ -1,25 +1,20 @@
-"""The one module that bootstraps sys.path to reach phases/_framework + phase-6 components,
-and exposes global-config values (LLM router, sqlite path). Imported first by the harness.
+"""
+Endpoint settings the harness shares, read once from config.toml
+
+It used to bootstrap sys.path; the package is installed now, so it only re-exports.
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-from typing import Any
+
+from graphiv.core.config import Config
+
+_C = Config.load()
 
 REPO: Path = Path(__file__).resolve().parents[2]
-for _p in (
-    str(REPO / "phases"),
-    str(REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
-from _framework import gpath, load_global  # noqa: E402
-
-_G: dict[str, Any] = load_global()
-LLM_BASE_URL: str = str(_G["llm"]["base_url"])
-LLM_ROUTER: str = str(_G["llm"]["router"])
-JUDGE_MODEL: str = str(_G["llm"]["map_model"])  # Gemma-4-26B: best judge discrimination
-SQLITE_DB: Path = gpath(str(_G["sqlite"]["db"]))
+LLM_BASE_URL: str = _C.llm_base_url
+LLM_ROUTER: str = _C.llm_router
+# the map model gives the best judge discrimination
+JUDGE_MODEL: str = _C.map_model
+SQLITE_DB: Path = _C.sqlite_db

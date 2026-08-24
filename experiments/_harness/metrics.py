@@ -1,9 +1,7 @@
-"""Extract the metric VECTOR from a phase-6 run (run.json + report.md).
+"""
+Extract the metric vector from one run, never a single number
 
-Per the legacy ablation lesson (eval.md): never report a single metric — any one can be gamed
-(e.g. dropping the citation graph inflates frontier count while zeroing edges). Always read the
-vector: coverage (frontier/edges), grounding (grounded vs off-digest), specificity (num_density),
-length, and (where computed) judge + faithfulness.
+Any one metric is gameable, so coverage, grounding, specificity and length are read together
 """
 
 from __future__ import annotations
@@ -18,23 +16,24 @@ _DIGIT = re.compile(r"\d")
 
 
 def num_density(report_text: str) -> float:
-    """Digits per 1000 chars — a cheap specificity proxy (legacy `num_density`).
+    """
+    Digits per 1000 chars — a cheap specificity proxy (legacy `num_density`)
 
-    A review that states concrete numbers (accuracies, step counts, dataset sizes) scores higher
-    than one that hand-waves. Not a quality score on its own; part of the vector.
+        A review that states concrete numbers (accuracies, step counts, dataset sizes) scores higher
+        than one that hand-waves. Not a quality score on its own; part of the vector.
     """
     n = len(report_text)
     return 1000.0 * len(_DIGIT.findall(report_text)) / n if n else 0.0
 
 
 def year_histogram(landmarks: list[dict[str, Any]]) -> dict[int, int]:
-    return dict(
-        Counter(int(lm["year"]) for lm in landmarks if lm.get("year") is not None)
-    )
+    return dict(Counter(int(lm["year"]) for lm in landmarks if lm.get("year") is not None))
 
 
 def metric_vector(meta: dict[str, Any], report_text: str = "") -> dict[str, Any]:
-    """Flatten a run.json `meta` (+ report text) into a comparable metric row."""
+    """
+    Flatten a run.json `meta` (+ report text) into a comparable metric row
+    """
     lms: list[dict[str, Any]] = meta.get("landmarks", [])
     fy = int(meta.get("frontier_year", 0) or 0)
     ge_2024 = sum(1 for lm in lms if (lm.get("year") or 0) >= 2024)
@@ -66,7 +65,9 @@ def metric_vector(meta: dict[str, Any], report_text: str = "") -> dict[str, Any]
 
 
 def load_run(out_dir: Path) -> tuple[dict[str, Any], str]:
-    """Read run.json + report.md from a phase-6 output dir."""
+    """
+    Read run.json + report.md from a phase-6 output dir
+    """
     meta: dict[str, Any] = json.loads((out_dir / "run.json").read_text())
     rp = out_dir / "report.md"
     report = rp.read_text() if rp.exists() else ""
@@ -74,7 +75,9 @@ def load_run(out_dir: Path) -> tuple[dict[str, Any], str]:
 
 
 def write_table(rows: list[dict[str, Any]], cols: list[str], path: Path) -> None:
-    """Write a markdown metric table (one row per condition)."""
+    """
+    Write a markdown metric table (one row per condition)
+    """
     head = "| " + " | ".join(cols) + " |"
     sep = "| " + " | ".join("---" for _ in cols) + " |"
     lines = [head, sep]

@@ -1,9 +1,8 @@
-"""Hub-relevance sweep (structural pass) — which data-derived signal demotes generic hubs without
-losing gold canonical papers. No blocklist. Arms re-rank the pool by ppr x a demotion factor; metrics
-(gold recall = tripwire, mean global citers = popularity proxy, bg = background-ratio) are reported
-per arm over the 27-topic battery. LLM oracle is a separate pass (hub_oracle.py).
+"""
+Which data-derived signal demotes a generic hub without losing the gold papers
 
-    uv run python experiments/03-generation/03-11-hub-suppression/code/hub_sweep.py [topic ...]
+No blocklist is used, since each arm re-ranks the pool by a demotion factor instead
+Gold recall is the tripwire, and mean global citers stands in for popularity
 """
 
 from __future__ import annotations
@@ -15,31 +14,23 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, cast
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]
-_REPO = _HERE.parents[4]
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness.retrieval import retrieve_subgraph  # noqa: E402
 from _harness.topics import TOPICS, battery  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from pagerank import personalized_pagerank  # noqa: E402
-from pipeline import _free_router_vram  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import _free_router_vram
+from graphiv.retrieve.pagerank import personalized_pagerank
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]
+_REPO = _HERE.parents[4]
 
 M = 40
 OUT = _EXP / "results"
 KEYS = [k for k in (sys.argv[1:] or battery()) if k in TOPICS]
-# pop_bg{S}: demote ONLY papers that are both globally-popular AND background-cited HERE (topic-
-# conditioned, strength S/10) -> protects load-bearing hubs (low bg) from the popularity penalty.
+# demoting only a paper both globally popular and background-cited here spares the real hub
 ARMS = ("none", "lift", "pr_ratio", "pop_bg3", "pop_bg5", "pop_bg7", "pop_bg10")
 
 
@@ -61,11 +52,11 @@ def _indeg(pool_ids: list[str], pool_edges: list[Any]) -> dict[str, int]:
 
 
 def arm_score(arm: str, ppr: float, gc: int, lift: float, bg: float | None) -> float:
-    """Re-rank score for one paper under one demotion arm (ppr x arm-specific factor)."""
+    """
+    Re-rank score for one paper under one demotion arm (ppr x arm-specific factor)
+    """
     liftf = math.log1p(lift)
-    prpen = 1.0 / (
-        1.0 + math.log10(1 + gc)
-    )  # demote by global popularity (topic-blind)
+    prpen = 1.0 / (1.0 + math.log10(1 + gc))  # demote by global popularity (topic-blind)
     pop = min(1.0, math.log10(1 + gc) / 5.0)  # saturating popularity, ~1 at 100k cites
     bgr = bg if bg is not None else 0.0
     if arm == "lift":
@@ -110,24 +101,18 @@ def main() -> None:
         bg = _bg_ratio(pool_ids, sg.pool_edges)
         npool = len(pool_ids)
         # lift = P(cited|topic) / P(cited)
-        lift = {
-            a: ((indeg[a] / npool) / ((gc.get(a, 0) + 1) / n_papers)) for a in pool_ids
-        }
+        lift = {a: ((indeg[a] / npool) / ((gc.get(a, 0) + 1) / n_papers)) for a in pool_ids}
         canon = {c.lower() for c in TOPICS[k].canonical}
         sets: dict[str, list[str]] = {}
         for arm in ARMS:
             ranked = sorted(
                 pool_ids,
-                key=lambda a: arm_score(
-                    arm, ppr.get(a, 0.0), gc.get(a, 0), lift[a], bg[a]
-                ),
+                key=lambda a: arm_score(arm, ppr.get(a, 0.0), gc.get(a, 0), lift[a], bg[a]),
                 reverse=True,
             )
             sel = ranked[:M]
             sets[arm] = sel
-            recall = (
-                len(canon & {a.lower() for a in sel}) / len(canon) if canon else None
-            )
+            recall = len(canon & {a.lower() for a in sel}) / len(canon) if canon else None
             mean_gc = sum(gc.get(a, 0) for a in sel) / len(sel)
             bgs = [b for a in sel if (b := bg[a]) is not None]
             per[arm].append(
@@ -151,9 +136,7 @@ def main() -> None:
             for a in union
         }
         dropped = set(sets["none"]) - set(sets["pop_bg7"])
-        drops[k] = {
-            a: gc.get(a, 0) for a in sorted(dropped, key=lambda a: -gc.get(a, 0))[:8]
-        }
+        drops[k] = {a: gc.get(a, 0) for a in sorted(dropped, key=lambda a: -gc.get(a, 0))[:8]}
         print(
             f"[{k}] pool={npool} | none mean_gc={per['none'][-1]['mean_gc']:.0f} pop_bg7 mean_gc={per['pop_bg7'][-1]['mean_gc']:.0f}",
             flush=True,
@@ -167,9 +150,7 @@ def main() -> None:
             {
                 "arm": arm,
                 "gold_recall": round(sum(rs) / len(rs), 3) if rs else 0.0,
-                "mean_global_citers": round(
-                    sum(r["mean_gc"] for r in per[arm]) / len(per[arm]), 1
-                ),
+                "mean_global_citers": round(sum(r["mean_gc"] for r in per[arm]) / len(per[arm]), 1),
                 "bg_mean": round(sum(r["bg"] for r in per[arm]) / len(per[arm]), 3),
             }
         )

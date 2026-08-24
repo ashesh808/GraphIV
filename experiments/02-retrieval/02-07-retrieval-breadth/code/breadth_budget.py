@@ -1,51 +1,36 @@
-"""02-07 retrieval-breadth-and-budget: justify the shipped ef_search/floor/m package.
+"""
+Justify the shipped breadth package: the ef_search fix, the floor and the budget
 
-Six named conditions, each isolating ONE decision against its neighbors:
-  A_old_shipped   ef=40   floor=0.35 m=40   (pre-fix production; reproduces the 02-06 ppr row)
-  B_ef_fix        ef=1000 floor=0.35 m=40   (the bug fix alone -> pool-hit up, landmark-hit DOWN)
-  C_floor_only    ef=1000 floor=0.30 m=40   (floor without budget -> gold dilution; why m rises)
-  D_shipped       ef=1000 floor=0.30 m=60   (the shipped package; gate condition)
-  E_paid_upgrade  ef=1000 floor=0.30 m=80   (documented cost/benefit; not shipped)
-  F_floor_abl     ef=1000 floor=0.35 m=60   (floor ablation at shipped budget -> BYOL miss)
-
-ef_search is session-SET per condition (Store now defaults to 1000; A resets to 40 to
-reproduce the pgvector default that capped every KNN at 40 rows). Grades ride the shared
-cache. Selection is the shipped fused-seeded PPR + frontier reservation throughout.
+Six named conditions each isolate one decision against its neighbors
+Each condition sets its own ef_search, so one arm reproduces the old capped default
 """
 
 import asyncio
 import hashlib
 import json
-import sys
 import time
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
+from _harness.topics import TOPICS, battery  # noqa: E402
+
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import Edge, Landmark, PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import _free_router_vram
+from graphiv.retrieve.grade import LABELS, Grade, candidates, fused_score, grade_many
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import personalized_pagerank
+from graphiv.retrieve.recency import FrontierSpec, detect_frontier, frontier_select
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
 _HERE = Path(__file__).resolve()
 _EXP = _HERE.parents[1]
 _REPO = _HERE.parents[4]
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
-from _harness.topics import TOPICS, battery  # noqa: E402
-
-from _common import PG_DSN  # noqa: E402
-from pagerank import personalized_pagerank  # noqa: E402
-from pipeline import _free_router_vram  # noqa: E402
-from reader_grade import LABELS, Grade, candidates, fused_score, grade_many  # noqa: E402  # fmt: skip
-from recency import FrontierSpec, detect_frontier, frontier_select  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import Edge, Landmark, PoolNode, augment_with_ancestors, induce_subgraph  # noqa: E402  # fmt: skip
 
 RESULTS = _EXP / "results"
 N_POOL = 400
@@ -60,8 +45,7 @@ CONDITIONS: list[tuple[str, int, float, int]] = [
     ("F_floor_abl", 1000, 0.35, 60),
 ]
 
-# adversarial litmus questions + must-have ids (mirrors 02-06; kept inline so this
-# experiment reproduces standalone)
+# the litmus set is inlined rather than shared, so this experiment reproduces standalone
 LITMUS: dict[str, tuple[str, list[str]]] = {
     "kv": (
         "Compare the frontier approaches to KV cache compression and memory-efficient "
@@ -103,31 +87,24 @@ LITMUS: dict[str, tuple[str, list[str]]] = {
 }
 
 
-def _fused_pool(
-    pool: dict[str, PoolNode], grades: dict[str, Grade]
-) -> dict[str, PoolNode]:
+def _fused_pool(pool: dict[str, PoolNode], grades: dict[str, Grade]) -> dict[str, PoolNode]:
     out: dict[str, PoolNode] = {}
     for a, n in pool.items():
         g = grades.get(a)
         if g is not None and g.relevance <= -2:
             continue
-        out[a] = PoolNode(
-            n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g)
-        )
+        out[a] = PoolNode(n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g))
     return out
 
 
 def _select_ppr(
     fpool: dict[str, PoolNode], edges: list[Edge], fr: FrontierSpec, m: int
 ) -> tuple[list[str], dict[str, int]]:
-    """Shipped selection (frontier reservation + fused-seeded PPR); returns chosen + full ranks."""
-    lms = [
-        Landmark(n.arxiv_id, n.title, n.year, n.category, n.score, 0)
-        for n in fpool.values()
-    ]
-    reserved = [
-        lm.arxiv_id for lm in frontier_select(lms, fr.frontier_year, fr.recent_floor)
-    ]
+    """
+    Shipped selection (frontier reservation + fused-seeded PPR); returns chosen + full ranks
+    """
+    lms = [Landmark(n.arxiv_id, n.title, n.year, n.category, n.score, 0) for n in fpool.values()]
+    reserved = [lm.arxiv_id for lm in frontier_select(lms, fr.frontier_year, fr.recent_floor)]
     rest = {a: n for a, n in fpool.items() if a not in set(reserved)}
     seed = {a: max(n.score, 0.0) for a, n in rest.items()}
     ppr = personalized_pagerank(list(rest), edges, seed)
@@ -166,9 +143,7 @@ def run() -> None:
         store = Store(PG_DSN, emb_space="asym")
         try:
             for ef, fl in variants:
-                _ = store.conn.execute(
-                    cast(LiteralString, f"SET hnsw.ef_search = {ef}")
-                )
+                _ = store.conn.execute(cast(LiteralString, f"SET hnsw.ef_search = {ef}"))
                 t0 = time.monotonic()
                 pool = hybrid_pool(store, qvecs[key], q, N_POOL)
                 fr40 = detect_frontier(
@@ -178,12 +153,8 @@ def run() -> None:
                     40,
                     0.4,
                 )
-                pool.update(
-                    frontier_pull(store, qvecs[key], fr40.frontier_year, want=60)
-                )
-                _ = augment_with_ancestors(
-                    store, pool, qvecs[key], max_add=120, min_cosine=fl
-                )
+                pool.update(frontier_pull(store, qvecs[key], fr40.frontier_year, want=60))
+                _ = augment_with_ancestors(store, pool, qvecs[key], max_add=120, min_cosine=fl)
                 edges = induce_subgraph(store, list(pool))
                 dt = time.monotonic() - t0
                 indeg: dict[str, int] = {}
@@ -198,9 +169,7 @@ def run() -> None:
             cand_set: set[str] = set()
             union_pool: dict[str, PoolNode] = {}
             for (ef, fl), (pool, _e, indeg, _f) in built.items():
-                m_max = max(
-                    m for _, cef, cfl, m in CONDITIONS if (cef, cfl) == (ef, fl)
-                )
+                m_max = max(m for _, cef, cfl, m in CONDITIONS if (cef, cfl) == (ef, fl))
                 cand_set.update(candidates(pool, indeg, m_max))
                 union_pool.update(pool)
             cand = [a for a in cand_set if a in union_pool]
@@ -213,21 +182,17 @@ def run() -> None:
                 pool, edges, indeg, fr40 = built[(ef, fl)]
                 pools[(name, key)] = set(pool)
                 fpool = _fused_pool(pool, grades)
-                fr = FrontierSpec(
-                    fr40.frontier_year, max(1, round(0.4 * m)), fr40.now_year
-                )
+                fr = FrontierSpec(fr40.frontier_year, max(1, round(0.4 * m)), fr40.now_year)
                 t0 = time.monotonic()
                 chosen, rank_of = _select_ppr(fpool, edges, fr, m)
                 wall[name] += time.monotonic() - t0
                 sets[name][key] = chosen
                 cs = set(chosen)
                 year_of = {a: n.year for a, n in fpool.items()}
-                fr_n[name][key] = sum(
-                    1 for a in cs if (year_of.get(a) or 0) >= fr.frontier_year
+                fr_n[name][key] = sum(1 for a in cs if (year_of.get(a) or 0) >= fr.frontier_year)
+                edge_d[name][key] = sum(1 for e in edges if e.src in cs and e.dst in cs) / max(
+                    1, len(cs)
                 )
-                edge_d[name][key] = sum(
-                    1 for e in edges if e.src in cs and e.dst in cs
-                ) / max(1, len(cs))
                 if key.startswith("litmus_"):
                     lk = key.removeprefix("litmus_")
                     for aid in LITMUS[lk][1]:
@@ -245,8 +210,7 @@ def run() -> None:
         finally:
             store.close()
         print(
-            f"[{key}] "
-            + " ".join(f"{n}:{len(pools[(n, key)])}" for n, *_ in CONDITIONS),
+            f"[{key}] " + " ".join(f"{n}:{len(pools[(n, key)])}" for n, *_ in CONDITIONS),
             flush=True,
         )
 
@@ -287,9 +251,7 @@ def run() -> None:
             "m": cond[3],
             "landmark_recall_gold3": round(sum(lmr) / len(lmr), 3),
             "spine_recall_gold3": round(sum(spr) / len(spr), 3),
-            "relevance_rate": (
-                round(sum(per_topic) / len(per_topic), 3) if per_topic else 0.0
-            ),
+            "relevance_rate": (round(sum(per_topic) / len(per_topic), 3) if per_topic else 0.0),
             "litmus_pool_hit": round(ph / tot, 3),
             "litmus_landmark_hit": round(lh / tot, 3),
             "frontier_mean": round(sum(fr_n[name].values()) / n, 1),

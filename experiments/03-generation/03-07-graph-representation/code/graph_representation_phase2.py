@@ -1,18 +1,7 @@
-"""experiment 03-07 (phase 2) — orthogonal axes on the adjacency_list winner.
+"""
+The orthogonal digest axes layered onto the structure that won phase one
 
-Phase 1 settled the STRUCTURE axis (adjacency_list wins, modestly). Phase 2 layers the other axes
-onto that winner and re-judges vs the same flat_list baseline:
-  adj_roles            : nodes tagged [foundational/core/frontier/peripheral] (from the exp-15 cache).
-  adj_extracted        : per-node content = full-text extracted schema fields (not the abstract).
-  adj_alias            : nodes labelled [D1].. + an id table (cite the arXiv id from the table).
-  adj_roles_extracted  : roles + extracted together (the likely production digest).
-
-Same cache (results/runs/cache.db) so the flat_list baseline + adjacency_list reports are reused;
-roles come free from 02-02's judge cache; extraction is cached in extract_cache.db. Judged
-the same two ways: absolute 4-axis + order-debiased pairwise vs flat_list. Writes
-results/metrics_phase2.{json,md} + ablation_phase2.png.
-
-    uv run python experiments/03-generation/03-07-graph-representation/run.py --phase2
+Roles, extracted fields and id aliasing are each re-judged against the same flat baseline
 """
 
 from __future__ import annotations
@@ -26,34 +15,28 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 03-generation -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness.judge import judge_pairwise, judge_report  # noqa: E402
 from _harness.topics import TOPICS, deep_panel  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from extract import extract_many  # noqa: E402
-from llm import NO_THINK, chat_sync  # noqa: E402
-from narrate import check_citations  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from recency import detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from schema import propose_schema  # noqa: E402
-from subgraph import Edge, Landmark, augment_with_ancestors, induce_subgraph  # noqa: E402  # fmt: skip
-from store import Store  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.llm import NO_THINK, chat_sync
+from graphiv.core.models import Edge, Landmark
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.extract import extract_many
+from graphiv.generate.narrate import check_citations
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.generate.schema import propose_schema
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 03-generation -> experiments -> repo
 
 HERE = _EXP
 NARRATOR = "Gemma-4-26B-Code"
@@ -61,12 +44,7 @@ BASELINE = "flat_list"
 CONFIGS = ["adj_roles", "adj_extracted", "adj_alias", "adj_roles_extracted"]
 ROWS = ["flat_list", "adjacency_list", *CONFIGS]
 JUDGE_CACHE = (
-    _REPO
-    / "experiments"
-    / "02-retrieval"
-    / "02-02-relevance-judge"
-    / "cache"
-    / "judge_cache.db"
+    _REPO / "experiments" / "02-retrieval" / "02-02-relevance-judge" / "cache" / "judge_cache.db"
 )
 CACHE = HERE / "results" / "runs" / "cache.db"
 
@@ -90,9 +68,7 @@ _FMT = {
 }
 
 
-def retrieve(
-    store: Store, qvec: list[float], q: str
-) -> tuple[list[Landmark], list[Edge]]:
+def retrieve(store: Store, qvec: list[float], q: str) -> tuple[list[Landmark], list[Edge]]:
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -106,9 +82,7 @@ def retrieve(
     pool.update(frontier_pull(store, qvec, fr.frontier_year, want=60))
     _ = augment_with_ancestors(store, pool, qvec, max_add=120)
     edges = induce_subgraph(store, list(pool))
-    lms = rank_landmarks_ppr(
-        pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+    lms = rank_landmarks_ppr(pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     keep = {lm.arxiv_id for lm in lms}
     return lms, [e for e in edges if e.src in keep and e.dst in keep]
 
@@ -165,7 +139,7 @@ def run(_use_cache: bool = True) -> None:
     keys = [k for k in sys.argv[1:] if k in TOPICS] or deep_panel()
     out = HERE / "results"
 
-    # stage 1: retrieve (nomic once) -> lms/edges/abstracts/roles per topic.
+    # stage 1: retrieve (nomic once) -> lms/edges/abstracts/roles per topic
     data: dict[str, dict[str, Any]] = {}
     _free_router_vram()
     for key in keys:
@@ -192,19 +166,15 @@ def run(_use_cache: bool = True) -> None:
         )
     free_model()
 
-    # stage 2: extraction (schema [26B-Code] + per-paper fields [26B]); cached in extract_cache.db.
+    # stage 2: extraction (schema [26B-Code] + per-paper fields [26B]); cached in extract_cache.db
     for key in keys:
         q = TOPICS[key].query
         d = data[key]
         lms: list[Landmark] = d["lms"]
         absd: dict[str, str] = d["abs"]
-        samples = [
-            f'{lm.title}\n{(absd.get(lm.arxiv_id) or "")[:500]}' for lm in lms[:6]
-        ]
+        samples = [f'{lm.title}\n{(absd.get(lm.arxiv_id) or "")[:500]}' for lm in lms[:6]]
         sch = propose_schema(q, samples)
-        ext = asyncio.run(
-            extract_many([(lm.arxiv_id, lm.title) for lm in lms], sch, absd)
-        )
+        ext = asyncio.run(extract_many([(lm.arxiv_id, lm.title) for lm in lms], sch, absd))
         d["ext"] = {
             a: "; ".join(f"{k}: {v}" for k, v in f.items() if v and v.lower() != "n/a")
             for a, f in ext.items()
@@ -214,7 +184,7 @@ def run(_use_cache: bool = True) -> None:
             flush=True,
         )
 
-    # build the 4 digests per topic.
+    # build the 4 digests per topic
     digests: dict[str, dict[str, str]] = {}
     for key in keys:
         d = data[key]
@@ -228,27 +198,19 @@ def run(_use_cache: bool = True) -> None:
         }
 
     conn = _conn()
-    # stage 3: compose (26B-Code).
+    # stage 3: compose (26B-Code)
     for key in keys:
         for cfg in CONFIGS:
-            if conn.execute(
-                "SELECT 1 FROM compose WHERE topic=? AND rep=?", (key, cfg)
-            ).fetchone():
+            if conn.execute("SELECT 1 FROM compose WHERE topic=? AND rep=?", (key, cfg)).fetchone():
                 continue
             user = (
                 f"Write the literature review answering: {TOPICS[key].query}\n\n"
                 f"FORMAT: {_FMT[cfg]}\n\nGRAPH:\n{digests[key][cfg]}"
             )
-            rep_txt, ptok, _ = chat_sync(
-                NARRATOR, _SYS, user, 0.4, 3500, extra_body=NO_THINK
-            )
-            _ = conn.execute(
-                "INSERT INTO compose VALUES (?,?,?,?)", (key, cfg, rep_txt, ptok)
-            )
+            rep_txt, ptok, _ = chat_sync(NARRATOR, _SYS, user, 0.4, 3500, extra_body=NO_THINK)
+            _ = conn.execute("INSERT INTO compose VALUES (?,?,?,?)", (key, cfg, rep_txt, ptok))
             conn.commit()
-            print(
-                f"[compose] {key}/{cfg}: {len(rep_txt)}c prompt={ptok}tok", flush=True
-            )
+            print(f"[compose] {key}/{cfg}: {len(rep_txt)}c prompt={ptok}tok", flush=True)
 
     def report_of(key: str, rep: str) -> str:
         row: tuple[str] = conn.execute(
@@ -256,7 +218,7 @@ def run(_use_cache: bool = True) -> None:
         ).fetchone()
         return row[0]
 
-    # stage 4: judge absolute + pairwise vs flat_list (26B).
+    # stage 4: judge absolute + pairwise vs flat_list (26B)
     for key in keys:
         canon = list(TOPICS[key].canonical)
         for cfg in CONFIGS:
@@ -266,12 +228,8 @@ def run(_use_cache: bool = True) -> None:
                 txt = report_of(key, cfg)
                 grounded, off = check_citations(txt, data[key]["pool"])
                 j = judge_report(TOPICS[key].query, txt, canon, passes=1)
-                j["grounded_frac"] = round(
-                    len(grounded) / max(1, len(grounded) + len(off)), 3
-                )
-                _ = conn.execute(
-                    "INSERT INTO judged VALUES (?,?,?)", (key, cfg, json.dumps(j))
-                )
+                j["grounded_frac"] = round(len(grounded) / max(1, len(grounded) + len(off)), 3)
+                _ = conn.execute("INSERT INTO judged VALUES (?,?,?)", (key, cfg, json.dumps(j)))
                 conn.commit()
             if not conn.execute(
                 "SELECT 1 FROM paired WHERE topic=? AND rep=?", (key, cfg)
@@ -282,24 +240,19 @@ def run(_use_cache: bool = True) -> None:
                     report_of(key, BASELINE),
                     canon,
                 )
-                _ = conn.execute(
-                    "INSERT INTO paired VALUES (?,?,?)", (key, cfg, json.dumps(pj))
-                )
+                _ = conn.execute("INSERT INTO paired VALUES (?,?,?)", (key, cfg, json.dumps(pj)))
                 conn.commit()
                 print(f"[judge] {key}/{cfg}: pairwise vs {BASELINE} = {pj}", flush=True)
 
-    # aggregate the 6 rows of interest (phase-1 flat_list + adjacency_list reused from cache).
-    ptoks = {
-        (k, r): int(p)
-        for k, r, p in conn.execute("SELECT topic, rep, ptok FROM compose")
-    }
+    # aggregate the 6 rows of interest (phase-1 flat_list + adjacency_list reused from cache)
+    ptoks = {(k, r): int(p) for k, r, p in conn.execute("SELECT topic, rep, ptok FROM compose")}
     rows: list[dict[str, Any]] = []
     for rep in ROWS:
         js = [
             json.loads(
-                conn.execute(
-                    "SELECT js FROM judged WHERE topic=? AND rep=?", (k, rep)
-                ).fetchone()[0]
+                conn.execute("SELECT js FROM judged WHERE topic=? AND rep=?", (k, rep)).fetchone()[
+                    0
+                ]
             )
             for k in keys
         ]

@@ -1,60 +1,36 @@
-"""experiment 02-01 — subgraph retrieval quality (the retrieval step in isolation).
+"""
+Subgraph retrieval measured on its own, against curated gold landmarks
 
-The committed subgraph-retrieval recipe (hybrid pool -> ancestor augmentation -> induce citation
-subgraph -> Personalized-PageRank landmark ranking) is locked; this experiment measures HOW GOOD
-it is at the one thing it does: recovering a field's canonical landmark papers as a bounded,
-connected, on-topic citation subgraph. NO LLM, NO compose, NO judge — retrieval level only.
-
-Per gold topic, over a single shared candidate pool, three Stage-4 selectors are scored:
-  - induce  : the committed method — PPR-rank the pool to m landmarks.
-  - pcst    : Prize-Collecting Steiner Tree on the top-m relevant nodes (G-Retriever, 2402.07630).
-  - dsa_bfs : similarity-aware BFS from the top-cosine seeds (DynaGRAG, 2412.18644).
-(pcst needs the `pcst_fast` wheel; run `uv run --with pcst_fast …` to include it, else it is skipped.)
-
-Metrics (per topic, averaged per method):
-  - pool_recall      : canonical found in the candidate POOL  (the retrieval CEILING).
-  - landmark_recall  : canonical surfaced into the m LANDMARKS (the headline number).
-  - spine_recall     : foundational-lineage ids surfaced into the landmarks.
-  - connectivity     : largest-connected-component fraction of the chosen subgraph.
-  - mean_cosine      : mean query-cosine of the chosen nodes (topical-drift proxy).
-
-    uv run --with pcst_fast python experiments/02-retrieval/02-01-subgraph-retrieval/run.py
+The recipe is locked, so this asks only how well it recovers a field's canonical papers
+Retrieval level only, with no compose and no judge
 """
 
 from __future__ import annotations
 
 import json
-import sys
 from collections import defaultdict, deque
 from datetime import datetime
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
+import numpy as np  # noqa: E402
 from _harness.topics import TOPICS, GoldTopic  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-import numpy as np  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import Edge, PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import FrontierSpec, detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
 
-from _common import PG_DSN  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from recency import FrontierSpec, detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import Edge, PoolNode, augment_with_ancestors, induce_subgraph  # noqa: E402  # fmt: skip
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
 
 try:
     import pcst_fast  # noqa: F401  # pyright: ignore[reportMissingImports]
@@ -72,7 +48,9 @@ SEEDS, BFS_DEPTH, FANOUT, GATE = 6, 4, 8, 0.45
 def candidate(
     store: Store, qvec: list[float], q: str
 ) -> tuple[dict[str, PoolNode], FrontierSpec, int]:
-    """The committed Stage-1..3 pool: hybrid pool + frontier pull + ancestor augmentation."""
+    """
+    The committed Stage-1..3 pool: hybrid pool + frontier pull + ancestor augmentation
+    """
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -89,25 +67,21 @@ def candidate(
 
 
 def cosine(store: Store, qvec: list[float], ids: list[str]) -> dict[str, float]:
-    """True query-cosine per pool id (the shared PCST/BFS prize), one round-trip."""
+    """
+    True query-cosine per pool id (the shared PCST/BFS prize), one round-trip
+    """
     v = "[" + ",".join(repr(float(x)) for x in qvec) + "]"
     q = (  # noqa: S608  # emb_col/emb_table are internal constants, not user input
         f"SELECT arxiv_id, 1 - ({store.emb_col} <=> %s::halfvec) "
         f"FROM {store.emb_table} WHERE arxiv_id = ANY(%s)"
     )
-    rows: list[tuple[Any, ...]] = store.conn.execute(
-        cast(LiteralString, q), (v, ids)
-    ).fetchall()
+    rows: list[tuple[Any, ...]] = store.conn.execute(cast(LiteralString, q), (v, ids)).fetchall()
     return {str(a): float(s) for a, s in rows}
 
 
 # --- the three Stage-4 selectors ---------------------------------------------
-def m_induce(
-    pool: dict[str, PoolNode], edges: list[Edge], m: int, fr: FrontierSpec
-) -> list[str]:
-    lms = rank_landmarks_ppr(
-        pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+def m_induce(pool: dict[str, PoolNode], edges: list[Edge], m: int, fr: FrontierSpec) -> list[str]:
+    lms = rank_landmarks_ppr(pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     return [lm.arxiv_id for lm in lms]
 
 
@@ -125,9 +99,7 @@ def m_pcst(
     if len(e) == 0:
         return ids[: min(m, len(ids))]
     pr_raw = np.array([max(0.0, prize.get(a, 0.0)) for a in ids], dtype=float)
-    thresh = float(
-        np.sort(pr_raw)[::-1][min(m, len(pr_raw) - 1)]
-    )  # prize only the top-m relevant
+    thresh = float(np.sort(pr_raw)[::-1][min(m, len(pr_raw) - 1)])  # prize only the top-m relevant
     pr = np.where(pr_raw > thresh, pr_raw, 0.0)
     pos = pr_raw[pr_raw > thresh]
     cost = float(0.4 * (pos.mean() if len(pos) else 0.3))
@@ -143,9 +115,7 @@ def m_dsa_bfs(
     for e in edges:
         adj[e.src].append(e.dst)
         adj[e.dst].append(e.src)
-    seeds = [
-        a for a in sorted(prize, key=lambda a: -prize.get(a, 0.0))[:SEEDS] if a in pool
-    ]
+    seeds = [a for a in sorted(prize, key=lambda a: -prize.get(a, 0.0))[:SEEDS] if a in pool]
     visited: set[str] = set(seeds)
     dq: deque[tuple[str, int]] = deque((s, 0) for s in seeds)
     while dq and len(visited) < m:
@@ -163,7 +133,9 @@ def m_dsa_bfs(
 
 # --- metrics -----------------------------------------------------------------
 def largest_cc_frac(chosen: list[str], edges: list[Edge]) -> float:
-    """Fraction of chosen nodes in the largest connected component of the induced sub-edges."""
+    """
+    Fraction of chosen nodes in the largest connected component of the induced sub-edges
+    """
     cs = set(chosen)
     if not cs:
         return 0.0
@@ -210,9 +182,7 @@ def score(
         "spine_recall": round(len(spine & cs) / len(spine), 3) if spine else None,
         "connectivity": largest_cc_frac(chosen, edges),
         "mean_cosine": (
-            round(float(np.mean([prize.get(a, 0.0) for a in chosen])), 3)
-            if chosen
-            else 0.0
+            round(float(np.mean([prize.get(a, 0.0) for a in chosen])), 3) if chosen else 0.0
         ),
     }
 
@@ -240,12 +210,8 @@ def _write_tex(agg: list[dict[str, Any]]) -> None:
         "\\midrule",
     ]
     for a in agg:
-        name = a["method"].replace("_", r"\_") + (
-            " (committed)" if a["method"] == "induce" else ""
-        )
-        lines.append(
-            name + " & " + " & ".join(str(a.get(c[0], "")) for c in show) + " \\\\"
-        )
+        name = a["method"].replace("_", r"\_") + (" (committed)" if a["method"] == "induce" else "")
+        lines.append(name + " & " + " & ".join(str(a.get(c[0], "")) for c in show) + " \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     _ = (RESULTS / "table.tex").write_text("\n".join(lines) + "\n")
 
@@ -263,9 +229,7 @@ def run(_use_cache: bool = True) -> None:
     raw: list[dict[str, Any]] = []
     for key in GOLD:
         topic = TOPICS[key]
-        qv = embed_query(
-            topic.query, mode="asym"
-        )  # committed: asymmetric space, raw query
+        qv = embed_query(topic.query, mode="asym")  # committed: asymmetric space, raw query
         store = Store(PG_DSN, emb_space="asym")
         try:
             pool, fr, m = candidate(store, qv, topic.query)

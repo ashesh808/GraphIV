@@ -1,8 +1,14 @@
-"""experiment 03-07 — graph representation (logic in code/graph_representation{{,_phase2}}.py; --phase2 = axes phase)."""
+"""
+experiment 03-07 — graph representation (logic in code/graph_representation{{,_phase2}}.py
+--phase2 = axes phase)
+"""
 
 import sys
 from pathlib import Path
 
+# this tree's directory names are not identifiers, so the harness is reached by path
+_EXPERIMENTS = next(p for p in Path(__file__).resolve().parents if p.name == "experiments")
+sys.path.insert(0, str(_EXPERIMENTS))
 sys.path.insert(0, str(Path(__file__).resolve().parent / "code"))
 
 if __name__ == "__main__":

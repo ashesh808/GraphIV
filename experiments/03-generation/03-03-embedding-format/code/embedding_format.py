@@ -1,31 +1,21 @@
-"""experiment 03-03 — Embedding format: symmetric+HyDE vs asymmetric, HyDE vs raw.
+"""
+Embedding format: the two spaces crossed against the two query shapings
 
-One lever with two binary axes: embedding SPACE (sym = Instruct prompt / paper_embedding;
-asym = nomic search_document / paper_embedding_asym) x QUERY shaping (HyDE hypothetical abstract
-vs the raw question). Four conditions, the full pipeline each (graph drill + PPR + compose),
-judged by Gemma-4-26B @ T=0. Establishes that asym+raw matches the sym+HyDE production baseline
-while dropping the HyDE LLM call, and that HyDE is unnecessary (even mildly harmful) in the
-asymmetric space.
-
-    uv run python experiments/03-generation/03-03-embedding-format/run.py
+Four conditions run the full pipeline, judged at temperature zero
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-sys.path.insert(0, str(_HERE.parents[3]))  # experiments/ -> _harness
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import TOPICS  # noqa: E402
 
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+
 RESULTS = _EXP / "results"
-GOLD = [
-    k for k in TOPICS if TOPICS[k].canonical
-]  # gold-bearing topics (recall + judge)
+GOLD = [k for k in TOPICS if TOPICS[k].canonical]  # gold-bearing topics (recall + judge)
 
 CONDITIONS = [
     ("sym_hyde", {"effort": "fast", "embed_mode": "sym", "use_hyde": True}),

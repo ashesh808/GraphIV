@@ -1,27 +1,19 @@
-"""deep-research — the flagship end-to-end before/after (the deployed pipeline, dogfooded).
+"""
+The flagship end-to-end comparison: the deployed pipeline against its predecessor
 
-Unlike the single-lever ablations in 01/02/03, this is the holistic demonstration: the OLD
-hardcoded-2023 single-pass behavior versus the FULL upgraded deep pipeline (every shipped lever on),
-over the deep panel. The long md/tex reviews + figure galleries under results/runs are the primary
-artifact; the table quantifies the jump (2026 coverage, length, grounding, judge, figures).
-
-  before-2023 : single-pass, raw in-degree, recency=0, frontier_pull OFF  (mimics the old default)
-  after-deep  : deep judge-loop, ppr, recency=0.5, frontier_pull ON, critique + vision figures
-
-    uv run python experiments/deep-research/run.py
+Unlike the single-lever ablations this is holistic, with every shipped lever on at once
+The long reviews and figure galleries are the artifact, and the table only quantifies the jump
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the deep-research flagship dir
-sys.path.insert(0, str(_HERE.parents[2]))  # experiments/ (for _harness)
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import deep_panel  # noqa: E402
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the deep-research flagship dir
 
 RESULTS = _EXP / "results"
 

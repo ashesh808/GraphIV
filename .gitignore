@@ -28,8 +28,8 @@ CLAUDE.md
 # superseded pre-rewrite code (old phase_1/2/3 + scratchpad/kg_rag*); kept on disk, untracked
 .legacy/
 
-# phase output / caches
-phases/**/output/
+# research run output (regenerable reports and figures)
+output/
 
 # experiment raw runs (reproducible reports + figure PNGs); keep metrics/plots/READMEs
 experiments/**/results/runs/

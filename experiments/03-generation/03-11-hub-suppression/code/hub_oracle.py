@@ -1,37 +1,26 @@
-"""Hub oracle — the independent ground-truth metric for the hub sweep. For each (topic, paper) an LLM
-(seeing ONLY topic+title+abstract, none of our structural signals) labels specific vs generic-for-this-
-topic. Then per arm: generic_frac (of its selection, want low) + specific_retained (of all specific pool
-papers, want high). Topic-conditioned so Attention is 'specific' for transformers, 'generic' for ATP.
-Cached by (topic, arxiv_id) in cache/oracle.db. Reads results/structural.json (run hub_sweep.py first).
+"""
+The topic-conditioned judge that decides whether a paper is specific or generic
 
-    uv run python experiments/03-generation/03-11-hub-suppression/code/hub_oracle.py
+It is independent of the sweep, which is what makes it usable as ground truth
 """
 
 from __future__ import annotations
 
 import json
 import sqlite3
-import sys
 from pathlib import Path
 from typing import Any
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]
-_REPO = _HERE.parents[4]
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
 from _harness._boot import JUDGE_MODEL  # noqa: E402
 from _harness._llm import chat, parse_json  # noqa: E402
 from _harness.topics import TOPICS  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from store import Store  # noqa: E402
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]
+_REPO = _HERE.parents[4]
 
 RESULTS = _EXP / "results"
 CACHE = _EXP / "cache"
@@ -85,9 +74,7 @@ def main() -> None:
             ).fetchone()
             if row is None:
                 lab = _judge(TOPICS[k].query, meta[k][aid]["title"], abs_d.get(aid, ""))
-                _ = conn.execute(
-                    "INSERT OR REPLACE INTO lab VALUES (?,?,?)", (k, aid, lab)
-                )
+                _ = conn.execute("INSERT OR REPLACE INTO lab VALUES (?,?,?)", (k, aid, lab))
                 conn.commit()
                 done += 1
                 if done % 50 == 0:
@@ -106,9 +93,7 @@ def main() -> None:
             sel = sets[k][arm]
             specific_pool = [a for a in meta[k] if labels.get((k, a)) == "specific"]
             gfracs.append(
-                sum(1 for a in sel if labels.get((k, a)) == "generic") / len(sel)
-                if sel
-                else 0.0
+                sum(1 for a in sel if labels.get((k, a)) == "generic") / len(sel) if sel else 0.0
             )
             if specific_pool:
                 srets.append(len(set(sel) & set(specific_pool)) / len(specific_pool))
@@ -116,9 +101,7 @@ def main() -> None:
             {
                 "arm": arm,
                 "generic_frac": round(sum(gfracs) / len(gfracs), 3),
-                "specific_retained": (
-                    round(sum(srets) / len(srets), 3) if srets else 0.0
-                ),
+                "specific_retained": (round(sum(srets) / len(srets), 3) if srets else 0.0),
             }
         )
     cols = ["arm", "generic_frac", "specific_retained"]

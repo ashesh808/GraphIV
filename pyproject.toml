@@ -1,10 +1,11 @@
 [project]
 name = "graphiv"
 version = "0.1.0"
-description = "Add your description here"
+description = "A knowledge graph over all of arXiv, and a grounded literature-review endpoint on top of it"
 requires-python = ">=3.13"
 dependencies = [
     "datasets>=5.0.0",
+    "dspy>=3.3.0",
     "einops>=0.8.2",
     "mcp>=1.28.1",
     "numpy>=2.4.5",
@@ -17,9 +18,96 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "import-linter>=2.0",
     "matplotlib>=3.10.9",
     "openai>=2.38.0",
     "pymupdf>=1.27.2.3",
+    "pytest",
+    "pytest-cov",
     "rapidfuzz>=3.14.5",
     "transformers>=5.9.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["graphiv"]
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "ANN", "BLE", "D"]
+# D200/D212/D415 contradict the docstring form STYLE.md documents
+ignore = ["ANN401", "D100", "D104", "D107", "D200", "D212", "D415"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/**" = ["D"]
+"notebooks/**" = ["D", "ANN"]
+"tests/**" = ["D", "ANN"]
+# experiment code embeds prompt text, SQL and browser scripts, where width is content
+"experiments/**/code/*.py" = ["D", "E501"]
+"experiments/_harness/judge.py" = ["D", "E501"]
+"experiments/_harness/vision_check.py" = ["D", "E501"]
+"experiments/**" = ["D"]
+# the experiment shims must set sys.path before importing their own logic
+"experiments/**/run.py" = ["D", "E402"]
+# embedded JS, CSS and prompt literals: the width is content, not a wrapped sentence
+"graphiv/generate/compose.py" = ["E501"]
+"graphiv/generate/graph_viz.py" = ["E501"]
+"graphiv/generate/pipeline.py" = ["E501"]
+"graphiv/preprocess/label/corpus_sample.py" = ["E501"]
+"graphiv/preprocess/label/teacher.py" = ["E501"]
+"graphiv/serve/mcp_server.py" = ["E501"]
+"graphiv/serve/webui/pages.py" = ["E501"]
+"graphiv/serve/webui/scripts.py" = ["E501"]
+"scripts/doomscroll.py" = ["D", "E501"]
+"scratchpad/**" = ["ALL"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m 'not slow and not gpu'"
+markers = [
+    "slow: needs real data or a long run",
+    "gpu: needs a GPU",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
+reportMissingTypeStubs = false
+include = ["graphiv", "scripts", "tests"]
+exclude = ["scratchpad", "notebooks", "**/__pycache__", ".venv"]
+
+# the torch stub omits __all__, so genuinely public names read as private imports
+[[tool.pyright.executionEnvironments]]
+root = "graphiv/preprocess/intent"
+reportPrivateImportUsage = "none"
+
+[tool.importlinter]
+root_packages = ["graphiv"]
+
+[[tool.importlinter.contracts]]
+name = "Stages import earlier stages only"
+type = "layers"
+# top may import lower, lowest may import nothing above it
+layers = [
+    "graphiv.serve",
+    "graphiv.generate",
+    "graphiv.retrieve",
+    "graphiv.preprocess",
+    "graphiv.download",
+    "graphiv.core",
 ]

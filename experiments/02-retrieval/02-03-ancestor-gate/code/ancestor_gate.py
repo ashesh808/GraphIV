@@ -1,65 +1,48 @@
-"""experiment 02-03 — ancestor relevance gate (precision/recall of the ancestor injection).
+"""
+The ancestor relevance gate: precision and recall of the ancestor injection
 
-02-02 found ~22% of landmarks are off-topic AND carry high in-degree (5.4): famous cross-field
-hubs (GPT-3/StyleGAN under "diffusion"). They enter via `store.ancestors`, which takes the top-120
-MOST-CITED one-hop-back papers (ranked by citer count BEFORE cosine), so fame beats relevance. This
-experiment gates that injection by a cosine floor (+ optional category-prefix) and measures BOTH
-sides of the tradeoff over the committed retrieval:
-  - precision : LLM relevance_rate over all 27 topics (reuses the 02-02 judge cache — a paper's
-                role label is retrieval-independent, so only newly-introduced landmarks are judged).
-  - recall    : landmark_recall + spine_recall over the 3 gold topics (no LLM).
-
-Result: a gentle floor (~0.35) is a PARETO win (precision AND recall up — removing off-topic hubs
-frees PPR landmark slots for on-topic papers); an aggressive floor (0.45) is a real tradeoff (it
-cuts genuine low-cosine foundational papers); the category gate adds ~nothing. See README.
-
-    uv run python experiments/02-retrieval/02-03-ancestor-gate/run.py
+Ancestors are ranked by citer count before cosine, so fame beats relevance without a floor
+This sweeps the floor to find where the recall plateau starts
 """
 
 from __future__ import annotations
 
 import json
 import sqlite3
-import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
 from _harness._boot import JUDGE_MODEL  # noqa: E402
 from _harness._llm import chat, parse_json  # noqa: E402
 from _harness.topics import TOPICS, battery  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from recency import detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import PoolNode, induce_subgraph  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
 
 RESULTS = _EXP / "results"
-# judgments are shared with 02-02 (role label is retrieval-independent); reuse its cache.
+# judgments are shared with 02-02 (role label is retrieval-independent); reuse its cache
 CACHE_DB = _EXP.parent / "02-02-relevance-judge" / "cache" / "judge_cache.db"
 LABELS = ("foundational", "core", "frontier", "peripheral", "unrelated")
 
-# (name, cosine floor on injected ancestors, use modal-category prefix)
-# 0.25-0.45 sensitivity grid: 0.35 came from a coarse search, so the ship decision needs
-# to know whether it sits on a plateau (robust) or a peak (overfit to the 3 gold topics).
+"""
+Each arm is a name, a cosine floor on injected ancestors, and whether to use the modal prefix
+The grid exists because a floor from a coarse search could be a peak rather than a plateau
+"""
 VARIANTS: list[tuple[str, float, bool]] = [
     ("baseline", 0.0, False),
     ("floor25", 0.25, False),
@@ -86,18 +69,16 @@ _SYS = (
 )
 
 
-def modal_cat(
-    pool: dict[str, PoolNode], core_ids: set[str], topn: int = 30
-) -> str | None:
+def modal_cat(pool: dict[str, PoolNode], core_ids: set[str], topn: int = 30) -> str | None:
     core = sorted((pool[a] for a in core_ids), key=lambda n: -n.score)[:topn]
     cnt = Counter(n.category for n in core if n.category)
     return cnt.most_common(1)[0][0] if cnt else None
 
 
-def gated_landmarks(
-    store: Store, qvec: list[float], q: str, floor: float, cat: bool
-) -> list[str]:
-    """Committed retrieval, but the ancestor injection is filtered by cosine floor (+ optional cat)."""
+def gated_landmarks(store: Store, qvec: list[float], q: str, floor: float, cat: bool) -> list[str]:
+    """
+    Committed retrieval, but the ancestor injection is filtered by cosine floor (+ optional cat)
+    """
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)  # core: always kept
@@ -118,9 +99,7 @@ def gated_landmarks(
             continue
         pool[n.arxiv_id] = n
     edges = induce_subgraph(store, list(pool))
-    lms = rank_landmarks_ppr(
-        pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+    lms = rank_landmarks_ppr(pool, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     return [lm.arxiv_id for lm in lms]
 
 
@@ -163,7 +142,7 @@ def run(use_cache: bool = True) -> None:
     out = RESULTS
     out.mkdir(parents=True, exist_ok=True)
 
-    # stage 1: retrieve all variants x topics (nomic loaded once); collect landmark sets + meta.
+    # stage 1: retrieve all variants x topics (nomic loaded once); collect landmark sets + meta
     sets: dict[str, dict[str, list[str]]] = {v[0]: {} for v in VARIANTS}
     meta: dict[str, tuple[str, int | None]] = {}
     abst: dict[str, dict[str, str]] = {}
@@ -191,13 +170,12 @@ def run(use_cache: bool = True) -> None:
         finally:
             store.close()
         print(
-            f"[retrieve] {key}: "
-            + " ".join(f"{n}={len(sets[n][key])}" for n, _, _ in VARIANTS),
+            f"[retrieve] {key}: " + " ".join(f"{n}={len(sets[n][key])}" for n, _, _ in VARIANTS),
             flush=True,
         )
     free_model()
 
-    # stage 2: judge (cache-amortized across variants and the 02-02 run).
+    # stage 2: judge (cache-amortized across variants and the 02-02 run)
     conn = sqlite3.connect(CACHE_DB)
     labels: dict[tuple[str, str], str] = {}
     union = {(k, a) for name in sets for k in sets[name] for a in sets[name][k]}
@@ -217,7 +195,7 @@ def run(use_cache: bool = True) -> None:
             print(f"[judge] {i + 1}/{len(union)}", flush=True)
     conn.close()
 
-    # stage 3: score each variant.
+    # stage 3: score each variant
     def relevance(name: str) -> float:
         rates: list[float] = []
         for k in keys:
@@ -227,12 +205,7 @@ def run(use_cache: bool = True) -> None:
         return round(sum(rates) / len(rates), 3) if rates else 0.0
 
     def unrel(name: str) -> float:
-        labs = [
-            labels[(k, a)]
-            for k in keys
-            for a in sets[name][k]
-            if labels[(k, a)] in LABELS
-        ]
+        labs = [labels[(k, a)] for k in keys for a in sets[name][k] if labels[(k, a)] in LABELS]
         return round(labs.count("unrelated") / len(labs), 3) if labs else 0.0
 
     def recall(name: str) -> tuple[float, float]:

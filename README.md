@@ -16,8 +16,8 @@ Novelty:
 - **Measured** — a four-bucket `experiments/` suite justifies every design choice with a metric
   vector, including the negative results.
 
-It is organized as a uniform **`phases/` pipeline** (phases 1–5 build the graph; **phase 6 is the
-live research endpoint**).
+It is organized as one importable library (`graphiv/`) driven by single-purpose entrypoints
+(`scripts/`): the build stages construct the graph, and the research stage serves it.
 
 ```
 question ──▶ retrieve (vector + lexical + topic-tree + citation subgraph + frontier pull)
@@ -26,27 +26,41 @@ question ──▶ retrieve (vector + lexical + topic-tree + citation subgraph +
          ──▶ compose (chronological, grounded, cited review)  ──▶ report.md + report.tex (+ figures)
 ```
 
-## The pipeline (`phases/`)
+## The pipeline (`scripts/`)
 
-| phase | does one thing                                                                                                                                                                                                              |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | PDF acquisition (GCS → vault, `aria2c`)                                                                                                                                                                                     |
-| **2** | HTML acquisition (ar5iv)                                                                                                                                                                                                    |
-| **3** | Citation graph: parse → match each citation to an arXiv id + context; classify **intent** (background/uses/extends/compares/critiques/motivates) and polarity via a Gemma teacher → DistilBERT student over the full corpus |
-| **4** | Graph store: consolidate metadata + 173M citations + 3.07M nomic embeddings (HNSW) into one Postgres+pgvector DB                                                                                                            |
-| **5** | Semantic index: density-aware topic tree (3,582 leaves / 2.92M papers)                                                                                                                                                      |
-| **6** | **Research endpoint**: question → grounded literature review (md + tex), topic-adaptive recency, a judge-driven deep loop with full-PDF critique, and a vision figure gallery                                               |
+| stage | does one thing |
+| --- | --- |
+| `seed.py` | refresh the arXiv metadata JSONL from the Kaggle snapshot |
+| `download_pdf.py` | PDF acquisition (GCS → vault, `aria2c`) |
+| `download_html.py` | HTML acquisition (arxiv.org LaTeXML, ar5iv fallback) |
+| `citations.py` | citation graph: resolve each reference to an arXiv id, then classify **intent** (background/uses/extends/compares/critiques/motivates) and polarity via a Gemma teacher → DistilBERT student over the full corpus |
+| `consolidate.py` | graph store: metadata + 173M citations + 3.07M nomic embeddings (HNSW) into one Postgres+pgvector DB |
+| `topics.py` | semantic index: density-aware topic tree (3,582 leaves / 2.92M papers) |
+| `research.py` | **the research endpoint**: question → grounded literature review (md + tex) |
+| `serve.py` | the MCP server and the Research Library dashboard |
 
-Every phase has the same `run.py` contract (`--dry-run` first, idempotent, config-driven); each
-phase's `config.json` is the single place its parameters + component toggles live. See
-[`docs/`](docs/) for design notes.
+Every stage shares one contract (`--dry-run` first, idempotent, config-driven); `config.toml`
+is the single place every parameter and toggle lives. See [`docs/`](docs/) for design notes and
+[`scripts/README.md`](scripts/README.md) for the flag grammar.
 
-## The research endpoint (phase 6)
+## The library (`graphiv/`)
+
+```
+core/  config, store, embedding, LLM, the shared data contracts
+download/ preprocess/   build the graph
+retrieve/ generate/     answer a question against it
+serve/                  MCP tools and the dashboard
+```
+
+Imports only ever point down that list, which `import-linter` enforces as a layers contract.
+Each subpackage carries its own README.
+
+## The research endpoint
 
 ```bash
 # effort is a single 0-5 master dial (0 instant … 5 exhaustive; 3+ = judge-driven deep loop)
-uv run python phases/phase-6/run.py "diffusion models for molecular generation" --set-effort 4
-uv run python phases/phase-6/run.py "<question>" --dry-run        # read-only plan
+uv run python scripts/research.py "diffusion models for molecular generation" --set-effort 4
+uv run python scripts/research.py "<question>" --dry-run        # read-only plan
 ```
 
 Retrieval fuses a vector pool, lexical signals, a topic-tree anchor, an induced citation subgraph, and
@@ -81,16 +95,16 @@ nix develop          # dev shell (Python 3.13, CUDA, ruff/black/pyright, TeX)
 uv sync              # install deps
 nix run .#pg-start   # launch the project-local Postgres+pgvector
 
-uv run python phases/phase-1/run.py --dry-run   # every phase: --dry-run first
-# … phases 1-5 build the store from the arXiv metadata dump + nomic embeddings (see docs/) …
-uv run python phases/phase-6/run.py "your question here" --set-effort 4
+uv run python scripts/seed.py --dry-run   # every stage: --dry-run first
+# … the build stages construct the store from the metadata dump + nomic embeddings (see docs/) …
+uv run python scripts/research.py "your question here" --set-effort 4
 ```
 
 To **restore the prebuilt store** instead of building it (a ~17 GB `pg_dump`, download link pending),
 and to point the LLM layer at any OpenAI-compatible endpoint, see [`docs/restore.md`](docs/restore.md).
 The large stores (PDFs, HTML, the Postgres datadir, embeddings) are **not committed**; the served path
 is fully under `./data`, target footprint < 100 GB. Lint gate:
-`ruff check phases/ experiments/ ; black … ; pyright …` — all clean.
+`ruff check graphiv/ scripts/ ; black … ; pyright … ; lint-imports` — all clean.
 
 ## License
 

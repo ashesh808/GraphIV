@@ -1,9 +1,8 @@
-"""LLM-as-judge for generated reviews (ported from the pre-rewrite kg_rag_lab/judge.py).
+"""
+LLM-as-judge for generated reviews (ported from the pre-rewrite kg_rag_lab/judge.py)
 
-Four 1-5 axes — grounding, coverage, lineage, coherence — plus a one-paragraph critique. Runs
-on Gemma-4-26B (the legacy work found it the most discriminating judge). Averaged over `passes`
-to cut single-sample noise. This is the primary quality instrument; faithfulness is the safety
-tripwire (separate module).
+Four 1-5 axes — grounding, coverage, lineage, coherence — plus a one-paragraph critique.
+Runs on Gemma-4-26B (the legacy work found it the most discriminating judge).
 """
 
 from __future__ import annotations
@@ -53,7 +52,11 @@ def _judge_once(question: str, report: str, canonical: list[str]) -> dict[str, A
 def judge_report(
     question: str, report: str, canonical: list[str] | None = None, passes: int = 2
 ) -> dict[str, Any]:
-    """Average `passes` judgments. Returns the 4 axes + overall mean + last critique."""
+    """
+    Average `passes` judgments
+
+    Returns the 4 axes + overall mean + last critique.
+    """
     canonical = canonical or []
     runs = [_judge_once(question, report, canonical) for _ in range(max(1, passes))]
     avg: dict[str, Any] = {}
@@ -97,8 +100,11 @@ def _pair_once(question: str, a: str, b: str, canonical: list[str]) -> dict[str,
 def judge_pairwise(
     question: str, report_a: str, report_b: str, canonical: list[str] | None = None
 ) -> dict[str, str]:
-    """Pairwise A-vs-B preference per axis (A=top condition, B=baseline). Order-debiased by also
-    judging B-vs-A and merging; a flipped verdict between the two passes becomes a 'tie'.
+    """
+    Pairwise A-vs-B preference per axis (A=top condition, B=baseline)
+
+    Order-debiased by also
+        judging B-vs-A and merging; a flipped verdict between the two passes becomes a 'tie'.
     """
     canonical = canonical or []
     fwd = _pair_once(question, report_a, report_b, canonical)
@@ -112,10 +118,11 @@ def judge_pairwise(
 
 
 # ---------------------------------------------------------------------------
-# Per-paper RELEVANCE role (precision instrument): foundational / core / frontier /
-# peripheral / unrelated. Used as a metric (exp-15) and as a selection filter (exp-16/selection).
-# Judges by content (title+year+abstract) only — independent of our PPR/centrality scores. The
-# 5-label prompt was copy-pasted across exp-15/16 + scratchpads; this is the canonical version.
+"""
+The per-paper relevance role, used both as a precision metric and as a selection filter
+It judges on content alone, which keeps it independent of our own centrality scores
+This is the canonical copy of a prompt that was pasted across several experiments
+"""
 
 ROLE_LABELS: tuple[str, ...] = (
     "foundational",
@@ -135,11 +142,12 @@ _ROLE_SYS = (
 )
 
 
-def role_judge(
-    question: str, arxiv_id: str, title: str, year: int | None, abstract: str
-) -> str:
-    """One of ROLE_LABELS for this paper relative to `question` (defaults to 'peripheral' on a
-    miss). Independent of retrieval scores; caching is the caller's responsibility."""
+def role_judge(question: str, arxiv_id: str, title: str, year: int | None, abstract: str) -> str:
+    """
+    One of ROLE_LABELS for this paper relative to `question` (defaults to 'peripheral' on a
+
+        miss). Independent of retrieval scores; caching is the caller's responsibility.
+    """
     user = (
         f"TOPIC: {question}\n\nPAPER\ntitle: {title}\n"
         f"year: {year if year is not None else '?'}\narXiv: {arxiv_id}\n"

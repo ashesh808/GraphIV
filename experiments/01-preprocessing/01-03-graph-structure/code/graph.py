@@ -1,26 +1,30 @@
-"""Citation-graph structure analysis, computed directly from the single Postgres store.
+"""
+Citation-graph structure, computed straight out of Postgres
 
-Pure SQL + matplotlib (no LLM). Heavy aggregations are cached to results/summary.json so re-runs
-are instant; pass force=True to recompute. Produces: global counts, in/out-degree distributions
-(log-log), intent + polarity mix, citations-per-era, and the top-cited papers.
+Pure SQL and figures, with no model in the loop
+The heavy aggregations are cached, so a re-run is instant unless it is forced
 """
 
 from __future__ import annotations
 
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
 import matplotlib.pyplot as plt
 import psycopg
+from _harness.theme import (  # noqa: E402  # fmt: skip
+    BARS,
+    ON_SURFACE,
+    PRIMARY,
+    SECONDARY,
+    apply_theme,
+)
 
 _HERE = Path(__file__).resolve().parent
 _EXP = _HERE.parents[0]
 _REPO = _HERE.parents[3]
-sys.path.insert(0, str(_REPO / "experiments"))
-from _harness.theme import BARS, ON_SURFACE, PRIMARY, SECONDARY, apply_theme  # noqa: E402  # fmt: skip
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -32,21 +36,21 @@ def _q(conn: psycopg.Connection[tuple[Any, ...]], sql: str) -> list[tuple[Any, .
 
 
 def compute(use_cache: bool) -> dict[str, Any]:
-    """Compute (or load cached) graph-structure stats as a JSON-able dict."""
+    """
+    Compute (or load cached) graph-structure stats as a JSON-able dict
+    """
     cache = CACHE / "summary.json"
     if cache.exists() and use_cache:
-        return json.loads(
-            cache.read_text(encoding="utf-8")
-        )  # pyright: ignore[reportAny]
+        return json.loads(cache.read_text(encoding="utf-8"))  # pyright: ignore[reportAny]
 
     out: dict[str, Any] = {}
     with psycopg.connect(PG_DSN) as conn:
         _ = conn.execute("SET statement_timeout='1200s'")
         out["n_papers"] = _q(conn, "SELECT count(*) FROM paper")[0][0]
         out["n_citations"] = _q(conn, "SELECT count(*) FROM citation")[0][0]
-        out["n_resolved"] = _q(
-            conn, "SELECT count(*) FROM citation WHERE cited_id IS NOT NULL"
-        )[0][0]
+        out["n_resolved"] = _q(conn, "SELECT count(*) FROM citation WHERE cited_id IS NOT NULL")[0][
+            0
+        ]
         out["n_edges"] = _q(
             conn,
             "SELECT count(DISTINCT (citing_id, cited_id)) FROM citation WHERE cited_id IS NOT NULL",
@@ -65,21 +69,13 @@ def compute(use_cache: bool) -> dict[str, Any]:
             "WHERE cited_id IS NOT NULL GROUP BY citing_id) t GROUP BY od ORDER BY od",
         )
         out["outdegree_hist"] = [[int(d), int(n)] for d, n in outdeg]
-        # intent + polarity mix (labeled, resolved edges)
+        # intent mix (labeled, resolved edges)
         out["intent_mix"] = [
             [str(i), int(n)]
             for i, n in _q(
                 conn,
                 "SELECT intent, count(*) FROM citation WHERE intent IS NOT NULL "
                 "GROUP BY intent ORDER BY count(*) DESC",
-            )
-        ]
-        out["polarity_mix"] = [
-            [str(p), int(n)]
-            for p, n in _q(
-                conn,
-                "SELECT polarity, count(*) FROM citation WHERE polarity IS NOT NULL "
-                "GROUP BY polarity ORDER BY count(*) DESC",
             )
         ]
         # citations per era (by citing-paper year)
@@ -126,21 +122,17 @@ def _loglog(hist: list[list[int]], title: str, xlabel: str, out_path: Path) -> N
     plt.close(fig)
 
 
-def _bars(
-    pairs: list[list[Any]], title: str, out_path: Path, ylabel: str = "count"
-) -> None:
+def _bars(pairs: list[list[Any]], title: str, out_path: Path, ylabel: str = "count") -> None:
     apply_theme()
     labels = [str(p[0]) for p in pairs]
     vals = [float(p[1]) for p in pairs]
     fig, ax = plt.subplots(figsize=(7.0, 4.2))
-    bars = ax.bar(
-        range(len(vals)), vals, color=[BARS[i % len(BARS)] for i in range(len(vals))]
-    )
+    bars = ax.bar(range(len(vals)), vals, color=[BARS[i % len(BARS)] for i in range(len(vals))])
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels(labels, rotation=25, ha="right", fontsize=9)
     ax.set_ylabel(ylabel)
     ax.set_title(title)
-    for b, v in zip(bars, vals):
+    for b, v in zip(bars, vals, strict=False):
         ax.text(
             b.get_x() + b.get_width() / 2,
             v,
@@ -172,7 +164,9 @@ def _line(pairs: list[list[int]], title: str, out_path: Path) -> None:
 
 
 def figures(stats: dict[str, Any], results_dir: Path) -> list[str]:
-    """Render all figures; return their filenames (for the README)."""
+    """
+    Render all figures; return their filenames (for the README)
+    """
     _loglog(
         stats["indegree_hist"],
         "In-degree distribution (citations received)",
@@ -190,25 +184,19 @@ def figures(stats: dict[str, Any], results_dir: Path) -> list[str]:
         "Citation intent mix (corpus-wide)",
         results_dir / "intent_mix.png",
     )
-    _bars(
-        stats["polarity_mix"],
-        "Citation polarity mix (corpus-wide)",
-        results_dir / "polarity_mix.png",
-    )
-    _line(
-        stats["per_year"], "Citation activity over time", results_dir / "per_year.png"
-    )
+    _line(stats["per_year"], "Citation activity over time", results_dir / "per_year.png")
     return [
         "indegree_loglog.png",
         "outdegree_loglog.png",
         "intent_mix.png",
-        "polarity_mix.png",
         "per_year.png",
     ]
 
 
 def tables(s: dict[str, Any]) -> None:
-    """Write results/metrics.md (+ macros.tex/table.tex) — the single source the reports import."""
+    """
+    Write results/metrics.md (+ macros.tex/table.tex) — the single source the reports import
+    """
     res_pct = 100.0 * s["n_resolved"] / max(1, s["n_citations"])
     counts = [
         ("papers (nodes)", s["n_papers"]),

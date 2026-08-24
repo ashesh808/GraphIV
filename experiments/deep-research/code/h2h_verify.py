@@ -1,11 +1,8 @@
-"""Head-to-head citation verifier: objective recency/grounding counts for ANY report.
+"""
+Head-to-head citation verifier: objective recency/grounding counts for ANY report
 
-Extracts arXiv ids (arXiv:ID inline or arxiv.org/abs|pdf/ID links — commercial deep-research
-outputs cite by link), verifies each against the corpus, and double-checks non-corpus ids
-against arxiv.org live (rate-limited) so papers newer than our corpus delta are counted as
-real, not fabricated. Reports: total unique ids, verified, fabricated, >=2025, 2026.
-
-    uv run python experiments/deep-research/code/h2h_verify.py <report.md|txt> [more files ...]
+Extracts arXiv ids (arXiv:ID inline or arxiv.org/abs|pdf/ID links — commercial deep-research outputs cite by link), verifies each against the corpus, and double-checks non-corpus ids against arxiv.org live (rate-limited) so papers newer than our corpus delta are counted as real, not fabricated.
+Reports: total unique ids, verified, fabricated, >=2025, 2026.
 """
 
 from __future__ import annotations
@@ -20,10 +17,6 @@ from typing import Any
 
 _HERE = Path(__file__).resolve()
 _REPO = _HERE.parents[3]
-for _p in (str(_REPO / "phases"), str(_REPO / "phases" / "phase-6" / "components")):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 _ID = r"[a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5}"
 _PATTERNS = (
     re.compile(rf"arXiv:\s?({_ID})", re.IGNORECASE),
@@ -39,7 +32,7 @@ def extract_ids(text: str) -> list[str]:
 
 
 def _year(aid: str) -> int | None:
-    from _common import arxiv_year  # noqa: PLC0415
+    from graphiv.core.settings import arxiv_year
 
     return arxiv_year(aid)
 
@@ -58,8 +51,10 @@ def _live_exists(aid: str) -> bool:
 
 
 def verify(path: Path) -> dict[str, Any]:
-    """Citation counts for one report file (corpus check + live fallback for misses)."""
-    from narrate import verify_ids_exist  # noqa: PLC0415
+    """
+    Citation counts for one report file (corpus check + live fallback for misses)
+    """
+    from graphiv.generate.narrate import verify_ids_exist
 
     ids = extract_ids(path.read_text(encoding="utf-8", errors="ignore"))
     in_corpus = {i.lower() for i in verify_ids_exist(ids)}

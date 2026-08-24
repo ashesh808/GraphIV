@@ -1,23 +1,18 @@
-"""Judge validity: known-fact accuracy + degradation detection + position/verbosity bias."""
+"""
+Judge validity: known-fact accuracy + degradation detection + position/verbosity bias
+"""
 
 from __future__ import annotations
 
 import json
 import re
 import sqlite3
-import sys
 from datetime import datetime
 from pathlib import Path
 from random import Random
 from typing import Any, LiteralString, cast
 
 import psycopg
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]
-_REPO = _HERE.parents[4]
-sys.path.insert(0, str(_REPO / "experiments"))
-
 from _harness._boot import JUDGE_MODEL  # noqa: E402
 from _harness._llm import chat as jchat  # noqa: E402
 from _harness._llm import parse_json  # noqa: E402
@@ -27,16 +22,20 @@ from _harness.retrieval import retrieve_subgraph  # noqa: E402
 from _harness.topics import TOPICS  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from llm import NO_THINK, chat_sync  # noqa: E402
-from pipeline import _free_router_vram  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.llm import NO_THINK, chat_sync
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import _free_router_vram
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]
+_REPO = _HERE.parents[4]
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
 PG_DSN = f"host={_REPO}/.pg port=5433 dbname=arxivkg"
 TODAY = datetime.now().strftime("%Y-%m-%d")
-NARRATOR = "Gemma-4-26B-Code"
+NARRATOR = "Gemma-4-26B"
 BASE_TOPICS = ["diffusion", "testtime", "transformer"]
 
 CLAIMS: list[tuple[str, str, bool, str]] = [
@@ -349,9 +348,7 @@ def _base_reviews(conn: sqlite3.Connection) -> list[tuple[str, str]]:
 
 def degrade_test(conn: sqlite3.Connection) -> dict[str, Any]:
     bases = _base_reviews(conn)
-    res: dict[str, dict[str, int]] = {
-        v: {"full": 0, "tie": 0, "variant": 0} for v in VARIANTS
-    }
+    res: dict[str, dict[str, int]] = {v: {"full": 0, "tie": 0, "variant": 0} for v in VARIANTS}
     pos_bias = pos_total = 0
     for topic, full in bases:
         q = f"(Today is {TODAY}.) {TOPICS[topic].query}"
@@ -406,9 +403,7 @@ def _tables(facts: dict[str, Any], deg: dict[str, Any]) -> None:
     ]
     for v in VARIANTS:
         r = deg["res"][v]
-        md.append(
-            f"| {v} | {r['full']}/{n} | {r['tie']}/{n} | {r['variant']}/{n} | {_AXIS[v]} |"
-        )
+        md.append(f"| {v} | {r['full']}/{n} | {r['tie']}/{n} | {r['variant']}/{n} | {_AXIS[v]} |")
     md += [
         "",
         f"- position bias (non-tie on identical): {deg['pos_bias']}/{deg['pos_total']} "
@@ -432,9 +427,7 @@ def _tables(facts: dict[str, Any], deg: dict[str, Any]) -> None:
     ]
     for v in VARIANTS:
         r = deg["res"][v]
-        tab.append(
-            f"{v.replace('_', '-')} & {r['full']} & {r['tie']} & {r['variant']} \\\\"
-        )
+        tab.append(f"{v.replace('_', '-')} & {r['full']} & {r['tie']} & {r['variant']} \\\\")
     tab += ["\\bottomrule", "\\end{tabular}"]
     _ = (RESULTS / "table.tex").write_text("\n".join(tab) + "\n", encoding="utf-8")
 
@@ -442,9 +435,7 @@ def _tables(facts: dict[str, Any], deg: dict[str, Any]) -> None:
 def _cache() -> sqlite3.Connection:
     CACHE.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(CACHE / "base.db")
-    _ = conn.execute(
-        "CREATE TABLE IF NOT EXISTS base (topic TEXT PRIMARY KEY, report TEXT)"
-    )
+    _ = conn.execute("CREATE TABLE IF NOT EXISTS base (topic TEXT PRIMARY KEY, report TEXT)")
     conn.commit()
     return conn
 

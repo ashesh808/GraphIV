@@ -12,6 +12,7 @@ experiments/
     runner.py driver.py evaluate.py metrics.py topics.py topics.json
     judge.py faithfulness.py vision_check.py viz.py theme.py _llm.py _boot.py
     retrieval.py digest.py        canonical subgraph retrieval + adjacency digest
+    README.md                     what each instrument measures
   cache/papers/{arxiv_id}/        global per-paper cache, reused across experiments (planned)
 
   0a-<stage>/0a-0b-<slug>/        every experiment follows this locked template:
@@ -20,13 +21,12 @@ experiments/
     cache/            per-experiment cache
     results/          metrics.json/md · ablation.png · table.tex · macros.tex · runs/ (gitignored)
     report/           report.md · report.tex · report.pdf
-    readme.md         one-screen what / conclusion / how-to-run
+    README.md         one-screen what / conclusion / how-to-run
 ```
 
 Everything reads the **single Postgres+pgvector store** (`./data/pg`); figures use the global theme
 (`theme.py`). The topic battery is the editable `_harness/topics.json` (≈27 CS topics incl.
-A-in-B compositional probes). Lint gate: `ruff check experiments/ ; black experiments/ ; pyright
-experiments/` — all clean. Each `code/` dir is registered in `pyrightconfig.json`.
+A-in-B compositional probes). Lint gate: `ruff check experiments/ ; black experiments/` — all clean. Tool config lives in `pyproject.toml`.
 
 ## The instruments (`_harness/`)
 - **metric vector** (`metrics.py`): frontier_count, 2025/2026 counts, n_edges, grounded vs off_digest,

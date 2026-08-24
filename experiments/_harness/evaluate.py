@@ -1,5 +1,8 @@
-"""Tie the instruments together: turn one phase-6 run into a full metric row, and aggregate
-rows across topics. Keeps each experiment's run.py short and uniform.
+"""
+Tie the instruments together: turn one phase-6 run into a full metric row
+And aggregate rows across topics
+
+Keeps each experiment's run.py short and uniform.
 """
 
 from __future__ import annotations
@@ -21,7 +24,9 @@ def eval_run(
     do_faith: bool = False,
     do_vision: bool = False,
 ) -> dict[str, Any]:
-    """Metric vector (+ optional independent judge + faithfulness + vision check + recall)."""
+    """
+    Metric vector (+ optional independent judge + faithfulness + vision check + recall)
+    """
     _, report = load_run(out_dir)
     row = metric_vector(meta, report)
     if do_vision:
@@ -54,10 +59,10 @@ def eval_run(
     return row
 
 
-def aggregate(
-    rows: list[dict[str, Any]], group_key: str, keep: list[str]
-) -> list[dict[str, Any]]:
-    """Mean each numeric metric in `keep` per `group_key` value (across topics)."""
+def aggregate(rows: list[dict[str, Any]], group_key: str, keep: list[str]) -> list[dict[str, Any]]:
+    """
+    Mean each numeric metric in `keep` per `group_key` value (across topics)
+    """
     groups: dict[str, list[dict[str, Any]]] = {}
     for r in rows:
         groups.setdefault(str(r[group_key]), []).append(r)

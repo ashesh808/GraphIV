@@ -1,24 +1,18 @@
-"""experiment 03-09 — Full-PDF critique depth.
+"""
+How deep the per-paper critique should go, varying only its width
 
-Varies ONLY `critique_k` ∈ {0, 4, 8} — the number of key papers whose FULL PDF is read and
-peer-critiqued (strengths/weaknesses/novelty) and folded into the digest. All else constant (deep
-path, max_rounds=2, figures off). Tests whether reading whole papers deepens the review's
-specificity and grounding versus abstracts/snippets alone.
-
-    uv run python experiments/03-generation/03-09-critique-depth/run.py
+Everything else is held constant on the deep path, with figures off
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-sys.path.insert(0, str(_HERE.parents[3]))
 
 from _harness.driver import run_experiment  # noqa: E402
 from _harness.topics import deep_panel  # noqa: E402
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
 
 RESULTS = _EXP / "results"
 

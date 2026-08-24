@@ -34,12 +34,12 @@ llama-server --embedding -m nomic-embed-text-v2-moe.f16.gguf --alias nomic-embed
   --port 11435 -ngl 99 -c 8192 -b 8192 -ub 2048 --parallel 4 --pooling mean
 ```
 
-Point `embeddings.api` in `phases/global-config.json` (or `GRAPHIV_EMBED_API`) at it.
+Point `embeddings.api` in `config.toml` (or `GRAPHIV_EMBED_API`) at it.
 
 ## 3. The LLM endpoint
 
 GraphIV talks to **any OpenAI-compatible endpoint** — configure `llm` in
-`phases/global-config.json`:
+`config.toml`:
 
 - `base_url` / `router` — the endpoint (default `http://localhost:11434`).
 - `map_model` — schema/extract/judge calls; `narrator_model` — thinking-heavy compose/critique
@@ -63,12 +63,12 @@ instead, run phases 1–2.
 
 ```bash
 uv sync
-uv run python phases/phase-6/run.py "your question" --set-effort 4
+uv run python scripts/research.py "your question" --set-effort 4
 ```
 
 ## 6. Serve as an MCP tool (optional)
 
-`phases/phase-6/serve_mcp.py` exposes GraphIV to any MCP client (librechat, Claude Desktop, …)
+`scripts/serve.py` exposes GraphIV to any MCP client (librechat, Claude Desktop, …)
 over stdio (default) or loopback streamable-http (`--http`, port `$GRAPHIV_MCP_PORT`, default
 8756 — for sandboxed clients that can't spawn a process in the repo). Tools:
 `deep_research(question, effort, seed_arxiv_id, force_new)` (the endpoint; seeding retrieves
@@ -100,7 +100,7 @@ compile-pdf actions). Markdown returned over MCP rewrites relative asset links t
   "mcpServers": {
     "graphiv": {
       "command": "uv",
-      "args": ["run", "python", "phases/phase-6/serve_mcp.py"],
+      "args": ["run", "python", "scripts/serve.py"],
       "cwd": "/path/to/GraphIV"
     }
   }
@@ -108,7 +108,7 @@ compile-pdf actions). Markdown returned over MCP rewrites relative asset links t
 ```
 
 Or, for a client that can't spawn stdio servers (e.g. a systemd-hardened librechat), run
-`uv run python phases/phase-6/serve_mcp.py --http` and point the client at
+`uv run python scripts/serve.py --http` and point the client at
 `http://127.0.0.1:8756/mcp` with `type: streamable-http`. A NixOS reference deployment
 (librechat + a `graphiv-mcp` unit wrapping this in the project dev shell) lives in the
 author's nixos-configs (`parts/services/{librechat,graphiv}.nix`).

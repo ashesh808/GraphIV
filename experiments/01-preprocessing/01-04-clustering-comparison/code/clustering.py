@@ -1,22 +1,21 @@
-"""Clustering-comparison compute + figures + tables (experiment 04).
+"""
+The shipped bisecting tree against a uniform grid and against density clustering
 
-The shipped density-aware *bisecting* tree (read from paper_topic) vs a uniform k-means grid and
-DBSCAN/HDBSCAN, on a common sample of embedded papers (768-d nomic -> PCA-50). Metrics: noise-bucket
-fraction, cluster count, mean coherence (RMS radius), silhouette. Sampled for tractability; the
-sample + cluster labels are cached to cache/summary.json.
+All arms run on one common sample of embedded papers, reduced by PCA
+Metrics are the noise fraction, the cluster count, mean coherence and silhouette
 """
 
 from __future__ import annotations
 
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any, LiteralString, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 import psycopg
+from _harness.theme import BARS, apply_theme  # noqa: E402
 from sklearn.cluster import DBSCAN, MiniBatchKMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
@@ -24,8 +23,6 @@ from sklearn.metrics import silhouette_score
 _HERE = Path(__file__).resolve()
 _EXP = _HERE.parents[1]
 _REPO = _HERE.parents[4]
-sys.path.insert(0, str(_REPO / "experiments"))
-from _harness.theme import BARS, apply_theme  # noqa: E402
 
 CACHE = _EXP / "cache"
 RESULTS = _EXP / "results"
@@ -33,7 +30,9 @@ PG_DSN = os.environ.get("ARXIVKG_PG_DSN", f"host={_REPO}/.pg port=5433 dbname=ar
 
 
 def _coherence(x: np.ndarray, labels: np.ndarray) -> float:
-    """Mean RMS distance of points to their cluster centroid (lower = tighter), noise excluded."""
+    """
+    Mean RMS distance of points to their cluster centroid (lower = tighter), noise excluded
+    """
     tot, k = 0.0, 0
     for c in set(labels.tolist()):
         if c < 0:
@@ -52,9 +51,7 @@ def _metrics(name: str, x: np.ndarray, labels: np.ndarray) -> dict[str, Any]:
     mask = labels >= 0
     sil = 0.0
     if n_clusters > 1 and mask.sum() > 1000:
-        idx = np.random.choice(
-            np.where(mask)[0], min(5000, int(mask.sum())), replace=False
-        )
+        idx = np.random.choice(np.where(mask)[0], min(5000, int(mask.sum())), replace=False)
         sil = float(silhouette_score(x[idx], labels[idx]))
     return {
         "method": name,
@@ -68,9 +65,7 @@ def _metrics(name: str, x: np.ndarray, labels: np.ndarray) -> dict[str, Any]:
 def compute(use_cache: bool, n: int) -> dict[str, Any]:
     cache = CACHE / "summary.json"
     if cache.exists() and use_cache:
-        return json.loads(
-            cache.read_text(encoding="utf-8")
-        )  # pyright: ignore[reportAny]
+        return json.loads(cache.read_text(encoding="utf-8"))  # pyright: ignore[reportAny]
     print(
         f"[04-clustering] sampling {n:,} embedded papers (with a shipped leaf) ...",
         flush=True,
@@ -93,9 +88,7 @@ def compute(use_cache: bool, n: int) -> dict[str, Any]:
     x = PCA(n_components=50, random_state=42).fit_transform(vecs)
     k = len(set(tree_labels.tolist()))
 
-    results: list[dict[str, Any]] = [
-        _metrics("bisecting-tree (shipped)", x, tree_labels)
-    ]
+    results: list[dict[str, Any]] = [_metrics("bisecting-tree (shipped)", x, tree_labels)]
     print("[04-clustering] k-means uniform grid ...", flush=True)
     km = MiniBatchKMeans(
         n_clusters=max(8, k), random_state=42, n_init="auto", batch_size=4096
@@ -146,7 +139,7 @@ def figures(s: dict[str, Any]) -> None:
         ax.set_xticks(range(len(names)))
         ax.set_xticklabels(names, rotation=20, ha="right", fontsize=8)
         ax.set_title(title)
-        for b, v in zip(bars, vals):
+        for b, v in zip(bars, vals, strict=False):
             ax.text(
                 b.get_x() + b.get_width() / 2,
                 v,

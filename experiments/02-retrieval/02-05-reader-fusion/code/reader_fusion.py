@@ -1,64 +1,37 @@
-"""experiment 02-05 — reader relevance fusion (the measure-gate for `--include-fuse`).
+"""
+Reader relevance fusion: the measure gate on ranking by cosine times grade
 
-02-02 measured ~22% `unrelated` landmarks whose in-degree matches `core` (fame PPR can't see);
-02-03's 0.35 ancestor floor removed the injection-side noise but left the ranking blind to
-topical relevance. This measures the shipped reader-fusion lever: every landmark candidate is
-graded (production `reader_grade`: 6-class role + relevance -2..2, cached by question-hash) and
-ranking runs on `cosine x norm(rel)` with -2 excluded. Variants sweep the normalization:
-  baseline  : cosine-only ranking (grades collected for labels, unused in ranking)
-  fuse      : norm = (rel+2)/4 in [0,1]  — the ship candidate (production formula)
-  fuse_mild : norm = 0.5 + 0.5*(rel+2)/4 in [0.5,1] — softer damping, no self-exclusion
-
-Both sides of the tradeoff, per the measure-before-ship rule:
-  - recall    : landmark_recall + spine_recall over the 3 gold topics (grader-independent —
-                THE gate; fusion must not lose canonical/spine papers).
-  - precision : relevance_rate = 1 - unrelated_frac over all 27 topics. CAVEAT: the labels come
-                from the same grader that drives fusion, so precision gains are partly
-                by-construction; report them, gate on recall.
-  - composition: role fractions of the committed landmarks.
-
-    uv run python experiments/02-retrieval/02-05-reader-fusion/run.py
+Every candidate is graded, cached by question hash, and a -2 paper is excluded
+This is what the ancestor floor could not fix, since the floor cannot see topical relevance
 """
 
 from __future__ import annotations
 
 import asyncio
 import json
-import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-_HERE = Path(__file__).resolve()
-_EXP = _HERE.parents[1]  # the NN-slug experiment dir
-_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
-for _p in (
-    str(_REPO / "experiments"),
-    str(_REPO / "phases"),
-    str(_REPO / "phases" / "phase-6" / "components"),
-):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
 from _harness.topics import TOPICS, battery  # noqa: E402
 from _harness.viz import bar_chart  # noqa: E402
 
-from _common import PG_DSN  # noqa: E402
-from pagerank import rank_landmarks_ppr  # noqa: E402
-from pipeline import TIERS, _free_router_vram  # noqa: E402
-from reader_grade import LABELS, Grade, candidates, grade_many  # noqa: E402
-from recency import FrontierSpec, detect_frontier  # noqa: E402
-from retrieval_hybrid import hybrid_pool  # noqa: E402
-from retrieval_refined import frontier_pull  # noqa: E402
-from retrieve import embed_query, free_model  # noqa: E402
-from store import Store  # noqa: E402
-from subgraph import (  # noqa: E402
-    Edge,
-    PoolNode,
-    augment_with_ancestors,
-    induce_subgraph,
-)
+from graphiv.core.embed import embed_query, free_model
+from graphiv.core.models import Edge, PoolNode
+from graphiv.core.settings import PG_DSN
+from graphiv.core.store import Store
+from graphiv.generate.pipeline import TIERS, _free_router_vram
+from graphiv.retrieve.grade import LABELS, Grade, candidates, grade_many
+from graphiv.retrieve.hybrid import hybrid_pool
+from graphiv.retrieve.pagerank import rank_landmarks_ppr
+from graphiv.retrieve.recency import FrontierSpec, detect_frontier
+from graphiv.retrieve.refined import frontier_pull
+from graphiv.retrieve.subgraph import augment_with_ancestors, induce_subgraph
+
+_HERE = Path(__file__).resolve()
+_EXP = _HERE.parents[1]  # the NN-slug experiment dir
+_REPO = _HERE.parents[4]  # code -> NN-slug -> 02-retrieval -> experiments -> repo
 
 RESULTS = _EXP / "results"
 
@@ -78,7 +51,9 @@ def _fused(cosine: float, g: Grade | None, floor: float) -> float:
 def committed_pool(
     store: Store, qvec: list[float], q: str
 ) -> tuple[dict[str, PoolNode], list[Edge], FrontierSpec, int]:
-    """The shipped committed retrieval (fast tier), shared by every variant."""
+    """
+    The shipped committed retrieval (fast tier), shared by every variant
+    """
     n_pool, _, m, _ = TIERS["fast"]
     now = datetime.now()
     pool = hybrid_pool(store, qvec, q, n_pool)
@@ -114,9 +89,7 @@ def variant_landmarks(
             rank_nodes[a] = PoolNode(
                 n.arxiv_id, n.title, n.year, n.category, _fused(n.score, g, floor)
             )
-    lms = rank_landmarks_ppr(
-        rank_nodes, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-    )
+    lms = rank_landmarks_ppr(rank_nodes, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year)
     return [lm.arxiv_id for lm in lms]
 
 
@@ -125,14 +98,14 @@ def run() -> None:
     gold = [k for k in keys if TOPICS[k].canonical]
     RESULTS.mkdir(parents=True, exist_ok=True)
 
-    # stage 1: embed every topic once (nomic loaded once), keep pools on the CPU side.
+    # stage 1: embed every topic once (nomic loaded once), keep pools on the CPU side
     _free_router_vram()
     qvecs: dict[str, list[float]] = {}
     for key in keys:
         qvecs[key] = embed_query(TOPICS[key].query, mode="asym")
     free_model()
 
-    # stage 2: retrieve + grade (production reader_grade, cache-amortized) + rank variants.
+    # stage 2: retrieve + grade (production reader_grade, cache-amortized) + rank variants
     import hashlib  # noqa: PLC0415
 
     sets: dict[str, dict[str, list[str]]] = {v[0]: {} for v in VARIANTS}
@@ -161,8 +134,7 @@ def run() -> None:
             flush=True,
         )
 
-    # stage 3: score. Labels for committed landmarks come from the SAME grade cache; any
-    # landmark that entered ungraded (outside the candidate set) counts as unlabeled.
+    # labels come from the same grade cache, so a landmark that entered ungraded is unlabeled
     def rates(name: str) -> tuple[float, float, Counter[str]]:
         per_topic: list[float] = []
         comp: Counter[str] = Counter()
