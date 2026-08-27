@@ -63,6 +63,7 @@ def _scan_runs(out: Path) -> list[dict[str, Any]]:  # pyright: ignore[reportExpl
                     entry["n_landmarks"] = meta.get("n_landmarks")
                     entry["grounded"] = len(meta.get("grounded") or [])
                     entry["effort"] = meta.get("effort")
+                    entry["preset"] = meta.get("preset", "")
                     entry["rounds"] = meta.get("rounds_run")
                     entry["n_figures"] = meta.get("n_figures")
                     roles: dict[str, int] = {}

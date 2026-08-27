@@ -80,8 +80,15 @@
         pg-start
         pg-stop
         pg-console
-        # LaTeX for the experiment reports + paper (latexmk + the packages they use)
-        (texlive.combined.scheme-medium)
+        # LaTeX for the experiment reports, the paper and the slides.
+        # scheme-medium lacks tcolorbox, which the beamer theme requires.
+        (texlive.combine {
+          inherit (texlive)
+            scheme-medium
+            tcolorbox tikzfill pgf environ trimspaces pdfcol
+            unicode-math ragged2e etoolbox kvoptions
+            beamer translator;
+        })
       ];
       DEV_SHELL = "GraphIV";
       LD_LIBRARY_PATH = "/run/opengl-driver/lib:" + lib.makeLibraryPath (with pkgs; [ stdenv.cc.cc.lib zlib libGL cudaPackages.cuda_cudart cudaPackages.libcublas cudaPackages.cuda_cccl ]);
