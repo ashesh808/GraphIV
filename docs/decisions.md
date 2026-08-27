@@ -129,7 +129,7 @@ cluster, and the bisecting tree places every paper.
 Silhouette favors the coarse arms and was rejected as the wrong lens at this grain.
 Shipped shape is 3,582 leaves over 2.92M papers (`01-05-topic-tree`).
 
-**The nomic citation-aware fine-tune is dead.** `scratchpad/nomic-lora/DECISIONS.md`.
+**The nomic citation-aware fine-tune is dead.** `docs/audits/nomic-lora-recipe.md`.
 The motivating measurement was real and is kept: base nomic ranks a text-similar non-cited paper
 above the true citation 87% of the time (triplet accuracy 0.128, cos 0.786 against 0.666), which is
 a clean statement of the blind spot the graph exists to cover.
@@ -143,7 +143,7 @@ The recipe is kept for a future attempt.
 
 ## Retrieval
 
-**Asymmetric space on the raw question, against three alternatives.** `03-03-embedding-format`.
+**Asymmetric space on the raw question, against three alternatives.** the removed 03 suite.
 
 | format | landmark recall | spine | j_overall |
 | --- | --- | --- | --- |
@@ -219,7 +219,7 @@ Freed slots went to core (0.270 to 0.307) and frontier (0.224 to 0.257).
 `fuse_mild` sits strictly between the other two, so there is no reason to prefer it.
 
 **Trajectory as a quota of 8 over PPR, not as a replacement.**
-`scratchpad/trajectory-sampler/results.md`, seven iterations.
+seven iterations, recorded at the time and now only in this entry.
 
 | arm | verdict |
 | --- | --- |
@@ -231,14 +231,14 @@ Freed slots went to core (0.270 to 0.307) and frontier (0.224 to 0.257).
 
 The pairwise gate afterwards was 1 win, 0 losses, 3 ties overall, with the wins on lineage, which
 is what the sampler was designed for.
-The independent check is section 04-04 of `scratchpad/audits/EXPERIMENTS_AUDIT.md`: on survey
+The independent check is section 04-04 of `docs/audits/EXPERIMENTS_AUDIT.md`: on survey
 reference lists neither method was tuned against, trajectory wins core-reference recall in 6 of 6
 cells.
 That run also produced the tier rule: the fast tier skips reader grading, so the sampler's magnet
 set is empty and it degrades silently into a blind walk.
 Selection A/Bs must run at standard or deep.
 
-**Recency default 0.4, from a sweep of five.** `03-04-recency-knob`.
+**Recency default 0.4, from a sweep of five.** the removed 03 suite.
 
 | recency | frontier count | 2026 papers | grounded | landmark recall |
 | --- | --- | --- | --- | --- |
@@ -252,19 +252,51 @@ Selection A/Bs must run at standard or deep.
 Past it the dial keeps buying frontier coverage and starts paying for it in lineage, which is why
 it stays exposed per query instead of being tuned to one number.
 
-**Frontier pull always on.** `03-05-frontier-pull`.
+**Frontier pull always on.** the removed 03 suite.
 Every metric is a wash except the one that matters: 2.26 papers from 2026 per topic with it, 0.0
 without.
 It is a correctness fix for the topic tree predating the delta, not a quality lever.
 
-**Topic anchor on, but this one is not settled.** `03-02-component-ablation` keeps it (edges 4994
+**Topic anchor on, but this one is not settled.** the removed 03 suite keeps it (edges 4994
 against 2092, judge 4.82 against 4.77), while section 04-03 of the experiments audit found a capped
 survey recalling more with it off (R@3 0.842 to 0.895).
 One topic is not a conclusion, and the 20-survey battery is what decides it.
 
+**Mode is decided at refine time, not defaulted.** Shipped 2026-08-27.
+`refine_question` tags every candidate `survey` or `frontier`, and an interest that reads both
+ways gets one candidate of each rather than a clarifying question, so the user's pick settles it
+in one round trip.
+`survey` resolves to the `joint` selector, which scores citations-per-year fused with reader
+relevance and reserves nothing; `frontier` resolves to `trajectory`, which scores PPR and reserves
+slots for recent work. Both spend eight slots on LeyLine, so LeyLine is unconditional and the mode
+switches only the score and the reservation.
+`deep_research` classifies the question itself when the client sends no mode, and anything
+unusable falls back to `survey`, since a mode never blocks a run.
+Batch callers have nobody to ask, so `scripts/research.py` keeps `[stage.research] rank`.
+
+**Survey mode carries a wider cohort, and the loop keeps it wider.** Shipped 2026-08-27.
+`tier_budget(effort, rank)` gives survey 50/100/150/200 landmarks against frontier 30/60/90/120,
+on the reasoning that a lineage answer needs more papers than a frontier scan.
+The deep loop then grows the budget by 40 a round, and a single flat ceiling used to erase the
+split: a 200-paper survey and a 120-paper frontier run both ended within 20 of each other, at 260
+and 240.
+`round_budget` now applies two ceilings, a relative one at 1.3x the tier budget and the absolute
+260, so the ratio survives the loop:
+
+| effort | survey | frontier |
+| --- | --- | --- |
+| fast | 100 -> 130 | 60 -> 78 |
+| standard | 150 -> 195 | 90 -> 117 |
+| deep | 200 -> 260 | 120 -> 156 |
+
+The absolute ceiling is a context bound rather than a policy: past roughly 260 papers the digest
+leaves no room to write the report, which is why survey deep stops at 260 and not at 1.3x.
+The change shortens a deep frontier run from 240 landmarks to 156, and that has not been
+re-measured.
+
 ## Generation
 
-**Adjacency list, then roles plus extracted content on top.** `03-07-graph-representation`, two
+**Adjacency list, then roles plus extracted content on top.** the removed 03 suite, two
 phases, 8 topics, order-debiased pairwise.
 Phase one, on structure: `flat_list` and `adjacency_list` tie on absolute score at 4.531, so the
 decision came from the two tiebreaks, tokens (6351 against 9380) and pairwise net (+0.25 against 0).
@@ -300,7 +332,7 @@ The bias argument does not survive the split: every experiment is a within-model
 self-preference offset applies to both arms and cancels.
 The one place it genuinely bites is the `saturated` boolean, one bit, and swapping to a
 measurably-worse judge to de-bias one bit would add noise everywhere else.
-`03-01-judge-validity` then checked the instrument directly, on deliberately damaged reports: 1.0
+the removed 03 suite then checked the instrument directly, on deliberately damaged reports: 1.0
 on known facts, every truncation and citation-strip caught 3/3, position bias 0/6, verbosity bias
 0/3.
 The weak axis is lineage, where a corrupted chronology was caught only 1 of 3 times, so lineage
@@ -314,7 +346,7 @@ costs the bounded rounds and the per-paper provenance that make the thing ablata
 dspy does not want the loop either, since the loop also calls the retriever, which is not an LLM
 program.
 
-**Round cap 4 and 6, from a sweep of four.** `03-08-judge-loop`.
+**Round cap 4 and 6, from a sweep of four.** the removed 03 suite.
 
 | cap | rounds actually run | landmarks | frontier | gold recall | j_overall |
 | --- | --- | --- | --- | --- | --- |
@@ -328,12 +360,12 @@ The pairwise can: rounds-6 beats rounds-1 6 wins, 0 losses, 2 ties, sweeping cov
 The judge self-stops at about 3.4 rounds even when allowed 6, so the cap is a ceiling and not a
 target.
 
-**Figures shipped as an option.** `03-10-vision-figures`.
+**Figures shipped as an option.** the removed 03 suite.
 About 13 figures at 0.91 caption faithfulness, and the text judge is unmoved because it reads text.
 The honest wobble is gold recall, 0.85 with figures against 0.92 without, on separately-generated
 runs; that is unexplained and small, and it deserves a look before the number is quoted anywhere.
 
-**Hub suppression is a compose guard, not a retrieval signal.** `03-11-hub-suppression`.
+**Hub suppression is a compose guard, not a retrieval signal.** the removed 03 suite.
 Four data-derived demotion signals were swept against a topic-conditioned oracle, with gold recall
 as the tripwire:
 
@@ -359,6 +391,52 @@ fabricated in both.
 The denominators are observed totals, not thresholds; the claim is N/N for whatever N the runs
 produce.
 
+**Reliability is the metric phase 3 reports, replacing eleven lever experiments.**
+`03-01-attribution`, `03-02-checker-validity`, `03-03-graph-digest`, `03-04-source-coverage`.
+Ten deep reports over five questions, each written with and without the citation digest, scored by
+Gemma-4-26B and by Qwen3.6-35B so the model that wrote them is not the only one judging them.
+
+| number | value |
+| --- | --- |
+| cited sentences supported, Gemma | 584/818 = 0.714 |
+| cited sentences supported, Qwen | 609/818 = 0.744 |
+| per-sentence agreement between them | 0.906, kappa 0.762 |
+| broken citations the checker approves | 0.153 Gemma, 0.198 Qwen |
+| gap between real and broken | 0.561 Gemma, 0.546 Qwen |
+| sentences carrying a citation | 818/1372 = 0.596 |
+
+A claim is checked against passages retrieved from the cited paper, not against the head of the
+document, and a sentence citing several papers passes when any one of them supports it.
+Read `03-02` before `03-01`: a support rate is meaningless until the checker is shown able to
+reject, and the gap of 0.53, reproduced to three decimals by two model families, is what
+licenses the first two rows.
+
+**The citation graph in the prompt does not improve reliability.** `03-03-graph-digest`.
+Support is 0.707 with the adjacency digest and 0.754 without, and the no-graph side leads in 8
+of 10 matched pairs.
+Coverage (0.594 against 0.589) and the checker's catch rate (0.704 against 0.713) do not move.
+The hypothesis, untested here, is that the digest states relationships the papers' own text does
+not, so "A builds on B" is true of the graph and unsupported by either document.
+This is a finding about reliability only; the graph's value in retrieval is settled separately in
+`02-retrieval` and nothing here touches it.
+
+**How many uncited sentences invent something is not measurable this way.** `03-04-source-coverage`.
+A five-way label scheme split 37 against 67 between the two judges, and collapsing it to one
+yes-or-no question made it worse: 12 against 91, kappa 0.003, which is chance agreement.
+The failure is the question, not the prompt. A cited sentence has a document to check against
+and an uncited one has only the reader's threshold, so "the field moved from X to Y" is a
+restatement under a generous reading and a new claim under a strict one.
+The shipped number is therefore the count of sentences that carry a citation at all.
+Splitting the remaining 554 needs human labels.
+
+**Acquisition resolves a local file before the network, in both directions.** Fixed 2026-08-27.
+`fetch_html` returned None the moment fetching was disabled, so `--set-fetch false` produced no
+HTML at all even for papers already on disk; only `local_pdf` read the store, and two callers had
+each reimplemented the lookup to work around it.
+`local_html` now mirrors `local_pdf`, both `fetch_html` and `fetch_pdf` check local first, and
+`fulltext.html_path` drops its duplicate.
+`tests/test_fetch.py` pins it with a stub that raises if the network is reached on a local hit.
+
 ## The system as a whole
 
 **Against a pre-2023 baseline, 8/0/0.** `experiments/deep-research/results/multi_judge.md`.
@@ -381,7 +459,7 @@ Nobody in the comparable literature does this cap.
 
 1. **Critique contradicts itself.** The July design lock cut it outright on the pairwise (k8 against
    k0 is 2/2/4, a coin flip on the only signal trusted at that level), but the shipped default is
-   `critique_k = 4`, and `03-09`'s own table has k4 ahead of k0 on gold recall (0.92 against 0.88)
+   `critique_k = 4`, and that experiment's own table has k4 ahead of k0 on gold recall (0.92 against 0.88)
    and grounded citations (47.8 against 45.9) while faithfulness slips 0.99 to 0.95.
    Cut it or keep it, but the design doc and the config should stop disagreeing.
 2. **The topic anchor.** Ablation says keep, one capped survey says drop, battery decides.
@@ -391,3 +469,10 @@ Nobody in the comparable literature does this cap.
 4. **Three results are stale.** The two corpus censuses counted 3.07M against today's 3.10M, and
    `02-01`'s headline 0.742 was measured under the 40-row truncation, so it is a floor.
 5. **Eleven constants were never swept.** They are listed at the end of `docs/pipeline.md`.
+6. **Eleven phase-3 experiments are superseded.** the removed 03 suite through
+   the removed 03 suite measured levers rather than reliability, and most rested on the
+   27-topic battery that is no longer trusted. Their findings are recorded above and in this
+   file; the directories stay until someone decides they are safe to delete.
+7. **`M_SCALE = 1.3` was hand-set.** It is what keeps the two modes apart under the loop's
+   growth, and nothing measured it. The frontier deep run it shortens, 240 landmarks to 156, has
+   not been re-measured against the old budget.

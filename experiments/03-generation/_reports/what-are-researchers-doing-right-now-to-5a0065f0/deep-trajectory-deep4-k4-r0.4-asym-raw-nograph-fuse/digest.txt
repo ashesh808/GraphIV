@@ -1,0 +1,935 @@
+QUESTION: What are researchers doing right now to make large language model inference faster and cheaper?
+
+SCHEMA FIELDS: ['optimization_technique', 'target_component', 'efficiency_metric', 'optimization_category', 'resource_saved', 'implementation_level']
+
+ERAS:
+  [0] Origins: 2022-2023
+  [1] Key Advances: 2023-2025
+  [2] Current Frontier: 2025-2026
+
+NODES (chronological; role + extracted fields per paper):
+arXiv:2201.05596 (2022) [core] "DeepSpeed-MoE: Advancing Mixture-of-Experts Inference and Training to
+  Power Next-Generation AI Scale" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Mixture-of-Experts (MoE)
+    target_component: model architecture
+    efficiency_metric: training cost
+    optimization_category: architectural
+    resource_saved: 5x reduction in training cost
+    implementation_level: algorithmic
+arXiv:2211.17192 (2022) [core] "Fast Inference from Transformers via Speculative Decoding" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: speculative decoding (speculative sampling)
+    target_component: autoregressive decoding process
+    efficiency_metric: walltime
+    optimization_category: algorithmic
+    implementation_level: algorithmic
+arXiv:2310.05736 (2023) [core] "LLMLingua: Compressing Prompts for Accelerated Inference of Large
+  Language Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Prompt compression
+    target_component: Input prompts (instruction, demonstrations, and question)
+    efficiency_metric: Inference cost (via compression ratio)
+    optimization_category: Compression
+    resource_saved: Tokens (sequence length)
+    implementation_level: Algorithmic
+arXiv:2312.12728 (2023) [core] "Lookahead: An Inference Acceleration Framework for Large Language Model
+  with Lossless Generation Accuracy" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: multi-branch strategy with Verification and Accept (VA) process
+    target_component: LLM inference decoding
+    efficiency_metric: inference latency
+    optimization_category: architectural
+    implementation_level: algorithmic
+arXiv:2310.06201 (2023) [core] "Compressing Context to Enhance Inference Efficiency of Large Language
+  Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Selective Context (filtering redundant/non-essential content via self-information)
+    target_component: input context
+    efficiency_metric: context efficiency
+    optimization_category: compression
+    resource_saved: computational cost and context window usage
+    implementation_level: algorithmic
+arXiv:2310.18581 (2023) [core] "Accelerating LLaMA Inference by Enabling Intermediate Layer Decoding via
+  Instruction Tuning with LITE" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Instruction tuning with additional explicit Losses from the InTermediate layErs (LITE) and dynamic early exiting
+    target_component: Intermediate layers
+    efficiency_metric: Inference efficiency
+    optimization_category: Architectural (early exiting)
+    implementation_level: Algorithmic
+arXiv:2305.05176 (2023) [core] "FrugalGPT: How to Use Large Language Models While Reducing Cost and
+  Improving Performance" [cs] (cited-by 0 in-topic, era 0)
+    efficiency_metric: cost
+    resource_saved: cost
+arXiv:2302.07863 (2023) [core] "Speculative Decoding with Big Little Decoder" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Speculative Decoding (Big Little Decoder)
+    target_component: autoregressive generation process
+    efficiency_metric: speedup (up to 1.85x to 2.12x)
+    optimization_category: architectural/algorithmic
+    resource_saved: inference latency
+    implementation_level: algorithmic
+arXiv:2306.14048 (2023) [core] "H$_2$O: Heavy-Hitter Oracle for Efficient Generative Inference of Large
+  Language Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Heavy-Hitter Oracle (H2O)
+    target_component: KV cache
+    efficiency_metric: memory footprint
+    optimization_category: compression
+    resource_saved: GPU memory
+    implementation_level: algorithmic
+arXiv:2310.17157 (2023) [core] "Deja Vu: Contextual Sparsity for Efficient LLMs at Inference Time" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: contextual sparsity
+    target_component: MLP block and Attention block
+    efficiency_metric: token generation latency
+    optimization_category: sparsity
+    resource_saved: latency
+    implementation_level: algorithmic
+arXiv:2311.01282 (2023) [frontier] "FlashDecoding++: Faster Large Language Model Inference on GPUs" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: asynchronized softmax with unified max value, flat GEMM optimization with double buffering, and heuristic dataflow with hardware resource adaption
+    target_component: attention computation (softmax and GEMM)
+    efficiency_metric: inference performance/speed
+    optimization_category: architectural/algorithmic
+    implementation_level: system/software (C++, CUDA, and ROCm backend)
+arXiv:2305.05920 (2023) [core] "Fast Distributed Inference Serving for Large Language Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: skip-join MLFQ scheduler and proactive KV cache management
+    target_component: inference job scheduling and KV cache
+    efficiency_metric: Job Completion Time (JCT)
+    optimization_category: system
+    resource_saved: GPU memory capacity
+    implementation_level: system
+arXiv:2311.18677 (2023) [core] "Splitwise: Efficient generative LLM inference using phase splitting" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: phase splitting (separating prompt computation and token generation onto separate machines)
+    target_component: KV-cache transfer and phase execution
+    efficiency_metric: throughput, cost, and power
+    optimization_category: architectural/system
+    implementation_level: system
+arXiv:2305.13144 (2023) [core] "Response Length Perception and Sequence Scheduling: An LLM-Empowered LLM
+  Inference Pipeline" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: sequence scheduling via response length prediction and micro-batching
+    target_component: inference pipeline
+    efficiency_metric: inference throughput (86% improvement)
+    optimization_category: scheduling
+    resource_saved: computational waste
+    implementation_level: system
+arXiv:2312.07104 (2023) [core] "SGLang: Efficient Execution of Structured Language Model Programs" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: KV cache reuse across multiple generation calls at runtime
+    target_component: KV cache
+    efficiency_metric: latency (accelerates common LLM tasks by up to 5x)
+    optimization_category: architectural/system
+    implementation_level: system
+arXiv:2309.04255 (2023) [core] "LLMCad: Fast and Scalable On-device Large Language Model Inference" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: speculative generation pipeline (generation and verification framework using a memory-resident model as a generator and a target model as a verifier)
+    target_component: LLM inference (generation process)
+    efficiency_metric: speed (latency)
+    optimization_category: architectural (speculative decoding/generation)
+    resource_saved: memory (mitigates the memory wall problem)
+    implementation_level: algorithmic
+arXiv:2305.11627 (2023) [core] "LLM-Pruner: On the Structural Pruning of Large Language Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: structural pruning (Discovery, Estimation, and Recover stages)
+    target_component: interdependent structures (parameters)
+    optimization_category: compression
+    resource_saved: parameters (20% removal)
+    implementation_level: algorithmic
+arXiv:2312.12456 (2023) [core] "PowerInfer: Fast Large Language Model Serving with a Consumer-grade GPU" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Exploiting neuron activation locality (hot vs. cold neurons)
+    target_component: Neurons
+    efficiency_metric: Inference speed
+    optimization_category: Architectural/Algorithmic
+    resource_saved: GPU memory
+    implementation_level: Algorithmic
+arXiv:2305.09781 (2023) [core] "SpecInfer: Accelerating Generative Large Language Model Serving with
+  Tree-based Speculative Inference and Verification" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: tree-based speculative inference and verification
+    target_component: token decoding/generation process
+    efficiency_metric: end-to-end latency
+    optimization_category: architectural
+    resource_saved: computational requirement
+    implementation_level: system
+arXiv:2303.06865 (2023) [core] "FlexGen: High-Throughput Generative Inference of Large Language Models
+  with a Single GPU" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: group-wise quantization and sparse attention
+    target_component: weights and KV cache
+    efficiency_metric: per-GPU throughput
+    optimization_category: compression
+    resource_saved: memory and I/O costs
+    implementation_level: system
+arXiv:2306.06000 (2023) [core] "S$^{3}$: Increasing GPU Utilization during Generative Inference for
+  Higher Throughput" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: sequence length prediction using a fine-tuned DistilBERT model
+    target_component: KV cache memory allocation
+    efficiency_metric: throughput
+    optimization_category: system-algorithm co-design
+    resource_saved: memory
+    implementation_level: system
+arXiv:2306.11695 (2023) [core] "A Simple and Effective Pruning Approach for Large Language Models" [cs] (cited-by 0 in-topic, era 0)
+    optimization_technique: Wanda (Weight and Activation pruning)
+    target_component: network weights
+    optimization_category: compression
+    implementation_level: algorithmic
+arXiv:2404.05741 (2024) [frontier] "Enhancing Inference Efficiency of Large Language Models: Investigating
+  Optimization Strategies and Architectural Innovations" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: skipping latter attention sublayers
+    target_component: attention sublayers
+    efficiency_metric: 21% speed increase in one-token generation
+    optimization_category: compression
+    implementation_level: architectural
+arXiv:2402.09748 (2024) [survey] "Model Compression and Efficient Inference for Large Language Models: A
+  Survey" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: pruning, knowledge distillation, quantization, compact architecture design, and dynamic networks
+    target_component: network structure, algorithms, attention computation, and Transformer architecture
+    optimization_category: compression and efficient inference
+    resource_saved: computational resources and memory usage
+    implementation_level: algorithmic
+arXiv:2404.14294 (2024) [survey] "A Survey on Efficient Inference for Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    target_component: model structure, data representation, and pre-trained models
+    optimization_category: model-level optimization (efficient structure design and model compression)
+    resource_saved: computational and memory requirements
+    implementation_level: model-level
+arXiv:2409.17372 (2024) [frontier] "Search for Efficient Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: evolution-based search method
+    target_component: architecture
+    efficiency_metric: inference acceleration
+    optimization_category: architectural
+    resource_saved: GPU memory
+    implementation_level: algorithmic
+arXiv:2410.04466 (2024) [survey] "Large Language Model Inference Acceleration: A Comprehensive Hardware Perspective" [cs] (cited-by 0 in-topic, era 1)
+arXiv:2406.16758 (2024) [frontier] "Towards Fast Multilingual LLM Inference: Speculative Decoding and
+  Specialized Drafters" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Speculative decoding (draft-verify-accept paradigm)
+    target_component: Inference process (token generation)
+    efficiency_metric: Inference time / speedup
+    optimization_category: Algorithmic
+    resource_saved: Memory bandwidth
+    implementation_level: Algorithmic
+arXiv:2411.15715 (2024) [frontier] "Task Scheduling for Efficient Inference of Large Language Models on
+  Single Moderate GPU Systems" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: ScheInfer (weight tensor slicing and token assignment strategy)
+    target_component: MLP or MoE layer weight tensors
+    efficiency_metric: inference speed (latency/throughput)
+    optimization_category: architectural/system (task scheduling)
+    implementation_level: system
+arXiv:2407.09111 (2024) [survey] "Inference Optimization of Foundation Models on AI Accelerators" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Multi-query attention (MQA), Grouped-query attention (GQA), and Mixture of Experts (MoE)
+    target_component: Attention mechanism (key/value heads) and network execution (MoE)
+    efficiency_metric: Inference cost and latency
+    optimization_category: Architectural
+    resource_saved: Memory and computation
+    implementation_level: Algorithmic
+arXiv:2410.10759 (2024) [frontier] "SplitLLM: Collaborative Inference of LLMs for Model Placement and
+  Throughput Optimization" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Split/collaborative execution (intelligent splitting decisions)
+    target_component: Model placement (split between server and client)
+    efficiency_metric: Throughput
+    optimization_category: Architectural (model splitting)
+    resource_saved: Server workload (FLOP or GPU memory)
+    implementation_level: System
+arXiv:2406.14319 (2024) [frontier] "LiveMind: Low-latency Large Language Models with Simultaneous Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Simultaneous inference with incomplete prompts (reallocating computational processes to prompt input phase)
+    target_component: Inference process/prompt processing
+    efficiency_metric: latency
+    optimization_category: architectural/algorithmic
+    resource_saved: latency
+    implementation_level: algorithmic
+arXiv:2403.01164 (2024) [frontier] "HeteGen: Heterogeneous Parallel Inference for Large Language Models on
+  Resource-Constrained Devices" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: heterogeneous parallel computing and asynchronous overlap
+    target_component: computation distribution / I/O
+    efficiency_metric: latency
+    optimization_category: architectural / system
+    implementation_level: system
+arXiv:2409.13757 (2024) [frontier] "Efficient Hybrid Inference for LLMs: Reward-Based Token Modelling with
+  Selective Cloud Assistance" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: reward-based mechanism for dynamic cloud LLM involvement
+    target_component: token generation process
+    efficiency_metric: cloud LLM usage/traffic
+    optimization_category: architectural (hybrid inference)
+    resource_saved: cloud computation costs and bandwidth
+    implementation_level: algorithmic
+arXiv:2412.04964 (2024) [frontier] "Flash Communication: Reducing Tensor Parallelization Bottleneck for Fast
+  Large Language Model Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: low-bit compression (asymmetric INT8/INT4 quantization) and fused CUDA kernel (Flash All-Reduce)
+    target_component: tensor-parallelism communication
+    efficiency_metric: time-to-first-token (TTFT) and latency
+    optimization_category: compression
+    resource_saved: communication bandwidth/overhead
+    implementation_level: system
+arXiv:2412.04788 (2024) [frontier] "GUIDE: A Global Unified Inference Engine for Deploying Large Language
+  Models in Heterogeneous Environments" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: simulation-based optimization and intelligent deployment system
+    target_component: multi-dimensional parameter space (hardware platforms, inference frameworks, parallel strategies, and optimization techniques)
+    efficiency_metric: latency, throughput, and memory utilization
+    optimization_category: system
+    implementation_level: system
+arXiv:2410.18701 (2024) [frontier] "BATON: Enhancing Batch-wise Inference Efficiency for Large Language
+  Models via Dynamic Re-batching" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Dynamic Re-batching (via vector shaping and P&D decoupling)
+    target_component: Batch-wise inference process (specifically query insertion and embedding)
+    efficiency_metric: Query processing throughput (improved by 1.29-1.75x)
+    optimization_category: Architectural/Algorithmic (iteration-level batching)
+    resource_saved: Computational bubbles (resource and computational bubbles)
+    implementation_level: System
+arXiv:2403.20041 (2024) [frontier] "Transformer-Lite: High-efficiency Deployment of Large Language Models on
+  Mobile Phone GPUs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: symbolic expression-based dynamic shape support, operator optimizations, execution priority setting, FP4 quantization (M0E4), and sub-tensor-based KV cache management
+    target_component: model inference, operators, weights, and KV cache
+    efficiency_metric: prefill and decoding speeds (token/s)
+    optimization_category: compression and architectural/system optimization
+    resource_saved: dequantization overhead and KV cache copying
+    implementation_level: system
+arXiv:2411.19146 (2024) [frontier] "Puzzle: Distillation-Based NAS for Inference-Optimized LLMs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Blockwise local knowledge distillation (BLD) and mixed-integer programming
+    target_component: Model architecture
+    efficiency_metric: 2.17x inference throughput speedup
+    optimization_category: Neural Architecture Search (NAS)
+    implementation_level: Algorithmic
+arXiv:2406.10903 (2024) [survey] "New Solutions on LLM Acceleration, Optimization, and Application" [cs] (cited-by 0 in-topic, era 1)
+    efficiency_metric: inference latency
+    optimization_category: algorithmic
+    implementation_level: algorithmic
+arXiv:2409.03384 (2024) [survey] "Hardware Acceleration of LLMs: A comprehensive survey and comparison" [cs] (cited-by 0 in-topic, era 1)
+    efficiency_metric: performance (GOPs), energy efficiency (GOPs/W) and speedup
+    optimization_category: hardware acceleration
+    implementation_level: hardware
+arXiv:2405.05465 (2024) [frontier] "Vidur: A Large-Scale Simulation Framework For LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Vidur-Search (configuration search tool)
+    target_component: LLM deployment configuration (parallelization strategies, batching techniques, and scheduling policies)
+    efficiency_metric: throughput per dollar
+    optimization_category: architectural/system configuration search
+    implementation_level: system
+arXiv:2402.04513 (2024) [frontier] "Online Cascade Learning for Efficient Inference over Streams" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: online cascade learning (imitation learning via episodic MDPs)
+    target_component: inference decision policy (model selection)
+    efficiency_metric: inference costs
+    optimization_category: architectural (cascading models)
+    resource_saved: inference costs (up to 90% based on context implied by 'up to of the inference costs' though exact number is truncated in text)
+    implementation_level: algorithmic
+arXiv:2401.08294 (2024) [frontier] "Inferflow: an Efficient and Highly Configurable Inference Engine for
+  Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: modular framework of atomic build-blocks
+    target_component: inference engine architecture
+    efficiency_metric: inference latency
+    optimization_category: architectural
+    implementation_level: system
+arXiv:2401.09890 (2024) [survey] "A Survey on Hardware Accelerators for Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    target_component: transformer networks
+    efficiency_metric: speedup and energy efficiency
+    optimization_category: hardware acceleration
+    implementation_level: hardware
+arXiv:2405.06856 (2024) [frontier] "Aladdin: Joint Placement and Scaling for SLO-Aware LLM Serving" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Joint placement and scaling
+    target_component: KV cache and GPU resource allocation
+    efficiency_metric: GPU number required
+    optimization_category: System/Resource management
+    resource_saved: GPU number
+    implementation_level: System
+arXiv:2406.01698 (2024) [frontier] "Demystifying AI Platform Design for Distributed Inference of Next-Generation LLM models" [cs] (cited-by 0 in-topic, era 1)
+    efficiency_metric: Service Level Objectives (SLOs)
+    implementation_level: system
+arXiv:2412.04504 (2024) [frontier] "Multi-Bin Batching for Increasing LLM Inference Throughput" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: multi-bin batching algorithm
+    target_component: request scheduling/batching
+    efficiency_metric: throughput
+    optimization_category: architectural/scheduling
+    implementation_level: system
+arXiv:2406.06282 (2024) [frontier] "PowerInfer-2: Fast Large Language Model Inference on a Smartphone" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: polymorphic neuron engine (decomposing matrix computations into fine-grained neuron cluster computations)
+    target_component: neurons/matrix computations
+    efficiency_metric: inference speed (68 tokens/s)
+    optimization_category: architectural/algorithmic
+    resource_saved: memory (nearly 40% for 7B models)
+    implementation_level: system
+arXiv:2405.07140 (2024) [frontier] "Edge Intelligence Optimization for Large Language Model Inference with
+  Batching and Quantization" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Batching and Quantization (specifically DFTSP algorithm)
+    target_component: LLM inference
+    optimization_category: Compression
+    implementation_level: Algorithmic
+arXiv:2407.05858 (2024) [frontier] "Fast On-device LLM Inference with NPUs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: on-device NPU offloading (chunk-sharing graph, shadow outlier execution, and out-of-order subgraph execution)
+    target_component: integer operations and prefill stage
+    efficiency_metric: latency (specifically time to first token/prefill latency) and energy consumption
+    optimization_category: architectural/system offloading
+    resource_saved: latency and energy
+    implementation_level: system
+arXiv:2409.14961 (2024) [frontier] "UELLM: A Unified and Efficient Approach for LLM Inference Serving" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Unified resource scheduling architecture (comprising request predictor, scheduler, and executor)
+    target_component: LLM inference serving/resource scheduling
+    efficiency_metric: Inference latency, GPU utilization, and throughput
+    optimization_category: System/Scheduling
+    implementation_level: System
+arXiv:2410.11845 (2024) [survey] "A Review on Edge Large Language Models: Design, Execution, and
+  Applications" [cs] (cited-by 0 in-topic, era 1)
+arXiv:2406.19707 (2024) [frontier] "InfiniGen: Efficient Generative Inference of Large Language Models with
+  Dynamic KV Cache Management" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Dynamic KV cache management with prefetching and CPU offloading
+    target_component: KV cache
+    efficiency_metric: up to 3.00x faster performance
+    optimization_category: memory management / offloading
+    resource_saved: GPU memory footprint
+    implementation_level: system
+arXiv:2401.11181 (2024) [frontier] "Inference without Interference: Disaggregate LLM Inference for Mixed
+  Downstream Workloads" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Disaggregated inference (separating prefill and decode phases) and two-level scheduling
+    target_component: Inference serving pipeline (prefill and decode phases)
+    efficiency_metric: TTFT, JCT, and perf/$
+    optimization_category: Architectural/System-level scheduling
+    implementation_level: System
+arXiv:2411.05555 (2024) [frontier] "AcceLLM: Accelerating LLM Inference using Redundancy for Load Balancing
+  and Data Locality" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Redundancy for load balancing and data locality (inspired by cache data management)
+    target_component: Prefill and decoding phases (KV cache management)
+    efficiency_metric: Latency and load balancing
+    optimization_category: System-level scheduling/management
+    implementation_level: System
+arXiv:2408.00008 (2024) [frontier] "ScaleLLM: A Resource-Frugal LLM Serving Framework by Optimizing
+  End-to-End Efficiency" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: dynamic inference load balancing
+    target_component: end-to-end LLM serving system (including Replica Router and Inference Engine)
+    efficiency_metric: throughput
+    optimization_category: system
+    implementation_level: system
+arXiv:2401.14351 (2024) [frontier] "ServerlessLLM: Low-Latency Serverless Inference for Large Language
+  Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: locality-enhanced checkpoint loading, efficient inference migration, and optimized scheduling
+    target_component: checkpoint loading and model manager
+    efficiency_metric: latency
+    optimization_category: system
+    resource_saved: remote checkpoint download time and bandwidth
+    implementation_level: system
+arXiv:2406.07553 (2024) [frontier] "Inference Acceleration for Large Language Models on CPUs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: parallelized approach (exploiting CPU parallel processing and batching inference requests) and NUMA node isolation
+    efficiency_metric: throughput (18-22x improvement in generated tokens per sec; 4x additional improvement with 4 workers)
+    optimization_category: architectural/system
+    resource_saved: power consumption (reduced by 48.9%)
+    implementation_level: system
+arXiv:2406.00060 (2024) [frontier] "Cascade-Aware Training of Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: cascade-aware training (CAT) using token-level loss adjustments
+    target_component: model parameters (via conditional computation in cascades)
+    efficiency_metric: quality-cost performance tradeoff
+    optimization_category: architectural (cascaded conditional computation)
+    resource_saved: serving cost and latency
+    implementation_level: algorithmic
+arXiv:2410.23537 (2024) [frontier] "ALISE: Accelerating Large Language Model Serving with Speculative
+  Scheduling" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: retrieval-based speculative scheduling and adaptive KV Cache management
+    target_component: LLM inference serving scheduler and KV cache
+    efficiency_metric: latency and throughput
+    optimization_category: architectural/scheduling
+    implementation_level: system
+arXiv:2408.00741 (2024) [frontier] "DynamoLLM: Designing LLM Inference Clusters for Performance and Energy Efficiency" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Dynamic reconfiguration of instance pools and energy-optimized configuration selection based on model profiles
+    target_component: LLM inference cluster resources
+    efficiency_metric: Energy efficiency and performance SLO compliance
+    optimization_category: System-level resource management
+    resource_saved: Energy consumption
+    implementation_level: System
+arXiv:2505.01658 (2025) [survey] "A Survey on Inference Engines for Large Language Models: Perspectives on Optimization and Efficiency" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: parallelism, compression, and caching
+    efficiency_metric: throughput and latency
+arXiv:2502.04463 (2025) [frontier] "Training Language Models to Reason Efficiently" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: training with an objective function that penalizes response length using a monotonic function and a tunable parameter
+    target_component: inference generation (chain-of-thought length)
+    efficiency_metric: token-efficiency / inference cost
+    optimization_category: algorithmic (training objective optimization)
+    resource_saved: inference time compute (tokens)
+    implementation_level: algorithmic
+arXiv:2509.05915 (2025) [frontier] "Accelerating Large Language Model Inference via Early-Exiting Algorithms" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: early-exiting algorithms, parallel decoding mechanism, deep parameter sharing, and lightweight routers
+    target_component: model architecture and decoding mechanism
+    efficiency_metric: throughput and computational costs
+    optimization_category: architectural and algorithmic co-design
+    resource_saved: computation and parameters
+    implementation_level: algorithmic and architectural
+arXiv:2510.26577 (2025) [frontier] "Inference-Cost-Aware Dynamic Tree Construction for Efficient Inference in Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Inference-Cost-Aware Dynamic Tree Construction
+    target_component: Speculative decoding tree structure
+    efficiency_metric: Speedup (up to 5.2x compared to vanilla autoregressive method)
+    optimization_category: Architectural (speculative decoding tree construction)
+    resource_saved: Inference latency
+    implementation_level: Algorithmic
+arXiv:2502.20339 (2025) [frontier] "Thinking Slow, Fast: Scaling Inference Compute with Distilled Reasoners" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Knowledge distillation (distilling reasoning and math capabilities)
+    target_component: Model architecture (distilling from Transformers to Mamba)
+    efficiency_metric: Inference time (2.5x speedup)
+    optimization_category: Compression/Distillation
+    resource_saved: Inference time
+    implementation_level: Algorithmic/Architectural
+arXiv:2501.18107 (2025) [frontier] "Scaling Inference-Efficient Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Modified Chinchilla scaling laws for co-optimization of parameter count, training tokens, and architecture
+    target_component: Model architecture
+    efficiency_metric: Inference latency
+    optimization_category: Architectural/Scaling law
+    resource_saved: Inference latency
+    implementation_level: Algorithmic
+arXiv:2510.18245 (2025) [frontier] "Scaling Laws Meet Model Architecture: Toward Inference-Efficient LLMs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Scaling law-based architecture search (varying hidden size and mlp-to-attention ratio)
+    target_component: Decoder-only transformer architecture (attention and MLP layers)
+    efficiency_metric: Inference throughput
+    optimization_category: Architectural
+    implementation_level: Algorithmic
+arXiv:2506.21901 (2025) [survey] "A Survey of LLM Inference Systems" [cs] (cited-by 0 in-topic, era 1)
+arXiv:2504.19720 (2025) [survey] "Taming the Titans: A Survey of Efficient LLM Inference Serving" [cs] (cited-by 0 in-topic, era 1)
+arXiv:2502.09922 (2025) [frontier] "{\lambda}Scale: Enabling Fast Scaling for Serverless Large Language Model Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Pipe (execution pipeline abstraction for distributed inference)
+    target_component: model distribution and data movement (e.g., KV caches)
+    efficiency_metric: 90th tail latency (2.4x to 5x improvement) and model scaling speed (Llama-13B across 8 nodes in < 1s)
+    optimization_category: architectural/system
+    resource_saved: resource costs (17.8% to 31.3% reduction)
+    implementation_level: system
+arXiv:2506.00008 (2025) [frontier] "AI Accelerators for Large Language Model Inference: Architecture Analysis and Scaling Strategies" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: expert parallelism, tensor parallelism
+    efficiency_metric: latency, parameter-to-compute advantage
+    optimization_category: architectural
+    implementation_level: architectural
+arXiv:2505.18164 (2025) [frontier] "Model-Distributed Inference for Large Language Models at the Edge" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Model partitioning and distributed collaborative computation (MDI-LLM)
+    target_component: Model weights (divided into multiple partitions)
+    optimization_category: Architectural (distributed deployment)
+    implementation_level: System
+arXiv:2511.09557 (2025) [frontier] "Understanding and Improving Communication Performance in Multi-node LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: NVRAR (custom all-reduce implementation)
+    target_component: multi-node Tensor Parallel (TP) communication (all-reduce)
+    efficiency_metric: inference speedup (up to 1.92x faster)
+    optimization_category: communication optimization
+    resource_saved: latency (time in small-message regime)
+    implementation_level: algorithmic/system
+arXiv:2501.09367 (2025) [frontier] "PICE: A Semantic-Driven Progressive Inference System for LLM Serving in
+  Cloud-Edge Networks" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: progressive inference paradigm (two-stage modeling: cloud-based sketch generation followed by edge-based parallel extension)
+    target_component: inference process (LLM-to-SLM pipeline)
+    efficiency_metric: throughput (1.5 to 2x enhancement) and latency (up to 43% reduction)
+    optimization_category: architectural (cloud-edge collaborative inference)
+    implementation_level: system
+arXiv:2506.10443 (2025) [frontier] "MNN-LLM: A Generic Inference Engine for Fast Large Language Model Deployment on Mobile Devices" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: combined quantization and DRAM-Flash hybrid storage
+    target_component: high-computation operators and data layout
+    efficiency_metric: inference speed and memory usage
+    optimization_category: compression and architectural
+    resource_saved: runtime memory and computational resources
+    implementation_level: system
+arXiv:2502.15763 (2025) [frontier] "Hybrid Offline-online Scheduling Method for Large Language Model
+  Inference Optimization" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Hybrid offline-online scheduling method (based on Mixed-Integer Programming and Minimizing Makespan Bin Packing Problem)
+    target_component: Inference serving system scheduling (PD management, cache management, and batching strategy)
+    efficiency_metric: Throughput and hardware utilization
+    optimization_category: Scheduling/System-level optimization
+    implementation_level: System
+arXiv:2502.16963 (2025) [frontier] "Make LLM Inference Affordable to Everyone: Augmenting GPU Memory with
+  NDP-DIMM" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: offloading hot and cold neurons to NDP-DIMMs with a window-based online scheduling strategy
+    target_component: LLM parameters (neurons)
+    efficiency_metric: inference speedup
+    optimization_category: architectural (hardware-software co-design)
+    resource_saved: GPU memory (HBM)
+    implementation_level: system
+arXiv:2509.01190 (2025) [frontier] "Efficient Large Language Models with Zero-Shot Adjustable Acceleration" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: hidden activation pruning strategy
+    target_component: hidden layer activations
+    optimization_category: compression
+    implementation_level: algorithmic
+arXiv:2501.14784 (2025) [frontier] "DeServe: Towards Affordable Offline LLM Inference via Decentralization" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: decentralized offline serving system
+    efficiency_metric: throughput (6.7x to 12.6x improvement)
+    optimization_category: architectural (decentralized system design)
+    implementation_level: system
+arXiv:2503.18989 (2025) [frontier] "A Novel Hat-Shaped Device-Cloud Collaborative Inference Framework for
+  Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: U-shaped inference and speculative decoding (including prompt chunking and parallel drafting)
+    target_component: LLM inference process (prefill and decode phases)
+    efficiency_metric: Time-to-first-token (TTFT) and time-between-tokens (TBT)
+    optimization_category: Architectural (device-cloud collaborative framework)
+    resource_saved: Latency (TTFT reduced by 41%-54%, TBT reduced by 41%-77%)
+    implementation_level: System
+arXiv:2501.14743 (2025) [frontier] "KVDirect: Distributed Disaggregated LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: KV cache transfer optimization (Connect, Transfer, Complete mechanism)
+    target_component: KV cache transfer/inter-node communication
+    optimization_category: architectural (disaggregated inference)
+    resource_saved: communication overhead (round-trip communication and synchronization)
+    implementation_level: system
+arXiv:2505.12658 (2025) [frontier] "HydraInfer: Hybrid Disaggregated Scheduling for Multimodal Large Language Model Serving" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Hybrid EPD Disaggregation (Hybrid Encode-Prefill-Decode Disaggregation) and multi-stream parallel execution
+    target_component: Inference stages (Encode, Prefill, and Decode)
+    efficiency_metric: System throughput and service capacity
+    optimization_category: Architectural (Disaggregated scheduling)
+    implementation_level: System
+arXiv:2505.02533 (2025) [frontier] "Large Language Model Partitioning for Low-Latency Inference at the Edge" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: resource-aware partitioning algorithm
+    target_component: decoder-only Transformer (specifically K/V caches in MHA layer)
+    efficiency_metric: latency
+    optimization_category: architectural (model partitioning)
+    implementation_level: system
+arXiv:2503.06433 (2025) [frontier] "Seesaw: High-throughput LLM Inference via Model Re-sharding" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Model re-sharding (dynamic switching of parallelization strategies)
+    target_component: Parallelization strategies (tensor and pipeline parallelism) for prefilling and decoding stages
+    efficiency_metric: Throughput (up to 1.78x improvement)
+    optimization_category: Architectural/Parallelization
+    implementation_level: System
+arXiv:2501.06589 (2025) [frontier] "Ladder-residual: parallelism-aware architecture for accelerating large model inference with communication overlapping" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Ladder-residual (parallelism-aware architecture with communication overlapping)
+    target_component: Model architecture (specifically addressing communication bottlenecks in Tensor Parallelism)
+    optimization_category: architectural
+    resource_saved: communication latency/bottlenecks
+    implementation_level: algorithmic
+arXiv:2509.25853 (2025) [frontier] "SAIL: SRAM-Accelerated LLM Inference System with Lookup-Table-based GEMV" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Lookup-Table-based GEMV, in-memory type conversion, and near-memory computing using SRAM as a ping-pong buffer
+    target_component: low-precision matrix multiplication (GEMV) and type conversion
+    efficiency_metric: 10.7× speedup and 19.9× better cost efficiency
+    optimization_category: hardware-software co-design
+    resource_saved: memory bandwidth (alleviating the memory wall problem)
+    implementation_level: system/hardware (near-cache computing with a new instruction)
+arXiv:2506.04203 (2025) [frontier] "Cascadia: An Efficient Cascade Serving System for Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: cascade serving (model deployment plan and routing strategy)
+    target_component: model cascade (routing and resource allocation)
+    efficiency_metric: latency (p95) and throughput
+    optimization_category: architectural/scheduling
+    implementation_level: system
+arXiv:2504.11651 (2025) [frontier] "70% Size, 100% Accuracy: Lossless LLM Compression for Efficient GPU Inference via Dynamic-Length Float (DFloat11)" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Dynamic-Length Float (DFloat11) with custom decompression kernel
+    target_component: LLM weights
+    efficiency_metric: Model size and hardware requirements
+    optimization_category: compression
+    resource_saved: 30% model size and GPU memory (e.g., Llama-3.1-405B reduced from two nodes to one)
+    implementation_level: system
+arXiv:2502.07578 (2025) [frontier] "PIM Is All You Need: A CXL-Enabled GPU-Free System for Large Language
+  Model Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: hierarchical PIM-PNM design and CXL-based network architecture
+    target_component: memory-bound attention computations and key-value caches
+    efficiency_metric: end-to-end latency and end-to-end throughput
+    optimization_category: architectural
+    resource_saved: memory bandwidth
+    implementation_level: system
+arXiv:2505.03745 (2025) [frontier] "AccLLM: Accelerating Long-Context LLM Inference Via Algorithm-Hardware
+  Co-Design" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: semi-structured pruning, k-shaped attention, and W2A8KV4 quantization
+    target_component: linear layers, attention mechanism, and KV cache
+    efficiency_metric: throughput
+    optimization_category: compression
+    resource_saved: computational complexity, memory, and data access overheads
+    implementation_level: algorithm-hardware co-design
+arXiv:2505.16508 (2025) [frontier] "Edge-First Language Model Inference: Models, Metrics, and Tradeoffs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: model compression
+    target_component: weights
+    optimization_category: compression
+    resource_saved: model size
+arXiv:2509.14781 (2025) [frontier] "LEAP: LLM Inference on Scalable PIM-NoC Architecture with Balanced Dataflow and Fine-Grained Parallelism" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Computation/memory/communication co-design (PIM and NoC aggregation) with a partitioning scheme and spatial mapping strategy
+    target_component: Matrix multiplications (projection weight matrices and KV cache)
+    efficiency_metric: Throughput and energy efficiency
+    optimization_category: Architectural (non-von Neumann accelerator)
+    resource_saved: Memory capacity/bandwidth, compute scheduling, and hardware communication energy
+    implementation_level: Hardware/System
+arXiv:2501.11779 (2025) [frontier] "Glinthawk: A Two-Tiered Architecture for Offline LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Two-tiered architecture (scaling attention mechanism to Tier-2 nodes)
+    target_component: Attention mechanism (specifically KV cache storage)
+    efficiency_metric: Throughput
+    optimization_category: Architectural
+    resource_saved: Memory (KV cache requirements)
+    implementation_level: System
+arXiv:2505.11329 (2025) [frontier] "TokenWeave: Efficient Compute-Communication Overlap for Distributed LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Token-Splitting, RMSNorm reordering, and fused AllReduce-RMSNorm kernel
+    target_component: Compute-communication overlap (specifically AllReduce and RMSNorm)
+    efficiency_metric: Latency (up to 29% gain) and throughput (up to 26% gain)
+    optimization_category: Architectural/System (Compute-Communication Overlap)
+    resource_saved: Communication latency overhead
+    implementation_level: System (implemented on vLLM V1)
+arXiv:2511.07422 (2025) [survey] "From Attention to Disaggregation: Tracing the Evolution of LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: KV Caching
+    target_component: Key (K) and Value (V) vectors
+    efficiency_metric: inference speed
+    optimization_category: architectural/memory management
+    resource_saved: computation (reduced from O(N²) to O(N) per token)
+    implementation_level: algorithmic
+arXiv:2509.17542 (2025) [frontier] "Disaggregated Prefill and Decoding Inference System for Large Language Model Serving on Multi-Vendor GPUs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: P-D disaggregated inference framework with joint optimization of parallel strategy and instance ratio allocation via global search
+    target_component: Prefill and Decoding stages
+    efficiency_metric: resource utilization and inference speed
+    optimization_category: architectural (disaggregated inference)
+    implementation_level: system
+arXiv:2503.05248 (2025) [frontier] "Optimizing LLM Inference Throughput via Memory-aware and SLA-constrained
+  Dynamic Batching" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Memory-aware and SLA-constrained Dynamic Batching
+    target_component: Batch size configuration and KV cache management
+    efficiency_metric: Throughput (tokens processed per second)
+    optimization_category: Algorithmic
+    resource_saved: Memory (KV cache capacity)
+    implementation_level: System
+arXiv:2503.08415 (2025) [frontier] "TokenSim: Enabling Hardware and Software Exploration for Large Language
+  Model Inference Systems" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: system-level simulation (TokenSim) for exploring scheduling and memory management policies
+    target_component: LLM inference systems (scheduling and memory management)
+    optimization_category: system-level exploration/architectural
+    implementation_level: system
+arXiv:2504.14966 (2025) [frontier] "SLO-Aware Scheduling for Large Language Model Inferences" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: simulated annealing-based SLO-aware scheduler
+    target_component: request scheduling/dispatching
+    efficiency_metric: average latency (reduced by up to 31.6%) and SLO attainment (improved by up to 5%)
+    optimization_category: scheduling
+    implementation_level: system
+arXiv:2510.05632 (2025) [frontier] "From Principles to Practice: A Systematic Study of LLM Serving on Multi-core NPUs" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: PD disaggregation (for prefill-dominated) and PD fusion (for decoding-dominated)
+    target_component: LLM serving strategies (Prefill and Decoding stages)
+    optimization_category: architectural/system
+    implementation_level: system
+arXiv:2502.07115 (2025) [frontier] "Online Scheduling for LLM Inference with KV Cache Constraints" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Online scheduling algorithm (modeled as an online learning problem)
+    target_component: KV cache management
+    efficiency_metric: Regret (relative to hindsight optimal algorithm)
+    optimization_category: Scheduling
+    resource_saved: Memory (KV cache)
+    implementation_level: Algorithmic
+arXiv:2502.20727 (2025) [frontier] "SPD: Sync-Point Drop for Efficient Tensor Parallelism of Large Language Models" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Sync-Point Drop (SPD)
+    target_component: attention outputs (synchronization)
+    efficiency_metric: latency
+    optimization_category: communication optimization
+    resource_saved: communication overheads
+    implementation_level: algorithmic
+arXiv:2504.07878 (2025) [frontier] "Token Level Routing Inference System for Edge Devices" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Token-level routing (collaborative decoding)
+    target_component: Inference process (routing between small and large models)
+    efficiency_metric: System throughput and communication latency
+    optimization_category: Architectural (collaborative decoding/routing)
+    implementation_level: System
+arXiv:2501.08192 (2025) [frontier] "PRESERVE: Prefetching Model Weights and KV-Cache in Distributed LLM Serving" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: prefetching (overlapping memory reads with collective communication)
+    target_component: model weights and KV-cache
+    efficiency_metric: latency
+    optimization_category: architectural/system
+    resource_saved: HBM bandwidth and communication overhead
+    implementation_level: system
+arXiv:2510.02675 (2025) [frontier] "HALO: Memory-Centric Heterogeneous Accelerator with 2.5D Integration for Low-Batch LLM Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: 2.5D heterogeneous integration of HBM-based CiD (Compute-in-DRAM) and on-chip analog CiM (Compute-in-Memory)
+    target_component: Memory and compute units (HBM stack and on-chip analog CiM)
+    efficiency_metric: Latency and energy (demonstrating up to 2.5x speedup over CENT and 18x over AttAcc)
+    optimization_category: Architectural
+    resource_saved: Data movement energy and bandwidth
+    implementation_level: Hardware
+arXiv:2504.03664 (2025) [frontier] "PIPO: Pipelined Offloading for Efficient Inference on Consumer Devices" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: pipelined offloading (PIPO) with fine-grained offloading pipeline and optimized data transfer/computation
+    target_component: data transfer between GPU memory, CPU memory, and disk
+    efficiency_metric: throughput (up to 3.1x higher)
+    optimization_category: offloading/scheduling
+    resource_saved: GPU memory (mitigated via offloading)
+    implementation_level: system
+arXiv:2504.06319 (2025) [frontier] "Accelerating LLM Inference Throughput via Asynchronous KV Cache Prefetching" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: L2 Cache-oriented asynchronous KV Cache prefetching
+    target_component: KV Cache
+    efficiency_metric: end-to-end inference throughput (up to 1.97× acceleration)
+    optimization_category: architectural (hardware-software co-design)
+    resource_saved: HBM access latency
+    implementation_level: system (XFormers kernel and vLLM integration)
+arXiv:2507.14392 (2025) [frontier] "Characterizing Communication Patterns in Distributed Large Language Model Inference" [cs] (cited-by 0 in-topic, era 1)
+    target_component: inter-GPU communication
+    optimization_category: characterization/analysis
+    implementation_level: system
+arXiv:2504.11320 (2025) [frontier] "Optimizing LLM Inference: Fluid-Guided Online Scheduling with Memory Constraints" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Fluid-Guided Online Scheduling ((Nested) WAIT algorithm)
+    target_component: KV cache management and prompt scheduling
+    efficiency_metric: GPU utilization
+    optimization_category: scheduling
+    resource_saved: memory
+    implementation_level: system
+arXiv:2511.11248 (2025) [frontier] "T-MAN: Enabling End-to-End Low-Bit LLM Inference on NPUs via Unified Table Lookup" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: fused two-level table lookup and concurrency-hierarchy-guided tiling
+    target_component: prefill and decoding stages (GEMM and GEMV)
+    efficiency_metric: end-to-end throughput
+    optimization_category: architectural/algorithmic
+    resource_saved: dequantization overhead and computational demands
+    implementation_level: algorithmic
+arXiv:2503.12167 (2025) [frontier] "PLM: Efficient Peripheral Language Models Hardware-Co-Designed for
+  Ubiquitous Computing" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Multi-head Latent Attention (MLA)
+    target_component: key-value (KV) cache
+    optimization_category: architectural
+    resource_saved: memory footprint
+    implementation_level: algorithmic
+arXiv:2511.04002 (2025) [frontier] "Memory- and Latency-Constrained Inference of Large Language Models via Adaptive Split Computing" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: one-point split compression (OPSC)
+    target_component: decoder layers
+    efficiency_metric: latency and memory
+    optimization_category: compression
+    resource_saved: memory and bandwidth
+    implementation_level: algorithmic
+arXiv:2504.14893 (2025) [frontier] "Hardware-based Heterogeneous Memory Management for Large Language Model
+  Inference" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: dynamic mapping algorithm and hardware support for memory abstraction
+    target_component: asymmetric memory (HBM3 and LPDDR5X) and KV cache
+    optimization_category: architectural
+    resource_saved: memory capacity and bandwidth
+    implementation_level: hardware
+arXiv:2509.10372 (2025) [frontier] "MCBP: A Memory-Compute Efficient LLM Inference Accelerator Leveraging Bit-Slice-enabled Sparsity and Repetitiveness" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Bit-slice-enabled sparsity and repetitiveness (BRCR, BSTC, and BGPP)
+    target_component: GEMM operations, model weights, and KV cache
+    efficiency_metric: Energy efficiency (GOPS/W) and inference latency
+    optimization_category: Compression and architectural
+    resource_saved: Memory (weight and KV cache access) and compute (GEMM/GEMV)
+    implementation_level: Hardware (accelerator)
+arXiv:2506.19645 (2025) [frontier] "Tensor-Parallelism with Partially Synchronized Activations" [cs] (cited-by 0 in-topic, era 1)
+    optimization_technique: Partially synchronized activations (CAAT-Net)
+    target_component: Activation tensors in tensor-parallelism
+    efficiency_metric: Communication traffic and latency (accelerating training and inference)
+    optimization_category: Architectural
+    resource_saved: 50% reduction in tensor-parallel communication bandwidth
+    implementation_level: Algorithmic
+arXiv:2602.22090 (2026) [frontier] "Confidence-Driven Multi-Scale Model Selection for Cost-Efficient Inference" [cs] (cited-by 0 in-topic, era 2)
+    optimization_technique: confidence-driven dynamic model selection (cascading)
+    target_component: model selection/routing
+    efficiency_metric: token costs
+    optimization_category: architectural (cascading)
+    resource_saved: computational cost
+    implementation_level: algorithmic
+arXiv:2604.22906 (2026) [survey] "Network Edge Inference for Large Language Models: Principles, Techniques, and Opportunities" [cs] (cited-by 0 in-topic, era 2)
+arXiv:2602.04919 (2026) [frontier] "Gradually Compacting Large Language Models for Reasoning Like a Boiling Frog" [cs] (cited-by 0 in-topic, era 2)
+    optimization_technique: PTL (Gradual Compaction)
+    target_component: parameters
+    efficiency_metric: inference speedup
+    optimization_category: compression
+    resource_saved: FLOPs
+    implementation_level: algorithmic
+
+ADJACENCY (each paper -> papers it cites, grouped by intent):
+arXiv:2201.05596: (no out-citations in-graph)
+arXiv:2211.17192: (no out-citations in-graph)
+arXiv:2310.05736: (no out-citations in-graph)
+arXiv:2312.12728: (no out-citations in-graph)
+arXiv:2310.06201: (no out-citations in-graph)
+arXiv:2310.18581: (no out-citations in-graph)
+arXiv:2305.05176: (no out-citations in-graph)
+arXiv:2302.07863: (no out-citations in-graph)
+arXiv:2306.14048: (no out-citations in-graph)
+arXiv:2310.17157: (no out-citations in-graph)
+arXiv:2311.01282: (no out-citations in-graph)
+arXiv:2305.05920: (no out-citations in-graph)
+arXiv:2311.18677: (no out-citations in-graph)
+arXiv:2305.13144: (no out-citations in-graph)
+arXiv:2312.07104: (no out-citations in-graph)
+arXiv:2309.04255: (no out-citations in-graph)
+arXiv:2305.11627: (no out-citations in-graph)
+arXiv:2312.12456: (no out-citations in-graph)
+arXiv:2305.09781: (no out-citations in-graph)
+arXiv:2303.06865: (no out-citations in-graph)
+arXiv:2306.06000: (no out-citations in-graph)
+arXiv:2306.11695: (no out-citations in-graph)
+arXiv:2404.05741: (no out-citations in-graph)
+arXiv:2402.09748: (no out-citations in-graph)
+arXiv:2404.14294: (no out-citations in-graph)
+arXiv:2409.17372: (no out-citations in-graph)
+arXiv:2410.04466: (no out-citations in-graph)
+arXiv:2406.16758: (no out-citations in-graph)
+arXiv:2411.15715: (no out-citations in-graph)
+arXiv:2407.09111: (no out-citations in-graph)
+arXiv:2410.10759: (no out-citations in-graph)
+arXiv:2406.14319: (no out-citations in-graph)
+arXiv:2403.01164: (no out-citations in-graph)
+arXiv:2409.13757: (no out-citations in-graph)
+arXiv:2412.04964: (no out-citations in-graph)
+arXiv:2412.04788: (no out-citations in-graph)
+arXiv:2410.18701: (no out-citations in-graph)
+arXiv:2403.20041: (no out-citations in-graph)
+arXiv:2411.19146: (no out-citations in-graph)
+arXiv:2406.10903: (no out-citations in-graph)
+arXiv:2409.03384: (no out-citations in-graph)
+arXiv:2405.05465: (no out-citations in-graph)
+arXiv:2402.04513: (no out-citations in-graph)
+arXiv:2401.08294: (no out-citations in-graph)
+arXiv:2401.09890: (no out-citations in-graph)
+arXiv:2405.06856: (no out-citations in-graph)
+arXiv:2406.01698: (no out-citations in-graph)
+arXiv:2412.04504: (no out-citations in-graph)
+arXiv:2406.06282: (no out-citations in-graph)
+arXiv:2405.07140: (no out-citations in-graph)
+arXiv:2407.05858: (no out-citations in-graph)
+arXiv:2409.14961: (no out-citations in-graph)
+arXiv:2410.11845: (no out-citations in-graph)
+arXiv:2406.19707: (no out-citations in-graph)
+arXiv:2401.11181: (no out-citations in-graph)
+arXiv:2411.05555: (no out-citations in-graph)
+arXiv:2408.00008: (no out-citations in-graph)
+arXiv:2401.14351: (no out-citations in-graph)
+arXiv:2406.07553: (no out-citations in-graph)
+arXiv:2406.00060: (no out-citations in-graph)
+arXiv:2410.23537: (no out-citations in-graph)
+arXiv:2408.00741: (no out-citations in-graph)
+arXiv:2505.01658: (no out-citations in-graph)
+arXiv:2502.04463: (no out-citations in-graph)
+arXiv:2509.05915: (no out-citations in-graph)
+arXiv:2510.26577: (no out-citations in-graph)
+arXiv:2502.20339: (no out-citations in-graph)
+arXiv:2501.18107: (no out-citations in-graph)
+arXiv:2510.18245: (no out-citations in-graph)
+arXiv:2506.21901: (no out-citations in-graph)
+arXiv:2504.19720: (no out-citations in-graph)
+arXiv:2502.09922: (no out-citations in-graph)
+arXiv:2506.00008: (no out-citations in-graph)
+arXiv:2505.18164: (no out-citations in-graph)
+arXiv:2511.09557: (no out-citations in-graph)
+arXiv:2501.09367: (no out-citations in-graph)
+arXiv:2506.10443: (no out-citations in-graph)
+arXiv:2502.15763: (no out-citations in-graph)
+arXiv:2502.16963: (no out-citations in-graph)
+arXiv:2509.01190: (no out-citations in-graph)
+arXiv:2501.14784: (no out-citations in-graph)
+arXiv:2503.18989: (no out-citations in-graph)
+arXiv:2501.14743: (no out-citations in-graph)
+arXiv:2505.12658: (no out-citations in-graph)
+arXiv:2505.02533: (no out-citations in-graph)
+arXiv:2503.06433: (no out-citations in-graph)
+arXiv:2501.06589: (no out-citations in-graph)
+arXiv:2509.25853: (no out-citations in-graph)
+arXiv:2506.04203: (no out-citations in-graph)
+arXiv:2504.11651: (no out-citations in-graph)
+arXiv:2502.07578: (no out-citations in-graph)
+arXiv:2505.03745: (no out-citations in-graph)
+arXiv:2505.16508: (no out-citations in-graph)
+arXiv:2509.14781: (no out-citations in-graph)
+arXiv:2501.11779: (no out-citations in-graph)
+arXiv:2505.11329: (no out-citations in-graph)
+arXiv:2511.07422: (no out-citations in-graph)
+arXiv:2509.17542: (no out-citations in-graph)
+arXiv:2503.05248: (no out-citations in-graph)
+arXiv:2503.08415: (no out-citations in-graph)
+arXiv:2504.14966: (no out-citations in-graph)
+arXiv:2510.05632: (no out-citations in-graph)
+arXiv:2502.07115: (no out-citations in-graph)
+arXiv:2502.20727: (no out-citations in-graph)
+arXiv:2504.07878: (no out-citations in-graph)
+arXiv:2501.08192: (no out-citations in-graph)
+arXiv:2510.02675: (no out-citations in-graph)
+arXiv:2504.03664: (no out-citations in-graph)
+arXiv:2504.06319: (no out-citations in-graph)
+arXiv:2507.14392: (no out-citations in-graph)
+arXiv:2504.11320: (no out-citations in-graph)
+arXiv:2511.11248: (no out-citations in-graph)
+arXiv:2503.12167: (no out-citations in-graph)
+arXiv:2511.04002: (no out-citations in-graph)
+arXiv:2504.14893: (no out-citations in-graph)
+arXiv:2509.10372: (no out-citations in-graph)
+arXiv:2506.19645: (no out-citations in-graph)
+arXiv:2602.22090: (no out-citations in-graph)
+arXiv:2604.22906: (no out-citations in-graph)
+arXiv:2602.04919: (no out-citations in-graph)
+
+STORY THREADS (lineage chains, oldest -> newest):
+  (no dominant lineage chains)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  (none surfaced)
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2404.05741:
+NOVELTY: Proposes a low-complexity pruning strategy for pre-trained LLMs by removing entire layers or specific sublayers (attention vs. MLP) and using cosine similarity to selectively skip redundant layers.
+STRENGTHS: Demonstrates a 21% speed increase in one-token generation for Llama 2 7B by skipping attention sublayers, while unexpectedly improving performance on several benchmarks.
+WEAKNESSES: Provides little mechanistic explanation for the "surprising" finding that removing layers improves model performance rather than merely maintaining it.
+RELEVANCE: Directly addresses the research question by presenting a simple, scalable architectural optimization to reduce inference latency and computational overhead.
+arXiv:2505.01658:
+NOVELTY: Shifts from method-centric surveys to a framework-centric taxonomy, mapping specific optimization techniques (e.g., PagedAttention, Speculative Decoding) directly to 25 open-source and commercial inference engines.
+
+STRENGTHS: Provides a highly structured taxonomy (Fig. 1) that explicitly links optimization categories (batching, parallelism, compression, etc.) to critical performance metrics like TTFT, TBT, and throughput.
+
+WEAKNESSES: As a survey, it lacks original algorithmic contributions; its utility is entirely dependent on the depth and timeliness of its comparative analysis of the 25 engines, which is not fully detailed in the provided text.
+
+RELEVANCE: Directly addresses the research landscape by identifying the specific deployment tools (engines) and the underlying technical levers (optimizations) currently being used to reduce LLM latency and operational costs.
+arXiv:2602.22090:
+NOVELTY: Employs a dual-metric confidence strategy—combining $P(T)$ (token probability) and $P(IK)$ (a trained MLP classifier using hidden states)—to dynamically escalate queries through a hierarchy of LLMs.
+STRENGTHS: Demonstrates significant efficiency gains, including a 60% reduction in GPT-4o token usage and a 36.46% reduction in computational cost for 8B $\to$ 70B LLaMA models, while maintaining comparable accuracy.
+WEAKNESSES: The $P(IK)$ classifier relies on supervised training on specific datasets, and the multi-stage escalation process may increase end-to-end latency and cause error propagation in long chains.
+RELEVANCE: Directly addresses the question by presenting a "model cascading" framework that optimizes the trade-off between model scale, accuracy, and computational expense.
+arXiv:2604.22906:
+NOVELTY: Shifts the focus from homogeneous cloud-centric or single-device paradigms to the heterogeneous, wireless-constrained network edge, specifically addressing the interplay between LLM statefulness (KV cache) and time-varying wireless channels.
+STRENGTHS: Provides a robust taxonomy of four collaborative architectures (Table 1) and identifies the "two-phase asymmetry" (compute-bound prefill vs. memory-bound decoding) as a fundamental driver for edge-specific optimization.
+WEAKNESSES: Highlights that advanced strategies, such as Hybrid Collaborative Inference, introduce extreme orchestration and state-management complexity that may undermine latency gains in high-mobility or unreliable-link environments.
+RELEVANCE: Directly categorizes current research efforts into three actionable pillars: model compression (quantization/pruning), architectural partitioning (vertical/horizontal), and cross-layer resource management.

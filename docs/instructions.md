@@ -1,5 +1,9 @@
 # Plan — single-store consolidation + research-grade experiment suite
 
+> **Executed and superseded.** The single-store consolidation shipped and the experiment suite
+> was rebuilt twice since. Paths naming `phases/` are historical. Read `docs/pipeline.md` for
+> how the system works today and `docs/decisions.md` for why.
+
 > Living plan doc. Mirrors the approved plan at
 > `~/.claude/plans/i-d-like-to-go-replicated-clover.md`. Sequencing: **DB migration first**, then
 > experiments, then the paper layer. Goal: ship an open, reproducible, intent-typed dual-graph arXiv
@@ -55,7 +59,7 @@ battery.
   polarity 3-way). Stage-1 now on the existing test split; **stage-2 human-gold deferred to the very
   end** (see Phase C labeling tool).
 - **E3 — graph structure viz:** degree distributions, components, category-mix, temporal growth
-  (port `.legacy/scratchpad/graph/analyze*.py`).
+  (the ported analysis now lives under `experiments/01-preprocessing`).
 - **E4 — clustering comparison:** the shipped density-aware bisecting tree vs the **old
   kmeans-kmeans→DBSCAN-resweep + LLM-labeled parents** vs ≥1 more (e.g. HDBSCAN), on coherence /
   no-noise-bucket / downstream retrieval edges. We can do a lot more on clustering — explore it.
@@ -108,7 +112,7 @@ stats…) which experiments import as their inputs.
 
 # Implementation
 
-Temporary / probe code → `scratchpad/`. Shippable code → the phase / experiment tree.
+Probe code lived in a gitignored `scratchpad/`, which was emptied on 2026-08-27.
 
 # Phase C — paper layer (toward the full paper)
 

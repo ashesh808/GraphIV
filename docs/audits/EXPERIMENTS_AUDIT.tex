@@ -1,0 +1,345 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+
+\newcommand{\rerun}[1]{\par\smallskip\noindent\textbf{Rerun now?} #1}
+\newcommand{\stale}{\textbf{[stale]} }
+
+\title{\textbf{GraphIV experiment audit} --- plain-language guide\\
+\large what each experiment does, what it found, and whether a rerun buys anything}
+\author{2026-07-15, updated 2026-07-17}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent One entry per experiment. Rerun cost classes: \textbf{SQL} (minutes, no GPU),
+\textbf{battery} (27-topic single-pass, ${\sim}25$ min), \textbf{deep} (8-topic deep panel,
+GPU hours). Entries marked \stale measured a configuration that no longer exists: since the
+suite last ran we shipped (a) the \texttt{ef\_search} fix + ancestor floor $0.35{\to}0.30$ +
+landmark budget $m\,40{\to}60$ package (02-07), (b) reader fusion as default (02-05), (c) asym
+as the only prod embedding space, and (d) the 07-15 corpus delta (+27{,}131 papers, +1.74M
+citations, 595k newly parsed).
+
+\medskip\noindent\textbf{07-17 additions:} embedding is now served by the \texttt{llama-embed}
+endpoint (parity cosine $>0.999$, KNN identical --- no experiment invalidated); the trajectory
+sampler is prod selection in the MCP serve path; and Section~4 is new: the survey-mined
+silver-qrels benchmark (external evaluation instrument) with its first four studies.
+
+\section{Preprocessing (01-*) --- all SQL-cheap, descriptive}
+
+\subsection*{01-01 resolver quality}
+Each bibliography entry is resolved to an arXiv id through a ladder of matchers: literal link
+$\to$ regex $\to$ DOI $\to$ journal-ref $\to$ exact title $\to$ fuzzy title. This counts which
+rung resolved each of the 177M citation occurrences, by field and era. Found: 40.2\% of
+citations resolve to arXiv at all (the rest cite journals/books outside the corpus); ${\sim}80\%$
+of resolutions come from the exact rungs; the fuzzy tail is bounded at ${\sim}11\%$. The graph
+is not built on guesses.
+\rerun{Corpus grew by 595k parsed papers today; numbers drift. Cheap; refresh for any public table.}
+
+\subsection*{01-02 labeling quality}
+Every citation edge is tagged with \emph{why} the citing paper cites
+(extends/uses/compares/background/critiques/motivates) plus polarity. A 26B teacher labeled
+100k samples; a DistilBERT student distilled from it labels the full 65M+ resolved edges. This
+measures the student on held-out teacher labels: polarity essentially solved (acc $0.95$);
+intent acc $0.84$, macro-F1 $0.72$; the rare \texttt{critiques} class lags ($0.58$).
+\rerun{Frozen artifacts; a rerun reproduces itself. Only meaningful after retraining the student.}
+
+\subsection*{01-03 graph structure}
+A census of the resolved intent-typed graph: 36.7M distinct edges over 3.07M papers, degree
+distributions, growth, top-cited list. Sanity anchor: in-degree ranking recovers the canonical
+landmarks (ResNet/BERT/Transformer). Documents the heavy-tailed hub problem that motivates
+``induce within a topical pool.''
+\rerun{+1.7M edges today; cheap census refresh.}
+
+\subsection*{01-04 clustering comparison}
+The corpus topic tree is built by recursive bisection of the embedding cloud with a coherence
+early-stop. Pitted against k-means / DBSCAN / HDBSCAN on a common 30k sample: HDBSCAN dumps
+59\% of papers into a noise bucket, DBSCAN collapses to one blob; the tree places every paper
+(0\% noise) at density-adaptive grain. Silhouette is the wrong lens at this grain.
+\rerun{Algorithm-choice conclusion, not data-dependent. No.}
+
+\subsection*{01-05 topic tree}
+Shape census of the shipped tree: 3{,}582 leaves over 2.92M papers, leaf-size/depth
+distributions, coherence-vs-size scatter. Confirms the early-stop keeps leaves tight.
+\rerun{The tree is frozen \emph{by design} and now ends ${\sim}180$k papers before the corpus
+does; the interesting action is a phase-5 \texttt{--include-force} rebuild decision, not this
+census.}
+
+\section{Retrieval (02-*) --- picking the papers a review is built from}
+
+\subsection*{02-01 subgraph retrieval}
+The core recipe: embed the question; pull a candidate pool (vector KNN fused with lexical
+BM25-style match); add each pool paper's most-cited ancestors; keep only citation edges inside
+the pool (\emph{induce}); rank by personalized PageRank
+\begin{equation}
+\pi \;=\; (1-\alpha)\, e_q \;+\; \alpha\, P^{\!\top} \pi ,
+\end{equation}
+where $e_q$ concentrates restart mass on query-similar nodes. Tested against PCST and
+similarity-BFS selectors on expert-canonical landmark sets: recall $0.742$ of canonical
+landmarks, $0.917$ of the foundational spine, against a $0.85$ pool ceiling --- dominates every
+recall axis; PCST wins only connectivity (a presentation concern).
+\rerun{\stale Ran under the \texttt{ef\_search}=40 cap and pre-fusion, i.e.\ handicapped; a
+rerun on the fixed stack should score \emph{higher}. Rerun if this number goes in the paper.}
+
+\subsection*{02-02 relevance judge}
+Recall cannot see junk. An LLM labels every selected landmark's role
+(foundational/core/frontier/peripheral/unrelated) across 27 topics: ${\sim}78\%$ on-topic, and
+the diagnosis that the ${\sim}22\%$ junk is famous cross-field hubs whose in-degree (5.4, as
+high as core papers) makes them invisible to PPR as noise.
+\rerun{\stale Historical ``before'' picture; 02-05 measured the same quantity at $0.945{\to}1.0$
+after the floor + fusion shipped. Keep as history.}
+
+\subsection*{02-03 ancestor gate}
+The junk enters through one door: ancestor injection. Sweep a cosine admission floor
+\begin{equation}
+\text{admit ancestor } a \iff \cos\!\big(u_q, u_a\big) \ge \tau, \qquad \tau \in \{0.25,\dots,0.45\},
+\end{equation}
+on both precision (27 topics) and gold recall (3 topics). Recall is flat on $[0.25,0.35]$
+($0.808$, spine $1.0$) while precision rises monotonically $\Rightarrow$ shipped $\tau=0.35$ as
+the max-precision edge of the plateau; $\tau \ge 0.40$ cuts genuinely foundational low-cosine
+papers (recall collapses to $0.522$ at $0.45$).
+\rerun{\stale\stale Superseded twice: 02-07 moved production to $\tau=0.30$ (the reader now does
+the junk-filtering job) and the sweep ran under the ef=40 bug. Methodology stands; number retired.}
+
+\subsection*{02-04 selection flags}
+Given a pool, pick the final set: fixed top-50 vs cosine-gated vs LLM-filtered (same count) vs
+LLM-filtered-and-bigger, scored by per-paper LLM grades in $[-2,2]$. Filtering lifts both sum
+(+42\%) and mean (+40\%); going bigger lifts only sum while the mean saturates at ${\sim}0.88$
+--- the same place the compose judge saturates. Filter $\gg$ count.
+\rerun{Absorbed into the fusion design; historical.}
+
+\subsection*{02-05 reader fusion}
+Measure-gate for the shipped default. The production reader grades every candidate (6-class
+role + relevance $r\in[-2,2]$, cached by question hash); ranking fuses semantics and grade:
+\begin{equation}
+\mathrm{score}_i \;=\; \cos\!\big(u_q, u_i\big)\cdot \frac{r_i + 2}{4},
+\qquad r_i = -2 \Rightarrow \text{excluded from landmarks, kept as graph connector.}
+\end{equation}
+Gate: gold recall (grader-independent) must not regress. Result: recall identical
+($0.808$ / spine $1.0$), unrelated landmarks $5.7\%\to 0\%$, freed slots shift to core
+($0.270\to0.307$) and frontier ($0.224\to0.257$). Pareto win; shipped as \texttt{fuse: true}.
+\rerun{Current, load-bearing default. Rerun only to refresh numbers on the grown corpus.}
+
+\subsection*{02-06 selection objective}
+PPR itself on trial (motivated by real misses: SimPO/KTO never became landmarks). Six
+objectives over an identical front-end: PPR vs facility location
+$\max_S \sum_{p\in\mathrm{pool}} \max_{s\in S}\, \mathrm{sim}(p,s)$, MMR, cluster-proportional,
+fused-topk, hybrid. Verdict: \textbf{PPR vindicated} --- gold recall $0.753/0.917$ vs
+$0.30$--$0.44$ for every set-coverage arm (facility $0.436$; re-checked on uncapped pools:
+$0.297$). The rich-get-richer bias \emph{is} the mechanism that recovers foundational lineage;
+precision is already handled by fusion (relevance $1.0$ on every arm). Autopsy of real misses
+$\Rightarrow$ three causes: pool-miss, lukewarm grades on question-named entities, budget
+pressure --- none fixed by the objective.
+\rerun{Current; verdict strengthened on the fixed stack. Do not relitigate \emph{vs
+set-coverage}. Note 07-17: this verdict is about objectives; the magnet-walk trajectory hybrid
+(PPR scaffold + 8 consensus-walk slots, a different successor) now beats pure PPR $6/6$ on the
+external survey benchmark (04-04) and is prod selection in the MCP path.}
+
+\subsection*{02-07 retrieval breadth (the bug + the coupled package)}
+pgvector's HNSW returns at most \texttt{hnsw.ef\_search} rows regardless of \texttt{LIMIT}:
+\begin{equation}
+|\mathrm{KNN}(q, k)| \;\le\; \min(k,\ \texttt{ef\_search}),
+\qquad \texttt{ef\_search}_{\text{default}} = 40 ,
+\end{equation}
+and the parameter was never set --- every vector KNN since the PG consolidation returned
+$\le 40$ rows; \texttt{n\_pool}=400/600 was fiction and lexical RRF silently carried retrieval
+(fatal for long questions: litmus pools 60--137). Fix: \texttt{SET hnsw.ef\_search = 1000} in
+\texttt{Store.\_\_init\_\_}. Then the coupled package: ef alone \emph{drops} landmark hits
+(bigger pools make $m{=}40$ more competitive), so ship $\{$ef $1000$, floor $0.30$, $m{=}60\}$
+together; floor $0.30$ at $m{=}40$ dilutes gold ($0.753\to0.711$) --- never the floor without
+the budget. Grading cost scales with $m$ only ($\text{candidates}=4m$), not pool size. Result:
+litmus pool-hit $0.857\to1.0$, landmark-hit $0.524\to{\sim}0.62$, gold gate held $0.753/0.917$;
+$m{=}80$ documented as the paid tier. BYOL is the emblem: vocabulary-shift foundational paper,
+KNN rank $>1000$, reachable only through the ancestor channel, blocked by $\tau=0.35$ by $0.010$.
+\rerun{\textbf{THE regression harness.} Rerun after any retrieval change and to refresh on the
++27k corpus.}
+
+\section{Generation (03-*) + flagship}
+
+\subsection*{03-01 judge validity}
+Validates the measurement instrument: plant known defects, check detection per axis; test
+position and verbosity bias. Sound: 100\% on known facts, catches coverage/grounding
+degradation, no biases; lineage is the weakest axis. Rule: trust grounding/coverage and large
+effects; asterisk tiny lineage margins.
+\rerun{Judge gained retrieval-context + dated preambles in July; a light re-validation is
+defensible, not urgent.}
+
+\subsection*{03-02 component ablation}
+Knock out one component at a time (PPR$\to$in-degree / no-cluster / no-graph / no-fulltext) on
+the 27-topic battery, reading the full metric vector + 4-axis judge + faithfulness tripwire.
+The suite's founding lesson: \emph{read the vector, never one number} --- \texttt{no\_graph}
+posts the best frontier count while zeroing edges, recall, and judge score.
+\rerun{\stale Ran on the pre-fusion, pre-ef-fix, sym-era stack. The paper-grade ablation table
+wants a rerun on the current stack.}
+
+\subsection*{03-03 embedding format}
+Query-encoding shootout, end-to-end: $\{$sym, asym$\}\times\{$HyDE, raw$\}$. \texttt{asym\_raw}
+ties for best recall ($0.81$ / spine $1.0$) at no extra cost; HyDE only rescues the symmetric
+space. Shipped --- and it is why asym is now the prod space.
+\rerun{Settled; re-open only post-LoRA (the v3 training gates on this comparison anyway).}
+
+\subsection*{03-04 recency knob}
+Sweep the lineage$\leftrightarrow$frontier dial $0.0$--$0.8$ (frontier slots reserved
+newest-cohort-first; age-normalized score $\approx$ citations per year,
+$c/(y_{\mathrm{now}}-y+1)$). Frontier landmarks climb monotonically $3.7\to30.8$ at constant
+grounding: a true control surface with no universal optimum --- correctly a per-query knob.
+\rerun{Structural behavior; no.}
+
+\subsection*{03-05 frontier pull}
+The topic tree predates the corpus delta, so tree-anchored retrieval can never surface post-tree
+papers. Toggle the tree-independent, year-filtered vector pull: without it, \emph{zero} 2026
+papers ever appear; with it, ${\sim}1.9$/topic at no cost. A correctness fix, shipped on.
+\rerun{\textbf{More} relevant after today: the un-treed delta grew by 27k and this channel is
+what surfaces it. Cheap confirm-run recommended.}
+
+\subsection*{03-06 landmark selection}
+Older generation-side sibling of 02-04 (40-paper scale): the win is the relevance filter, not
+the count; \texttt{llm40} wins at zero size increase; bigger adds nothing.
+\rerun{Redundant with 02-04/02-05; historical.}
+
+\subsection*{03-07 graph representation}
+How the subgraph is serialized for the writer: structure axis (flat/adjacency/DOT/subtree/
+JSON/matrix), then role tags, extracted content, aliasing layered on the winner. Production
+digest = adjacency list + extracted content + roles + aliases; extracted content is the single
+biggest lever ($0.75$ pairwise net); winner tops every axis (4.906, pairwise 7/1/0) at the
+fewest tokens.
+\rerun{Current and load-bearing for the writer; rerun only if the digest changes.}
+
+\subsection*{03-08 judge loop}
+Test-time compute: cap judge-driven gap-expansion rounds at $\{1,2,4,6\}$. Rounds double
+landmarks ($80\to170$) and frontier coverage ($37\to74$); gold recall $0.81\to0.96$; pairwise
+rounds-6 vs rounds-1 = $6/0/2$ with zero axis losses. The thinking judge self-stops
+(${\sim}3.4$ rounds at cap 6), so the cap is a ceiling --- shipped as the effort tiers.
+\rerun{Current deep-path behavior; deep-cost; rerun for the paper only.}
+
+\subsection*{03-09 critique depth}
+The documented null: per-paper full-PDF critiques at $k\in\{0,4,8\}$. $k{=}4$ nudges recall
+($0.88\to0.92$) and grounding; $k{=}8$ gives it all back and faithfulness slips monotonically
+($0.99\to0.95\to0.94$); pairwise $k8$ vs $k0$ = $2/2/4$. The deep loop's win is the rounds
+(03-08), not depth. Kept $k{=}4$.
+\rerun{A null that saved a cost sink; leave it.}
+
+\subsection*{03-10 vision figures}
+Toggle the figure gallery (vision model reads landmark PDFs, extracts diagrams/plots, captions
+verified against the image). Text judge unchanged (it cannot see images); the gallery adds
+${\sim}13$ verified figures at $0.91$ caption-faithfulness. Additive enrichment, shipped as an
+option (prod now also role-gates figures --- slightly stricter than the measured config).
+\rerun{Current; only if you want the role-gated config re-measured.}
+
+\subsection*{03-11 hub suppression}
+Keep Attention/BERT/Adam from colonizing niche reviews (Attention: 27/27). Swept four
+data-derived genericness signals (lift, intent background-ratio, \texttt{pop\_bg},
+\texttt{pr\_ratio}): no structural silver bullet, because a hub genuinely \emph{used} in a
+niche cannot be removed without recall cost --- ``generic here'' is partly narrative. Shipped
+fix lives in the writer (compose guard), A/B-validated: generic-hub mentions
+$3/1/3/1 \to 0/0/0/0$ on the test topic with niche coverage preserved.
+\rerun{Compose guard is current prod; the sweep half is research context.}
+
+\subsection*{deep-research (flagship)}
+The holistic before/after: old single-pass default vs the full deep pipeline, 8 topics, judged
+pairwise on \emph{full untruncated} reports by three disjoint judge families: $8/0/0$ on
+overall and grounding, unanimous (96 axis-verdicts, zero baseline wins; sign test
+$p \approx 2\cdot(1/2)^{8} \approx 0.008$ per judge). Objectively: 9.0 2026-papers/topic vs 0,
+$2.4\times$ frontier coverage, $1.5\times$ grounded citations, 13 verified figures. An earlier
+16k-char judge cap saw half of each deep report and reported a softer $5/2/1$ --- the
+truncation artifact worth remembering.
+\rerun{``After'' side already re-ran on the current stack (h2h); ``before'' is frozen by
+definition. Refresh only for headline numbers.}
+
+\section{External evaluation: the survey-qrels benchmark (04-*, NEW 07-17)}
+
+\noindent Motivation (user call: ``hand-curated gold is unscientific''): the 27-topic battery
+holds only 19 canonical + 13 spine ids \emph{total} --- a regression gate, not a
+precision/recall claim. The field's answer (probed with GraphIV itself: LitSearch, PaSa,
+``citation lists are not a ground truth'') is reference-list silver gold + LLM adjudication.
+Scripts live in the session scratchpad (\texttt{survey\_qrels.py}, \texttt{score\_survey.py},
+\texttt{recall\_at\_freq.py}, \texttt{compare\_ablate.py}, \texttt{traj\_vs\_ppr.py}); the
+retrieval cap flag is in the repo (\texttt{--set-max-date} / \texttt{--set-exclude}).
+
+\subsection*{04-01 survey-qrels pilot}
+A survey paper is a human expert who already did our task: read a topic, picked the papers
+that matter. So: take a survey's resolved reference list from our own citation table as the
+answer key (80--250 in-corpus ids each), derive a question from the survey, hide the survey,
+ask GraphIV, count how many refs come back in the pool. Weight by how often the survey
+\emph{mentions} each ref (the mention rows already exist in the citation table): one-off cites
+are background noise; refs mentioned $\geq 3$ times are what the survey is about. Report the
+whole recall-vs-mention-frequency \emph{curve}, not one number. Pilot ($3\times$ Jan-2024 CS
+surveys, fast tier): all curves rise monotonically and hit $1.0$ at $N \geq 5$--$8$ mentions;
+misses concentrate in the 1-mention tail. Design lessons: derive questions from the survey
+\emph{abstract} (title-only under-scopes --- the 3DGS misses were avatars/SLAM subtopics the
+narrow question never asked about); survey selection uses citation count as a \emph{floor}
+(${\sim}15$--$20$) + subfield$\times$year stratification, never top-cited ranking
+(age / mega-topic / hub-reward bias).
+\rerun{Pilot done; the ${\sim}20$-survey stratified battery is the next build.}
+
+\subsection*{04-02 time-capped retrieval (``no newer than the survey'')}
+User-mandated: corpus \emph{and clock} are frozen at the survey's publication month
+(\texttt{--set-max-date YYMM}: a Store-level filter across all six pool channels + deep-loop
+gap injection; \texttt{now} is anchored so per-topic frontier detection time-travels), and the
+survey itself is blocklisted (\texttt{--set-exclude} --- otherwise citation drill walks the
+survey's own reference edges, i.e.\ copies the answer key; it leaked into the pool in every
+uncapped pilot run). Validation (diffusion-SR): leak gone, 0 postdating landmarks, core recall
+$0.842$ capped vs $0.895$ uncapped --- the delta is two \emph{pre-cap} papers reachable only
+via post-cap intermediaries, exactly the contamination the cap removes. None of the comparable
+works (LitSearch / PaSa / 2605.29234) caps explicitly: a claimable methodological novelty.
+\rerun{Shipped in the repo, both run paths, lint-clean.}
+
+\subsection*{04-03 does the benchmark discriminate?}
+A benchmark is only an instrument if it separates configs we understand. Ablations through the
+capped diffusion-SR survey: \texttt{no\_graph} leaves pool metrics byte-identical (correct
+null --- it cannot touch the pool) while landmark-core drops $0.263 \to 0.158$ (graph ranking
+${\approx}40\%$ of core selection); \texttt{no\_frontier\_pull} drops tail recall
+$0.518 \to 0.473$ (detected); \texttt{no\_cluster} \emph{raised} R@2/R@3
+($0.65 \to 0.775$ / $0.842 \to 0.895$) on a smaller pool --- the topic-tree refinement may be
+evicting mid-importance refs. One-topic surprise, not a conclusion; the battery decides. Pool
+metrics are deterministic (no LLM in pool assembly), so pool deltas are real.
+\rerun{Instrument validated on one topic; the \texttt{no\_cluster} flag is an open battery question.}
+
+\subsection*{04-04 trajectory vs PPR on the external instrument}
+First real client of the benchmark: does the magnet-walk sampler beat PPR on qrels neither was
+tuned against? The first attempt was \textbf{invalid} and taught the tier rule: fast tier skips
+reader grading $\Rightarrow$ the sampler's rel$\geq 2$ magnet set is empty $\Rightarrow$ it
+silently degrades to a blind walk (it swapped Score-SDE/ADM/DDIM out for 2016 CNN papers ---
+the degraded selector, not the algorithm). Selection A/Bs must run standard/deep; fast is
+pool-metrics-only. Suggested guard (not yet coded): warn + fall back to \texttt{ppr} when
+\texttt{rank=trajectory} sees no grades. Corrected run (standard, $m{=}80$, grades cached so
+both arms see identical pools + grades): \textbf{trajectory wins landmark core-ref recall 6/6
+cells} across the three surveys --- lm@3: $0.526/0.421$, $0.304/0.261$, $0.381/0.333$; lm@1 a
+wash; rep@3 tied except a 3DGS dip ($0.130$ vs $0.261$, compose-stage, watch in the battery).
+Independent-instrument validation on top of the internal-battery Pareto.
+\rerun{Done; the $+1/+2$-paper margins need the 20-survey battery for intervals.}
+
+\subsection*{04-05 (planned) full battery + adjudication + human calibration}
+(a) ${\sim}20$ surveys, citation-floor + stratified, abstract-derived questions via the map
+LLM, all capped, both ranks, standard tier (${\sim}2$ overnights). (b) LLM adjudication of
+uncited landmarks by a judge \emph{disjoint} from the pipeline's reader (GLM / GPT-OSS, not
+Gemma --- no grading your own homework); per 2605.29234 only ${\sim}51\%$ of human citations
+clear a neutral relevance bar, so ``not in refs'' $\neq$ wrong. (c) Doomscroll labeler:
+${\sim}100$--$200$ (question, paper) pairs labeled by the user once; if judge--user agreement
+matches human--human agreement (the Bing protocol), the judge scales to the rest and the paper
+gets an inter-annotator number.
+
+\section{Rerun shortlist}
+
+\begin{center}
+\begin{tabular}{llp{8.6cm}}
+\toprule
+priority & experiment & why \\
+\midrule
+high & 04-05 battery & turns 04-01/04-04's $+1/+2$-paper margins into intervals; the paper's eval section \\
+high & 02-07 & it \emph{is} the regression harness; refresh on the +27k corpus \\
+high & 03-05 & directly validates that the delta is retrievable end-to-end \\
+medium & 03-02 & the paper-grade ablation, on a dead stack; consider rerunning \emph{through} 04 (capped surveys) instead of the internal battery \\
+medium & 02-01 & headline recall number, measured under the \texttt{ef\_search} handicap \\
+medium & 01-01 / 01-03 & cheap SQL censuses; numbers drifted with the 07-15 ingest \\
+low & 03-01 & light re-validation after the judge's July prompt changes \\
+skip & 02-02 / 02-03 / 02-04 / 03-06 & superseded; keep as history \\
+skip & 01-02 / 01-04 / 01-05 / 03-04 / 03-09 & frozen artifacts / structural nulls \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

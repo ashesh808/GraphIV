@@ -26,7 +26,7 @@ disjoint and the judge never reads held-out, but read the 0.751 as agreement wit
 
 **Read the curve carefully:** generation 7 is not an eighth measurement. The drafter returned an
 empty response and its failure path returns the seed unchanged, so generation 7 ran generation 6's
-file verbatim. `code/refinement.py` detects this by digest and prints it as `(repeat)`.
+file verbatim. `src/refinement.py` detects this by digest and prints it as `(repeat)`.
 
 Numbers: [`results/metrics.md`](results/metrics.md) · figures in [`results/`](results/).
 Run: `uv run python run.py`. Re-run the loop itself with

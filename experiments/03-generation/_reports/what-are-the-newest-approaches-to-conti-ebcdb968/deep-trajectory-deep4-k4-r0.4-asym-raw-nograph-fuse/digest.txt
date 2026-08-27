@@ -1,0 +1,742 @@
+QUESTION: What are the newest approaches to continual learning and avoiding catastrophic forgetting?
+
+SCHEMA FIELDS: ['contribution', 'method', 'dataset', 'result', 'limitation']
+
+ERAS:
+  [0] Origins: 2018-2021
+  [1] Key Advances: 2021-2023
+  [2] Current Frontier: 2023-2026
+
+NODES (chronological; role + extracted fields per paper):
+arXiv:1811.11682 (2018) [core] "Experience Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: CLEAR, a continual learning method that reduces catastrophic forgetting without requiring task identity or task boundaries.
+    method: Actor-critic training using a mixture of new and replayed experiences via the Importance Weighted Actor-Learner Architecture (IMPALA) and the V-Trace off-policy learning algorithm.
+    result: Reduces forgetting more effectively than prior methods and can be combined with other approaches.
+arXiv:1810.10612 (2018) [core] "Continual Classification Learning Using Generative Models" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A new classification model for continual learning that prevents catastrophic forgetting by relaxing the paradigms of no access to past data and no storage of past task-specific models.
+    method: A latent variable model using a variational inference approach (similar to VAE) where each observation has a corresponding latent variable used to generate the correct label class.
+    dataset: Permuted MNIST (original MNIST plus 4 random permutations) consisting of a sequence of 5 tasks.
+arXiv:1805.12369 (2018) [core] "Reinforced Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A novel approach for continual learning called Reinforced Continual Learning (RCL) that dynamically searches for the best neural architecture for each new task.
+    method: Reinforcement learning strategies used to search for optimal neural architectures for sequential tasks.
+    dataset: MNIST Permutations (ten variants via pixel permutation) and MNIST Mix (five permutations and five rotation variants).
+arXiv:1803.10123 (2018) [core] "Task Agnostic Continual Learning Using Online Variational Bayes" [stat] (cited-by 0 in-topic, era 0)
+    contribution: A task-agnostic continual learning algorithm applicable to scenarios where task identity or boundaries are unknown during training and testing, including a 'labels trick' for the 'class learning' scenario.
+    method: Online Variational Bayes (specifically BGD)
+    limitation: Inability to evaluate all algorithms in all experiments due to a lack of open-source or architecture-specific implementations of other algorithms.
+arXiv:1801.01423 (2018) [core] "Overcoming catastrophic forgetting with hard attention to the task" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A task-based hard attention mechanism that preserves previous tasks' information without affecting current task learning to mitigate catastrophic forgetting.
+    method: Learning a hard attention mask concurrently with every task via stochastic gradient descent, using previous masks to condition the learning.
+    dataset: Permutations of MNIST, label splits of MNIST, incremental CIFAR classes, and two-task transfer learning setups.
+    result: Reduces current catastrophic forgetting rates by 45% to 80% across 4 different experimental setups.
+arXiv:1806.06928 (2018) [core] "Meta Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A meta-learning framework designed to mitigate catastrophic forgetting in continual learning by learning an update step prediction model.
+    method: A meta-learning framework that learns to predict optimal update steps (optimizers) based on gradients, rather than using fixed hyperparameters like SGD.
+    dataset: A variation of the MNIST handwritten digit database.
+arXiv:1810.13166 (2018) [core] "Don't forget, there is more than forgetting: new metrics for Continual
+  Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Proposes a comprehensive set of implementation-independent metrics for evaluating Continual Learning (CL) algorithms, expanding beyond the exclusive focus on catastrophic forgetting to include factors like accuracy over time and knowledge transfer.
+    method: A framework of algorithm ranking metrics divided into seven criteria based on different desiderata attainable in CL, evaluated against cumulative and naïve baseline strategies.
+    dataset: iCIFAR-100 (where each task consists of a training batch of 10 disjoint classes).
+    result: Evaluated metrics using EWC, SI, and LwF baselines; results show variability across the seven criteria, indicating that different CL techniques address different aspects of performance beyond just accuracy and forgetting.
+arXiv:1802.07239 (2018) [core] "Continual Reinforcement Learning with Complex Synapses" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Demonstrating that incorporating different timescales of plasticity via complex synapses (Benna-Fusi model) can enhance continual learning and robustly preserve old memories without the necessity of an experience replay database.
+    method: Applying the Benna-Fusi model to an agent's parameters to simulate complex synapses with multiple timescales of plasticity within a Reinforcement Learning setting.
+    dataset: Simple tabular Q-learning agent environments (used as a proof of principle).
+    result: Improved behavioral memory over distinct timescales and the ability to achieve continual learning without prior knowledge of data distribution changes or an experience replay database.
+arXiv:1904.00310 (2019) [core] "Learn to Grow: A Continual Structure Learning Framework for Overcoming
+  Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A continual structure learning framework that separates structure and parameter learning to more effectively use parameters and reduce catastrophic forgetting.
+    method: Explicit continual structure learning that separates structure learning from parameter learning to optimize model architectures for sequential tasks.
+    dataset: Permuted MNIST and Visual Domain Decathlon (split into various sub-datasets).
+    result: Explicit structure learning leads to better performance and sensible task-specific structures; separating structure and parameter learning significantly reduces catastrophic forgetting compared to baselines of similar complexity.
+arXiv:1912.01238 (2019) [core] "Overcoming Catastrophic Forgetting by Generative Regularization" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Proposes a generative regularization method using energy-based models (EBM) with Langevin dynamic sampling to overcome the deficiency of the parameter independence assumption in variational continual learning, thereby preventing catastrophic forgetting.
+    method: Generation-regularized Bayesian EBM using energy-based models with contrastive loss and Langevin dynamic sampling as an implicit regularization term.
+    dataset: Permuted-MNIST, Split-MNIST, and Fashion-MNIST.
+    result: Empirically shown to work well on all considered benchmark datasets.
+arXiv:2007.04813 (2020) [core] "Graph-Based Continual Learning" [stat] (cited-by 0 in-topic, era 0)
+    contribution: Augmenting episodic memory arrays with a learnable random graph that captures pairwise similarities to guard against catastrophic forgetting.
+    method: Graph-Based Continual Learning (GCL) using a learnable random graph and an objective that penalizes the forgetting of learned edges between samples.
+    dataset: Permuted MNIST, Rotated MNIST, Split SVHN, Split CIFAR10, Split CIFAR100, and Split MiniImageNet.
+    result: Improved accuracy by up to 19.7% and reduced forgetting by almost 37% in the best case compared to competitive baselines.
+arXiv:2007.08855 (2020) [frontier] "A Biologically Plausible Audio-Visual Integration Model for Continual
+  Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A novel biologically plausible audio-visual integration model (AVIM) designed to mitigate catastrophic forgetting by simulating the integration of audio and visual information in the medial temporal lobe.
+    method: A three-module architecture consisting of an encoding module (using pre-trained CNN for visual features and near-orthogonal sparse binary codes (NOSC) for auditory signals), an integration module, and a decoding module.
+    dataset: few-shot CIFAR100-FV datasets
+    result: AVIM achieves comparable performance to OWM and iCaRL, and performs significantly better than GEM and EWC.
+arXiv:2007.00487 (2020) [survey] "Continual Learning: Tackling Catastrophic Forgetting in Deep Neural
+  Networks with Replay Processes" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Exploration and proposal of continual learning algorithms using replay processes to mitigate catastrophic forgetting.
+    method: Replay processes, which include rehearsal methods (saving a core-set of past samples) and generative replay methods (regenerating past experiences using a generative model).
+    result: Demonstrated ability to learn continually across unsupervised learning, supervised learning, and reinforcement learning tasks.
+arXiv:2002.09571 (2020) [core] "Learning to Continually Learn" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Proposing a meta-learning approach to solve catastrophic forgetting by learning to continually learn, inspired by neuromodulatory processes in the brain.
+    method: A Neuromodulated Meta-Learning Algorithm (ANML) that directly modulates activations and indirectly modulates learning to reduce interference in both forward and backward passes.
+    dataset: Omniglot few-shot learning dataset (963 meta-training classes).
+    result: Successfully learned 600 sequential tasks, spanning up to 9,000 SGD updates without catastrophic forgetting.
+arXiv:2003.05856 (2020) [core] "Online Fast Adaptation and Knowledge Accumulation: a New Approach to
+  Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Proposes OSAKA, a new scenario requiring agents to both quickly solve new out-of-distribution tasks and achieve fast remembering of previous tasks.
+    method: Continual-MAML, an online extension of the Model-Agnostic Meta-Learning (MAML) algorithm.
+    result: Continual-MAML outperforms current continual learning, meta-learning, meta-continual learning, and continual-meta learning techniques in the OSAKA scenario.
+    limitation: Current continual learning, meta-learning, meta-continual learning, and continual-meta learning techniques fail in the OSAKA scenario.
+arXiv:2006.05188 (2020) [core] "Optimal Continual Learning has Perfect Memory and is NP-hard" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Theoretical characterization of the computational properties required for a Continual Learning (CL) algorithm to achieve 'perfect memory' (zero catastrophic forgetting).
+    method: Theoretical derivation of computational complexity and properties required for optimal CL.
+    result: Proves that achieving perfect memory in CL is an NP-hard problem.
+arXiv:2110.00908 (2021) [frontier] "GROWN: GRow Only When Necessary for Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: GROWN, a framework for efficient continual learning that starts from a small seed network and grows only when necessary to mitigate catastrophic forgetting.
+    method: A structure-based continual learning framework that expands the network architecture dynamically based on necessity.
+    dataset: CIFAR-100 Split (10 tasks, 10-way classification) and CIFAR-100 Superclass (20 tasks, 5 classes per task).
+    result: Demonstrated superiority over current structure-based approaches in multiple CL benchmarks and characterized the relationship between growth ratio and accuracy.
+arXiv:2112.08654 (2021) [core] "Learning to Prompt for Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Introduces the first prompting-based paradigm for continual learning to train a succinct memory system without requiring task identity at test time.
+    method: Learning to Prompt (L2P), a method that uses prompt tuning to adapt to non-stationary data distributions without relying on a rehearsal buffer or task identity during inference.
+arXiv:2112.02706 (2021) [core] "Achieving Forgetting Prevention and Knowledge Transfer in Continual
+  Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A continual learning framework (CTR) designed to simultaneously prevent catastrophic forgetting (CF) and encourage knowledge transfer (KT) in NLP tasks using task masks and a CL-plugin module.
+    method: CTR architecture using BERT as a base, incorporating a 'CL-plugin' inspired by Adapter-BERT and utilizing task masks to protect task-specific knowledge.
+    result: CTR outperforms strong baselines in empirical evaluations; ablation studies identify optimal insertion points for the CL-plugin in BERT.
+    limitation: Existing techniques suffer from serious CF when tasks do not have much shared knowledge.
+arXiv:2107.12304 (2021) [core] "In Defense of the Learning Without Forgetting for Task Incremental
+  Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Demonstrates that Learning Without Forgetting (LwF), a simple data-driven regularization technique, is more effective than many promising regularization-based and parameter-isolation methods for task-incremental learning.
+    method: Data-driven regularization using knowledge distillation loss between the previous model and the current model, utilizing only current task data to preserve previous task outputs via a feature extractor and task-specific classifier heads.
+    result: LwF is found to be more effective than most promising regularization-based and parameter-isolation methods.
+arXiv:2104.08572 (2021) [core] "On Learning the Geodesic Path for Incremental Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A novel distillation loss that considers information geometry by enforcing consistency along the geodesic path connecting models, leading to improved performance and less forgetting compared to Euclidean metric distillation.
+    method: Enforcing consistency along the geodesic connecting models using subspace embeddings of features from old and current models to capture manifold structure.
+    dataset: CIFAR-100, ImageNet-subset (100 categories), and ImageNet-full (1000 categories).
+arXiv:2108.12641 (2021) [core] "Prototype-Guided Memory Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 0)
+    contribution: A memory-efficient continual learning method that stores only a few samples (prototypes) to mitigate catastrophic forgetting while maintaining a constant memory size.
+    method: Prototype-guided memory replay within a basic CL setup where the model makes a single pass over a stream of tasks and limits memory size to a constant $M$.
+    dataset: AGNews (4 classes), Yelp (5 classes), and Amazon (5 classes); each containing 115,000 training samples and 7,600 test samples.
+arXiv:2110.11526 (2021) [core] "Wide Neural Networks Forget Less Catastrophically" [cs] (cited-by 0 in-topic, era 0)
+    contribution: Demonstrates that increased network width can alleviate catastrophic forgetting in continual learning, supported by theoretical and empirical justifications like the lazy training regime and orthogonalization.
+    method: Analysis of network structures and over-parametrization (width and depth) in the context of continual learning.
+arXiv:2212.13242 (2022) [frontier] "Saliency-Augmented Memory Completion for Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes Saliency-Augmented Memory Completion (SAMC), featuring two techniques based on saliency maps and image inpainting for efficient memory storage/recovery, and a bilevel optimization algorithm for end-to-end training.
+    method: A replay-based continual learning framework using saliency maps and image inpainting for memory management, trained via a bilevel optimization algorithm with theoretical guarantees.
+    dataset: Split CIFAR-10, Split CIFAR-100, and Split mini-ImageNet.
+    result: Demonstrated efficacy and superiority over several state-of-the-art CL methods on commonly used benchmarks.
+arXiv:2210.00713 (2022) [frontier] "Efficient Meta-Learning for Continual Learning with Taylor Expansion
+  Approximation" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Efficient Meta-Learning for Continual Learning (EMCL) which alleviates catastrophic forgetting by adding explicit regularization terms to the inner loss and using proximal gradient descent for efficiency.
+    method: EMCL, a gradient-based meta-learning approach that uses a diagonal matrix of moving averages of parameter importance for regularization in the inner loss, avoiding Hessian computation or additional learnable parameters.
+    dataset: MNIST Permutations (20 tasks, 1000 samples/task) and Many Permutations (100 tasks, 200 samples/task).
+    result: Achieves better or on-par performance against La-MAML and other state-of-the-art approaches in a much shorter training time.
+arXiv:2204.05842 (2022) [frontier] "Generative Negative Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes 'Generative Negative Replay' to mitigate catastrophic forgetting in continual learning by using generative models to provide negative examples, specifically addressing high-dimensional, non-i.i.d. data across many experiences.
+    method: Implementation of negative replay on top of existing continual learning strategies (ER, LwF, and AR1), comparing the use of generated negative patterns against real past patterns and random data.
+    dataset: CORe50 and ImageNet-1000.
+arXiv:2211.15215 (2022) [frontier] "Progressive Learning without Forgetting" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Addressing catastrophic forgetting and the stability-plasticity dilemma in Continual Learning (CL) without using old data by introducing Progressive Learning without Forgetting (PLwF) and credit assignment.
+    method: Progressive Learning without Forgetting (PLwF) which adapts previous functions to maintain a knowledge space where knowledge disappears less, and a credit assignment mechanism to balance stability and plasticity.
+    dataset: CIFAR-10, CIFAR-100, and Tiny-ImageNet.
+    result: Achieves notable performance improvement on CIFAR-10, CIFAR-100, and Tiny-ImageNet compared with state-of-the-art methods.
+arXiv:2201.12522 (2022) [frontier] "Continual Learning with Recursive Gradient Optimization" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduction of Recursive Gradient Optimization (RGO), a method to minimize forgetting without data replay or additional network capacity, utilizing an iteratively updated optimizer and a virtual Feature Encoding Layer (FEL).
+    method: Recursive Gradient Optimization (RGO) using an iterative optimization strategy based on Recursive Least Loss (RLL) to estimate previous task losses without explicit historical parameters.
+    dataset: Permuted MNIST, Rotated MNIST, 20-split-CIFAR100, and 20-split-miniImageNet.
+    result: Achieved state-of-the-art performance with 82.22% on 20-split-CIFAR100 and 72.62% on 20-split-miniImageNet.
+arXiv:2202.09826 (2022) [core] "Continual Learning Beyond a Single Model" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes an efficient ensembling method for continual learning that avoids the high training and inference costs of standard ensembles by learning in neural network subspaces.
+    method: Subspace-Connectivity; learns tasks in subspaces to divide capacity without interference and utilizes the connectivity of task optima for knowledge retention.
+arXiv:2203.17269 (2022) [core] "A Closer Look at Rehearsal-Free Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Analysis of rehearsal-free continual learning methods (EWC, L2, PredKD, FeatKD) and the finding that regularizing parameters is more effective than regularizing predictions; achieving SOTA results in the rehearsal-free setting.
+    method: Comparison of EWC, L2, PredKD, and FeatKD losses against a naive classification loss model and an upper-bound joint training model using an 18-layer ResNet with Adam optimization.
+    dataset: CIFAR-100
+    result: Achieved SOTA results in the rehearsal-free setting and outperformed recent SOTA prompting methods.
+arXiv:2208.02660 (2022) [survey] "A Benchmark and Empirical Analysis for Replay Strategies in Continual
+  Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: An in-depth evaluation and benchmark of memory replay strategies in continual learning, exploring efficiency, performance, and scalability across various sampling methods.
+    method: Comparative analysis of replay strategies categorized into Random selection, Feature Embedding (K-means, core-set), Model Prediction (entropy, confidence, margin, Bayesian disagreement, MIR), and the comparison between experience replay and generative replay.
+    dataset: MNIST, CIFAR-10, MiniImagenet, and OpenLORIS-Object.
+arXiv:2305.12270 (2023) [frontier] "Mitigating Catastrophic Forgetting in Task-Incremental Continual
+  Learning with Adaptive Classification Criterion" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes the first supervised contrastive learning framework (SCCL) for task-incremental continual learning without augmented parameters to mitigate catastrophic forgetting.
+    method: SCCL framework consisting of a supervised contrastive learning objective, learned representation selection, an instance-wise distillation module, a memory replay module, and kNN inference.
+    dataset: GLUE benchmark (CoLA, MNLI, QNLI, QQP, Yelp, AG) and MBPA++.
+arXiv:2311.15276 (2023) [frontier] "Efficient Rehearsal Free Zero Forgetting Continual Learning using
+  Adaptive Weight Modulation" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A rehearsal-free zero-forgetting continual learning method using adaptive weight modulation that prevents inner-task interference without storing old parameters or increasing the total number of parameters.
+    method: Adaptive weight modulation for each task applied to a MobileNet V2 architecture.
+    dataset: Flowers, Stanford Cars, CUBS, Sketches, Wiki-Art, and Food101.
+arXiv:2310.08038 (2023) [frontier] "Continual Learning via Manifold Expansion Replay" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes Manifold Expansion Replay (MaER), featuring a greedy sampling strategy to balance knowledge by expanding the diameter of the knowledge manifold and a knowledge distillation method using Wasserstein distance.
+    method: Manifold Expansion Replay (MaER) using greedy sampling for manifold expansion and Wasserstein distance for knowledge distillation.
+    dataset: Permuted MNIST, Rotated MNIST, Split CIFAR10, Split CIFAR100, and Split TinyImageNet.
+    result: Achieves state-of-the-art accuracy in continual learning tasks compared to existing replay methods.
+arXiv:2302.00487 (2023) [survey] "A Comprehensive Survey of Continual Learning: Theory, Method and
+  Application" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A comprehensive survey of continual learning, providing an elaborated taxonomy of representative methods, analyzing their motivations, implementations, and empirical properties, and discussing applications, trends, and neuroscience connections.
+    method: Taxonomy-based analysis of continual learning methods, including weight regularization (adding quadratic penalties to loss functions based on parameter importance) and storing frozen copies of old models.
+    limitation: Catastrophic forgetting, where learning new tasks causes dramatic performance degradation in old tasks.
+arXiv:2308.04539 (2023) [frontier] "Improving Performance in Continual Learning Tasks using Bio-Inspired
+  Architectures" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Demonstrating that bio-inspired design principles from Neuromodulated Neural Architectures (NNA), specifically biologically inspired architecture and loss formulation, can mitigate catastrophic forgetting and improve online continual learning performance.
+    method: Neuromodulated Neural Architecture (NNA) consisting of a feed-forward map and hidden states, where the evolution of the hidden state is computed in real time based on recent inputs and a modulatory signal.
+    dataset: MNIST, Fashion MNIST (F-MNIST), CIFAR-10, and CIFAR-100.
+    result: Networks achieved high accuracies in as few as one epoch across all tested datasets.
+arXiv:2310.06362 (2023) [frontier] "InfoCL: Alleviating Catastrophic Forgetting in Continual Text
+  Classification from An Information Theoretic Perspective" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes InfoCL, a novel replay-based continual text classification method that uses fast-slow and current-past contrastive learning to capture comprehensive representations and alleviate catastrophic forgetting caused by the information bottleneck's compression effect.
+    method: A replay-based approach utilizing fast-slow and current-past contrastive learning to mitigate confusion on analogous classes in a class-incremental setting.
+    dataset: FewRel, TACRED (relation extraction), MAVEN (event classification), and HWU64 (intent detection).
+    result: InfoCL learns more effective representations and outperforms state-of-the-art methods across the tested datasets.
+arXiv:2308.03810 (2023) [frontier] "AdaER: An Adaptive Experience Replay Approach for Continual Lifelong
+  Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduction of AdaER, an adaptive experience replay algorithm designed to mitigate catastrophic forgetting in continual lifelong learning.
+    method: Adaptive Experience Replay (AdaER) utilizing Contextually-Cued Memory Recall (C-CMR) for the replay stage and E-BRS update methods for the update stage.
+    dataset: Split-MNIST, Split-FMNIST, Split-CIFAR10, and Split-CIFAR100.
+arXiv:2312.00276 (2023) [frontier] "Metalearning Continual Learning Algorithms" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Automated Continual Learning (ACL), a method to train self-referential neural networks to meta-learn their own in-context continual learning algorithms to mitigate catastrophic forgetting.
+    method: Formulating continual learning as a long-span sequence learning task where neural networks meta-learn their own read/write operations for memory.
+    dataset: Meta-training: Mini-ImageNet, Omniglot, and FC100; Meta-testing: MNIST families and CIFAR-10.
+    limitation: Scaling to many more classes is challenging; datasets used remain in the realm of toy tasks.
+arXiv:2310.08217 (2023) [frontier] "TriRE: A Multi-Mechanism Learning Paradigm for Continual Knowledge
+  Retention and Promotion" [cs] (cited-by 0 in-topic, era 1)
+    contribution: TriRE, a multi-mechanism learning paradigm for continual knowledge retention and promotion that combines experience rehearsal and model modularity.
+    method: A framework utilizing a feature extractor (ResNet-18) and a single head classifier, incorporating a memory buffer for experience rehearsal and model modularity to address Class-IL and Task-IL scenarios.
+    dataset: Seq-CIFAR100
+    result: Achieves at least twice the performance of weight regularization methods on the same dataset and at least a 7% relative improvement over parameter isolation approaches in the Seq-CIFAR100 Task-IL setting.
+arXiv:2310.01365 (2023) [frontier] "Elephant Neural Networks: Born to Be a Continual Learner" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduction of Elephant Neural Networks (ENNs) to mitigate catastrophic forgetting by studying the role of activation functions in training dynamics.
+    method: Utilization of 'elephant functions' to create locally elastic sparse representations for continual learning.
+    dataset: Split MNIST, regression tasks in streaming learning settings, and reinforcement learning environments.
+    result: Achieved excellent performance on Split MNIST in a single pass without replay buffers, task boundaries, or pre-training; improved RL agent performance under extreme memory constraints.
+arXiv:2303.14595 (2023) [frontier] "Preserving Linear Separability in Continual Learning by Backward Feature
+  Projection" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduction of Backward Feature Projection (BFP) loss to preserve the linear separability of old classes while allowing feature plasticity during continual learning.
+    method: Decomposition of the model into a non-linear feature extractor (f) and a linear classification head (g), utilizing a Backward Feature Projection (BFP) loss to maintain class separability.
+    result: Achieves state-of-the-art performance on challenging datasets when combined with simple experience replay baselines.
+arXiv:2312.00600 (2023) [frontier] "Improving Plasticity in Online Continual Learning via Collaborative
+  Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes CCL-DC, a collaborative learning based strategy designed to enhance model plasticity in online continual learning, which can be seamlessly integrated into existing methods.
+    method: Collaborative Continual Learning and Distillation Chain (CCL-DC) applied to existing online CL methods using a ResNet-18 backbone.
+    dataset: CIFAR-10, CIFAR-100, TinyImageNet, and ImageNet-100.
+    result: Extensive experiments show CCL-DC enhances the performance of six state-of-the-art online CL methods (ER, DER++, ER-ACE, OCM, GSA, and OnPro) by a large margin.
+arXiv:2305.16424 (2023) [frontier] "SketchOGD: Memory-Efficient Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes SketchOGD, a memory-efficient solution to catastrophic forgetting that improves upon Orthogonal Gradient Descent (OGD) by using sketching for dimensionality reduction.
+    method: Sketching (dimensionality reduction) applied to Orthogonal Gradient Descent (OGD) to summarize information about past tasks more efficiently.
+    dataset: Rotated MNIST, Permuted MNIST, Split MNIST, and Split CIFAR.
+arXiv:2302.00858 (2023) [frontier] "Online Continual Learning via the Knowledge Invariant and Spread-out
+  Properties" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A new online continual learning approach named OCLKISP designed to alleviate catastrophic forgetting by leveraging knowledge invariant and spread-out properties.
+    method: An online continual learning method (OCLKISP) based on a memory-based scenario to learn from streaming tasks while retaining knowledge from former tasks.
+    dataset: Split SVHN, Split CIFAR100, Split CUB200, and Split TinyImageNet200.
+arXiv:2311.01617 (2023) [frontier] "Look-Ahead Selective Plasticity for Continual Learning of Visual Tasks" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A new mechanism for continual learning that takes place at task boundaries, inspired by brain event models, using a selected subset of network-generated embeddings and a novel gradient modulation method.
+    method: Look-Ahead Selective Plasticity (modulating gradients based on a subset of network-generated embeddings at task boundaries) built upon the Co2L baseline.
+arXiv:2306.14775 (2023) [frontier] "Parameter-Level Soft-Masking for Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduces Soft Parameter Grouping (SPG) to simultaneously overcome catastrophic forgetting (CF), encourage knowledge transfer (KT), and address network capacity consumption in task incremental learning.
+    method: Directly soft-masks parameters based on their importance to previous tasks, providing more flexibility and lower capacity cost than neuron-level masking.
+    dataset: 5 continual learning datasets, including CIFAR100- (C-).
+arXiv:2311.14905 (2023) [frontier] "Class Gradient Projection For Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Class Gradient Projection (CGP) which projects gradient updates orthogonal to individual class subspaces to mitigate catastrophic forgetting caused by class deviation.
+    method: Class Gradient Projection (CGP) combined with a contrastive loss to enhance plasticity and stability.
+    dataset: 10-Split CIFAR-100, 20-Split CIFAR-100, 5-Split CIFAR-100, CIFAR-100 Superclass, and sequence of 5-Datasets.
+arXiv:2309.08227 (2023) [frontier] "VERSE: Virtual-Gradient Aware Streaming Lifelong Learning with Anytime
+  Inference" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes VERSE, a framework for streaming lifelong learning in dynamic non-stationary environments that enables continuous machine perception and 'anytime-inference' without fine-tuning.
+    method: A CNN architecture split into a non-plastic feature extractor (frozen parameters) and a plastic neural network (adaptable final layers) using a semantic memory based on an exponential-moving-average approach.
+    dataset: iCub1.0, iCub28, and CoRe50.
+    result: Affirmed superiority over existing SOTA methods through empirical evaluations and ablation studies on three benchmark datasets with temporal correlations.
+arXiv:2306.12619 (2023) [frontier] "Class-Incremental Learning based on Label Generation" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Formulating Class-Incremental Learning (CIL) as a continual label generation problem to reduce catastrophic forgetting and proposing VAG, a method that uses label semantics and vocabulary sparsity to create pseudo-replay samples.
+    method: VAG (label-based augmentation) which leverages label semantics and vocabulary sparsity to generate pseudo-replay samples via a label generation formulation.
+    dataset: CLINC150 (15/10), Banking77 (7/10), 20 Newsgroups (10/2), FewRel (8/10), and TACRED (8/5).
+    result: VAG drastically outperforms baselines in non-exemplar based CIL and achieves better results when a small amount of saved replay data is used.
+arXiv:2305.13622 (2023) [frontier] "Continual Learning with Strong Experience Replay" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes Strong Experience Replay (SER) to mitigate overfitting to the memory buffer in continual learning, especially when few previous samples are available.
+    method: Strong Experience Replay (SER), which mimics future experiences on current training data to reduce forgetting.
+    dataset: Multiple image classification datasets (following DER++ and LVT settings) across Class-IL, Task-IL, and Domain-IL settings.
+    result: SER outperforms state-of-the-art methods by a large margin when a few previous samples are available.
+arXiv:2312.06710 (2023) [frontier] "Class-Prototype Conditional Diffusion Model with Gradient Projection for
+  Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A Class-Prototype Conditional Diffusion Model (CPDM) with Gradient Projection to mitigate catastrophic forgetting in Class Incremental Learning (CIL) by synthesizing new features inspired by neighboring class prototypes.
+    method: Class-Prototype Conditional Diffusion Model (CPDM) using gradient projection and class-prototype prompting to guide the denoising network in synthesizing features from previous tasks.
+    dataset: CIFAR-100 and ImageNet.
+    result: Significantly outperforms state-of-the-art baselines (Finetuning, SI, MAS, EWC, IMM, DGR, MeRGAN, PASS, and DDGR) with higher average accuracy and lower average forgetting rate.
+arXiv:2309.08546 (2023) [frontier] "Towards Robust Continual Learning with Bayesian Adaptive Moment
+  Regularization" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Introduction of a continual learning formulation reflecting real-world robotic scenarios where environments change gradually and retraining over multiple epochs is difficult, and evaluation of regularization methods in this context.
+    method: Bayesian Adaptive Moment Regularization (BAdam) using online variational Bayes to approximate the online posterior distribution via minimizing Kullback-Leibler divergence with a mean-field Gaussian approximation and unbiased Monte Carlo gradients.
+    dataset: CIFAR10, SplitMNIST, Split FashionMNIST, and PMNIST.
+arXiv:2311.11557 (2023) [frontier] "Replay-enhanced Continual Reinforcement Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Proposes RECALL, a framework to mitigate catastrophic forgetting in continual reinforcement learning by balancing plasticity for new tasks and stability for old tasks.
+    method: Multi-head neural network training for actor and critic, utilizing adaptive normalization on targets to balance task contributions and policy distillation to prevent forgetting.
+    dataset: Continual World benchmark (a suite of realistic robotic manipulation tasks).
+    result: Demonstrated superiority over baselines in terms of average performance, forgetting, and forward transfer on the Continual World benchmark.
+arXiv:2303.14771 (2023) [frontier] "Prototype-Sample Relation Distillation: Towards Replay-Free Continual
+  Learning" [cs] (cited-by 0 in-topic, era 1)
+    contribution: A replay-free continual learning approach that avoids the need for previous task data (replay buffers) by utilizing prototype-sample relation distillation to combat catastrophic forgetting.
+    method: A neural network architecture consisting of an encoder for feature representation and a projection head, utilizing prototype-sample relation distillation to maintain knowledge without access to prior samples.
+arXiv:2303.18171 (2023) [survey] "How Efficient Are Today's Continual Learning Algorithms?" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Identifies that most current continual learning (CL) methods are grossly inefficient, often using more compute than offline learners, and proposes a new evaluation framework focusing on efficiency beyond just catastrophic forgetting.
+    method: Evaluation of efficiency using a modified NetScore metric that combines top-5 accuracy, model size (parameters), computational overhead (backpropagation updates), and memory overhead.
+    dataset: ImageNet-1K (incrementally trained on 10 batches of 100 classes each).
+    result: Most CL methods are found to be grossly inefficient, with multiple methods using more compute than an offline learner.
+arXiv:2305.00316 (2023) [core] "The Ideal Continual Learner: An Agent That Never Forgets" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Provides a rigorous theoretical understanding of continual learning methods and quantifies how rehearsal influences generalization.
+    method: Theoretical analysis of memory-based, regularization-based, and expansion-based methods.
+arXiv:2306.17091 (2023) [frontier] "The Importance of Robust Features in Mitigating Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 1)
+    contribution: Investigating the efficacy of robust features in mitigating catastrophic forgetting within Continual Learning (CL) models.
+    method: Training an oracle model to utilize robust features to enhance knowledge preservation during sequential learning.
+    dataset: CIFAR10 (60,000 color images, 10 classes, 32x32 resolution) in a Class-Incremental Learning (CIL) setting.
+arXiv:2409.11329 (2024) [frontier] "Reducing Catastrophic Forgetting in Online Class Incremental Learning
+  Using Self-Distillation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Reducing catastrophic forgetting in online class incremental learning by acquiring transferable knowledge through self-distillation using highly generalizable outputs in shallow layers.
+    method: Self-distillation loss incorporating highly generalized features from shallow layers to improve generalization and mitigate overfitting from limited memory buffers.
+    dataset: Split CIFAR10 (5 tasks, 2 classes each), Split CIFAR100 (10 tasks, 10 classes each), and Split MiniImageNet (10 tasks, 10 classes each).
+    result: Maximum improvement in classification accuracy for MiniImageNet (specific numerical values not fully provided in text snippet).
+arXiv:2405.18758 (2024) [frontier] "Learning to Continually Learn with the Bayesian Principle" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Rigorous proof that continual learning (CL) is an NP-hard problem and the introduction of SB-MCL, a framework that encompasses prior works and supports both supervised and unsupervised learning.
+    method: SB-MCL (Stochastic Bayesian-based Model Continual Learning) using episode-specific latent variables to model non-stationarity in supervised (modeling $p(y|x)$) and unsupervised (modeling $p(x)$) settings.
+    result: Achieves remarkable performance while using substantially less resources compared to baselines across a wide range of benchmarks.
+arXiv:2406.09935 (2024) [frontier] "Predicting the Susceptibility of Examples to Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Identifies a correlation between learning speed and susceptibility to catastrophic forgetting, proposing 'Goldilocks' to improve replay-based methods by focusing on mid-learned examples.
+    method: Data-centric analysis linking learning speed to forgetting susceptibility; replay-based rehearsal focusing on mid-learned examples.
+    result: Demonstrated that examples learned early are rarely forgotten while those learned later are more susceptible; Goldilocks improves replay-based methods across diverse tasks.
+arXiv:2411.06916 (2024) [frontier] "Slowing Down Forgetting in Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel framework called ReCL that slows down catastrophic forgetting by leveraging trained models as their own memory buffers to reconstruct old data via the implicit bias of margin maximization points.
+    method: A two-step framework: 1) Reconstructing training data from previous models to generate reconstructed data; 2) Combining reconstructed data with current task data for further training.
+    dataset: SplitMNIST and SplitCIFAR10 (split into five non-overlapping tasks).
+arXiv:2402.01348 (2024) [frontier] "CORE: Mitigating Catastrophic Forgetting in Continual Learning through
+  Cognitive Replay" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces COgnitive REplay (CORE) to mitigate catastrophic forgetting in continual learning by dynamically allocating buffer space and selecting high-quality samples, inspired by human cognitive review processes.
+    method: A replay-based method that uses two principal strategies to dynamically allocate buffer space and select high-quality samples for the replay buffer based on forgetting rates and cognitive overload/interference principles.
+    dataset: split-MNIST, split-CIFAR-10, and split-CIFAR-100 (divided into 10 tasks each).
+    result: On split-CIFAR10, CORE achieves an average accuracy of 37.95%, which is 6.52% higher than the best baseline; it also exceeds the best baseline by 6.30% on the most challenging task.
+arXiv:2408.03219 (2024) [frontier] "Learning to Learn without Forgetting using Attention" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A meta-learning approach to optimize neural networks for continual learning that minimizes interference with past knowledge and promotes knowledge transfer without requiring task identifiers or replay buffers.
+    method: Meta-learning an optimizer that dynamically updates the weights of a classifier network using an attention-based mechanism to customize the optimization process for each task.
+    dataset: SplitMNIST, RotatedMNIST, and SplitCIFAR-100.
+arXiv:2410.03955 (2024) [frontier] "A Retention-Centric Framework for Continual Learning with Guaranteed
+  Model Developmental Safety" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A retention-centric framework for continual learning that introduces a formal definition of Model Developmental Safety (MDS) to ensure new models strictly preserve performance on individual protected tasks.
+    method: A framework designed to satisfy the condition that performance on protected tasks in the new model is greater than or equal to the old model, utilizing an empirical developmental safety metric (DevSafety(acc)) and task-dependent heads.
+    result: Demonstrated effectiveness in achieving model developmental safety compared to strong baselines and improved vision-based perception capabilities for autonomous driving.
+arXiv:2404.00781 (2024) [frontier] "Addressing Loss of Plasticity and Catastrophic Forgetting in Continual
+  Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Utility-based Perturbed Gradient Descent (UPGD) to simultaneously address loss of plasticity and catastrophic forgetting in continual learning.
+    method: A gradient-based update rule that protects or modifies weights based on a weight utility measure, defined as the change in loss when setting a weight to zero.
+    dataset: MNIST, EMNIST, CIFAR-10, ImageNet, and extended reinforcement learning environments.
+arXiv:2404.07518 (2024) [frontier] "Remembering Transformer for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Remembering Transformer to mitigate Catastrophic Forgetting (CF) in class-incremental vision continual learning through a mixture-of-adapters and generative model-based routing.
+    method: A mixture-of-adapters architecture inspired by Complementary Learning Systems (CLS) and Mixture-of-Experts (MoE), utilizing a generative model-based routing mechanism to dynamically assign task data to relevant adapters.
+    dataset: CIFAR-10 (divided into 5 splits) and CIFAR-100 (divided into 10 and 20 splits).
+    result: Achieved new SOTA performance in various vision continual learning tasks with high parameter efficiency.
+arXiv:2411.05846 (2024) [frontier] "Reducing catastrophic forgetting of incremental learning in the absence
+  of rehearsal memory with task-specific token" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel method to reduce catastrophic forgetting in incremental learning without using rehearsal memory, preserving knowledge via task-specific tokens.
+    method: A vision transformer-inspired architecture using unique task-specific tokens to encapsulate compressed knowledge and a distillation process to optimize interactions and prevent forgetting.
+    result: Achieved the highest accuracy and lowest backward transfer among compared methods in task-incremental learning scenarios.
+arXiv:2410.07812 (2024) [frontier] "Temporal-Difference Variational Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Temporal-Difference Variational Continual Learning (TD-VCL), a framework that leverages multiple past posterior estimates to mitigate compounded errors and alleviate Catastrophic Forgetting.
+    method: A spectrum of learning objectives ranging from vanilla VCL to n-Step KL VCL, utilizing a Gaussian mean-field approximate posterior and Gaussian prior parameterized by deep networks.
+    dataset: Popular Continual Learning (CL) benchmarks (specific names not provided in abstract).
+    result: TD-VCL outperforms standard VCL and non-variational baselines, effectively alleviating Catastrophic Forgetting.
+arXiv:2403.02334 (2024) [frontier] "Gradient Correlation Subspace Learning against Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces Gradient Correlation Subspace Learning (GCSL) to reduce catastrophic forgetting in incremental class learning by projecting weights into a subspace least affected by previous tasks.
+    method: Detects a subspace of weights using eigenvectors corresponding to the smallest eigenvalues from the sum of trainable and frozen weights, then projects weights into this subspace for new task training.
+    dataset: MNIST and Fashion MNIST
+arXiv:2403.18258 (2024) [frontier] "Enhancing Generative Class Incremental Learning Performance with Model
+  Forgetting Approach" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of a forgetting mechanism to Generative Class Incremental Learning (GCIL) to dynamically manage class information and selectively discard less relevant information.
+    method: A forgetting mechanism designed to facilitate continual learning by mimicking the brain's ability to selectively discard information.
+    dataset: MNIST (10 classes) and Fashion-MNIST (10 classes).
+arXiv:2409.18061 (2024) [frontier] "Optimal Protocols for Continual Learning via Statistical Physics and Control Theory" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides a theoretical foundation for optimal continual learning protocols by interpreting deep learning as an optimal control problem on a dynamical system, addressing task selection and dimensionality reduction.
+    method: Model-based teacher-student framework using optimal control theory; student is a two-layer neural network with shared first-layer weights and task-dependent readout weights; synthetic inputs are drawn from a standard Gaussian distribution.
+    dataset: Synthetic teacher-student framework (Gaussian inputs) and real-world datasets.
+    result: Computation of optimal task-selection protocols and investigation of their interplay with task similarity and learning rate schedules.
+arXiv:2405.07142 (2024) [frontier] "Cross-Domain Continual Learning via CLAMP" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Addressing the cross-domain continual learning (CL) problem where a model must adapt from a labeled source domain to an unlabeled target domain across a sequence of tasks.
+    method: CLAMP (Cross-Domain Continual Learning via CLAMP), designed to handle different feature spaces while sharing the same target variables across source and target domains.
+    dataset: Digit Recognition (MNIST and USPS), Office-31 (Amazon, DSLR, Webcam), and Office-Home.
+arXiv:2404.04002 (2024) [frontier] "Continual Learning with Weight Interpolation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel weight interpolation method compatible with rehearsal-based algorithms that boosts performance and provides an intuitive mechanism for controlling the stability-plasticity trade-off.
+    method: Weight consolidation via interpolation applied after each task, utilizing an interpolation hyperparameter to balance stability and plasticity.
+    result: Significantly boosts the performance of experience replay algorithms; provides a mechanism to manage the stability-plasticity dilemma.
+arXiv:2403.14797 (2024) [frontier] "Preventing Catastrophic Forgetting through Memory Networks in Continuous
+  Detection" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of a memory-based detection transformer architecture and continual optimization strategies to prevent catastrophic forgetting and background relegation in continuous object detection.
+    method: Memory-based detection transformer architecture (adapting pre-trained DETR-style detectors) and continual optimization strategies for class-incremental object detection.
+    dataset: MS-COCO (80 classes divided into 4 sequential streams) and PASCAL-VOC (2-step design).
+    result: Demonstrated superior results compared to existing continual detection systems and established a new state-of-the-art.
+arXiv:2402.09542 (2024) [frontier] "Layerwise Proximal Replay: A Proximal Point Method for Online Continual
+  Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces Layerwise Proximal Replay (LPR), a proximal point method designed to stabilize optimization trajectories in online continual learning by reducing destabilizing changes to hidden representations.
+    method: A proximal optimization approach applied layerwise to stabilize the training of neural networks using experience replay.
+    dataset: Online versions of Split-CIFAR100 and Split-TinyImageNet; evaluated using the Avalanche continual learning framework.
+    result: Consistently improves state-of-the-art online continual learning methods across various problem settings and replay buffer sizes.
+arXiv:2407.20956 (2024) [frontier] "An Effective Dynamic Gradient Calibration Method for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Dynamic Gradient Calibration (DGC) to relieve catastrophic forgetting by utilizing whole historical information for more precise gradient estimation.
+    method: Dynamic Gradient Calibration (DGC) which maintains gradient calibration during the learning process and integrates with Experience Replay (ER).
+    dataset: S(Split)-CIFAR10, S-CIFAR100, and S-TinyImageNet.
+arXiv:2407.07133 (2024) [frontier] "Neuromimetic metaplasticity for adaptive continual learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A metaplasticity model inspired by human working memory that enables catastrophic forgetting-free continual learning without pre- or post-processing.
+    method: Implementing distinct types of synapses ranging from stable to flexible and randomly intermixing them to train connections with varying degrees of flexibility.
+    result: Achieved a balanced tradeoff between memory capacity and performance, successfully learned a continuous stream of information (even with unexpected input length changes), and demonstrated robustness against data poisoning attacks.
+arXiv:2404.12526 (2024) [frontier] "Adaptive Memory Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Adaptive memory replay for continual learning, a novel scheme inspired by a bandit estimation formulation that dynamically adjusts replay samples based on new data to reduce catastrophic forgetting.
+    method: Adaptive memory replay inspired by a bandit estimation formulation that assumes full memory access and dynamically adjusts replay samples.
+    dataset: ImageNet-1K (for Vision MAE) and LLaMA 7B (for language experiments).
+arXiv:2403.03938 (2024) [frontier] "GUIDE: Guidance-based Incremental Learning with Diffusion Models" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces GUIDE, a method that uses classifier guidance to direct diffusion models to generate rehearsal examples near decision boundaries to mitigate catastrophic forgetting in class-incremental learning.
+    method: Integrating diffusion models with classifier guidance techniques to generate rehearsal examples targeting information forgotten by the current classifier.
+    dataset: CIFAR-10 (split into 2 or 5 tasks) and CIFAR-100 (split into 5 or 10 tasks).
+    result: Demonstrates superiority over state-of-the-art generative replay methods (DGR with VAE, DGR with distillation, RTF, and GFR) in terms of average accuracy and average forgetting.
+arXiv:2401.11666 (2024) [frontier] "P2DT: Mitigating Forgetting in task-incremental Learning with progressive prompt Decision Transformer" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Progressive Prompt Decision Transformer (P2DT) to mitigate catastrophic forgetting in task-incremental and offline reinforcement learning by dynamically appending task-specific decision tokens.
+    method: Extends the Decision Transformer architecture by appending task-specific prompt tokens during new task training and utilizing trajectories from all tasks to optimize policy learning.
+    dataset: Gym MuJoCo environments: HalfCheetah, Hopper, and Walker2D.
+    result: Demonstrates high performance maintenance with minimal reduction across sequential tasks compared to baselines.
+arXiv:2403.05175 (2024) [survey] "Continual Learning and Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A discussion on the dynamics of continual learning, the phenomenon of catastrophic forgetting, and a comparison between cognitive science and deep learning approaches.
+    method: Discussion of computational strategies for continual learning, specifically highlighting replay (rehearsal) as a method to approximate interleaved learning by supplementing current training data with representative data from previous tasks.
+    limitation: Artificial neural networks tend to quickly and drastically forget previously learned information when learning new tasks (catastrophic forgetting).
+arXiv:2404.05555 (2024) [frontier] "On the Convergence of Continual Learning with Adaptive Methods" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides a convergence analysis of memory-based continual learning with SGD and introduces a novel adaptive method (NCCL) and its extension to adjust step sizes between tasks.
+    method: Memory-based continual learning using stochastic gradient descent (SGD) and adaptive methods (A-GEM and NCCL) that adjust per-feature step sizes to mitigate interference.
+    dataset: Permuted-MNIST and Split-MNIST.
+    result: Demonstrated remarkable performance on image classification tasks using Average Accuracy and Forgetting metrics.
+arXiv:2512.16871 (2025) [frontier] "Sequencing to Mitigate Catastrophic Forgetting in Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposing task sequencing to mitigate catastrophic forgetting in class-based continual learning scenarios.
+    method: Knowledge-sharing network (KSN) consisting of N data nodes (DNs) where a global training dataset is distributed across nodes, and a ResNet18 model learns sequentially from these nodes.
+    dataset: DomainNet dataset (split into 70% training samples (~400k) and 30% testing samples (~175k)).
+    limitation: Reported results are limited to class-based CL scenarios.
+arXiv:2503.01595 (2025) [frontier] "STAR: Stability-Inducing Weight Perturbation for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: STAR, a stability-inducing weight perturbation method designed to mitigate catastrophic forgetting in continual learning by acting as a plug-and-play component.
+    method: Stability-inducing weight perturbation applied as a plug-and-play component within existing continual learning frameworks.
+    dataset: Three mainstream class-incremental continual learning benchmark datasets.
+    result: Achieves a maximum increase in average accuracy compared to baselines across all datasets and demonstrates significant improvement when integrated into SOTA CL frameworks.
+arXiv:2509.01533 (2025) [frontier] "Forward-Only Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces FoRo, a forward-only, gradient-free continual learning method using prompt tuning via evolutionary optimization and an incremental knowledge encoding mechanism for the classifier.
+    method: Prompt tuning via evolutionary optimization for task adaptation and an incremental knowledge encoding mechanism that updates the classifier without revisiting past data.
+    dataset: CIFAR-100, ImageNet-R, and CUB-200.
+    result: Improves accuracy and reduces forgetting while achieving lower memory and runtime costs compared to seven existing CL methods.
+arXiv:2509.01213 (2025) [frontier] "Mitigating Catastrophic Forgetting in Continual Learning through Model Growth" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Investigating whether stacking-based model growth strategies (using stacked LLMs) alleviate catastrophic forgetting more effectively than naïve decoder-based models during continuous instruction tweaking.
+    method: Sequential fine-tuning of a 7B parameter Stack LLM on single tasks without rehearsal methods, comparing training loss trajectories and benchmark evaluations.
+    dataset: Formatted datasets containing specific instruction prompts (available at https://github.com/ThomasScialom/T0_continual_learning), specifically focusing on Simp and InqQG tasks.
+    limitation: Observations of overfitting, likely caused by using a constant learning rate without a warmup phase.
+arXiv:2509.10529 (2025) [frontier] "Mitigating Catastrophic Forgetting and Mode Collapse in Text-to-Image Diffusion via Latent Replay" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Mitigating catastrophic forgetting and mode collapse in text-to-image diffusion models using a neuroscience-inspired Latent Replay approach.
+    method: Latent Replay, which stores and revisits compact, high-level feature representations from the model's internal architecture instead of raw images.
+    dataset: Five sequentially learned visual concepts.
+    result: Retained 77.59% Image Alignment (IA) on the earliest concept, performing 14% higher than baseline methods.
+arXiv:2511.02025 (2025) [frontier] "Path-Coordinated Continual Learning with Neural Tangent Kernel-Justified Plasticity: A Theoretical Framework with Near State-of-the-Art Performance" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A path-coordinated continual learning framework that unites Neural Tangent Kernel (NTK) theory for plasticity bounds, Wilson confidence intervals for statistical validation, and multiple metrics for path quality evaluation, demonstrating a system that stabilizes over time.
+    method: A path-coordinated framework using NTK-justified plasticity bounds, estimating the empirical NTK matrix via the Gram matrix of penultimate layer features, and monitoring the condition number of the NTK as an early warning indicator.
+    dataset: Split-CIFAR10 (5 tasks, 2 classes per task, 9,000 train, 1,000 val, and 2,000 test samples per task).
+    result: Achieved 76.6% accuracy with 23.4% forgetting (compared to CORE's 75% accuracy and 25% forgetting), with forgetting rates reducing from 27% to 18% across tasks.
+arXiv:2510.21836 (2025) [frontier] "COLA: Continual Learning via Autoencoder Retrieval of Adapters" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A continual learning framework (COLA) that enables learning new tasks sequentially without catastrophic forgetting, specifically designed for scenarios like task-oriented dialogue systems and intent classification.
+    method: Continual learning via autoencoder retrieval of adapters, utilizing a system that learns tasks sequentially under constraints of task separability and task awareness.
+    result: Empirically established the precision needed for approximating task networks and verified the ability to reconstruct a large number of task networks to demonstrate the system does not merely memorize task-specific networks.
+arXiv:2503.12635 (2025) [frontier] "Hybrid Learners Do Not Forget: A Brain-Inspired Neuro-Symbolic Approach
+  to Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of NeSyBiCL, a brain-inspired neuro-symbolic approach for compositional continual learning, and two novel benchmarks.
+    method: A hybrid architecture combining a fixed pretrained CNN feature extractor with two subsystems: a neural reasoner and a symbolic reasoner.
+    dataset: Two novel compositional benchmarks: a modified Clevr dataset (synthetically arranged objects) and a Sketch dataset (2D scene images).
+    result: Achieved State-of-the-Art (SOTA) performance on the two introduced compositional continual learning benchmarks.
+arXiv:2504.01219 (2025) [frontier] "Gradient-free Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes a gradient-free perspective on continual learning by reconsidering the cause of forgetting and utilizing an auxiliary adapter to approximate past task retention.
+    method: Exemplar-Free Class-Incremental Learning (EFCIL) using an auxiliary adapter network (e.g., MLP) to approximate the loss of past classes by transforming latent space embeddings from a frozen model to the current model.
+    dataset: MNIST, FashionMNIST (60k training/10k test images), and CIFAR100 (50k training/10k testing images).
+arXiv:2501.01045 (2025) [frontier] "ZeroFlow: Overcoming Catastrophic Forgetting is Easier than You Think" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proving that catastrophic forgetting can be overcome more easily via gradient-free optimization and introducing the ZeroFlow benchmark to evaluate these algorithms.
+    method: Zero-order (ZO) optimization algorithms and two proposed enhancement techniques to improve performance and efficiency using only a single forward pass.
+    dataset: CIFAR, CUB, ImageNet-A, and OmniBenchmark.
+arXiv:2510.00365 (2025) [frontier] "Continual Learning with Query-Only Attention" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes a query-only attention mechanism that discards keys and values to mitigate loss of plasticity and catastrophic forgetting in continual learning.
+    method: Query-only attention mechanism; conceptual framing of attention as a form of meta-learning; Hessian spectrum analysis.
+    result: Outperforms baselines such as selective re-initialization; models maintaining higher curvature rank across tasks tend to retain plasticity.
+arXiv:2510.23756 (2025) [frontier] "Explaining Robustness to Catastrophic Forgetting Through Incremental Concept Formation" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Disentangling the factors behind Cobweb/4V's robustness to catastrophic forgetting, specifically testing hypotheses regarding sparse selective updates and information-theoretic learning mechanisms.
+    method: Controlled experiments using the Cobweb/4V hierarchical concept formation model to test three hypotheses: sparse/selective updates reducing interference and the role of information-theoretic learning.
+    dataset: MNIST (70,000 grayscale images), clothing items, natural images, and medical imagery.
+arXiv:2506.19692 (2025) [frontier] "Leveraging Lightweight Generators for Memory Efficient Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A memory-efficient approach to Domain Incremental Learning (Domain-IL) that uses lightweight generators to reduce the amount of stored information required for rehearsal-based algorithms.
+    method: Incorporating lightweight generators into rehearsal-based algorithms to retain valuable information per task and class while discarding less useful data.
+    dataset: Fashion MNIST
+    result: The lightweight generator produces samples with great variety (e.g., varying shoe shapes and types in Fashion MNIST) using only five principal components.
+arXiv:2502.07274 (2025) [frontier] "Forget Forgetting: Continual Learning in a World of Abundant Memory" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Investigation of continual learning in a 'sufficient exemplar memory' regime where memory is abundant but GPU computation is the bottleneck; proposal of a weight-space manipulation strategy that outperforms naive finetuning with lower computational overhead.
+    method: Weight-space manipulation strategy within a class-incremental learning (class-IL) framework using a large exemplar memory buffer to approximate previous task distributions.
+    dataset: CIFAR100 (100 classes, 10 sequential tasks) and ImageNet100 (100 classes, 10 sequential tasks).
+    result: The proposed strategy achieves superior performance compared to six exemplar-based baselines (iCaRL, BiC, WA, DER, FOSTER) and Replay, while drastically reducing computational overhead.
+arXiv:2503.10503 (2025) [frontier] "Sample Compression for Self Certified Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of 'Continual Pick-to-Learn' (CoP2L), an algorithm that adapts sample compression theory to continual learning to provide an upper bound on test error.
+    method: Continual Pick-to-Learn (CoP2L), which retains the most representative samples for each task based on sample compression theory.
+    dataset: MNIST, Fashion-MNIST, and EMNIST (class-incremental settings with increments of 2 classes).
+arXiv:2510.00467 (2025) [frontier] "Rehearsal-free and Task-free Online Continual Learning With Contrastive Prompt" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Development of an algorithm for rehearsal-free and task-free online continual learning (F2OCL) that uses a prompt pool and a Nearest-Class-Mean (NCM) classifier to mitigate catastrophic forgetting without storing exemplars or requiring task identities.
+    method: A framework consisting of a frozen pre-trained Vision Transformer (ViT) encoder, a prompt pool containing triplets (key, value, length), and a Nearest-Class-Mean (NCM) classifier.
+    dataset: CIFAR-100 and ImageNet-R.
+arXiv:2509.19819 (2025) [frontier] "Adaptive Model Ensemble for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A novel model ensemble method called meta-weight-ensembler that adaptively interpolates model parameters of different tasks using meta-learning to solve knowledge conflict issues.
+    method: meta-weight-ensembler, which utilizes meta-learning to learn to fuse knowledge of different tasks in a data-driven manner via adaptive parameter interpolation.
+    dataset: Split CIFAR-10 (5 tasks, 2 classes each), Split CIFAR-100 (10 tasks, 10 classes each), and Split MiniImageNet (10 tasks, 10 classes each).
+arXiv:2504.02666 (2025) [frontier] "BECAME: BayEsian Continual Learning with Adaptive Model MErging" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces BECAME (BayEsian Continual Learning with Adaptive Model MErging), a general approach that enhances the performance ceiling of gradient projection methods by balancing stability and plasticity through adaptive model merging.
+    method: Bayesian continual learning using adaptive model merging to exploit plasticity and improve upon gradient projection methods.
+    dataset: 20-Split CIFAR-100, 10-Split CIFAR-100, 25-Split TinyImageNet, and 20-Split MiniImageNet.
+    result: Remarkably outperforms previous state of the art, particularly in metrics measuring plasticity, across four widely-used continual learning benchmarks.
+arXiv:2501.05495 (2025) [frontier] "LSEBMCL: A Latent Space Energy-Based Model for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Integrates an Energy-Based Model (EBM) layer into a continual learning framework for NLP tasks to address catastrophic forgetting and achieves state-of-the-art performance.
+    method: LSEBMCL, consisting of an Inference Network, Operator 1, Operator 2, and an Energy Function, utilizing Mistral 7B as a pre-trained backbone and converting tasks into a unified QA format.
+    dataset: Diverse NLP tasks including Question Answering (QA), Natural Language Inference (NLI), Sentiment Analysis (SA), and Semantic Role Labeling (SRL), pre-processed via decaNLP.
+    result: Achieves state-of-the-art performance across experiments compared against eleven different techniques.
+arXiv:2510.09181 (2025) [frontier] "On the Implicit Adversariality of Catastrophic Forgetting in Deep Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Reveals that catastrophic forgetting is caused by new-task training acting as an implicit adversarial attack, where new-task gradients align with the sharp directions of the old-task loss landscape.
+    method: Analysis of gradient alignment with the Hessian of the old-task loss landscape to demonstrate adversariality.
+    result: New-task gradients automatically and accurately align with the sharp directions of the old-task loss landscape, rapidly increasing old-task loss.
+arXiv:2503.20725 (2025) [frontier] "Continual learning via probabilistic exchangeable sequence modelling" [stat] (cited-by 0 in-topic, era 2)
+    contribution: Proposed CL-BRUNO, a probabilistic, Neural Process-based continual learning model that performs scalable and tractable Bayesian update and prediction with uncertainty quantification.
+    method: Probabilistic exchangeable sequence modelling using a Neural Process-based architecture for scalable Bayesian updates.
+    dataset: CIFAR-100, MNIST, and two real-world biomedical datasets.
+arXiv:2502.10966 (2025) [frontier] "Neural Networks Remember More: The Power of Parameter Isolation and
+  Combination" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A method to integrate all acquired knowledge by combining task vectors via task arithmetic, enabling the model to function without a task-id during testing and making it suitable for more than just task-incremental continual learning.
+    method: Assigning a new PEFT module for each task with a frozen backbone, calculating task vectors by subtracting initialization weights from tuned parameters, and combining these vectors through task arithmetic for testing.
+    dataset: AG News, Yelp, Amazon, Yahoo!Answer, and DBPedia.
+arXiv:2512.15658 (2025) [frontier] "PPSEBM: An Energy-Based Model with Progressive Parameter Selection for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduces PPSEBM, a framework integrating an Energy-Based Model (EBM) with Progressive Parameter Selection (PPS) to mitigate catastrophic forgetting in continual learning for NLP.
+    method: Uses an EBM to generate supplementary training samples from previous tasks and a PPS process that concatenates past selected parameters (e.g., 10 rows of random parameters) with current ones for adaptive task-specific selection, using Mistral 7B as the base model.
+    dataset: Curated datasets for five NLP tasks (question answering, semantic parsing, sentiment analysis, semantic role labeling, and goal-oriented dialogue) based on decaNLP.
+    result: Achieves state-of-the-art performance compared to eleven different techniques.
+arXiv:2506.17848 (2025) [frontier] "Pathway-based Progressive Inference (PaPI) for Energy-Efficient Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Pathway-based Progressive Inference (PaPI), a method that improves the stability–plasticity trade-off in pathway-based architectures, offering superior energy efficiency and reduced forgetting rates compared to monolithic networks.
+    method: A pathway-based architecture utilizing a routing classifier integrated with Elastic Weight Consolidation (EWC) to perform continual learning across a sequence of tasks.
+    dataset: SST-2 and Emotion detection.
+    result: Pre-Expansion training yielded 93.89% accuracy on SST-2.
+arXiv:2504.08613 (2025) [frontier] "Enhancing knowledge retention for continual learning with
+  domain-specific adapters and features gating" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A new approach integrating domain-specific adapters within Vision Transformer self-attention mechanisms and features gating to enhance knowledge retention and mitigate catastrophic forgetting during sequential domain adaptation.
+    method: Integration of LoRA, features gating, and domain-specific output heads within a transformer framework, utilizing eight transformer blocks to produce outputs for both previous (T) and current (T+1) distributions which are aggregated via averaging.
+    dataset: CIFAR-100, Flowers102, and DTD (Describable Textures Dataset).
+arXiv:2506.00205 (2025) [frontier] "Unlocking the Power of Rehearsal in Continual Learning: A Theoretical Perspective" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes a hybrid rehearsal strategy that combines sequential rehearsal (revisiting past tasks) with concurrent rehearsal to mitigate catastrophic forgetting, demonstrating that sequential rehearsal is more effective when tasks are dissimilar.
+    method: A hybrid approach involving 1) sequential rehearsal of past tasks and 2) concurrent rehearsal of data from similar old tasks, supported by theoretical derivation of closed forms for forgetting and generalization error.
+    result: Sequential rehearsal outperforms concurrent rehearsal, particularly when tasks are more dissimilar; theoretical results provide closed forms for forgetting and generalization error.
+    limitation: The interference among tasks throughout the training process is intricate due to the presence of the memory dataset, making it challenging to fully understand the impact of memory on performance.
+arXiv:2504.13569 (2025) [frontier] "Bayesian continual learning and forgetting in neural networks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Introduction of Metaplasticity from Synaptic Uncertainty (MESU), a Bayesian framework that updates parameters based on uncertainty to balance memory retention and flexibility, mitigating both catastrophic forgetting and catastrophic remembering.
+    method: Variational Inference (VI) using a mean-field approximation to model each synaptic weight as an independent multivariate Gaussian to approximate the truncated posterior.
+    dataset: n-incremental animal classification, Permuted MNIST, and incremental training on CIFAR-100.
+    result: Consistently outperforms standard consolidation-based continual learning approaches in mitigating forgetting and remembering while preserving robust uncertainty estimates.
+    limitation: Exact computation of the truncated posterior becomes intractable as the number of parameters grows, necessitating approximation methods.
+arXiv:2505.09952 (2025) [frontier] "Task-Core Memory Management and Consolidation for Long-term Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Long-CL, a human memory mechanisms-inspired framework for long-term continual learning that achieves state-of-the-art performance by managing task-specific memory and reinforcing long-term memory.
+    method: Long-CL framework consisting of Task-Core Memory Management (MemMan) for dynamic task-specific memory positioning and Long-term Memory Consolidation (MemCon) for reinforcing memory via hard and differential samples.
+    dataset: MMLongCL-Bench and TextLongCL-Bench
+    result: Achieves state-of-the-art performance compared to strong baselines on MMLongCL-Bench and TextLongCL-Bench.
+arXiv:2505.22389 (2025) [frontier] "Train with Perturbation, Infer after Merging: A Two-Stage Framework for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Perturb-and-Merge (P&M), a two-stage continual learning framework that integrates model merging and LoRA to mitigate catastrophic forgetting and reduce memory overhead.
+    method: A two-stage framework involving training with perturbation to reduce parameter conflicts during model merging, combined with Low-Rank Adaptation (LoRA) for parameter-efficient fine-tuning.
+    dataset: ImageNet-R, ImageNet-A, DomainNet (full and DN* variants), CIFAR100, and CUB200.
+    result: Achieves state-of-the-art performance on multiple CL benchmark datasets.
+arXiv:2506.16574 (2025) [frontier] "Weight Factorization and Centralization for Continual Learning in Speech Recognition" [cs] (cited-by 0 in-topic, era 2)
+    contribution: A rehearsal-free, multilingual, and language-agnostic continual learning framework that decouples learning and regularization into two phases to mitigate catastrophic forgetting.
+    method: Weight Factorization and Centralization: a two-phase approach consisting of a factorization phase (using temporary learnable adapters to expand the knowledge base) and a centralization phase (compressing adapter elements back into the knowledge base without original data access).
+    result: Provides a better trade-off compared to sequential learning using regularization via stochastic weight averaging and distillation, with only the iteration size before centralization as a hyper-parameter.
+arXiv:2508.07419 (2025) [frontier] "Statistical Theory of Multi-stage Newton Iteration Algorithm for Online Continual Learning" [stat] (cited-by 0 in-topic, era 2)
+    contribution: Proposes a novel continual learning framework from a statistical perspective and a Multi-step Newton Iterative (MSNI) algorithm that achieves optimal convergence rates for parameter estimates in homogeneous data streams.
+    method: Multi-step Newton Iterative (MSNI) algorithm utilizing gradient and Hessian matrix information under assumptions of convexity, bounded eigenvalues, Lipschitz continuity, sub-exponential gradients, and moment restrictions.
+    dataset: Linear regression model and logistic regression model (via simulation studies).
+    result: For homogeneous data streams, the algorithm achieves the optimal convergence rate for parameter estimates, matching the statistical properties of a weighted least squares distributed computing method.
+arXiv:2503.19939 (2025) [frontier] "Continual Learning With Quasi-Newton Methods" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposed CSQN, a continual learning method that improves upon Elastic Weight Consolidation (EWC) by using Quasi-Newton methods to better estimate the Hessian, addressing the limitation of EWC's diagonal Fisher information matrix assumption.
+    method: CSQN (Continual Learning with Sampled Quasi-Newton methods) which utilizes (Sampled) Quasi-Newton methods to approximate the Hessian for regularization.
+    dataset: Rotated MNIST, Split CIFAR-10/100, Split TinyImageNet, and Vision Datasets.
+arXiv:2601.05623 (2026) [frontier] "Continual Learning of Achieving Forgetting-free and Positive Knowledge Transfer" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposed ETCL, a continual learning framework designed to overcome catastrophic forgetting (CF) while encouraging both forward knowledge transfer (FKT) and backward knowledge transfer (BKT).
+    method: An ETCL framework utilizing an expansion strategy and an OG-based method to mitigate CF during BKT.
+    dataset: 11 task datasets including PMNIST (10 tasks), CIFAR 100 (10 tasks), CIFAR 100 Sup (20 tasks), MiniImageNet (20 tasks), and 5-Datasets (5 tasks).
+    result: ETCL overcomes CF better than SOTA baselines and performs KT dramatically better than baselines when similar tasks are learned.
+arXiv:2602.05454 (2026) [frontier] "Attention Retention for Continual Learning with Vision Transformers" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Identification of attention drift in Vision Transformers as a primary cause of catastrophic forgetting and the proposal of an attention-retaining framework to mitigate it.
+    method: A data-free framework that suppresses gradients in previously attended regions via gradient masking, utilizing a layer-wise rollout and adaptive thresholding strategy to preserve prior attention patterns.
+    dataset: 10-split and 20-split ImageNet-R, 10-split CIFAR-100, and 10-split DomainNet.
+    result: Achieves state-of-the-art performance and robust generalization across diverse pre-training schemes and long-sequence settings.
+arXiv:2603.00624 (2026) [frontier] "IDER: IDempotent Experience Replay for Reliable Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Proposes Idempotent Experience Replay (IDER), a novel approach to improve prediction reliability and reduce catastrophic forgetting in continual learning by leveraging the idempotent property.
+    method: Adapts training loss to achieve model idempotence on data streams and introduces an idempotence distillation loss that minimizes the distance between reprocessed outputs (fed back through an old checkpoint) and original current model outputs.
+    result: Consistently improves prediction reliability while simultaneously boosting accuracy and reducing forgetting across different CL benchmarks.
+arXiv:2606.08447 (2026) [frontier] "Not Just After One: Sleep-Inspired Replay Prevents Catastrophic Forgetting After Sequential Tasks" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Demonstrates that a single Sleep-Inspired Replay (SRC) episode applied after a full sequence of tasks can recover significant performance on previously learned tasks, even after near-complete forgetting.
+    method: Sleep-Inspired Replay (SRC) applied as a terminal stage after a sequence of multiple training tasks, rather than after each individual task.
+    dataset: MNIST, Fashion-MNIST, and CIFAR-10.
+    result: A single SRC episode applied after a sequence of tasks recovered a significant portion of accuracy across previously trained tasks, despite near-complete forgetting during the training phase.
+    limitation: Performance recovery varies across tasks, with later tasks in the sequence not necessarily showing the best recovery; performance on older tasks progressively degraded as the number of tasks trained before SRC increased.
+arXiv:2602.02767 (2026) [frontier] "Provable Effects of Data Replay in Continual Learning: A Feature Learning Perspective" [cs] (cited-by 0 in-topic, era 2)
+    contribution: Provides a theoretical analysis of the effectiveness of full data replay in continual learning from a feature learning perspective, examining signal learning and noise memorization dynamics.
+    method: Theoretical analysis of generalization performance under full data replay, complemented by synthetic experiments examining task ordering, task correlation, and Signal-to-Noise Ratio (SNR) conditions.
+    result: Analyzes generalization performance for task $k$ evaluated after training on the $k$-th task and after training on the $T$-th task ($k < T$).
+
+ADJACENCY (each paper -> papers it cites, grouped by intent):
+arXiv:1811.11682: (no out-citations in-graph)
+arXiv:1810.10612: (no out-citations in-graph)
+arXiv:1805.12369: (no out-citations in-graph)
+arXiv:1803.10123: (no out-citations in-graph)
+arXiv:1801.01423: (no out-citations in-graph)
+arXiv:1806.06928: (no out-citations in-graph)
+arXiv:1810.13166: (no out-citations in-graph)
+arXiv:1802.07239: (no out-citations in-graph)
+arXiv:1904.00310: (no out-citations in-graph)
+arXiv:1912.01238: (no out-citations in-graph)
+arXiv:2007.04813: (no out-citations in-graph)
+arXiv:2007.08855: (no out-citations in-graph)
+arXiv:2007.00487: (no out-citations in-graph)
+arXiv:2002.09571: (no out-citations in-graph)
+arXiv:2003.05856: (no out-citations in-graph)
+arXiv:2006.05188: (no out-citations in-graph)
+arXiv:2110.00908: (no out-citations in-graph)
+arXiv:2112.08654: (no out-citations in-graph)
+arXiv:2112.02706: (no out-citations in-graph)
+arXiv:2107.12304: (no out-citations in-graph)
+arXiv:2104.08572: (no out-citations in-graph)
+arXiv:2108.12641: (no out-citations in-graph)
+arXiv:2110.11526: (no out-citations in-graph)
+arXiv:2212.13242: (no out-citations in-graph)
+arXiv:2210.00713: (no out-citations in-graph)
+arXiv:2204.05842: (no out-citations in-graph)
+arXiv:2211.15215: (no out-citations in-graph)
+arXiv:2201.12522: (no out-citations in-graph)
+arXiv:2202.09826: (no out-citations in-graph)
+arXiv:2203.17269: (no out-citations in-graph)
+arXiv:2208.02660: (no out-citations in-graph)
+arXiv:2305.12270: (no out-citations in-graph)
+arXiv:2311.15276: (no out-citations in-graph)
+arXiv:2310.08038: (no out-citations in-graph)
+arXiv:2302.00487: (no out-citations in-graph)
+arXiv:2308.04539: (no out-citations in-graph)
+arXiv:2310.06362: (no out-citations in-graph)
+arXiv:2308.03810: (no out-citations in-graph)
+arXiv:2312.00276: (no out-citations in-graph)
+arXiv:2310.08217: (no out-citations in-graph)
+arXiv:2310.01365: (no out-citations in-graph)
+arXiv:2303.14595: (no out-citations in-graph)
+arXiv:2312.00600: (no out-citations in-graph)
+arXiv:2305.16424: (no out-citations in-graph)
+arXiv:2302.00858: (no out-citations in-graph)
+arXiv:2311.01617: (no out-citations in-graph)
+arXiv:2306.14775: (no out-citations in-graph)
+arXiv:2311.14905: (no out-citations in-graph)
+arXiv:2309.08227: (no out-citations in-graph)
+arXiv:2306.12619: (no out-citations in-graph)
+arXiv:2305.13622: (no out-citations in-graph)
+arXiv:2312.06710: (no out-citations in-graph)
+arXiv:2309.08546: (no out-citations in-graph)
+arXiv:2311.11557: (no out-citations in-graph)
+arXiv:2303.14771: (no out-citations in-graph)
+arXiv:2303.18171: (no out-citations in-graph)
+arXiv:2305.00316: (no out-citations in-graph)
+arXiv:2306.17091: (no out-citations in-graph)
+arXiv:2409.11329: (no out-citations in-graph)
+arXiv:2405.18758: (no out-citations in-graph)
+arXiv:2406.09935: (no out-citations in-graph)
+arXiv:2411.06916: (no out-citations in-graph)
+arXiv:2402.01348: (no out-citations in-graph)
+arXiv:2408.03219: (no out-citations in-graph)
+arXiv:2410.03955: (no out-citations in-graph)
+arXiv:2404.00781: (no out-citations in-graph)
+arXiv:2404.07518: (no out-citations in-graph)
+arXiv:2411.05846: (no out-citations in-graph)
+arXiv:2410.07812: (no out-citations in-graph)
+arXiv:2403.02334: (no out-citations in-graph)
+arXiv:2403.18258: (no out-citations in-graph)
+arXiv:2409.18061: (no out-citations in-graph)
+arXiv:2405.07142: (no out-citations in-graph)
+arXiv:2404.04002: (no out-citations in-graph)
+arXiv:2403.14797: (no out-citations in-graph)
+arXiv:2402.09542: (no out-citations in-graph)
+arXiv:2407.20956: (no out-citations in-graph)
+arXiv:2407.07133: (no out-citations in-graph)
+arXiv:2404.12526: (no out-citations in-graph)
+arXiv:2403.03938: (no out-citations in-graph)
+arXiv:2401.11666: (no out-citations in-graph)
+arXiv:2403.05175: (no out-citations in-graph)
+arXiv:2404.05555: (no out-citations in-graph)
+arXiv:2512.16871: (no out-citations in-graph)
+arXiv:2503.01595: (no out-citations in-graph)
+arXiv:2509.01533: (no out-citations in-graph)
+arXiv:2509.01213: (no out-citations in-graph)
+arXiv:2509.10529: (no out-citations in-graph)
+arXiv:2511.02025: (no out-citations in-graph)
+arXiv:2510.21836: (no out-citations in-graph)
+arXiv:2503.12635: (no out-citations in-graph)
+arXiv:2504.01219: (no out-citations in-graph)
+arXiv:2501.01045: (no out-citations in-graph)
+arXiv:2510.00365: (no out-citations in-graph)
+arXiv:2510.23756: (no out-citations in-graph)
+arXiv:2506.19692: (no out-citations in-graph)
+arXiv:2502.07274: (no out-citations in-graph)
+arXiv:2503.10503: (no out-citations in-graph)
+arXiv:2510.00467: (no out-citations in-graph)
+arXiv:2509.19819: (no out-citations in-graph)
+arXiv:2504.02666: (no out-citations in-graph)
+arXiv:2501.05495: (no out-citations in-graph)
+arXiv:2510.09181: (no out-citations in-graph)
+arXiv:2503.20725: (no out-citations in-graph)
+arXiv:2502.10966: (no out-citations in-graph)
+arXiv:2512.15658: (no out-citations in-graph)
+arXiv:2506.17848: (no out-citations in-graph)
+arXiv:2504.08613: (no out-citations in-graph)
+arXiv:2506.00205: (no out-citations in-graph)
+arXiv:2504.13569: (no out-citations in-graph)
+arXiv:2505.09952: (no out-citations in-graph)
+arXiv:2505.22389: (no out-citations in-graph)
+arXiv:2506.16574: (no out-citations in-graph)
+arXiv:2508.07419: (no out-citations in-graph)
+arXiv:2503.19939: (no out-citations in-graph)
+arXiv:2601.05623: (no out-citations in-graph)
+arXiv:2602.05454: (no out-citations in-graph)
+arXiv:2603.00624: (no out-citations in-graph)
+arXiv:2606.08447: (no out-citations in-graph)
+arXiv:2602.02767: (no out-citations in-graph)
+
+STORY THREADS (lineage chains, oldest -> newest):
+  (no dominant lineage chains)
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  (none surfaced)
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:2601.05623:
+NOVELTY: Proposes ETCL, a non-expansion method that explicitly optimizes for both forgetting-free learning (via task-specific binary masks and sparse sub-networks) and positive knowledge transfer (FKT/BKT) through initial gradient alignment and bi-objective classification layer updates.
+
+STRENGTHS: Provides a theoretical framework for KT bounds (Theorem 1) and introduces an online task similarity detector (SDM) that uses Wasserstein distance between representation bases, avoiding the need for old task data.
+
+WEAKNESSES: The claim of "forgetting-free" learning is potentially undermined by the BKT mechanism, which updates weights of previous tasks; while the paper uses orthogonal gradient projection (GPM) to mitigate this, the risk of interference in the classification layer remains a critical point of failure.
+
+RELEVANCE: Directly addresses the research gap where most continual learning methods focus solely on mitigating catastrophic forgetting while ignoring the potential for positive forward and backward knowledge transfer.
+arXiv:2602.05454:
+NOVELTY: Identifies "attention drift" in Vision Transformers as a primary driver of forgetting and proposes a data-free, regularization-based method (ARCL-ViT) that uses layer-wise rollout and adaptive thresholding to generate gradient masks.
+
+STRENGTHS: Achieves state-of-the-art performance across multiple benchmarks, notably outperforming VPT-CPG by 3.3% accuracy in 50-split ImageNet-R (Table 5) and reducing attention drift to 6.0% (Figure 1b).
+
+WEAKNESSES: The method relies on an "instance-adaptive" thresholding strategy (Eq. 10) that requires careful implementation of second-order derivatives, and the theoretical justification for why gradient masking approximates the attention-retention objective is relegated to an appendix.
+
+RELEVANCE: Provides a specific, architecture-aware approach for Vision Transformers that moves beyond general parameter regularization by targeting the internal attention mechanisms used in modern CL models.
+arXiv:2512.16871:
+NOVELTY: Proposes task sequencing as an explicit continual learning (CL) methodology, distinct from the five standard CL taxonomies, by using zero-shot Neural Architecture Search (NAS) proxies to determine optimal task order.
+
+STRENGTHS: Demonstrates that intelligent sequencing can mitigate catastrophic forgetting (CF) more effectively than random ordering, specifically showing that a sequence can result in 11% accuracy versus 7% in baseline tests (Figure 3).
+
+WEAKNESSES: The proposed "NWOT" scoring method relies on the assumption that higher activation diversity (log-determinant of the kernel matrix) correlates with task utility, but the paper lacks a rigorous theoretical link between activation diversity and the prevention of weight overwriting.
+
+RELEVANCE: Introduces a lightweight, "zero-cost" decision-making framework for task selection that could complement existing regularization or replay methods to optimize the learning trajectory.
+arXiv:2409.11329:
+NOVELTY: Combines self-distillation (aligning deep layer feature relationships with shallow layer similarity maps) with a selective memory update strategy that prioritizes storing samples with low correct-class probability.
+
+STRENGTHS: Demonstrates consistent performance gains over the Supervised Contrastive Replay (SCR) baseline across three datasets, specifically achieving up to a 5.9% accuracy improvement on CIFAR10 with small buffer sizes (M=100).
+
+WEAKNESSES: The paper lacks a rigorous theoretical justification for why shallow layers specifically provide "highly generalizable" knowledge compared to other architectural layers, and the memory update heuristic (storing $N=5$ misclassified samples) is not extensively tested across varying $N$ values.
+
+RELEVANCE: Provides a dual-pronged approach to the review's question by addressing both the representation drift (via self-distillation) and the data scarcity/overfitting issues (via intelligent buffer management) in online class-incremental learning.

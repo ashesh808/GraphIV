@@ -24,7 +24,7 @@ _last_hit: dict[str, float] = {}
 
 def set_enabled(on: bool) -> None:
     """
-    Toggle lazy network fetching (config `fetch`); local reads always work
+    Toggle lazy network fetching (config `fetch`); a local hit is still returned either way
     """
     global _enabled  # noqa: PLW0603
     _enabled = on
@@ -56,12 +56,28 @@ def _stem_yymm(arxiv_id: str) -> tuple[str, str]:
     return arxiv_id, arxiv_id[:4]
 
 
+def local_html(arxiv_id: str) -> Path | None:
+    """
+    The on-disk LaTeXML render for an id, or None when it was never fetched
+
+    Args:
+        arxiv_id: The arxiv id, new or old style.
+
+    Returns:
+        The path under HTML_DIR, or None.
+    """
+    stem, yymm = _stem_yymm(arxiv_id)
+    p = HTML_DIR / yymm / f"{stem}.html"
+    return p if p.is_file() else None
+
+
 def fetch_html(arxiv_id: str) -> Path | None:
     """
-    Fetch the LaTeXML render (ar5iv, else arxiv.org) into HTML_DIR/<YYMM>/
+    The local LaTeXML render, else fetch one from ar5iv or arxiv.org into HTML_DIR/<YYMM>/
     """
-    if not _enabled:
-        return None
+    local = local_html(arxiv_id)
+    if local is not None or not _enabled:
+        return local
     body = _get(f"https://ar5iv.labs.arxiv.org/html/{arxiv_id}", "ar5iv")
     # a successful LaTeXML render carries ltx_ classes; misses redirect to abs
     if body is None or b"ltx_" not in body:
@@ -101,10 +117,11 @@ def local_pdf(arxiv_id: str) -> Path | None:
 
 def fetch_pdf(arxiv_id: str) -> Path | None:
     """
-    Fetch the latest-version PDF into PDF_DIR/<YYMM>/ and return the path
+    The local PDF, else fetch the latest version into PDF_DIR/<YYMM>/ and return the path
     """
-    if not _enabled:
-        return None
+    local = local_pdf(arxiv_id)
+    if local is not None or not _enabled:
+        return local
     body = _get(f"https://arxiv.org/pdf/{arxiv_id}", "arxiv")
     if body is None or not body.startswith(b"%PDF-"):
         return None

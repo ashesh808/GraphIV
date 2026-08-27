@@ -63,7 +63,7 @@ function deTeX(s){return String(s??'')
     .normalize('NFC'))
   .replace(/\\[a-zA-Z]+\{([^{}]*)\}/g,'$1')
   .replace(/[{}]/g,'');}
-function fmt(s){if(s==null)return '—';s=Math.round(s);
+function fmt(s){if(s==null)return '-';s=Math.round(s);
   return s>=3600?`${Math.floor(s/3600)}h ${String(Math.floor(s%3600/60)).padStart(2,'0')}m`
     :`${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`;}
 function fdate(s){if(!s)return '';const d=new Date(s);if(isNaN(d))return s;
@@ -86,7 +86,7 @@ function stagebar(st){
   return '<div class="stagebar">'+
     ['retrieval','reading','writing','judging'].filter(k=>g[k]).map(k=>
       `<div style="width:${100*g[k].t/tot}%;background:${GROUP_COLORS[k]}"`+
-      ` title="${k} ${Math.round(g[k].t)}s — ${g[k].parts.join(', ')}"></div>`).join('')+
+      ` title="${k} ${Math.round(g[k].t)}s, ${g[k].parts.join(', ')}"></div>`).join('')+
     '</div>';}
 """
 )
@@ -297,7 +297,7 @@ async function openPanel(o){
       ev.target.textContent='fetching…';ev.target.disabled=true;
       let got=false;try{got=(await fetch(o.fetchUrl,{method:'HEAD'})).ok;}catch(e){}
       b.innerHTML=got?`<iframe src="${o.url}"></iframe>`
-        :'<div class="panel-msg">arXiv fetch failed — use the arXiv link above</div>';};
+        :'<div class="panel-msg">arXiv fetch failed, use the arXiv link above</div>';};
   }else if(o.compile){
     b.innerHTML='<div class="panel-msg"><div class="spinner"></div>'+
       'compiling report.tex → pdf (latexmk)…</div>';
@@ -366,7 +366,7 @@ async function load(){
   RUN=run;
   const qt=run.question||SLUG;
   document.getElementById('qtitle').textContent=qt;
-  document.title='GraphIV — '+qt;
+  document.title='GraphIV, '+qt;
   (run.grounded||[]).forEach(id=>CITED.add(id));
   const papers=await jfetch('papers.json');
   PAPERS=papers||[];PAPERS.forEach(p=>{PMAP[p.arxiv_id]=p;});
@@ -393,7 +393,7 @@ async function showProgress(){
   const el=document.getElementById('report-md');
   if(!pr){el.innerHTML='<p class="byline">no artifacts found for this run</p>';return;}
   const qt=pr.question||SLUG;
-  document.getElementById('qtitle').textContent=qt;document.title='GraphIV — '+qt;
+  document.getElementById('qtitle').textContent=qt;document.title='GraphIV, '+qt;
   const stages=pr.stages||[];
   const done=stages.filter(s=>typeof s.seconds==='number');
   const cur=stages.find(s=>s.seconds==null);
@@ -401,7 +401,7 @@ async function showProgress(){
   el.innerHTML=`<div style="text-align:center;padding:1.6rem 0 1rem">
     <div class="spinner"></div>
     <p style="margin:.5rem 0">research in progress`+
-    `${cur?` — <b>${esc(cur.name)}</b>`:''}</p>
+    `${cur?`, <b>${esc(cur.name)}</b>`:''}</p>
     <p class="byline">${fmt(pr.elapsed)} elapsed · ${done.length} stages complete</p>
     </div><div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto">`+
     done.map(s=>`<div class="trow"><span>${esc(s.name)}</span>

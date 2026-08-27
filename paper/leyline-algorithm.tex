@@ -1,0 +1,140 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+
+\title{Magnet-Pulled Trajectory Sampling over Citation DAGs\\
+\large formal write-up, v0 (notation to be refined)}
+\author{}
+\date{2026-07-14}
+
+\newcommand{\Desc}{\mathrm{Desc}}
+\newcommand{\ch}{\mathrm{ch}}
+
+\begin{document}
+\maketitle
+
+\section{Setting}
+
+Let $G=(V,E)$ be the citation DAG induced on a retrieval pool, with edges oriented
+along development: $(u,v)\in E$ iff $v$ cites $u$ (ancestor $\to$ descendant).
+$\ch(v)$ denotes children (papers citing $v$ inside the pool), $\Desc(v)$ the set of
+nodes reachable from $v$, and $d(v,u)$ the shortest-path distance.
+
+Each node carries a nonnegative \emph{magnet weight} $w:V\to\mathbb{R}_{\ge 0}$
+encoding query relevance. Nodes with $w(v)>0$ are \emph{magnets}; nodes with
+$w(v)=0$ participate as \emph{connectors} (traversable, never collected).
+
+\paragraph{Shipped instantiation of $w$.} With reader grades
+$\mathrm{rel}(v)\in\{-2,\dots,+2\}$:
+\[
+  w_0(v) \;=\; \frac{\mathrm{rel}(v)+2}{4}\cdot
+  \mathbf{1}\!\left[\mathrm{rel}(v)\ge 2\right].
+\]
+Measured note: cosine-thresholded weights ($w=\max(0,\cos-\tau)$) fail — they exclude
+vocabulary-shifted canonical ancestors that graph centrality retains.
+
+\section{Core algorithm (the designed sampler)}
+
+\paragraph{Reachable mass.} For decay $\delta\in(0,1]$ (default $1$):
+\[
+  R(v) \;=\; \sum_{u\,\in\,\Desc(v)\cup\{v\}} \delta^{\,d(v,u)}\, w(u).
+\]
+$R(v)$ is the magnet mass a walk starting at $v$ can still reach; it is recomputed
+whenever $w$ changes.
+
+\paragraph{Lineage walk.} From a root $r$, depth-first with branching:
+
+\begin{algorithm}[h]
+\caption{\textsc{Lineage}$(r, G, w, R, k\text{-rule})$}
+\begin{algorithmic}[1]
+\State $S \gets [r]$;\quad $C \gets \emptyset$ \Comment{stack, collected}
+\While{$S \neq \emptyset$}
+  \State $n \gets \mathrm{pop}(S)$
+  \If{$w(n) > 0$} $C \gets C \cup \{n\}$ \Comment{collect and \emph{continue} — magnets are not absorbing}
+  \EndIf
+  \State $P \gets \{c \in \ch(n) : R(c) > 0\}$
+  \If{$P = \emptyset$} \textbf{continue} \Comment{walk dies only at zero-mass frontier}
+  \EndIf
+  \State $k \gets k\text{-rule}(|P|)$ \Comment{$\lceil\sqrt{|P|}\rceil$ (bushy) or constant $1,2$ (linear)}
+  \State draw $k$ children from $P$ without replacement, $\Pr(c)\propto R(c)$
+         \Comment{Efraimidis--Spirakis keys $u^{1/R(c)}$}
+  \State push unvisited draws onto $S$
+\EndWhile
+\State \Return traversal edges, $C$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Corpus sampling with facet decay.} Repeat: recompute $R$; choose the root
+as the maximum-$R$ source (no in-pool ancestors; fallback: any positive-$R$ node); run
+\textsc{Lineage}; then decay $w(m) \gets \gamma\, w(m)$ for every collected $m$
+($\gamma \approx 0.4$). The decay makes successive lineages fan out across facets —
+emergent set coverage without an explicit quota system.
+
+\section{Derandomization: consensus ensemble (added 2026-07-14)}
+
+A single seeded run has high selection variance (measured: gold recall
+$0.66$--$0.82$ across seeds), while a greedy walk collapses exploration (gold
+$0.66$; the randomness is load-bearing). The fix keeps both determinism and
+exploration:
+
+\[
+  f(v) \;=\; \#\{\,s \in \{1..S\} : v \text{ collected by the run seeded } s\,\},
+  \qquad S=10 \text{ fixed seeds},
+\]
+and the sampler's output is the top-$q$ nodes by $f$ (ties broken by $w$, then id).
+The union of all $S$ runs' traversal edges doubles as narrative threads for the
+story graph.
+
+\section{Hybrid budget (shipped configuration)}
+
+With landmark budget $m$ (=60) and quota $q$:
+\[
+  \text{landmarks} \;=\;
+  \underbrace{\text{frontier reservation}}_{\text{recency, unchanged}}
+  \;\cup\; \underbrace{\text{PPR order}}_{\text{fills to } m-q}
+  \;\cup\; \underbrace{\text{consensus top-}q}_{\text{trajectory picks, new nodes only}} .
+\]
+Pure replacement of PPR is measured-dead: the sampler has no notion of global graph
+centrality, and canonical/spine recall collapses ($0.92 \to 0.17$--$0.33$).
+
+\section{Battery results (2026-07-14, identical pools/grades)}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+condition & gold recall & spine recall & rel2\_hit & litmus hit \\
+\midrule
+PPR (shipped baseline) & 0.753 & 0.917 & 0.550 & 0.619 \\
+\textbf{hyb8\_cons\_r2} ($q{=}8$) & \textbf{0.767} & \textbf{0.933} & \textbf{0.608} & \textbf{0.619} \\
+hyb15\_cons\_r2 ($q{=}15$, paid upgrade) & 0.753 & 0.850 & 0.650 & 0.619 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent rel2\_hit $=$ fraction of relevance$+2$ graded pool papers selected as
+landmarks (the 02-07 residual failure: rel$+2$ papers stranded at PPR ranks 63--97).
+$q{=}8$ is Pareto against the shipped baseline; the mechanism's effect on rel2\_hit is
+robust across seeds (std $0.008$), the consensus removes the variance elsewhere.
+
+\section{Related work (dogfood-surfaced, 2026-07-14)}
+
+The GraphRAG line retrieves \emph{paths} as context units — closest is PathRAG
+(arXiv:2502.14902), flow-based pruning of relational paths between already-retrieved
+entity nodes. It differs on every axis that defines this sampler: no relevance
+magnets, no collect-and-continue semantics, no between-lineage decay for facet
+coverage, no seed-consensus, and it organizes prompt context over an entity KG rather
+than selecting landmarks over a citation DAG. Adjacent: G-Retriever/GRAG/CG-RAG
+(graph-native retrieval), RAPTOR (hierarchical), LitLLMs (arXiv:2412.15249,
+review evaluation).
+
+\section{Provenance}
+
+The sampler — magnet weights, reachable mass, collect-and-continue walks,
+between-lineage decay — is the author's design (2026-07, incl.\ the interior-magnet
+pass-through). Additions from the 2026-07-14 measurement session: grade-based $w_0$,
+the consensus ensemble, and the PPR-quota hybrid.
+
+\end{document}

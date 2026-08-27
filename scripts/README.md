@@ -31,3 +31,20 @@ uv run python scripts/<stage>.py --config=<path>    # read another config.toml
 
 Defaults come from that stage's `[stage.*]` table in `config.toml`, and a flag layers on top.
 Every stage is idempotent, so re-running with the same config changes nothing.
+
+## Choosing how a question is answered
+
+`--set-rank` picks the selector, and two of the five are the ones a person should see.
+
+```sh
+--set-rank joint        # survey: the lineage a field is built on, no reserved slots
+--set-rank trajectory   # frontier: recent work, with slots reserved for it
+```
+
+Both spend eight slots on LeyLine, so the mode changes only the score and the reservation.
+`joint` also raises the landmark budget, to 50/100/150/200 against 30/60/90/120.
+`ppr`, `frontier` and `indegree` still resolve, and exist for the experiments.
+
+Over MCP nobody passes this by hand: `refine_question` tags each candidate `survey` or
+`frontier` and `deep_research` takes that mode. A batch run has nobody to ask, so this script
+falls back to `[stage.research] rank`.

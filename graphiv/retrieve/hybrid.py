@@ -52,8 +52,18 @@ def hybrid_pool(
             s += 1.0 / (RRF_K + rank_l[aid])
         rrf[aid] = s
     top = sorted(rrf, key=lambda a: rrf[a], reverse=True)[:n_pool]
+
+    """
+    RRF decides which papers make the pool, then the score reverts to cosine.
+    Every later stage writes a cosine, so leaving RRF here would put a fifth of the pool
+    about a hundred times too low and bury it under any score-based ranking.
+    """
+    cos = {a: vec[a].score for a in top if a in vec}
+    missing = [a for a in top if a not in cos]
+    if missing:
+        cos.update(store.cosines(qvec, missing))
     out: dict[str, PoolNode] = {}
     for aid in top:
         n = nodes[aid]
-        out[aid] = PoolNode(n.arxiv_id, n.title, n.year, n.category, rrf[aid])
+        out[aid] = PoolNode(n.arxiv_id, n.title, n.year, n.category, cos.get(aid, 0.0))
     return out

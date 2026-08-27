@@ -50,6 +50,7 @@ fulltext_cache_db = "data/metadata/fulltext_cache.db"
 theme = "theme.json"
 # every research run lands here as <slug>/<config>/; served by the dashboard
 output_dir = "output/research"
+preset_dir = "research-preset"   # named run bundles, --preset <stem>
 
 [download]
 kaggle_url = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"

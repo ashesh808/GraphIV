@@ -48,7 +48,7 @@ _SECTION_SYS = (
     "given. Requirements:\n"
     "- Start with '## <the section title>'.\n"
     "- 350-600 words. Discuss the papers' actual contributions (use the extracted fields and "
-    "numbers), and COMPARE/CONTRAST them — do not just list.\n"
+    "numbers), and COMPARE/CONTRAST them, do not just list.\n"
     "- If (and only if) the section compares >=3 methods on shared dimensions, you may render "
     "that comparison as ONE compact markdown table (methods as rows, dimensions as columns, "
     "arXiv:<id> in the first column) and keep the prose for analysis the table cannot carry; "
@@ -305,7 +305,7 @@ def compose_long(
     recent = sorted((lm for lm in landmarks if lm.year), key=lambda lm: -(lm.year or 0))[:12]
     recent_lines = [f'arXiv:{lm.arxiv_id} ({lm.year}) "{lm.title}"' for lm in recent]
     close_user = (
-        "TENSION HINTS (compare/critique/motivate edges — synthesize, do not list):\n"
+        "TENSION HINTS (compare/critique/motivate edges, synthesize, do not list):\n"
         + ("\n".join(tens_lines) or "(few surfaced)")
         + "\n\nMOST RECENT PAPERS:\n"
         + "\n".join(recent_lines)
@@ -406,7 +406,7 @@ def _cover_missing(
             if lm is None:
                 continue
             lines.append(
-                f'- arXiv:{aid} ({lm.year or "?"}) — "{lm.title}" '
+                f'- arXiv:{aid} ({lm.year or "?"}) "{lm.title}" '
                 f"[{lm.role or 'ungraded'}, cited-by {lm.in_degree} in-topic]"
             )
         body = body + "\n".join(lines)

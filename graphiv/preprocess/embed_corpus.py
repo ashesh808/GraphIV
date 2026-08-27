@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import json
 import math
-import os
 import time
 import urllib.request
 from pathlib import Path
@@ -17,9 +16,9 @@ from typing import Any, LiteralString, cast
 
 import psycopg
 
+from graphiv.core.settings import EMBED_API, PG_DSN
+
 REPO = Path(__file__).resolve().parents[2]
-PG_DSN = os.environ.get("ARXIVKG_PG_DSN", f"host={REPO}/.pg port=5433 dbname=arxivkg")
-EMBED_API = os.environ.get("GRAPHIV_EMBED_API", "http://127.0.0.1:11435")
 EMBED_MODEL_NAME = "nomic-embed-text-v2-moe"
 PROMPT = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
 

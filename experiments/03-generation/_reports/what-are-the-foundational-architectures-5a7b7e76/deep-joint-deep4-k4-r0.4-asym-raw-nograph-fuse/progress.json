@@ -1,0 +1,80 @@
+{
+ "question": "What are the foundational architectures and training objectives that modern vision-language models are built on?",
+ "started_at": "2026-08-27T16:55:12",
+ "elapsed": 764.1,
+ "stages": [
+  {
+   "name": "embed",
+   "seconds": 0.5
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 10.7
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 196.5
+  },
+  {
+   "name": "judge",
+   "seconds": 8.1
+  },
+  {
+   "name": "expand",
+   "seconds": 0.0
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 0.0
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 85.9
+  },
+  {
+   "name": "judge",
+   "seconds": 16.4
+  },
+  {
+   "name": "expand",
+   "seconds": 0.0
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 0.0
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 72.9
+  },
+  {
+   "name": "judge",
+   "seconds": 26.9
+  },
+  {
+   "name": "critique",
+   "seconds": 34.3
+  },
+  {
+   "name": "compose-long",
+   "seconds": 178.2
+  },
+  {
+   "name": "viz",
+   "seconds": 0.6
+  },
+  {
+   "name": "summaries",
+   "seconds": 68.1
+  },
+  {
+   "name": "figures",
+   "seconds": 30.9
+  },
+  {
+   "name": "pdf",
+   "seconds": 1.6
+  }
+ ],
+ "done": true
+}

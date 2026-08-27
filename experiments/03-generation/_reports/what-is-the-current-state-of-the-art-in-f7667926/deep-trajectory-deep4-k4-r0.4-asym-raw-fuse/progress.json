@@ -1,0 +1,48 @@
+{
+ "question": "What is the current state of the art in protein structure prediction and design?",
+ "started_at": "2026-08-27T14:51:11",
+ "elapsed": 519.6,
+ "stages": [
+  {
+   "name": "embed",
+   "seconds": 0.1
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 150.0
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 128.9
+  },
+  {
+   "name": "judge",
+   "seconds": 18.5
+  },
+  {
+   "name": "critique",
+   "seconds": 45.3
+  },
+  {
+   "name": "compose-long",
+   "seconds": 86.2
+  },
+  {
+   "name": "viz",
+   "seconds": 0.8
+  },
+  {
+   "name": "summaries",
+   "seconds": 39.6
+  },
+  {
+   "name": "figures",
+   "seconds": 33.4
+  },
+  {
+   "name": "pdf",
+   "seconds": 0.9
+  }
+ ],
+ "done": true
+}

@@ -1,0 +1,47 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 4,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:2102.05918",
+   "arXiv:2102.03334",
+   "arXiv:1908.07490",
+   "arXiv:2201.12086"
+  ],
+  "assessment": "The review is excellent on the modern frontier but lacks several critical foundational landmark papers from the 2019-2022 era that define the architectures requested."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 2,
+   "lineage": 3,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 3
+  },
+  "gaps": [
+   "arXiv:2103.00020",
+   "arXiv:2201.12086",
+   "arXiv:2301.12597",
+   "arXiv:1908.07490"
+  ],
+  "assessment": "The review provides an impressive look at the 2024-2026 frontier but fails to address the foundational architectures and objectives by omitting the most critical landmark papers like CLIP, BLIP, and LXMERT."
+ },
+ {
+  "round": 3,
+  "saturated": false,
+  "scores": {},
+  "gaps": [],
+  "assessment": "(judge output unparseable)"
+ }
+]

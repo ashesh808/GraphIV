@@ -54,19 +54,41 @@ _REFINE_SYS = (
     "recommendation systems').\n"
     "- If the input is already a focused literature-review question, return it as the single "
     "candidate.\n"
-    "- At most ONE clarifying question, and only if the candidates genuinely diverge; it must "
-    "be specific to this topic — no generic boilerplate like 'theory or application?' or "
-    "'recent or historical?'.\n"
-    'Output ONLY JSON: {"candidates":["question 1","question 2",...],'
+    "- Tag every candidate with a mode. 'survey' means the answer is the lineage a field is "
+    "built on, so foundational and heavily cited work carries it. 'frontier' means the answer "
+    "is what people are doing right now, so recent work carries it.\n"
+    "- When the interest already says which one it wants, every candidate takes that mode.\n"
+    "- Only when the interest genuinely reads both ways, do NOT ask about it: emit one "
+    "candidate of each mode and let the user's pick settle it.\n"
+    "- At most ONE clarifying question, and only if the candidates diverge on SUBJECT rather "
+    "than on mode; it must be specific to this topic, never generic boilerplate like 'theory "
+    "or application?' or 'recent or historical?'.\n"
+    'Output ONLY JSON: {"candidates":[{"question":"...","mode":"survey|frontier"},...],'
     '"clarifying_question":"" }'
 )
+
+
+_MODE_SYS = (
+    "You decide how a literature-review question is best answered.\n"
+    "'survey' means the reader wants the lineage a field is built on, so foundational and "
+    "heavily cited work carries the answer.\n"
+    "'frontier' means the reader wants what people are doing right now, so recent work carries "
+    "it.\n"
+    "When the question reads both ways, answer survey.\n"
+    'Output ONLY JSON: {"mode":"survey"} or {"mode":"frontier"}'
+)
+
+
+# survey ranks on citations fused with relevance, frontier ranks on PPR and reserves recent slots
+_MODES = {"survey": "joint", "frontier": "trajectory"}
+_DEFAULT_MODE = "survey"
 
 
 _SIMILAR_SYS = (
     "You match a NEW research question against questions answered by previously completed "
     "literature reviews. Return the indices of past reviews that would substantially answer "
-    "the new question (same topic AND scope — sharing a broad field is not a match).\n"
-    'Output ONLY JSON: {"matches":[0,2,...]} — empty list if none apply.'
+    "the new question (same topic AND scope, sharing a broad field is not a match).\n"
+    'Output ONLY JSON: {"matches":[0,2,...]}, empty list if none apply.'
 )
 
 
@@ -152,6 +174,61 @@ def _finish_report(report_path: Path) -> str:
     return _rewrite_assets(linkify(md), cfg_dir.parent.name, cfg_dir.name)
 
 
+def _candidates(obj: dict[str, Any], text: str) -> list[dict[str, str]]:
+    """
+    Normalize the model's candidate list into {question, mode} rows
+
+    A bare string candidate is accepted and resolves to the default mode, since the model
+    drifts back to the older shape under load.
+
+    Args:
+        obj: The parsed refine response.
+        text: The user's original interest, used when no candidate survives.
+
+    Returns:
+        At least one {question, mode} row, every mode a key of _MODES.
+    """
+    raw: object = obj.get("candidates")
+    rows: list[dict[str, str]] = []
+    for c in raw if isinstance(raw, list) else []:  # pyright: ignore[reportUnknownVariableType]
+        row: dict[str, object] = c if isinstance(c, dict) else {"question": c}
+        q, mode = row.get("question"), row.get("mode")
+        if isinstance(q, str) and q.strip():
+            rows.append(
+                {
+                    "question": q.strip(),
+                    "mode": mode if isinstance(mode, str) and mode in _MODES else _DEFAULT_MODE,
+                }
+            )
+    return rows or [{"question": text.strip(), "mode": _DEFAULT_MODE}]
+
+
+async def _classify_mode(question: str) -> str:
+    """
+    Decide whether a question is answered by a field's lineage or by its recent work
+
+    Anything unusable resolves to the default mode, since a mode never blocks a run.
+
+    Args:
+        question: The literature-review question, possibly empty on a seeded run.
+
+    Returns:
+        A key of _MODES.
+    """
+    from graphiv.core.llm import NO_THINK, chat, parse_json
+
+    if not question.strip():
+        return _DEFAULT_MODE
+    try:
+        out, _, _ = await chat(MAP_MODEL, _MODE_SYS, question, 0.0, 64, extra_body=NO_THINK)
+    # classification is advisory, never blocks research
+    except Exception:  # noqa: BLE001
+        return _DEFAULT_MODE
+    obj = parse_json(out)
+    mode = obj.get("mode") if isinstance(obj, dict) else None
+    return mode if isinstance(mode, str) and mode in _MODES else _DEFAULT_MODE
+
+
 @_tool()
 async def refine_question(text: str) -> str:
     """
@@ -159,9 +236,12 @@ async def refine_question(text: str) -> str:
 
         Call this FIRST when the user's request is broad or ambiguous. Present the returned
         candidates to the user and let them pick or edit one (never silently pick yourself);
-        relay the clarifying_question only if non-empty. Then call deep_research with the chosen
-        question. Fast (~seconds). Returns JSON: candidates[] + clarifying_question + probe
-        (corpus titles the candidates are grounded in).
+        relay the clarifying_question only if non-empty. Then call deep_research with the
+        chosen question AND its mode. Fast (~seconds). Returns JSON: candidates[] of
+        {question, mode} + clarifying_question + probe (corpus titles the candidates are
+        grounded in). mode is survey (the lineage a field is built on) or frontier (what
+        people are doing right now); when the interest reads both ways the candidates carry
+        one of each, so the user's pick settles it and no extra question is needed.
     """
     from graphiv.core.llm import NO_THINK, chat, parse_json
     from graphiv.core.store import Store
@@ -174,16 +254,25 @@ async def refine_question(text: str) -> str:
     probe_txt = "\n".join(f"- ({n.year}) {n.title}" for n in probe) or "(no title hits)"
     user = f"USER INTEREST: {text}\n\nCORPUS TITLE PROBE:\n{probe_txt}"
     out, _, _ = await chat(MAP_MODEL, _REFINE_SYS, user, 0.2, 500, extra_body=NO_THINK)
-    obj = parse_json(out)
-    if not isinstance(obj, dict) or not obj.get("candidates"):
-        obj = {"candidates": [text.strip()], "clarifying_question": ""}
-    obj["probe"] = [f"({n.year}) {n.title}" for n in probe[:10]]
-    return json.dumps(obj)
+    parsed = parse_json(out)
+    obj: dict[str, Any] = parsed if isinstance(parsed, dict) else {}
+    asked = obj.get("clarifying_question")
+    return json.dumps(
+        {
+            "candidates": _candidates(obj, text),
+            "clarifying_question": asked if isinstance(asked, str) else "",
+            "probe": [f"({n.year}) {n.title}" for n in probe[:10]],
+        }
+    )
 
 
 @_tool()
 async def deep_research(
-    question: str, effort: int = 4, seed_arxiv_id: str = "", force_new: bool = False
+    question: str,
+    effort: int = 4,
+    seed_arxiv_id: str = "",
+    force_new: bool = False,
+    mode: str = "",
 ) -> str:
     """
     Run GraphIV deep research: a grounded, cited literature review over all of arXiv
@@ -197,8 +286,11 @@ async def deep_research(
         re-call with force_new=true to run anyway (seeded runs skip the check). Every arXiv id
         cited in the result exists in the corpus; citations come back as markdown links, and the
         report embeds a citation story graph (PNG + interactive HTML). Returns the review as
-        markdown. After it completes, use list_report_papers / ask_paper / ask_research for
-        follow-ups instead of re-running.
+        markdown. mode is survey (rank the lineage a field is built on) or frontier (rank
+        recent work and reserve slots for it); pass the mode refine_question returned with the
+        chosen question, and leave it empty only to have it classified here. After it
+        completes, use list_report_papers / ask_paper / ask_research for follow-ups instead of
+        re-running.
     """
     effort = max(0, min(5, effort))
     seed = seed_arxiv_id.strip()
@@ -223,13 +315,13 @@ async def deep_research(
                     "reports": similar,
                 }
             )
-    # trajectory selection is a consensus quota over PPR, gated by the pairwise judge
+    rank = _MODES.get(mode.strip().lower()) or _MODES[await _classify_mode(question)]
     args = [
         sys.executable,
         str(_RUN),
         question,
         f"--set-effort={effort}",
-        "--set-rank=trajectory",
+        f"--set-rank={rank}",
     ]
     if seed:
         args.append(f"--set-seed={seed}")
@@ -497,11 +589,14 @@ def deep_research_flow(interest: str) -> str:
     return (
         f"The user wants a literature review about: {interest}\n\n"
         "1. Call refine_question with their text. Show the user ALL candidate questions and "
-        "let them pick or edit one — do not pick silently. Ask the clarifying_question only "
-        "if it is non-empty. If the user names a specific paper, you may skip refinement and "
-        "pass its id as seed_arxiv_id instead.\n"
+        "let them pick or edit one, never pick silently. Each candidate carries a mode: "
+        "survey answers with the lineage a field is built on, frontier answers with what "
+        "people are doing right now, so say which is which when the candidates differ. Ask "
+        "the clarifying_question only if it is non-empty. If the user names a specific paper, "
+        "you may skip refinement and pass its id as seed_arxiv_id instead.\n"
         "2. Tell the user the deep run takes ~5-10 minutes, then call "
-        "deep_research(chosen_question, effort=4[, seed_arxiv_id=...]).\n"
+        "deep_research(chosen_question, effort=4, mode=<the chosen candidate's mode>"
+        "[, seed_arxiv_id=...]).\n"
         "3. If deep_research returns status=similar_reports_exist instead of a review, "
         "past reports already cover the question: show them (question, date, paper count) "
         "and ask whether to reuse one (retrieve_research / ask_research) or run fresh "
@@ -509,7 +604,7 @@ def deep_research_flow(interest: str) -> str:
         "4. Present the returned review verbatim (it is fully cited; citations are links and "
         "the graph link is interactive).\n"
         "5. For follow-ups, DO NOT re-run or re-summarize the markdown: use "
-        "list_report_papers (the cohort), ask_research (questions over one or MORE reports — also how to combine two findings), ask_paper "
+        "list_report_papers (the cohort), ask_research (questions over one or MORE reports, also how to combine two findings), ask_paper "
         "(one paper, full text), or search_papers/paper_details (corpus checks)."
     )
 

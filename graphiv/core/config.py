@@ -86,6 +86,7 @@ class Config:
     fulltext_cache_db: Path
     theme: Path
     output_dir: Path
+    preset_dir: Path
     kaggle_url: str
     html_migrate_src: str
     nomic_npy: str
@@ -157,6 +158,7 @@ class Config:
             fulltext_cache_db=gpath(str(paths["fulltext_cache_db"])),
             theme=gpath(str(paths["theme"])),
             output_dir=gpath(str(paths["output_dir"])),
+            preset_dir=gpath(str(paths.get("preset_dir", "research-preset"))),
             kaggle_url=str(dl["kaggle_url"]),
             html_migrate_src=str(dl["html_migrate_src"]),
             nomic_npy=str(eb["nomic_npy"]),

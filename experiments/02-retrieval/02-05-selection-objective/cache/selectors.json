@@ -1,0 +1,120 @@
+{
+  "selectors": [
+    {
+      "selector": "oracle (every in-pool gold)",
+      "key": "ORACLE",
+      "dev": 412,
+      "test": 436,
+      "test before score fix": 436,
+      "family": "bound"
+    },
+    {
+      "selector": "joint (shipped)",
+      "key": "agen_relw0.35_ley8_nores",
+      "dev": 336,
+      "test": 341,
+      "test before score fix": 341,
+      "family": "fused"
+    },
+    {
+      "selector": "citations per year alone",
+      "key": "agen_only",
+      "dev": 305,
+      "test": 310,
+      "test before score fix": 310,
+      "family": "graph"
+    },
+    {
+      "selector": "LeyLine on frontier",
+      "key": "ley_front_q8",
+      "dev": 295,
+      "test": 315,
+      "test before score fix": 318,
+      "family": "fused"
+    },
+    {
+      "selector": "RRF(ppr, frontier)",
+      "key": "rrf_pf",
+      "dev": 293,
+      "test": 298,
+      "test before score fix": 290,
+      "family": "fused"
+    },
+    {
+      "selector": "frontier",
+      "key": "frontier",
+      "dev": 288,
+      "test": 322,
+      "test before score fix": 320,
+      "family": "graph"
+    },
+    {
+      "selector": "trajectory (LeyLine on ppr)",
+      "key": "trajectory",
+      "dev": 279,
+      "test": 302,
+      "test before score fix": 290,
+      "family": "fused"
+    },
+    {
+      "selector": "ppr, no reservation",
+      "key": "ppr_bare",
+      "dev": 266,
+      "test": 270,
+      "test before score fix": null,
+      "family": "graph"
+    },
+    {
+      "selector": "ppr",
+      "key": "ppr",
+      "dev": 265,
+      "test": 293,
+      "test before score fix": 277,
+      "family": "graph"
+    },
+    {
+      "selector": "in-degree",
+      "key": "indegree",
+      "dev": 261,
+      "test": 261,
+      "test before score fix": 260,
+      "family": "graph"
+    },
+    {
+      "selector": "cosine x grade, top-k",
+      "key": "fused_topk",
+      "dev": 208,
+      "test": 236,
+      "test before score fix": null,
+      "family": "text"
+    },
+    {
+      "selector": "mmr",
+      "key": "mmr",
+      "dev": 196,
+      "test": 213,
+      "test before score fix": null,
+      "family": "set coverage"
+    },
+    {
+      "selector": "cluster proportional",
+      "key": "proportional",
+      "dev": 184,
+      "test": 209,
+      "test before score fix": null,
+      "family": "set coverage"
+    },
+    {
+      "selector": "facility location",
+      "key": "facility",
+      "dev": 166,
+      "test": 176,
+      "test before score fix": null,
+      "family": "set coverage"
+    }
+  ],
+  "gold_in_pool": {
+    "dev": 419,
+    "test": 441
+  }
+}

@@ -16,7 +16,7 @@ nix run .#pg-start
 pg_restore -h ./.pg -p 5433 -d arxivkg --no-owner --jobs 4 arxivkg-<date>.dump
 ```
 
-The store is a single database `arxivkg`: `paper` (id ↔ arxiv_id), `citation` (173M edges with
+The store is a single database `arxivkg`: `paper` (id ↔ arxiv_id), `citation` (177M edges with
 intent/polarity), `paper_meta`, `paper_embedding` (768-d nomic, HNSW), `paper_topic`/`leaf`
 (topic tree). Peer-auth over the project-local socket — no password. Anything (a rebuild, a
 different location) can override the DSN with `ARXIVKG_PG_DSN`.

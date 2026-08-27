@@ -64,7 +64,7 @@ async def _one(
         yr = year if year is not None else "?"
         user = (
             f"Review question: {question}\n"
-            f"Paper arXiv:{aid} ({yr}) — {title}\n\nFULL TEXT (may be truncated):\n{body}"
+            f"Paper arXiv:{aid} ({yr}): {title}\n\nFULL TEXT (may be truncated):\n{body}"
         )
         try:
             text, _, _ = await chat(CRIT_MODEL, _SYS, user, 0.3, 1200, extra_body=THINK)

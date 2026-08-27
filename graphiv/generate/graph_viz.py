@@ -407,7 +407,7 @@ function renderStoryGraph(root, DATA, pdfBase, onNode){
       ev.target.textContent='fetching…';ev.target.disabled=true;
       let got=false;try{got=(await fetch(url+'?fetch=1',{method:'HEAD'})).ok;}catch(e){}
       pv.innerHTML=got?`<iframe src="${url}"></iframe>`
-        :'<div class="gv-nopdf">arXiv fetch failed — use the arxiv.org link</div>';
+        :'<div class="gv-nopdf">arXiv fetch failed, use the arxiv.org link</div>';
     };
   }
   root.querySelector('.gv-close').onclick=()=>wrap.classList.remove('open');
@@ -421,7 +421,7 @@ function renderStoryGraph(root, DATA, pdfBase, onNode){
 """
 
 _HTML = """<!doctype html>
-<html><head><meta charset="utf-8"><title>GraphIV — citation story graph</title>
+<html><head><meta charset="utf-8"><title>GraphIV citation story graph</title>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 <style>
   body { margin:0; background:#0C0F1E; color:#D4D0EA;

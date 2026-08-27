@@ -28,6 +28,41 @@ Steps 1–6 **done**; step 7 done except the two user-side items + the paper nar
 - **Next Claude deliverable:** full paper narrative rewrite for user veto (user explicitly asked);
   best written after the commercial h2h outputs land so the comparison table ships in one pass.
 
+## STATUS (2026-08-27) — version candidate
+
+The tree is version-ready and uncommitted. Three things changed since the block above.
+
+**The package refactor landed.** `phases/` is gone, its code lives in `graphiv/` behind
+`scripts/` entrypoints, and `tests/` now holds 62 unit tests that need no database. Five gates
+run clean: ruff, black, pyright, import-linter, pytest, plus the comment linter.
+
+**Retrieval became modular and mode-driven.** `graphiv/retrieve/api.py` defines the contract
+(`PoolBuilder`, `Reader`, `Selector`, `Retriever`) and `build.py` assembles a pipeline from
+registry names. One `Recipe` drives every selector, so the five hand-written rankers collapsed
+into a score function plus two flags, verified bit-identical against the old code on 60 frozen
+pools for four of five arms. `refine_question` now tags each candidate `survey` or `frontier`
+and `deep_research` takes that mode, so the ranker is chosen from the question rather than
+defaulted.
+
+**Phase 3 was rebuilt around reliability.** Eleven lever experiments became four, all on one
+metric: is a sentence backed by a paper.
+
+| number | value |
+| --- | --- |
+| cited sentences supported | 0.714 Gemma, 0.744 Qwen, agreeing on 90.6% (kappa 0.762) |
+| broken citations the checker approves | 0.153 against 0.714 for real ones |
+| sentences carrying a citation | 818/1372 = 0.596 |
+| effect of the citation graph on any of the above | none |
+
+**Still user-side:** the two items above (commercial h2h, HF dump upload), plus
+`~/System/nixos-configs/parts/services/graphiv.nix` still pointing at `phases/phase-6/serve_mcp.py`
+instead of `scripts/serve.py`, which crash-loops the unit on restart.
+
+**Known gaps, recorded not hidden:** how many uncited sentences invent something is unmeasured
+and unmeasurable by prompt (two schemes failed a second judge, the second at kappa 0.003), and
+`M_SCALE = 1.3` is hand-set, shortening a deep frontier run from 240 landmarks to 156 without a
+re-measurement.
+
 ## Prod deployment plan (2026-07-16)
 
 Machines: **zaphkiel** (dev, 20 TB vault) · **metatron** (NAS, tailnet) · **prod** (10 TB, NO
@@ -71,13 +106,13 @@ Never claim bare "better than Gemini/Claude deep research" until the pairwise co
 
 - [ ] Refresh stale readmes against fresh `results/`: `experiments/README.md`,
       `experiments/deep-research/README.md` (23/4/0 → 5/2/1 n=8, 3.3 → 9.0 2026/topic),
-      `03-08-judge-loop` (0.78/27-topic → fresh), audit all others.
+      the removed 03 suite (0.78/27-topic → fresh), audit all others.
 - [ ] Name sweep: GraphIV in README/paper/docs prose; arXiv-tail etymology in README line one.
 - [ ] Consolidate `phases/global-config.json`: retire the dead `postgres.dsn=arxiv-citations` (point at
       the arxivkg store, env-overridable); mark `/mnt/Vault-Academics` embedding paths build-time-only;
       move the Haruhana palette into the repo as `theme.json` (credit
       https://git.kuroma.dev/kkuroma/shunka-shuutou-theme in docs).
-- [ ] Move the 03-11 hub sweep/oracle scripts out of gitignored `scratchpad/` into the experiment's `code/`.
+- [x] Every experiment's measurement code now lives in its own `src/`, and `scratchpad/` is gone.
 - [ ] `docs/restore.md`: dump → `pg-init` → `pg_restore` → any OpenAI-compatible endpoint (model
       aliases documented; llama-router: https://git.kuroma.dev/kkuroma/llama-router) → serve.
       Placeholder link for the dump download (upload later).

@@ -1,0 +1,172 @@
+{
+  "reproduce": [
+    {
+      "cell": "specific R@5",
+      "published": 50.0,
+      "reproduced": 50.0
+    },
+    {
+      "cell": "broad R@20",
+      "published": 39.9,
+      "reproduced": 39.9
+    }
+  ],
+  "ours_on_theirs": [
+    {
+      "system": "ours, graph only",
+      "specific R@5": 14.8,
+      "broad R@20": 39.2,
+      "source": "measured"
+    },
+    {
+      "system": "ours, joint",
+      "specific R@5": 26.7,
+      "broad R@20": 42.7,
+      "source": "measured"
+    },
+    {
+      "system": "GTR-T5-large",
+      "specific R@5": 39.6,
+      "broad R@20": 43.8,
+      "source": "published"
+    },
+    {
+      "system": "BM25",
+      "specific R@5": 50.0,
+      "broad R@20": 39.9,
+      "source": "published"
+    },
+    {
+      "system": "Instructor-XL",
+      "specific R@5": 52.3,
+      "broad R@20": 56.5,
+      "source": "published"
+    },
+    {
+      "system": "E5-large-v2",
+      "specific R@5": 56.2,
+      "broad R@20": 55.4,
+      "source": "published"
+    },
+    {
+      "system": "ours, dense only",
+      "specific R@5": 62.6,
+      "broad R@20": 59.2,
+      "source": "measured"
+    },
+    {
+      "system": "GPT-4 rerank over BM25",
+      "specific R@5": 68.0,
+      "broad R@20": 59.9,
+      "source": "published"
+    },
+    {
+      "system": "GritLM-7B",
+      "specific R@5": 74.8,
+      "broad R@20": 70.8,
+      "source": "published"
+    },
+    {
+      "system": "ours, reader rerank",
+      "specific R@5": 75.8,
+      "broad R@20": 74.7,
+      "source": "measured"
+    },
+    {
+      "system": "GPT-4 rerank over GritLM",
+      "specific R@5": 79.2,
+      "broad R@20": 75.3,
+      "source": "published"
+    }
+  ],
+  "task_shapes": [
+    {
+      "task": "find this paper (LitSearch)",
+      "questions": 597,
+      "mean answers": 1.07,
+      "one-answer share": "94%",
+      "key written by": "the citing author"
+    },
+    {
+      "task": "cover this field (ours)",
+      "questions": 60,
+      "mean answers": 26.9,
+      "one-answer share": "0%",
+      "key written by": "the survey author"
+    }
+  ],
+  "selection_funnel": [
+    {
+      "stage": "title regex, 60+ refs, 20+ cites, 2022-2024",
+      "surveys": 1003
+    },
+    {
+      "stage": "sampled for the abstract screen",
+      "surveys": 140
+    },
+    {
+      "stage": "screen says it is a real review",
+      "surveys": 122
+    },
+    {
+      "stage": "kept, spread over 17 archives",
+      "surveys": 60
+    },
+    {
+      "stage": "held out, never tuned on",
+      "surveys": 30
+    }
+  ],
+  "intent_control": [
+    {
+      "arm": "survey",
+      "papers": 20,
+      "median background %": 93.0
+    },
+    {
+      "arm": "control",
+      "papers": 40,
+      "median background %": 88.9
+    }
+  ],
+  "on_our_task": [
+    {
+      "selector": "lexical only",
+      "graph": "no",
+      "reader": "no",
+      "gold found": 54
+    },
+    {
+      "selector": "RRF of both",
+      "graph": "no",
+      "reader": "no",
+      "gold found": 137
+    },
+    {
+      "selector": "dense only",
+      "graph": "no",
+      "reader": "no",
+      "gold found": 172
+    },
+    {
+      "selector": "ours, ppr",
+      "graph": "yes",
+      "reader": "yes",
+      "gold found": 277
+    },
+    {
+      "selector": "ours, frontier",
+      "graph": "yes",
+      "reader": "yes",
+      "gold found": 320
+    },
+    {
+      "selector": "ours, joint",
+      "graph": "yes",
+      "reader": "yes",
+      "gold found": 341
+    }
+  ],
+  "test_gold_total": 788,
+  "test_gold_in_pool": 441
+}

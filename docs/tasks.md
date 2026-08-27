@@ -1,5 +1,9 @@
 # tasks.md — GraphIV (né arxivkg) handoff (2026-06-22)
 
+> **Historical.** This is the June snapshot, kept for the sequencing it records. `phases/` no
+> longer exists; its code is in `graphiv/` behind `scripts/`. Current state is
+> `docs/release-plan.md`, current design is `docs/decisions.md`.
+
 Status snapshot + what's left. The project is now a **self-contained single Postgres+pgvector store
 under `./data`**, Neo4j-free, secret-free, compressed, with a validated 11-experiment suite.
 

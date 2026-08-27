@@ -1,0 +1,78 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 2,
+   "lineage": 5,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1706.03762",
+   "arXiv:1709.07809",
+   "arXiv:1508.07909",
+   "arXiv:1808.08583"
+  ],
+  "assessment": "The review fails to cite the seminal Transformer paper (arXiv:1706.03762), which is the central subject of the research question."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 3,
+   "lineage": 4,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1706.03762",
+   "arXiv:1709.07809",
+   "arXiv:1508.07909",
+   "arXiv:1606.04199"
+  ],
+  "assessment": "The review provides a great narrative but fails to cite the most critical landmark papers (like the original Transformer paper) that are essential for a complete history of the field."
+ },
+ {
+  "round": 3,
+  "saturated": false,
+  "scores": {
+   "grounding": 4,
+   "coverage": 2,
+   "lineage": 3,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1406.1078",
+   "arXiv:1409.3215",
+   "arXiv:1706.03762",
+   "arXiv:1709.07809"
+  ],
+  "assessment": "The review misses the most foundational papers of the NMT revolution, including the original Seq2Seq, Attention, and Transformer papers, rendering the historical narrative incomplete."
+ },
+ {
+  "round": 4,
+  "saturated": false,
+  "scores": {
+   "grounding": 3,
+   "coverage": 2,
+   "lineage": 3,
+   "coherence": 5,
+   "frontier": 5,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1706.03762",
+   "arXiv:1409.3215",
+   "arXiv:1508.07909",
+   "arXiv:1406.1078"
+  ],
+  "assessment": "The review misses the most critical landmark in the entire field (the Transformer paper) and several other foundational papers, leaving the core evolutionary story incomplete."
+ }
+]

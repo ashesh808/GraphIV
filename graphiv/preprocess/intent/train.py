@@ -631,7 +631,7 @@ def plot_loss(log: TrainLog, out_path: Path) -> None:
         )
     ax1.set_xlabel("step")
     ax1.set_ylabel("weighted intent loss")
-    ax1.set_title("DistilBERT student fine-tune — loss")
+    ax1.set_title("DistilBERT student fine-tune, loss")
     ax1.grid(alpha=0.3)
     ax1.legend(loc="upper right")
 

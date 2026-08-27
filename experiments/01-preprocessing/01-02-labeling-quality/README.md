@@ -9,4 +9,4 @@ frozen training artifacts; no LLM.
 tensions surfacing relies on, and what the human-gold set must validate.
 
 Full write-up: [`report/report.md`](report/report.md) · [`report/report.tex`](report/report.tex) →
-`report/report.pdf`. Run: `uv run python run.py`. (`code/gold_tool.py` = the Phase-C human-gold tool.)
+`report/report.pdf`. Run: `uv run python run.py`. (`src/gold_tool.py` = the Phase-C human-gold tool.)

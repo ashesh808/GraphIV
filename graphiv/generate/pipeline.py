@@ -11,7 +11,7 @@ import asyncio
 import hashlib
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime
 from pathlib import Path
 
@@ -28,22 +28,20 @@ from graphiv.generate.narrate import linkify
 from graphiv.generate.progress import StageTimer
 from graphiv.generate.schema import propose_schema
 from graphiv.generate.story import Story, build_story
-from graphiv.retrieve.frontier import rank_landmarks_frontier
-from graphiv.retrieve.grade import Grade, candidates, fused_score, grade_many
+from graphiv.retrieve.api import Selection
+from graphiv.retrieve.grade import Grade, candidates, grade_many
 from graphiv.retrieve.hybrid import hybrid_pool
-from graphiv.retrieve.pagerank import rank_landmarks_ppr
 from graphiv.retrieve.recency import FrontierSpec, detect_frontier
 from graphiv.retrieve.refined import frontier_pull, refined_pool
+from graphiv.retrieve.select import SELECTORS, assemble
 from graphiv.retrieve.subgraph import (
     assign_eras,
     augment_with_ancestors,
     induce_subgraph,
     main_path,
-    rank_landmarks,
     tensions,
 )
 from graphiv.retrieve.topic_anchor import TopicTree
-from graphiv.retrieve.trajectory import rank_landmarks_trajectory
 
 # Reports land under <slug>/<cfg>/ inside the configured output dir
 OUT = OUTPUT_DIR
@@ -51,9 +49,28 @@ OUT = OUTPUT_DIR
 TIERS: dict[str, tuple[int, int, int, bool]] = {
     "tiny": (200, 150, 30, False),
     "fast": (400, 280, 60, False),
-    "standard": (400, 280, 80, True),
+    "standard": (400, 280, 90, True),
     "deep": (600, 360, 120, True),
 }
+
+# a survey answers with a whole lineage, so it carries a wider cohort than a frontier scan
+SURVEY_M: dict[str, int] = {"tiny": 50, "fast": 100, "standard": 150, "deep": 200}
+
+
+def tier_budget(effort: str, rank: str) -> tuple[int, int, int, bool]:
+    """
+    The tier for this effort, with the survey landmark budget when the selector is joint
+
+    Args:
+        effort: A key of TIERS.
+        rank: The selector name, where joint is survey mode.
+
+    Returns:
+        (n_pool, drill target, landmark count m, run extraction).
+    """
+    n_pool, target, m, extract = TIERS[effort]
+    return n_pool, target, SURVEY_M[effort] if rank == "joint" else m, extract
+
 
 # effort 0-5 maps to a tier, a round cap, a critique depth and figures
 
@@ -120,13 +137,6 @@ def hyde_query(question: str) -> str:
     return f"Title: {question}\nAbstract: {text}" if text else question
 
 
-# recency-aware rankers take the topic-adaptive frontier; "indegree" is the bare ablation
-_RANKERS = {
-    "ppr": rank_landmarks_ppr,  # personalized PageRank + frontier reservation
-    "frontier": rank_landmarks_frontier,  # age-normalized in-degree + frontier reservation
-}
-
-
 @dataclass
 class Pass:
     """
@@ -183,43 +193,33 @@ def _rank_graded(
     fuse: bool,
 ) -> list[Landmark]:
     """
-    Rank landmarks, optionally on the fused (cosine x graded-relevance) score
+    Rank landmarks through the selector registry
 
-        With `fuse`, relevance -2 papers leave the ranking pool entirely (they remain in the
-        caller's pool as graph connectors) and every candidate's seed score becomes fused.
-        Returned landmarks always carry the original cosine in `.score` plus role/relevance.
+        Every recipe owns its own fusion, reservation, quota and tiebreak, so this only
+        resolves the name and hands over. A graph-free pool has no edges to rank on, which
+        is what `indegree` already degrades to.
+
+    Args:
+        pool: the candidate set, scored by similarity.
+        edges: the induced citation subgraph, empty when the graph is off.
+        m: how many landmarks to return.
+        rank: a key of `graphiv.retrieve.select.SELECTORS`.
+        no_graph: forces the graph-free selector regardless of `rank`.
+        fr: the topic-adaptive frontier spec.
+        grades: reader verdicts, empty when no reader ran.
+        fuse: rank on cosine times relevance, dropping the papers the reader rejected.
+
+    Returns:
+        Up to `m` landmarks carrying their true similarity, role and relevance.
+
+    Raises:
+        KeyError: if `rank` is not a registered selector.
     """
-    rank_pool_nodes = pool
-    if fuse and grades:
-        rank_pool_nodes = {}
-        for a, n in pool.items():
-            g = grades.get(a)
-            if g is not None and g.relevance <= -2:
-                continue
-            rank_pool_nodes[a] = PoolNode(
-                n.arxiv_id, n.title, n.year, n.category, fused_score(n.score, g)
-            )
-    if no_graph or rank == "indegree":
-        landmarks = rank_landmarks(rank_pool_nodes, edges, m)
-    elif rank == "trajectory":
-        landmarks = rank_landmarks_trajectory(
-            rank_pool_nodes,
-            edges,
-            m,
-            fr.frontier_year,
-            fr.recent_floor,
-            fr.now_year,
-            grades,
-        )
-    else:
-        landmarks = _RANKERS[rank](
-            rank_pool_nodes, edges, m, fr.frontier_year, fr.recent_floor, fr.now_year
-        )
+    name = "indegree" if no_graph else rank
+    recipe = SELECTORS[name] if fuse else replace(SELECTORS[name], fuse=False)
+    landmarks = assemble(Selection(pool, edges, m, fr, grades), recipe)
     for lm in landmarks:
         lm.score = pool[lm.arxiv_id].score  # restore true cosine after fused ranking
-        g = grades.get(lm.arxiv_id)
-        if g is not None:
-            lm.role, lm.relevance = g.role, g.relevance
     return landmarks
 
 
@@ -414,7 +414,7 @@ def graph_section(viz_meta: dict[str, object]) -> str:
     """
     return (
         "![citation graph](graph.png)\n\n"
-        f"*The citation story graph behind this review — {viz_meta['nodes']} papers, "
+        f"*The citation story graph behind this review, {viz_meta['nodes']} papers, "
         f"{viz_meta['edges']} intent-typed edges, {viz_meta['threads']} lineage threads "
         "(gold). Node size = in-topic citations, color = role. "
         "[Interactive version](graph.html).*\n\n---\n\n"
@@ -448,11 +448,12 @@ def run(
     seed: str | None = None,
     max_date: str = "",
     exclude: str = "",
+    preset: str = "",
 ) -> dict[str, object]:
     """
     Run the single pass end to end and return the run record
     """
-    n_pool, target, m, do_extract = TIERS[effort]
+    n_pool, target, m, do_extract = tier_budget(effort, rank)
     cap, excl = cap_spec(max_date, exclude)
     # a seed paper's own title and abstract are already doc-shaped, so they replace HyDE
     qtext = question
@@ -585,6 +586,7 @@ def run(
         "question": question,
         "effort": effort,
         "rank": rank,
+        "preset": preset,
         "no_cluster": no_cluster,
         "no_graph": no_graph,
         "recency": recency,

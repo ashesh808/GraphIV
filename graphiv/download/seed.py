@@ -61,7 +61,7 @@ def run(url: str, force: bool = False, keep_zip: bool = False) -> None:
     """
     skip, size = up_to_date(url)
     if skip and not force:
-        print(f"[seed] snapshot unchanged (zip {size:,} B) — nothing to do")
+        print(f"[seed] snapshot unchanged (zip {size:,} B), nothing to do")
         return
 
     zip_path = ARXIV_JSON.with_suffix(".zip")

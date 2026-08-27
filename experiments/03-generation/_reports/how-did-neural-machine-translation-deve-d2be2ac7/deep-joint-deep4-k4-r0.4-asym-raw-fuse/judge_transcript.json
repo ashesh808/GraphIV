@@ -1,0 +1,59 @@
+[
+ {
+  "round": 1,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 2,
+   "lineage": 3,
+   "coherence": 5,
+   "frontier": 3,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1409.3215",
+   "arXiv:1508.04025",
+   "arXiv:1406.1078",
+   "arXiv:1706.03872"
+  ],
+  "assessment": "The review provides a good chronological narrative but fails to include the most foundational papers (Seq2Seq and phrase-based RNNs) and several key advancements in unsupervised and pre-trained models."
+ },
+ {
+  "round": 2,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 2,
+   "lineage": 4,
+   "coherence": 5,
+   "frontier": 1,
+   "focus": 5
+  },
+  "gaps": [
+   "2022-2026 research",
+   "arXiv:1409.3215",
+   "arXiv:1508.04025",
+   "arXiv:1406.1078"
+  ],
+  "assessment": "The review fails to cover the required 2026 frontier and misses several foundational papers identified in the retrieval context."
+ },
+ {
+  "round": 3,
+  "saturated": false,
+  "scores": {
+   "grounding": 5,
+   "coverage": 2,
+   "lineage": 3,
+   "coherence": 5,
+   "frontier": 3,
+   "focus": 5
+  },
+  "gaps": [
+   "arXiv:1409.3215",
+   "arXiv:1508.04025",
+   "arXiv:1406.1078",
+   "arXiv:1706.03872"
+  ],
+  "assessment": "The review misses the most foundational and high-impact papers that define the transition between NMT paradigms."
+ }
+]

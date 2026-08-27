@@ -50,7 +50,7 @@ def _index_html(public: bool = False) -> str:
  </select>
 </div>
 <div class="grid" id="grid">loading&hellip;</div>"""
-    return _page("GraphIV — Research Library", body, script=_INDEX_JS, public=public)
+    return _page("GraphIV Research Library", body, script=_INDEX_JS, public=public)
 
 
 def _run_html(slug: str, cfg: str, question: str = "", public: bool = False) -> str:
@@ -134,5 +134,5 @@ def _run_html(slug: str, cfg: str, question: str = "", public: bool = False) -> 
         '<script src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/contrib/'
         'auto-render.min.js"></script>'
     )
-    title = f"GraphIV — {html_mod.escape(question) if question else slug}"
+    title = f"GraphIV: {html_mod.escape(question) if question else slug}"
     return _page(title, body, head=head, script=GRAPH_JS + "\n" + run_js, public=public)

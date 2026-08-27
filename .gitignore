@@ -1,60 +1,52 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.py[cod]
+*.egg-info/
 build/
 dist/
 wheels/
-*.egg-info
-
-# Virtual environments
 .venv/
 
-# project-local postgres socket dir (datadir lives under data/ which is already ignored)
-.pg/
-
-# data (large stores; the small schema files ARE tracked via force-add)
-data
-!data/metadata/schemas.sql
-!data/metadata/pg_schema.sql
-!data/metadata/citation_schema.sql
-
-# nomic model weights (gitignored like data/)
-model/
-
-# ai stuff
+# Tooling caches
+.direnv/
+.ruff_cache/
+.pytest_cache/
+.import_linter_cache/
 .claude/
 CLAUDE.md
 
-# superseded pre-rewrite code (old phase_1/2/3 + scratchpad/kg_rag*); kept on disk, untracked
-.legacy/
-
-# research run output (regenerable reports and figures)
-output/
-
-# experiment raw runs (reproducible reports + figure PNGs); keep metrics/plots/READMEs
-experiments/**/results/runs/
-experiments/**/results/run.log
-# bulky deep-run dumps (49M+, regenerable via experiments/rerun.sh)
-experiments/showcase/runs/
-
-# scratch workspace (prototypes + large generated outputs, multi-GB)
-scratchpad/
-
-# nix direnv build cache
-.direnv/
-
-# LaTeX build intermediates (keep .tex/.pdf/.md; drop the rest)
+# LaTeX build intermediates: the .tex source and the .pdf are kept, everything
+# a compile regenerates is not
 *.aux
+*.bbl
+*.blg
 *.fdb_latexmk
 *.fls
-*.synctex.gz
+*.lof
+*.lot
+*.log
+*.nav
 *.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
 
-# per-experiment caches are kept (small, and the LLM judge labels are expensive to regenerate)
+# Frozen binary artifacts of an experiment: pickles and figure sources are rebuilt
+# by the experiment that owns them
+*.pkl
 
-# ad-hoc manual phase-6 output samples (use experiments/showcase instead)
-test/
+# The project-local Postgres socket; its datadir lives under data/
+.pg/
 
-# latex log (aux/fls/etc already covered)
-paper/*.log
-experiments/**/report/*.log
+# Large stores. Schemas are small and reviewable, so they are force-added back.
+data
+!data/metadata/*.sql
+
+# Research runs submitted through the MCP: regenerable, and the dashboard serves
+# them from disk rather than from git
+output/
+
+# Working space, empty by design
+scratchpad/*
+!scratchpad/README.md

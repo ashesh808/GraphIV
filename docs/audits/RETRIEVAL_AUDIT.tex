@@ -1,0 +1,379 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+
+% --- variable box: gray panel holding the constants table of each step ---
+\definecolor{boxbg}{gray}{0.93}
+\newsavebox{\varboxsave}
+\newenvironment{varbox}
+  {\par\medskip\begin{lrbox}{\varboxsave}%
+   \begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}\small\vspace{4pt}}
+  {\vspace{4pt}\end{minipage}\end{lrbox}%
+   \noindent\colorbox{boxbg}{\usebox{\varboxsave}}\par\medskip}
+
+% --- backed-status tags ---
+\newcommand{\backedyes}{\textcolor{green!50!black}{\textbf{BACKED}}}
+\newcommand{\backedpart}{\textcolor{orange!80!black}{\textbf{PARTIAL}}}
+\newcommand{\backedno}{\textcolor{red!70!black}{\textbf{UNBACKED}}}
+\newcommand{\lit}[1]{\textcolor{blue!60!black}{\textit{#1}}}
+\newcommand{\act}[1]{\par\smallskip\noindent\textbf{Action:} #1}
+
+\title{\textbf{GraphIV retrieval audit} --- every step, every constant\\
+\large inputs, algorithm, reasoning, evidence status, and what (if anything) to sweep}
+\author{2026-07-19}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent One section per pipeline step, in execution order. Each gray box lists every
+constant the step uses, its current value, and where the value came from:
+\textbf{measured} (an experiment picked it), \textbf{inherited} (taken from literature with
+evidence there, unverified on our data), or \textbf{hand-set} (a guess that has never been
+swept). Status tags: \backedyes\ = evidence exists (internal experiment and/or literature),
+\backedpart\ = the mechanism is backed but its constants are not, \backedno\ = no evidence
+either way. ``Cheap'' sweeps are deterministic pool-stage runs on the silver-qrels pilots
+(no LLM, minutes per condition); ``standard'' sweeps need graded runs (GPU, ${\sim}$15--25
+min each).
+
+\medskip
+\noindent Literature receipts come from the 2026-07-19 GraphIV run
+\texttt{retrieval-strategies-for-scientific-lit-66358b01} (pool 258, 26 grounded citations)
+plus classic IR references.
+
+\section*{Terminology}
+\begin{varbox}
+\begin{tabular}{@{}lp{0.72\linewidth}@{}}
+\toprule
+term & meaning \\
+\midrule
+KG & the Postgres store: \texttt{paper} + intent-typed \texttt{citation} + embeddings + topic tree \\
+$V$ & vector pool --- pgvector KNN over asym embeddings, size \texttt{n\_pool} \\
+$L$ & lexical pool --- Postgres full-text over titles, size \texttt{k\_lexical} \\
+RRF & reciprocal rank fusion, $1/(60+\mathrm{rank})$ summed over lists \\
+$m$ & landmark budget: papers selected into the citable cohort (60/80/120 by tier) \\
+landmark & selected paper, citable in the report \\
+connector & pool paper kept only as a graph edge endpoint, never cited \\
+rel & reader relevance grade $-2..{+}2$; fusion score $= \cos \times (\mathrm{rel}+2)/4$ \\
+role & reader 6-class label: foundational / core / frontier / adjacent / survey / unrelated \\
+PPR & personalized PageRank on the induced subgraph ($\alpha=0.85$) --- baseline selector \\
+Leyline sampler & magnetic Monte-Carlo BFS selector ($q=8$, $\gamma=0.4$, 10 seeds); formerly ``trajectory'' \\
+leyline & one lineage thread traced by a walker; convergence across seeds = selection \\
+magnet & rel $\geq 2$ paper pulling walkers, weight $(\mathrm{rel}+2)/4$ \\
+frontier year & per-topic recent-activity cutoff from the pool's own year histogram \\
+recency $r$ & $0..1$ knob reserving $\mathrm{round}(r \cdot m)$ slots for frontier-year papers \\
+ancestor floor & min cosine 0.30 for backward-citation augmentation (coupled to $m \geq 60$) \\
+tier & effort preset bundling \texttt{n\_pool}/$m$/extract: tiny / fast / standard / deep \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\section{Step 0 --- query embedding}
+\textbf{Inputs:} the question string.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+prompt prefix & \texttt{search\_query:} & nomic model contract \\
+embedding space & asym (\texttt{paper\_embedding\_asym}) & \textbf{measured} (2026-07-15 A/B vs sym+HyDE) \\
+HyDE & off in asym mode & \textbf{measured} (same A/B) \\
+endpoint & local llama-embed, mean pooling & parity vs ST cosine $>0.999$ \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} One HTTP call to the local embedding server; the vector is the search
+key for every later step. \\
+\textbf{Why.} Asym prompts already encode the query/document role split, so HyDE's
+``rewrite the question as a fake abstract'' trick is redundant. \\
+\textbf{Backed?} \backedyes\ --- internal A/B chose asym; endpoint parity verified. \\
+\act{none.}
+
+\section{Step 1 --- candidate pools $V \cup L$, fused by RRF}
+\textbf{Inputs:} qvec, question string.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+$|V|$ = \texttt{n\_pool} & 200 / 400 / 400 / 600 (tiny/fast/std/deep) & hand-set tiers \\
+$|L|$ = \texttt{k\_lexical} & 400 (all tiers) & hand-set \\
+lexical field & \texttt{tsvector} over \emph{titles only} & hand-set \\
+\texttt{RRF\_K} & 60 & inherited (Cormack et al.\ 2009) \\
+output size & top \texttt{n\_pool} of fused rank & follows $|V|$ \\
+\texttt{hnsw.ef\_search} & 1000 & \textbf{measured} (02-07; default 40 truncated every KNN) \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} $V$ = pgvector KNN top-\texttt{n\_pool}. $L$ = Postgres full-text rank
+over titles. Fused score per paper:
+\[ s(p) = \frac{1}{60 + \mathrm{rank}_V(p)} + \frac{1}{60 + \mathrm{rank}_L(p)}, \]
+keep the top \texttt{n\_pool}. $L$ never grows the pool --- it only reshuffles membership. \\
+\textbf{Why.} Cosine and BM25 scores live on incomparable scales, so fuse on ranks. The
+$+60$ damps single-list dominance: rank~1 in one list ($1/61$) loses to rank~30 in both
+($2/90$), i.e.\ agreement between two weak signals beats one signal's confidence. At $k{=}0$
+one channel's favorite steamrolls consensus; at $k{\to}\infty$ the formula degenerates to
+``in how many lists does it appear.'' \\
+\textbf{Backed?} \backedpart. RRF itself: \lit{Cormack, Clarke \& B\"uttcher, SIGIR 2009}
+(tuned $k{=}60$ once on TREC, found insensitive; industry default since). Hybrid dense+sparse
+for scientific docs: \lit{arXiv:2401.04055}, \lit{arXiv:2508.01405}. Our hybrid arm was
+promoted from kg\_rag\_lab as the polysemy fix. But \texttt{n\_pool}, \texttt{k\_lexical},
+$k{=}60$, and titles-only were never swept on our data. \\
+\act{cheap sweeps on the 3 pilot surveys: \texttt{n\_pool} $\in \{200,400,600,800\}$,
+\texttt{k\_lexical} $\in \{100,400,800\}$, \texttt{RRF\_K} $\in \{10,60,300\}$ against
+core-ref pool recall. One extra probe: titles-only is the most suspicious choice here ---
+try title+abstract \texttt{tsvector}, since survey refs often match on abstract vocabulary.}
+
+\section{Step 2 --- topic-adaptive frontier detection}
+\textbf{Inputs:} year histogram of the fused pool, current date (or the \texttt{--set-max-date}
+cap), landmark budget $m$, recency knob.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+\texttt{\_WINDOW} & 7 years & hand-set \\
+\texttt{\_ACTIVE\_SHARE} & 0.30 of recent peak & hand-set \\
+\texttt{\_MAX\_SPAN} & 6 years & hand-set \\
+\texttt{recent\_floor} & $\mathrm{round}(\text{recency} \cdot m)$ & formula; recency knob \textbf{measured} (exp-2) \\
+recency default & 0.4 & \textbf{measured} (exp-2 sweep) \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} Find the peak year-count within the last 7 years; walk back from now
+while each year holds $\geq$30\% of that peak (the part-elapsed current year gets a pass);
+clamp to at most 6 years back. Papers $\geq$ that year are ``frontier''; \texttt{recent\_floor}
+landmark slots are reserved for them, filled newest-cohort-first round-robin
+(\texttt{frontier\_select}) so 2025 \emph{and} 2026 each get slots. \\
+\textbf{Why.} A fixed cutoff (the old hardcoded 2023) buried new work in hot fields and
+starved slow fields; each topic's own tempo should define ``recent.'' Newest-first
+round-robin exists because similarity-ranked reservation systematically fed the
+just-past-cutoff years and starved the true frontier. \\
+\textbf{Backed?} \backedpart. The recency \emph{knob} is measured (exp-2); the three
+detector constants are not. Literature: the 07-19 corpus run found \emph{nothing} on
+recency-adaptive retrieval despite it being in the question verbatim --- this is one of the
+three claimable novelties, which raises the evidence bar. \\
+\act{do not sweep 7/0.30/6 blindly. The battery (20 capped surveys, different topic tempos)
+will exercise the detector; log \texttt{frontier\_year} per topic and eyeball for wrong
+calls. Sweep only if one looks wrong. The paper needs at least a sensitivity sentence.}
+
+\section{Step 3 --- leaf anchor + citation drill + recency inject}
+\textbf{Inputs:} fused pool, topic tree, qvec, frontier year.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+leaf-vote seeds \texttt{topk} & 30 & hand-set \\
+\texttt{use\_siblings} & true (keep leaf $\cup$ same parent path) & hand-set \\
+drill \texttt{target} & 150 / 280 / 280 / 360 by tier & hand-set tiers \\
+\texttt{recent\_k} (inject) & 50 & hand-set \\
+\texttt{member\_cap} & 5000 leaf members read & hand-set \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} (a) similarity-weighted vote among the top-30 pool papers picks the
+dominant leaf and parent path; (b) \emph{anchor}: drop pool papers outside
+leaf-or-siblings; (c) \emph{drill}: refill toward \texttt{target} with leaf members that
+cite / are cited by the surviving pool, ranked by cosine; (d) \emph{inject}: add the top-50
+leaf members $\geq$ frontier year, newest-cohort-first. \\
+\textbf{Why.} The anchor kills polysemous-query hijack (spintronics $\to$ cond-mat, not
+particle physics --- the validated case that motivated it). The drill restores topical depth
+the anchor removed. The inject counters the tree's old-paper bias. \\
+\textbf{Backed?} \backedpart, and this is the step in genuine doubt. The channel as a whole
+is backed by exp-1 (\texttt{no\_cluster} ablation) and is family-adjacent to cluster-based
+GraphRAG \lit{arXiv:2404.16130}. BUT study 04-03 found \texttt{no\_cluster} \emph{improved}
+pool recall on the diffusion-SR survey (0.775 vs 0.518 at ${\geq}2$ mentions) --- on a
+tight, non-polysemous question the anchor appears to \emph{evict true references}. The hard
+anchor itself has no literature antecedent (novelty candidate \emph{and} risk). \\
+\act{highest-priority retrieval question for the battery: run a \texttt{no\_cluster} arm
+across all 20 surveys. Expected outcome: anchor helps polysemous/broad questions, hurts
+tight ones --- which argues for a \emph{conditional} anchor (fire only when the top-30 leaf
+vote is split) rather than always-on. Measure before changing the design.}
+
+\section{Step 4 --- frontier pull (leaf-independent)}
+\textbf{Inputs:} qvec, frontier year.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+\texttt{probe} & 1500 nearest neighbors scanned & hand-set \\
+\texttt{want} & $\max(40, \texttt{recent\_floor})$ & hand-set \\
+selection & newest-cohort-first round-robin & shared \texttt{frontier\_select} \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} KNN top-1500 over the \emph{whole} index, keep papers $\geq$ frontier
+year, take \texttt{want} of them newest-first. \\
+\textbf{Why.} The topic tree predates the corpus delta, so the newest papers have no leaf
+and step 3 can never reach them. This is the only channel that can admit them. \\
+\textbf{Backed?} \backedyes\ --- exp-3, and 04-03 re-confirmed on silver qrels (removing it
+dropped R@1 $0.518 \to 0.473$). \\
+\act{one diagnostic only: in the battery, log how many of the 1500 probed survive the year
+filter. If a hot topic's recent output saturates the probe, the pull sees a biased slice
+and \texttt{probe} needs raising. No sweep otherwise.}
+
+\section{Step 5 --- backward-ancestor augmentation}
+\textbf{Inputs:} pool, qvec.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+\texttt{max\_add} & 120 & hand-set \\
+\texttt{min\_citers} & 3 distinct pool citers & hand-set \\
+\texttt{min\_cosine} & 0.30 & \textbf{measured} (exp-16 / 02-03 $\to$ 02-07 BYOL) \\
+coupling & floor 0.30 requires $m \geq 60$ & \textbf{measured} (02-07; never ship apart) \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} Rank out-of-pool papers by number of distinct pool papers citing them
+(fame \emph{ranks}); admit up to 120 that pass the 0.30 cosine floor (relevance
+\emph{gates}). \\
+\textbf{Why.} The foundational lineage (DDPM, score-SDE, \dots) is cited by nearly the whole
+pool yet is rarely a top KNN neighbor of the question --- pure similarity retrieval
+structurally misses origins. The floor keeps famous cross-field hubs out. \\
+\textbf{Backed?} \backedyes\ --- the most thoroughly measured channel: floor swept (0.35
+Pareto on a 0.25--0.35 plateau), lowered to 0.30 on BYOL evidence with the documented $m$
+coupling. Literature: backward snowballing is standard systematic-review methodology
+(\lit{Wohlin 2014}; \lit{arXiv:2307.02612} shows search+snowballing beats either alone);
+seed-set citation ranking $\approx$ co-citation analysis (\lit{Small 1973}). \\
+\act{none. \texttt{min\_citers}=3 and \texttt{max\_add}=120 are unswept but the channel
+sits on a measured plateau; not worth compute.}
+
+\section{Step 6 --- subgraph induction}
+\textbf{Inputs:} final pool ids.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+edge collapse & strongest intent wins (\texttt{INTENT\_PRIORITY}) & hand-set ordering \\
+self-loops & dropped & --- \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} One SQL fetch of all citation rows with both endpoints in the pool;
+parallel edges collapse to one carrying the strongest-signal intent + its polarity. \\
+\textbf{Why.} Everything downstream (PPR, magnets, story graph, digest adjacency) consumes
+this typed mini-graph. \\
+\textbf{Backed?} \backedyes\ --- exp-1 \texttt{no\_graph} ablation; 04-03 attributed
+${\approx}40\%$ of core landmark selection to graph ranking. \\
+\act{none; plumbing.}
+
+\section{Step 7 --- reader grading + score fusion}
+\textbf{Inputs:} question, pool, edges, budget $m$.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+grading set & top-$2m$ by cosine $\cup$ top-$2m$ by in-degree & hand-set width \\
+roles & 6 labels (foundational \dots unrelated) & design \\
+relevance & $-2 \dots +2$ & design \\
+fused score & $\cos \times (rel+2)/4$ & \textbf{measured} (02-05 Pareto) \\
+$rel = -2$ handling & excluded from ranking, kept as connector & \textbf{measured} (02-05) \\
+cache & \texttt{grade\_cache.db} by (qhash, arxiv\_id) & determinism device \\
+\texttt{CONCURRENCY} & 4 & hand-set \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} Grade only the candidate set (cost scales with $m$, not pool size),
+cache-first; rescore every graded paper by $\cos \times (rel+2)/4$. \\
+\textbf{Why.} The in-degree arm of the candidate set exists because ancestor-injected hubs
+(cosine ${\approx}0.30$--$0.35$) would miss a pure-cosine cut, yet are exactly the papers
+ranking promotes. Fusion sinks semantically-close-but-irrelevant papers. \\
+\textbf{Backed?} \backedpart. Fusion: \backedyes\ (02-05: unrelated landmarks
+$5.7\% \to 0$, recall held; LLM-as-reranker is standard practice in the literature). The
+$2m$ width: \backedno\ --- and it matters more now, because trajectory magnets can only
+come from \emph{graded} papers; a true reference outside the top-$2m$ cut can never become
+a magnet. \\
+\act{add one battery column: fraction of core refs that entered the grading set at all. If
+$<1$, widen $2m$ before blaming the sampler for misses.}
+
+\section{Step 8 --- landmark selection (trajectory hybrid over PPR)}
+\textbf{Inputs:} graded pool, edges, $m$, frontier spec.
+
+\begin{varbox}
+\begin{tabular}{@{}lll@{}}
+\toprule
+constant & value & provenance \\
+\midrule
+\texttt{QUOTA} $q$ & 8 consensus picks & \textbf{measured-ish} (battery Pareto at $q{=}8$) \\
+\texttt{SEEDS} & 10 fixed-seed runs & hand-set \\
+\texttt{GAMMA} & 0.4 between-lineage decay & hand-set \\
+\texttt{MAX\_LINEAGES} & 50 per run & hand-set cap \\
+thread width $k$ & 1 (linear threads) & \textbf{measured} (decay covers facets) \\
+per-run budget & $3q$ collected before stop & hand-set \\
+magnets & $rel \geq 2$, weight $(rel+2)/4$ & design \\
+PPR base & fills $m-q$; $\alpha{=}0.85$, 80 iters & classic defaults \\
+landmark budget $m$ & 30 / 60 / 80 / 120 by tier & fast $m{=}60$ \textbf{measured} (02-07) \\
+\bottomrule
+\end{tabular}
+\end{varbox}
+
+\textbf{Algorithm.} Magnets = reader-graded $rel \geq 2$ papers. Each run: pick the root
+with the largest reachable magnet mass; descend the citation DAG with weighted-random child
+choice; collect magnets and continue; after each lineage, multiply collected weights by 0.4
+so the next lineage is pulled toward a \emph{different} facet. Repeat over 10 fixed seeds;
+the top-8 papers by collection frequency (deterministic consensus) join the PPR-ranked base
+($m-8$ slots, frontier reservation from step 2). PPR order backfills if magnets run short. \\
+\textbf{Why.} PPR concentrates probability on hubs; the sampler explicitly fans across
+lineages toward graded-relevant mass. Consensus over seeds because a single walk is
+high-variance and a greedy walk under-explores (both measured). \\
+\textbf{Backed?} \backedyes\ for the mechanism --- twice: the internal selection battery
+(Pareto at $q{=}8$, 2026-07-14) and the external silver-qrels A/B (trajectory beats PPR 6/6
+cells on core-ref landmark recall at ${\geq}2$/${\geq}3$ mentions, standard tier, capped).
+No literature antecedent (nearest: RL sparse reference selection \lit{arXiv:2509.05874},
+different mechanism) --- this is the headline novelty. \backedno\ for
+\texttt{SEEDS}/\texttt{GAMMA}, and $q{=}8$ was picked on the internal battery only. \\
+\act{two items. (1) Sweep \texttt{GAMMA} $\in \{0.2, 0.4, 0.7\}$ and \texttt{QUOTA}
+$\in \{8, 16, 24\}$ in the battery --- if trajectory keeps winning, ``why not $q{=}m$?'' is
+the first reviewer question. (2) Code the empty-magnet guard: warn + fall back to PPR when
+\texttt{rank=trajectory} sees no grades (the fast-tier silent-degrade trap from 04-04).}
+
+\section*{Summary --- what the grand sweep should actually contain}
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+priority & step & what & cost \\
+\midrule
+1 & 3 & \texttt{no\_cluster} arm across all 20 surveys & standard (rides the battery) \\
+2 & 8 & \texttt{QUOTA}/\texttt{GAMMA} sweep & standard (rides the battery) \\
+3 & 7 & grading-set coverage column & free (logging only) \\
+4 & 1 & \texttt{n\_pool} / \texttt{k\_lexical} / \texttt{RRF\_K} sweeps & cheap (deterministic, pilots) \\
+5 & 1 & titles-only vs title+abstract lexical arm & cheap \\
+6 & 2 & frontier-year eyeball per battery topic & free (logging only) \\
+7 & 4 & probe-saturation diagnostic & free (logging only) \\
+--- & 0, 5, 6 & nothing & already measured \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent Novelty claims riding on retrieval (bar is higher for these): per-topic frontier
+detection + recency quotas (step 2), hard dominant-leaf anchoring (step 3 --- currently the
+shakiest), magnet-pulled trajectory selection (step 8 --- currently the best-evidenced).
+
+\end{document}

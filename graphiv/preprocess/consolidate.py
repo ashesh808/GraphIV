@@ -19,6 +19,8 @@ from typing import Any, LiteralString, cast
 import numpy as np
 import psycopg
 
+from graphiv.core.settings import PG_DSN
+
 REPO = Path(__file__).resolve().parents[2]
 ARXIV_DB = REPO / "data" / "metadata" / "arxiv.db"
 TOPIC_DB = REPO / "data" / "metadata" / "topic_tree_nomic.db"
@@ -27,7 +29,6 @@ NOMIC_NPY = Path("/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embedd
 NOMIC_PROMPT = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
 
 SRC_DSN = "dbname=arxiv-citations host=/run/postgresql"
-DST_DSN = f"host={REPO}/.pg port=5433 dbname=arxivkg"
 
 # citation columns copied server-to-server (parse-scratch + dead intent_v3 deliberately excluded)
 CIT_COLS = (
@@ -68,27 +69,27 @@ def stage_paper(force: bool) -> None:
     """
     Copy the paper id mapping across, preserving ids
     """
-    if not force and _count(DST_DSN, "paper") > 0:
+    if not force and _count(PG_DSN, "paper") > 0:
         log("paper already populated; skip (use --force)")
         return
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         _ = c.execute("TRUNCATE paper")
     log("copying paper(id, arxiv_id) preserving ids ...")
     _pipe(
         src_sql="\\copy (SELECT id, arxiv_id FROM paper) TO STDOUT",
         dst_sql="\\copy paper (id, arxiv_id) FROM STDIN",
     )
-    log(f"paper rows: {_count(DST_DSN, 'paper'):,}")
+    log(f"paper rows: {_count(PG_DSN, 'paper'):,}")
 
 
 def stage_citation(force: bool) -> None:
     """
     Copy the citation table across, server to server
     """
-    if not force and _count(DST_DSN, "citation") > 0:
+    if not force and _count(PG_DSN, "citation") > 0:
         log("citation already populated; skip (use --force)")
         return
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         _ = c.execute("TRUNCATE citation")
     log("copying citation (slim cols, 173M rows) server-to-server; this is the long one ...")
     t0 = time.time()
@@ -96,7 +97,7 @@ def stage_citation(force: bool) -> None:
         src_sql=f"\\copy (SELECT {CIT_COLS} FROM citation) TO STDOUT",
         dst_sql=f"\\copy citation ({CIT_COLS}) FROM STDIN",
     )
-    log(f"citation rows: {_count(DST_DSN, 'citation'):,} in {time.time()-t0:.0f}s")
+    log(f"citation rows: {_count(PG_DSN, 'citation'):,} in {time.time()-t0:.0f}s")
 
 
 def _pipe(src_sql: str, dst_sql: str) -> None:
@@ -105,7 +106,7 @@ def _pipe(src_sql: str, dst_sql: str) -> None:
         stdout=subprocess.PIPE,
     )
     dst = subprocess.Popen(
-        ["psql", DST_DSN, "-v", "ON_ERROR_STOP=1", "-c", dst_sql],
+        ["psql", PG_DSN, "-v", "ON_ERROR_STOP=1", "-c", dst_sql],
         stdin=src.stdout,
     )
     if src.stdout:
@@ -123,7 +124,7 @@ def stage_meta(force: bool) -> None:
     Ingest the metadata rows paper_meta is still missing
     """
     sc = sqlite3.connect(f"file:{ARXIV_DB}?mode=ro", uri=True)
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         if force:
             _ = c.execute("TRUNCATE paper_meta")
         have: set[str] = {
@@ -136,7 +137,7 @@ def stage_meta(force: bool) -> None:
     for pid, cat in sc.execute("SELECT publication_id, category FROM categories ORDER BY id"):
         primary.setdefault(str(pid), str(cat))
     log(f"  {len(primary):,} categorized papers")
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         n = 0
         with c.cursor().copy(
             "COPY paper_meta (arxiv_id, title, abstract, year, primary_category, authors)"
@@ -153,7 +154,7 @@ def stage_meta(force: bool) -> None:
                 if n % 500_000 == 0:
                     log(f"  paper_meta +{n:,}")
     sc.close()
-    log(f"paper_meta rows: {_count(DST_DSN, 'paper_meta'):,} (+{n:,} new)")
+    log(f"paper_meta rows: {_count(PG_DSN, 'paper_meta'):,} (+{n:,} new)")
 
 
 # paper_embedding from the nomic .npy (row-aligned to old arxiv_latest.db scan order)
@@ -168,7 +169,7 @@ def stage_emb(force: bool) -> None:
     """
     Load the frozen nomic vectors into paper_embedding
     """
-    if not force and _count(DST_DSN, "paper_embedding") > 0:
+    if not force and _count(PG_DSN, "paper_embedding") > 0:
         log("paper_embedding already populated; skip")
         return
     log("loading nomic .npy (mmap) + reconstructing id order ...")
@@ -177,7 +178,7 @@ def stage_emb(force: bool) -> None:
     if len(ids) != emb.shape[0]:
         raise RuntimeError(f"emb/id mismatch: {len(ids)} ids vs {emb.shape[0]} vectors")
     log(f"  {emb.shape[0]:,} vectors x {emb.shape[1]}d")
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         _ = c.execute("TRUNCATE paper_embedding")
         n = 0
         with c.cursor().copy("COPY paper_embedding (arxiv_id, embedding) FROM STDIN") as cp:
@@ -187,7 +188,7 @@ def stage_emb(force: bool) -> None:
                 n += 1
                 if n % 250_000 == 0:
                     log(f"  paper_embedding {n:,}")
-    log(f"paper_embedding rows: {_count(DST_DSN, 'paper_embedding'):,}")
+    log(f"paper_embedding rows: {_count(PG_DSN, 'paper_embedding'):,}")
 
 
 # leaf + paper_topic from topic_tree_nomic.db
@@ -195,11 +196,11 @@ def stage_topic(force: bool) -> None:
     """
     Load the topic tree into leaf and paper_topic
     """
-    if not force and _count(DST_DSN, "paper_topic") > 0:
+    if not force and _count(PG_DSN, "paper_topic") > 0:
         log("paper_topic already populated; skip")
         return
     sc = sqlite3.connect(f"file:{TOPIC_DB}?mode=ro", uri=True)
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         _ = c.execute("TRUNCATE leaf")
         _ = c.execute("TRUNCATE paper_topic")
         with c.cursor().copy("COPY leaf (leaf_id, size, depth, radius) FROM STDIN") as cp:
@@ -209,7 +210,7 @@ def stage_topic(force: bool) -> None:
             for row in sc.execute("SELECT arxiv_id, leaf_id, path, depth FROM paper_topic"):
                 cp.write_row(list(row))
     sc.close()
-    log(f"leaf={_count(DST_DSN, 'leaf'):,} paper_topic={_count(DST_DSN, 'paper_topic'):,}")
+    log(f"leaf={_count(PG_DSN, 'leaf'):,} paper_topic={_count(PG_DSN, 'paper_topic'):,}")
 
 
 # indexes (after bulk load)
@@ -224,7 +225,7 @@ def stage_index(_force: bool) -> None:
         "CREATE INDEX IF NOT EXISTS paper_emb_hnsw ON paper_embedding USING hnsw (embedding halfvec_cosine_ops)",  # noqa: E501
         "CREATE INDEX IF NOT EXISTS paper_meta_tsv_idx ON paper_meta USING gin (to_tsvector('english', coalesce(title, '')))",  # noqa: E501
     ]
-    with psycopg.connect(DST_DSN, autocommit=True) as c:
+    with psycopg.connect(PG_DSN, autocommit=True) as c:
         for s in stmts:
             log(f"index: {s.split('ON')[0].strip()} ...")
             t0 = time.time()
@@ -240,7 +241,7 @@ def stage_check(_force: bool) -> None:
     from graphiv.preprocess.embed_corpus import embed_endpoint  # noqa: PLC0415
 
     sc = sqlite3.connect(f"file:{ARXIV_DB}?mode=ro", uri=True)
-    with psycopg.connect(DST_DSN) as c:
+    with psycopg.connect(PG_DSN) as c:
         rows: list[tuple[str, Any]] = c.execute(
             "SELECT arxiv_id, embedding FROM paper_embedding ORDER BY random() LIMIT 20"
         ).fetchall()

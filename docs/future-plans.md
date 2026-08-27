@@ -1,5 +1,11 @@
 # GraphIV — analysis, limitations & future plans
 
+> **Numbers here rest on the 27-topic battery, which is no longer trusted.** The retrieval
+> claims were re-measured on a 60-survey qrels benchmark (`experiments/02-retrieval`) and the
+> generation claims were replaced by four reliability experiments
+> (`experiments/03-generation`). The limitations and the direction still read true; the figures
+> do not.
+
 Synthesis of the deep-lever experiment campaign (experiments 9–12), run across the full **27-topic
 battery** on a single 3090 (2026-06-24/25). This is an honest engineering post-mortem, not a pitch:
 it records what each lever actually bought, what is still broken, and what to do next. Numbers come

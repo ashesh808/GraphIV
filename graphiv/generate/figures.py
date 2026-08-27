@@ -109,7 +109,7 @@ def figure_block(aid: str, title: str, info: dict[str, object]) -> str:
     Render one captioned figure as the markdown the report embeds
     """
     return (
-        f"**{title}** — arXiv:{aid} p.{info['page']}\n\n"
+        f"**{title}** (arXiv:{aid} p.{info['page']})\n\n"
         f"![{aid}]({info['file']})\n\n{info['caption']}\n"
     )
 

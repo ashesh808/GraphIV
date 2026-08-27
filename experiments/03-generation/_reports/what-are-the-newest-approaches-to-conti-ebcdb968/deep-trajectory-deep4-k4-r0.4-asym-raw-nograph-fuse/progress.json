@@ -1,0 +1,48 @@
+{
+ "question": "What are the newest approaches to continual learning and avoiding catastrophic forgetting?",
+ "started_at": "2026-08-27T17:38:19",
+ "elapsed": 377.1,
+ "stages": [
+  {
+   "name": "embed",
+   "seconds": 0.1
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 19.0
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 132.0
+  },
+  {
+   "name": "judge",
+   "seconds": 20.2
+  },
+  {
+   "name": "critique",
+   "seconds": 9.5
+  },
+  {
+   "name": "compose-long",
+   "seconds": 111.7
+  },
+  {
+   "name": "viz",
+   "seconds": 0.5
+  },
+  {
+   "name": "summaries",
+   "seconds": 37.6
+  },
+  {
+   "name": "figures",
+   "seconds": 23.9
+  },
+  {
+   "name": "pdf",
+   "seconds": 1.1
+  }
+ ],
+ "done": true
+}

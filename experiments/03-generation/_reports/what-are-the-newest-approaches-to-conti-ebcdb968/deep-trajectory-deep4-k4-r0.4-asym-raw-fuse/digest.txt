@@ -1,0 +1,1203 @@
+QUESTION: What are the newest approaches to continual learning and avoiding catastrophic forgetting?
+
+SCHEMA FIELDS: ['learning_paradigm', 'core_technique', 'architecture_strategy', 'mitigation_mechanism', 'key_innovation', 'evaluation_metrics']
+
+ERAS:
+  [0] Origins: 2013-2017
+  [1] Key Advances: 2017-2022
+  [2] Current Frontier: 2022-2026
+
+NODES (chronological; role + extracted fields per paper):
+arXiv:1312.6211 (2013) [foundational] "An Empirical Investigation of Catastrophic Forgetting in Gradient-Based
+  Neural Networks" [stat] (cited-by 128 in-topic, era 0)
+    learning_paradigm: task-incremental
+    core_technique: dropout and stochastic gradient descent
+    architecture_strategy: fixed
+    mitigation_mechanism: dropout regularization
+    key_innovation: empirical investigation comparing various gradient-based training algorithms and activation functions (logistic sigmoid, rectifier, hard LWTA, maxout) regarding catastrophic forgetting
+arXiv:1312.6114 (2013) [adjacent] "Auto-Encoding Variational Bayes" [stat] (cited-by 48 in-topic, era 0)
+    core_technique: stochastic variational inference
+    key_innovation: a stochastic objective function (lower bound estimator) for directed graphical models with continuous latent variables that scales to large datasets using neural networks (variational auto-encoder)
+    evaluation_metrics: variational lower bound, estimated marginal likelihood
+arXiv:1503.02531 (2015) [foundational] "Distilling the Knowledge in a Neural Network" [stat] (cited-by 125 in-topic, era 0)
+    core_technique: knowledge distillation
+    architecture_strategy: fixed (transferring knowledge from a large model to a smaller model)
+    mitigation_mechanism: matching soft targets (probability distributions) from a teacher model
+    key_innovation: training a small model to mimic the soft targets (output probabilities) of a large ensemble or complex model
+    evaluation_metrics: test error
+arXiv:1612.00796 (2016) [core] "Overcoming catastrophic forgetting in neural networks" [cs] (cited-by 465 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: regularization
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: selectively slowing down learning on weights important for previously seen tasks based on their importance
+    key_innovation: Elastic Weight Consolidation (EWC)
+arXiv:1611.07725 (2016) [core] "iCaRL: Incremental Classifier and Representation Learning" [cs] (cited-by 327 in-topic, era 0)
+    learning_paradigm: class-incremental learning
+    core_technique: exemplar replay (using a dynamic exemplar set)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: storing and replaying a fixed number of exemplar images per class to learn classifiers and representations simultaneously
+    key_innovation: simultaneous learning of strong classifiers and data representations using a dynamic exemplar selection strategy
+    evaluation_metrics: classification accuracy
+arXiv:1606.04671 (2016) [core] "Progressive Neural Networks" [cs] (cited-by 301 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: lateral connections
+    architecture_strategy: growing architecture
+    mitigation_mechanism: instantiating a new neural network (a column) for each task to prevent interference with previous columns
+    key_innovation: progressive columns with lateral connections to previously learned features to enable transfer without forgetting
+arXiv:1606.09282 (2016) [foundational] "Learning without Forgetting" [cs] (cited-by 251 in-topic, era 0)
+    learning_paradigm: task-incremental learning (adding new capabilities without access to original training data)
+    core_technique: knowledge distillation
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: using the original network to generate soft labels for the new data to preserve existing capabilities
+    key_innovation: Learning without Forgetting (LwF) method that uses only new task data to train the network while preserving original capabilities via distillation
+arXiv:1611.06194 (2016) [core] "Expert Gate: Lifelong Learning with a Network of Experts" [cs] (cited-by 49 in-topic, era 0)
+    learning_paradigm: task-incremental lifelong learning
+    core_technique: expert network with a gating function
+    architecture_strategy: growing architecture (adding new experts sequentially)
+    mitigation_mechanism: task-specific expert deployment via a gating network that selects the most relevant expert based on low-dimensional subspace representations
+    key_innovation: learning a gating function using undercomplete autoencoders to capture task-specific low-dimensional subspaces without access to previous tasks' data
+arXiv:1606.04080 (2016) [adjacent] "Matching Networks for One Shot Learning" [cs] (cited-by 47 in-topic, era 0)
+    core_technique: metric learning
+    architecture_strategy: fixed
+    key_innovation: non-parametric approach using deep neural features and external memory-inspired components for one-shot learning
+arXiv:1607.00122 (2016) [core] "Less-forgetting Learning in Deep Neural Networks" [cs] (cited-by 29 in-topic, era 0)
+    learning_paradigm: domain-incremental learning
+    core_technique: weight parameter constraint
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: satisfying a less-forgetting condition for weight updates without using source domain information
+    key_innovation: a method to alleviate catastrophic forgetting that does not require any information from the source domain
+    evaluation_metrics: unforgetting and generalization tests
+arXiv:1703.04200 (2017) [core] "Continual Learning Through Synaptic Intelligence" [cs] (cited-by 331 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: regularization
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: accumulation of task-relevant information per synapse to penalize changes to important weights
+    key_innovation: intelligent synapses that track importance of weights over time to protect critical parameters
+arXiv:1706.08840 (2017) [core] "Gradient Episodic Memory for Continual Learning" [cs] (cited-by 297 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: gradient replay (memory-based optimization)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: constraining current gradient updates to ensure they do not increase the loss on a stored subset of previous tasks (gradient projection)
+    key_innovation: GEM (Gradient Episodic Memory) which uses a memory buffer to store past examples and optimizes the current task by solving a constrained optimization problem to prevent interference with previous task gradients
+    evaluation_metrics: test accuracy, backward transfer, forward transfer
+arXiv:1705.08690 (2017) [core] "Continual Learning with Deep Generative Replay" [cs] (cited-by 254 in-topic, era 0)
+    learning_paradigm: sequential learning / task-incremental
+    core_technique: generative replay
+    architecture_strategy: fixed
+    mitigation_mechanism: reconstructing real data distributions using a trained generator (scholar network) to replay past data
+    key_innovation: using a generative adversarial network (specifically WGAN-GP) to reconstruct the input space for replay, making performance dependent only on the quality of the generative model
+arXiv:1708.01547 (2017) [core] "Lifelong Learning with Dynamically Expandable Networks" [cs] (cited-by 169 in-topic, era 0)
+    learning_paradigm: lifelong learning (task-incremental)
+    core_technique: selective retraining and dynamic expansion
+    architecture_strategy: growing architecture
+    mitigation_mechanism: splitting/duplicating units and timestamping to prevent semantic drift
+    key_innovation: Dynamically Expandable Network (DEN) that decides network capacity dynamically and learns a compact overlapping knowledge sharing structure
+arXiv:1711.09601 (2017) [core] "Memory Aware Synapses: Learning what (not) to forget" [cs] (cited-by 167 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: regularization (importance weighting)
+    architecture_strategy: fixed architecture with task-specific heads
+    mitigation_mechanism: estimating importance weights for each parameter to approximate the sensitivity of the learned function to parameter changes, preventing updates to critical weights
+    key_innovation: importance weights that approximate function sensitivity rather than parameter uncertainty or loss sensitivity, allowing for computation using unlabeled data
+arXiv:1711.05769 (2017) [core] "PackNet: Adding Multiple Tasks to a Single Network by Iterative Pruning" [cs] (cited-by 135 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: iterative pruning and re-training
+    architecture_strategy: fixed architecture (with addition of a new output layer per task)
+    mitigation_mechanism: exploiting network redundancies by pruning weights to create free parameters for new tasks while preserving weights for previous tasks
+    key_innovation: packing multiple tasks into a single network by using pruning to free up parameters without increasing network capacity
+arXiv:1701.08734 (2017) [core] "PathNet: Evolution Channels Gradient Descent in Super Neural Networks" [cs] (cited-by 115 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: evolutionary algorithm (pathway discovery) combined with gradient descent
+    architecture_strategy: fixed (modular deep neural network with a shared pool of modules)
+    mitigation_mechanism: parameter reuse via task-specific pathways (subsets of modules) that determine which parameters are updated
+    key_innovation: PathNet uses agents to discover pathways through a modular network, allowing for parameter reuse and transfer learning without catastrophic forgetting
+    evaluation_metrics: mean time to solution (generations)
+arXiv:1703.08475 (2017) [core] "Overcoming Catastrophic Forgetting by Incremental Moment Matching" [cs] (cited-by 115 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: incremental moment matching (IMM) using Bayesian Neural Networks
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: matching the moments of the posterior distribution of the neural network parameters
+    key_innovation: Incremental Moment Matching (IMM) which applies weight transfer, L2-norm regularization, and a new variant of dropout using old parameters to support Gaussian posterior assumptions
+arXiv:1710.10628 (2017) [core] "Variational Continual Learning" [stat] (cited-by 110 in-topic, era 0)
+    learning_paradigm: task-incremental and class-incremental (evolving tasks and emerging new tasks)
+    core_technique: online variational inference (VI) and Monte Carlo VI
+    architecture_strategy: fixed (standard single-head or multi-head neural networks)
+    mitigation_mechanism: approximating the posterior distribution of model parameters to maintain knowledge
+    key_innovation: fusing online variational inference with Monte Carlo VI to create a hyper-parameter free framework applicable to both discriminative and generative models
+arXiv:1711.10563 (2017) [core] "FearNet: Brain-Inspired Model for Incremental Learning" [cs] (cited-by 70 in-topic, era 0)
+    learning_paradigm: incremental class learning
+    core_technique: generative replay
+    mitigation_mechanism: generating previously learned examples that are replayed alongside novel information during consolidation
+    key_innovation: a brain-inspired dual-memory generative model that avoids storing previous training data
+    evaluation_metrics: test accuracy on new class (A_new), accuracy on base-knowledge (A_base), accuracy of all test data seen (A_all), and forgetting (F)
+arXiv:1708.02072 (2017) [survey] "Measuring Catastrophic Forgetting in Neural Networks" [cs] (cited-by 67 in-topic, era 0)
+    learning_paradigm: task-incremental / class-incremental
+    key_innovation: Evaluation of catastrophic forgetting mitigation methods on hard, real-world datasets involving fine-grained image and audio classification with large class counts and small sample sizes.
+arXiv:1703.03400 (2017) [foundational] "Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks" [cs] (cited-by 52 in-topic, era 0)
+    learning_paradigm: few-shot meta-learning
+    core_technique: model-agnostic meta-learning (MAML) via gradient-based optimization
+    architecture_strategy: fixed
+    key_innovation: a model-agnostic algorithm that optimizes for rapid adaptation to new tasks using only a few gradient steps
+arXiv:1705.03550 (2017) [core] "CORe50: a New Dataset and Benchmark for Continuous Object Recognition" [cs] (cited-by 40 in-topic, era 0)
+    learning_paradigm: Class-incremental (NC), Task-incremental (NI), and Task-incremental with Class-incremental (NIC)
+    key_innovation: Introduction of CORe50, a new dataset and benchmark specifically designed for continuous object recognition with high object pose variability and complex acquisition settings.
+    evaluation_metrics: Accuracy
+arXiv:1710.10368 (2017) [core] "Deep Generative Dual Memory Network for Continual Learning" [cs] (cited-by 36 in-topic, era 0)
+    learning_paradigm: task-incremental
+    core_technique: generative experience replay
+    architecture_strategy: fixed
+    mitigation_mechanism: using a Deep Generative Memory (DGM) sub-model consisting of a generator, a learner, and a dictionary of task descriptors to replay samples
+    key_innovation: a dual memory architecture inspired by human memory that utilizes a generative model and task descriptors to enable learning from sequentially arriving samples
+arXiv:1704.01920 (2017) [core] "Encoder Based Lifelong Learning" [cs] (cited-by 27 in-topic, era 0)
+    learning_paradigm: task-incremental learning
+    core_technique: autoencoders
+    architecture_strategy: fixed architecture (AlexNet with shared convolutional layers and task-specific classification layers)
+    mitigation_mechanism: learning under-complete autoencoders for each task to capture and preserve crucial features
+    key_innovation: using task-specific under-complete autoencoders to preserve knowledge of previous tasks during sequential training
+arXiv:1705.08395 (2017) [core] "Continual Learning in Generative Adversarial Nets" [cs] (cited-by 27 in-topic, era 0)
+    learning_paradigm: class-incremental learning
+    core_technique: regularization
+    architecture_strategy: fixed architecture (same generator network)
+    mitigation_mechanism: reducing synaptic plasticity for network parameters determined to be critical for previously encountered tasks
+    key_innovation: extending GANs to sequential data distributions by protecting critical parameters to prevent forgetting
+arXiv:1703.05175 (2017) [adjacent] "Prototypical Networks for Few-shot Learning" [cs] (cited-by 23 in-topic, era 0)
+    learning_paradigm: few-shot learning
+    core_technique: metric learning
+    architecture_strategy: fixed
+    key_innovation: learning a metric space where classification is performed by computing distances to prototype representations (mean vectors) of each class
+arXiv:1812.00420 (2018) [core] "Efficient Lifelong Learning with A-GEM" [cs] (cited-by 199 in-topic, era 1)
+    learning_paradigm: task-incremental lifelong learning
+    core_technique: A-GEM (Averaged Gradient Episodic Memory)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: gradient constraints using episodic memory to prevent interference with previous tasks
+    key_innovation: improving forward transfer through the use of compositional task descriptors (e.g., attribute matrices) to leverage shared components across tasks
+    evaluation_metrics: average accuracy, computational cost, memory cost, and sample complexity
+arXiv:1802.07569 (2018) [survey] "Continual Lifelong Learning with Neural Networks: A Review" [cs] (cited-by 178 in-topic, era 1)
+    learning_paradigm: lifelong learning (continuous stream of information, non-predefined number of tasks)
+    key_innovation: review of neurocognitive mechanisms and their application to computational lifelong learning systems
+arXiv:1801.01423 (2018) [core] "Overcoming catastrophic forgetting with hard attention to the task" [cs] (cited-by 157 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: hard attention mechanism
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: learning a task-based hard attention mask concurrently with each task and exploiting previous masks to condition new learning
+    key_innovation: task-based hard attention mask learned via stochastic gradient descent to preserve previous task information without affecting current task learning
+    evaluation_metrics: accuracy on source and target tasks
+arXiv:1801.10112 (2018) [core] "Riemannian Walk for Incremental Learning: Understanding Forgetting and
+  Intransigence" [cs] (cited-by 151 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: regularization (KL-divergence based)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: KL-divergence based perspective (RWalk) to update the classifier while preserving existing knowledge
+    key_innovation: RWalk, a generalization of EWC++ and PI with a theoretically grounded KL-divergence based perspective
+    evaluation_metrics: accuracy, forgetting, and intransigence
+arXiv:1810.11910 (2018) [core] "Learning to Learn without Forgetting by Maximizing Transfer and
+  Minimizing Interference" [cs] (cited-by 133 in-topic, era 1)
+    learning_paradigm: continual learning over non-stationary distributions of data
+    core_technique: meta-learning combined with experience replay
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: enforcing gradient alignment across examples to maximize transfer and minimize interference
+    key_innovation: Meta-Experience Replay (MER) which optimizes the trade-off between transfer and interference via gradient alignment
+arXiv:1805.06370 (2018) [core] "Progress & Compress: A scalable framework for continual learning" [stat] (cited-by 129 in-topic, era 1)
+    learning_paradigm: task-incremental
+    core_technique: alternating progress and compress phases (knowledge consolidation)
+    architecture_strategy: fixed
+    mitigation_mechanism: separating a fixed knowledge base from an active column to consolidate knowledge during a 'compress' phase
+    key_innovation: a two-column architecture (knowledge base and active column) that mimics sleep-based memory consolidation to enable positive transfer and minimize forgetting
+arXiv:1811.11682 (2018) [core] "Experience Replay for Continual Learning" [cs] (cited-by 116 in-topic, era 1)
+    learning_paradigm: task-agnostic (no task information or boundaries)
+    core_technique: experience replay
+    architecture_strategy: fixed
+    mitigation_mechanism: actor-critic training on a mixture of new and replayed experiences using V-Trace off-policy learning to correct for distribution shifts
+    key_innovation: CLEAR: a method that does not rely on task identity or boundaries, allowing application to situations where tasks are unknown or non-discrete
+arXiv:1810.12488 (2018) [survey] "Re-evaluating Continual Learning Scenarios: A Categorization and Case
+  for Strong Baselines" [cs] (cited-by 72 in-topic, era 1)
+    learning_paradigm: systematic categorization of scenarios (including task-incremental and class-incremental implied by context)
+    architecture_strategy: fixed (multi-layered perceptron with two hidden layers of 400 nodes each)
+    key_innovation: systematic categorization of CL scenarios and a framework for fair/uniform evaluation using strong baselines
+arXiv:1805.09733 (2018) [survey] "Towards Robust Evaluations of Continual Learning" [stat] (cited-by 71 in-topic, era 1)
+    key_innovation: Introduction of fundamental desiderata and principles for robust continual learning evaluations to mitigate biases in existing experimental designs.
+arXiv:1807.09536 (2018) [core] "End-to-End Incremental Learning" [cs] (cited-by 64 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: cross-distilled loss (cross-entropy combined with distillation loss) and representative memory
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: use of a representative memory to store/manage samples from old classes and a distillation loss to retain knowledge
+    key_innovation: an end-to-end incremental learning framework that replaces standard loss functions with a cross-distilled loss
+arXiv:1805.07810 (2018) [core] "Online Structured Laplace Approximations For Overcoming Catastrophic
+  Forgetting" [stat] (cited-by 61 in-topic, era 1)
+    learning_paradigm: task-incremental / online learning
+    core_technique: Bayesian online learning (Assumed Density Filtering) using Laplace approximation
+    architecture_strategy: fixed
+    mitigation_mechanism: quadratic penalty on changes to weights via a Kronecker factored Hessian approximation
+    key_innovation: Kronecker factored block-diagonal approximation of the Hessian to provide a scalable and expressive posterior compared to diagonal methods
+arXiv:1809.10635 (2018) [core] "Generative replay with feedback connections as a general strategy for
+  continual learning" [cs] (cited-by 52 in-topic, era 1)
+    learning_paradigm: task-incremental, class-incremental, and task-agnostic (all three scenarios defined in section 2)
+    core_technique: generative replay
+    architecture_strategy: fixed
+    mitigation_mechanism: merging a generative model into the main model via feedback/backward connections (e.g., VAE with added softmax layer) to generate representative samples of previous tasks
+    key_innovation: equipping the main model with feedback or backward connections trained to have generative capability to reduce training time with negligible performance loss
+arXiv:1809.02058 (2018) [core] "Memory Replay GANs: learning to generate images from new categories
+  without forgetting" [cs] (cited-by 50 in-topic, era 1)
+    learning_paradigm: class-incremental learning (sequential learning of new categories)
+    core_technique: memory replay (pseudorehearsal) via a replay generator
+    architecture_strategy: fixed architecture (conditional GAN framework)
+    mitigation_mechanism: integrating a memory replay generator to replay memories of previous tasks via generative sampling to synchronize current generator training with an auxiliary generator snapshot
+    key_innovation: application of memory replay (pseudorehearsal) specifically to prevent catastrophic forgetting in generative adversarial networks (GANs)
+arXiv:1810.01256 (2018) [core] "Continual Learning of Context-dependent Processing in Neural Networks" [cs] (cited-by 44 in-topic, era 1)
+    learning_paradigm: online and continual learning of context-dependent mapping rules
+    core_technique: orthogonal weights modification (OWM)
+    architecture_strategy: fixed
+    mitigation_mechanism: use of an orthogonal projector in the input space of layers to prevent catastrophic interference
+    key_innovation: integration of an orthogonal weights modification (OWM) algorithm with a context-dependent processing (CDP) module to enable context-specific mappings for identical stimuli
+arXiv:1805.12369 (2018) [core] "Reinforced Continual Learning" [cs] (cited-by 43 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: reinforcement learning
+    architecture_strategy: growing architecture
+    mitigation_mechanism: searching for the best neural architecture for each incoming task via reinforcement learning
+    key_innovation: Reinforced Continual Learning (RCL), which uses reinforcement learning strategies to dynamically search for optimal neural architectures for sequential tasks
+    evaluation_metrics: accuracy, model complexity, and training time consumption
+arXiv:1802.01569 (2018) [core] "Alleviating catastrophic forgetting using context-dependent gating and
+  synaptic stabilization" [cs] (cited-by 40 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: context-dependent gating and synaptic stabilization
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: stabilizing connection weights deemed important for a task and using context-dependent gating to prevent disruption of previous weights
+    key_innovation: XdG (context-dependent gating) used in tandem with synaptic stabilization to enable learning of a large number of sequential tasks (e.g., 20 tasks)
+arXiv:1802.10269 (2018) [core] "Selective Experience Replay for Lifelong Learning" [cs] (cited-by 37 in-topic, era 1)
+    learning_paradigm: task-incremental (lifelong learning)
+    core_technique: selective experience replay
+    architecture_strategy: fixed
+    mitigation_mechanism: augmenting a standard FIFO buffer with a long-term memory that selectively stores experiences based on specific criteria (surprise, reward, distribution matching, or state space coverage)
+    key_innovation: a selective process for storing experiences in long-term memory to remove bias in the training process
+arXiv:1803.10123 (2018) [core] "Task Agnostic Continual Learning Using Online Variational Bayes" [stat] (cited-by 34 in-topic, era 1)
+    learning_paradigm: task-agnostic continual learning (unknown task boundaries/identities during training and testing)
+    core_technique: online variational Bayes
+    mitigation_mechanism: online variational Bayesian inference to handle sequentially-arriving tasks without access to previous samples
+    key_innovation: a task-agnostic algorithm for scenarios where task boundaries are unknown and the 'labels trick' to improve performance in class learning scenarios
+arXiv:1806.08568 (2018) [core] "Continuous Learning in Single-Incremental-Task Scenarios" [cs] (cited-by 33 in-topic, era 1)
+    learning_paradigm: class-incremental learning (single-incremental-task)
+    core_technique: AR1 (architectural and regularization)
+    architecture_strategy: architectural
+    mitigation_mechanism: architectural and regularization techniques
+    key_innovation: distinguishing between multi-task and single-incremental-task scenarios and proposing AR1 to address the inadequacy of LWF, EWC, and SI in incremental settings
+arXiv:1802.02950 (2018) [core] "Rotate your Networks: Better Weight Consolidation and Less Catastrophic
+  Forgetting" [cs] (cited-by 32 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: reparameterization and regularization (Elastic Weight Consolidation)
+    architecture_strategy: fixed
+    mitigation_mechanism: factorized rotation of parameter space to approximately diagonalize the Fisher Information Matrix
+    key_innovation: a network reparameterization via factorized rotation that satisfies the diagonal Fisher Information Matrix assumption of EWC
+arXiv:1803.02999 (2018) [adjacent] "On First-Order Meta-Learning Algorithms" [cs] (cited-by 23 in-topic, era 1)
+    learning_paradigm: meta-learning (few-shot learning)
+    core_technique: first-order meta-learning (approximation of MAML using first-order derivatives)
+    key_innovation: Theoretical analysis unifying first-order MAML and Reptile, showing both optimize for within-task generalization.
+arXiv:1806.05421 (2018) [core] "Selfless Sequential Learning" [stat] (cited-by 22 in-topic, era 1)
+    learning_paradigm: task-incremental / class-incremental (sequential learning)
+    core_technique: regularization (specifically SLNID: sparsity and decorrelation of representation)
+    architecture_strategy: fixed model capacity
+    mitigation_mechanism: imposing sparsity at the level of the representation to leave capacity for future tasks
+    key_innovation: Selfless Sequential Learning (SSL) via the SLNID regularizer which accounts for future task capacity through representation sparsity and decorrelation
+arXiv:1902.10486 (2019) [core] "On Tiny Episodic Memories in Continual Learning" [cs] (cited-by 158 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: experience replay (ER)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: replaying examples from a tiny episodic memory during training for future tasks
+    key_innovation: demonstrating that experience replay with very small (tiny) episodic memories provides strong performance with minimal computational cost
+arXiv:1904.07734 (2019) [survey] "Three scenarios for continual learning" [cs] (cited-by 130 in-topic, era 1)
+    learning_paradigm: task-incremental, class-incremental (three scenarios: task identity provided, task identity must be inferred, and task identity not required)
+    core_technique: comparative analysis of regularization (e.g., EWC) and replay-based approaches
+    mitigation_mechanism: replay-based approaches (identified as the only ones with potential to perform well across all scenarios)
+    key_innovation: formalization of three distinct continual learning scenarios based on task identity availability at test time to enable structured comparisons
+arXiv:1903.08671 (2019) [core] "Gradient based sample selection for online continual learning" [cs] (cited-by 125 in-topic, era 1)
+    learning_paradigm: online continual learning (non-stationary and never-ending stream)
+    core_technique: replay (rehearsal) with gradient-based sample selection
+    mitigation_mechanism: selecting a subset of samples from a replay buffer that best represents previous history using gradient information
+    key_innovation: a sample selection strategy that requires no i.i.d. assumptions or task boundaries
+arXiv:1909.08383 (2019) [survey] "A continual learning survey: Defying forgetting in classification tasks" [cs] (cited-by 124 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: survey of multiple methods (regularization, replay, dual architectures, reducing representation overlap)
+    key_innovation: comprehensive survey of continual learning methods in classification tasks, including analysis of task ordering, capacity effects, and real-world unbalanced setups
+arXiv:1905.13260 (2019) [core] "Large Scale Incremental Learning" [cs] (cited-by 104 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: bias correction
+    architecture_strategy: fixed
+    mitigation_mechanism: estimating and applying bias parameters to the fully connected layer using a small validation set to counteract the bias toward new classes
+    key_innovation: BiC (Bias Correction) method which freezes feature representations and corrects the bias in the fully connected layer using a validation set
+arXiv:1908.04742 (2019) [core] "Online Continual Learning with Maximally Interfered Retrieval" [cs] (cited-by 84 in-topic, era 1)
+    learning_paradigm: online continual learning (single-pass through the data)
+    core_technique: replay (both experience replay and generative replay)
+    architecture_strategy: fixed
+    mitigation_mechanism: Maximally Interfered Retrieval (MIR): selecting samples from the history/generative model that would be most interfered with by the new incoming samples to perform updates.
+    key_innovation: Replacing random sampling in replay-based methods with a strategy that specifically retrieves samples that would experience maximal interference from new data.
+arXiv:1904.00310 (2019) [core] "Learn to Grow: A Continual Structure Learning Framework for Overcoming
+  Catastrophic Forgetting" [cs] (cited-by 71 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: continual structure learning
+    architecture_strategy: growing architecture
+    mitigation_mechanism: separating structure and parameter learning to optimize parameter use across tasks
+    key_innovation: explicitly separating structure learning from parameter learning to enable sensible model architectures for different tasks
+arXiv:1910.07104 (2019) [core] "Orthogonal Gradient Descent for Continual Learning" [cs] (cited-by 68 in-topic, era 1)
+    learning_paradigm: task-incremental
+    core_technique: orthogonal gradient descent
+    architecture_strategy: fixed
+    mitigation_mechanism: projecting gradients of the current task onto the subspace orthogonal to the gradients of previous tasks to minimize interference
+    key_innovation: OGD (Orthogonal Gradient Descent) which utilizes the high capacity of over-parameterized networks to learn new data without storing historical data
+arXiv:1905.12588 (2019) [core] "Meta-Learning Representations for Continual Learning" [cs] (cited-by 49 in-topic, era 1)
+    learning_paradigm: continual learning (sequential regression and classification)
+    core_technique: meta-learning representations
+    mitigation_mechanism: learning sparse representations that promote future learning and reduce interference
+    key_innovation: meta-learning representations offline that are optimized for online updating and sparsity to facilitate future learning and minimize forgetting
+    evaluation_metrics: prediction error
+arXiv:2004.07211 (2020) [core] "Dark Experience for General Continual Learning: a Strong, Simple
+  Baseline" [stat] (cited-by 121 in-topic, era 1)
+    learning_paradigm: General Continual Learning (GCL), Task-Incremental Learning (Task-IL), and Class-Incremental Learning (Class-IL)
+    core_technique: Replay (using logits sampled throughout the optimization trajectory)
+    architecture_strategy: fixed
+    mitigation_mechanism: Storing and replaying logits sampled during the optimization trajectory to converge to flatter minima
+    key_innovation: Dark Experience Replay (DER/DER++), which utilizes logits from the optimization trajectory rather than just ground truth labels or task-boundary logits to improve stability and flatness of minima
+arXiv:2002.08165 (2020) [core] "Using Hindsight to Anchor Past Knowledge in Continual Learning" [cs] (cited-by 52 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: experience replay
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: re-learning on past data stored in an episodic memory buffer
+    key_innovation: HAL (Hindsight to Anchor Learning) algorithm
+arXiv:2006.06958 (2020) [core] "Understanding the Role of Training Regimes in Continual Learning" [cs] (cited-by 42 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: training regime optimization (dropout regularization, learning rate scheduling, and batch size adjustment)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: widening task local minima and shrinking the distance between them via stable SGD (dropout, large initial learning rate with exponential decay, and small batch size)
+    key_innovation: demonstrating that simple training regime adjustments (stable SGD) can outperform complex CL algorithms by managing the plasticity-stability dilemma
+arXiv:2010.15277 (2020) [survey] "Class-incremental learning: survey and performance evaluation on image
+  classification" [cs] (cited-by 35 in-topic, era 1)
+    learning_paradigm: class-incremental learning (class-IL)
+    core_technique: regularization-based, rehearsal-based, and bias-correction methods
+    mitigation_mechanism: regularization of weights, importance metrics for parameters, and regularization of feature representations
+    key_innovation: survey and performance evaluation of class-IL approaches using a versatile and extensible framework
+arXiv:2002.09571 (2020) [core] "Learning to Continually Learn" [cs] (cited-by 21 in-topic, era 1)
+    learning_paradigm: task-incremental (sequential learning of tasks from a common domain)
+    core_technique: meta-learning (Neuromodulated Meta-Learning Algorithm - ANML)
+    architecture_strategy: fixed architecture (modulating activations via neuromodulation)
+    mitigation_mechanism: direct modulation of activations and learning to reduce interference in both forward and backward passes
+    key_innovation: meta-learning a solution to catastrophic forgetting inspired by neuromodulatory processes in the brain
+    evaluation_metrics: average performance on all tasks across sequential learning trajectories (up to 600 tasks/9,000 SGD updates)
+arXiv:2003.05856 (2020) [core] "Online Fast Adaptation and Knowledge Accumulation: a New Approach to
+  Continual Learning" [cs] (cited-by 17 in-topic, era 1)
+    learning_paradigm: OSAKA (Online Fast Adaptation and Knowledge Accumulation): requires quick solving of new out-of-distribution tasks and fast remembering of previous tasks
+    core_technique: Continual-MAML (an online extension of Model-Agnostic Meta-Learning)
+    key_innovation: Introduction of the OSAKA scenario and the Continual-MAML algorithm to bridge fast adaptation and fast remembering
+arXiv:2006.05188 (2020) [core] "Optimal Continual Learning has Perfect Memory and is NP-hard" [cs] (cited-by 17 in-topic, era 1)
+    learning_paradigm: task-incremental
+    core_technique: theoretical analysis of computational complexity
+    key_innovation: Derivation of the computational properties required to avoid catastrophic forgetting and the proof that optimal continual learning is NP-hard.
+arXiv:2007.04813 (2020) [core] "Graph-Based Continual Learning" [stat] (cited-by 3 in-topic, era 1)
+    learning_paradigm: task-free continual learning (online streams of tasks)
+    core_technique: rehearsal (episodic memory) augmented with a learnable random graph
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: penalizing the model for forgetting learned edges between samples in a similarity graph rather than output predictions
+    key_innovation: augmenting an episodic memory array with a learnable random graph that captures pairwise similarities to guard against forgetting
+    evaluation_metrics: accuracy and forgetting
+arXiv:2007.00487 (2020) [survey] "Continual Learning: Tackling Catastrophic Forgetting in Deep Neural
+  Networks with Replay Processes" [cs] (cited-by 1 in-topic, era 1)
+    learning_paradigm: sequence of tasks settings (supervised, unsupervised, and reinforcement learning)
+    core_technique: replay processes (rehearsal methods and generative replay methods)
+    mitigation_mechanism: rehearsal of a core-set of samples or regeneration of past experiences using a generative model to optimize current and past objectives simultaneously
+    key_innovation: exploration of replay processes (combining rehearsal and generative replay) to enable re-evaluation of past data with new knowledge and confrontation of data from different experiences
+arXiv:2007.08855 (2020) [frontier] "A Biologically Plausible Audio-Visual Integration Model for Continual
+  Learning" [cs] (cited-by 0 in-topic, era 1)
+    learning_paradigm: class-incremental
+    core_technique: audio-visual integration (AVIM)
+    architecture_strategy: fixed
+    mitigation_mechanism: using near-orthogonal and sparse binary auditory feature codes (NOSC) as supervised signals for visual learning to form concepts
+    key_innovation: a biologically plausible model based on the assumption that medial temporal lobe audio-visual integration is crucial for concept formation and continual learning
+    evaluation_metrics: final top-1 test accuracy of all learned classes
+arXiv:2103.09762 (2021) [core] "Gradient Projection Memory for Continual Learning" [cs] (cited-by 49 in-topic, era 1)
+    learning_paradigm: task-incremental
+    core_technique: gradient projection
+    architecture_strategy: fixed
+    mitigation_mechanism: taking gradient steps in the orthogonal direction to the gradient subspaces deemed important for past tasks
+    key_innovation: Gradient Projection Memory (GPM) which utilizes orthogonal gradient subspaces to prevent interference with previous tasks without relying on network growth or data replay
+    evaluation_metrics: classification performance
+arXiv:2103.16788 (2021) [core] "DER: Dynamically Expandable Representation for Class Incremental
+  Learning" [cs] (cited-by 49 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: dynamically expandable representation (DER) with a two-stage learning strategy
+    architecture_strategy: growing architecture (dynamically expandable representation)
+    mitigation_mechanism: incrementally augmenting previously learned representation with novel features and a two-stage learning strategy (feature module expansion followed by classifier learning)
+    key_innovation: a two-stage learning approach using a dynamically expandable representation that utilizes an auxiliary loss for novel classes and a model pruning step for compactness
+arXiv:2112.08654 (2021) [core] "Learning to Prompt for Continual Learning" [cs] (cited-by 33 in-topic, era 1)
+    learning_paradigm: class-incremental, domain-incremental, and task-agnostic
+    core_technique: prompting
+    architecture_strategy: fixed
+    mitigation_mechanism: training a succinct memory system of prompts to avoid accessing task identity at test time
+    key_innovation: first introduction of prompting to the field of continual learning to enable learning without task identity at test time
+arXiv:2112.02706 (2021) [core] "Achieving Forgetting Prevention and Knowledge Transfer in Continual
+  Learning" [cs] (cited-by 9 in-topic, era 1)
+    learning_paradigm: task-incremental learning (Task-CL)
+    core_technique: CL-plugin (inspired by Adapter-BERT)
+    architecture_strategy: growing architecture (via CL-plugin modules)
+    mitigation_mechanism: learning and using task masks to protect task-specific knowledge
+    key_innovation: CTR (Continual Task Transfer) which uses a CL-plugin module to simultaneously prevent catastrophic forgetting and encourage knowledge transfer
+arXiv:2110.11526 (2021) [core] "Wide Neural Networks Forget Less Catastrophically" [cs] (cited-by 9 in-topic, era 1)
+    core_technique: over-parametrization (increased width)
+    architecture_strategy: fixed architecture (wide neural networks)
+    mitigation_mechanism: utilizing lazy training regimes and orthogonalization through increased width
+    key_innovation: investigating the impact of network width and depth on catastrophic forgetting, providing theoretical and empirical justifications via lazy training and orthogonalization
+    evaluation_metrics: average accuracy and average forgetting
+arXiv:2104.08572 (2021) [core] "On Learning the Geodesic Path for Incremental Learning" [cs] (cited-by 6 in-topic, era 1)
+    learning_paradigm: incremental learning
+    core_technique: knowledge distillation
+    mitigation_mechanism: enforcing consistency along the geodesic connecting the models using subspace embedding to account for manifold geometry
+    key_innovation: a novel distillation loss based on information geometry that uses the geodesic path instead of the Euclidean metric to capture the underlying geometry of feature spaces
+arXiv:2110.00908 (2021) [frontier] "GROWN: GRow Only When Necessary for Continual Learning" [cs] (cited-by 5 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: architecture growth
+    architecture_strategy: growing architecture
+    mitigation_mechanism: expanding the network capacity only when necessary to accommodate new knowledge
+    key_innovation: GROWN framework that starts from a small seed network and grows only when necessary to balance efficiency and performance
+arXiv:2107.12304 (2021) [core] "In Defense of the Learning Without Forgetting for Task Incremental
+  Learning" [cs] (cited-by 3 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: knowledge distillation (data-driven regularization)
+    architecture_strategy: fixed architecture (feature extractor with a classifier head per task)
+    mitigation_mechanism: utilizing knowledge distillation loss between the previous model and the current model to preserve outputs of previous tasks using only current task data
+    key_innovation: demonstrating that LwF can be trained effectively without warmup and weight decay hyperparameters, and showing it outperforms regularization-based and parameter-isolation methods
+arXiv:2108.12641 (2021) [core] "Prototype-Guided Memory Replay for Continual Learning" [cs] (cited-by 1 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: prototype-guided memory replay
+    architecture_strategy: fixed
+    mitigation_mechanism: storing a few samples (memory-efficient replay) guided by prototypes to prevent catastrophic forgetting
+    key_innovation: memory-efficient replay method that uses a small number of samples to achieve performance while maintaining a constant memory size
+arXiv:2204.04799 (2022) [frontier] "DualPrompt: Complementary Prompting for Rehearsal-free Continual
+  Learning" [cs] (cited-by 27 in-topic, era 1)
+    learning_paradigm: class-incremental learning
+    core_technique: prompting (rehearsal-free)
+    architecture_strategy: fixed architecture (pre-trained backbone with learned prompts)
+    mitigation_mechanism: learning a tiny set of parameters (prompts) to instruct a pre-trained model without storing past examples
+    key_innovation: DualPrompt framework using complementary prompting to learn task-specific and shared knowledge without a rehearsal buffer
+arXiv:2201.00766 (2022) [frontier] "Class-Incremental Continual Learning into the eXtended DER-verse" [cs] (cited-by 23 in-topic, era 1)
+    learning_paradigm: class-incremental continual learning
+    core_technique: rehearsal and knowledge distillation (X-DER)
+    architecture_strategy: fixed
+    mitigation_mechanism: implanting updated logits into the memory buffer to preserve secondary information
+    key_innovation: X-DER (eXtended-DER) which utilizes logits-replay to attain flatter minima and prevent loss of secondary information
+arXiv:2201.12522 (2022) [frontier] "Continual Learning with Recursive Gradient Optimization" [cs] (cited-by 12 in-topic, era 1)
+    learning_paradigm: task-incremental learning (fixed-capacity setting)
+    core_technique: Recursive Gradient Optimization (RGO) using an iteratively updated optimizer and Recursive Least Loss (RLL)
+    architecture_strategy: fixed architecture (utilizing a virtual Feature Encoding Layer)
+    mitigation_mechanism: modifying gradients via an iterative optimizer to minimize the increment of old task losses (RLL) without data replay
+    key_innovation: Recursive Gradient Optimization (RGO) which replaces explicit parameter storage with a recursive least loss estimation and a virtual Feature Encoding Layer (FEL)
+    evaluation_metrics: accuracy (e.g., 82.22% on 20-split-CIFAR100, 72.62% on 20-split-miniImageNet) and forgetting (measured as the increment of old task losses)
+arXiv:2212.13242 (2022) [frontier] "Saliency-Augmented Memory Completion for Continual Learning" [cs] (cited-by 1 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: replay-based (episodic memory)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: saliency-augmented memory completion using saliency maps and image inpainting for efficient storage and recovery
+    key_innovation: A bilevel optimization algorithm with theoretical guarantees to train a framework using saliency maps and image inpainting for memory management
+arXiv:2211.15215 (2022) [frontier] "Progressive Learning without Forgetting" [cs] (cited-by 1 in-topic, era 1)
+    learning_paradigm: class-incremental learning (without involving any old data)
+    core_technique: Progressive Learning without Forgetting (PLwF) and credit assignment
+    mitigation_mechanism: adopting previous functions to make the current function more trustworthy and managing stability-plasticity dynamics of individual parameters
+    key_innovation: addressing the fading knowledge space and the stability-plasticity tug-of-war through PLwF and parameter-level credit assignment
+arXiv:2210.00713 (2022) [frontier] "Efficient Meta-Learning for Continual Learning with Taylor Expansion
+  Approximation" [cs] (cited-by 0 in-topic, era 1)
+    learning_paradigm: task-incremental learning
+    core_technique: meta-learning with explicit regularization
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: imposing explicit regularization terms in the inner loss function using a diagonal matrix based on the moving average of parameter importance
+    key_innovation: Efficient Meta-Learning for Continual Learning (EMCL) which avoids computing the Hessian matrix or adding learnable parameters by using a moving average of parameter importance in the inner loss
+arXiv:2204.05842 (2022) [frontier] "Generative Negative Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 1)
+    learning_paradigm: Domain-incremental learning (Domain-IL)
+    core_technique: Generative negative replay
+    mitigation_mechanism: Interleaving negative examples (sampled from original past patterns or randomly generated) during training to contrast learning in isolation.
+    key_innovation: Using generative models to provide negative replay patterns to mitigate catastrophic forgetting in high-dimensional, non-i.i.d. scenarios.
+arXiv:2302.00487 (2023) [survey] "A Comprehensive Survey of Continual Learning: Theory, Method and
+  Application" [cs] (cited-by 49 in-topic, era 2)
+    core_technique: taxonomy of representative methods (regularization, replay, architecture-based)
+    mitigation_mechanism: weight regularization (penalizing parameter variation based on importance), distillation (storing frozen copies), and replay
+    key_innovation: comprehensive survey and elaborated taxonomy of continual learning methods, motivations, and implementations
+arXiv:2305.13622 (2023) [frontier] "Continual Learning with Strong Experience Replay" [cs] (cited-by 2 in-topic, era 2)
+    learning_paradigm: Class-Incremental Learning (Class-IL), Task-Incremental Learning (Task-IL), and Domain-Incremental Learning (Domain-IL)
+    core_technique: Experience Replay (ER)
+    mitigation_mechanism: Mimicking future experiences on current training data to prevent overfitting the memory buffer.
+    key_innovation: Strong Experience Replay (SER), which reduces forgetting by simulating future data distributions during the rehearsal of old samples.
+arXiv:2305.12270 (2023) [frontier] "Mitigating Catastrophic Forgetting in Task-Incremental Continual
+  Learning with Adaptive Classification Criterion" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental continual learning
+    core_technique: supervised contrastive learning, instance-wise distillation, and memory replay
+    architecture_strategy: fixed architecture (no augmented parameters)
+    mitigation_mechanism: preserving learned representations via supervised contrastive learning, instance-wise distillation, and memory replay, combined with a kNN classifier for inference
+    key_innovation: the first supervised contrastive learning framework (SCCL) for task-incremental continual learning without augmented parameters
+arXiv:2311.15276 (2023) [frontier] "Efficient Rehearsal Free Zero Forgetting Continual Learning using
+  Adaptive Weight Modulation" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental
+    core_technique: adaptive weight modulation
+    architecture_strategy: fixed
+    mitigation_mechanism: rehearsal-free weight modulation for each task to prevent inner-task interference
+    key_innovation: adaptive weight modulation that allows adding any number of tasks without storing old parameters or using rehearsal
+arXiv:2310.08038 (2023) [frontier] "Continual Learning via Manifold Expansion Replay" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: replay (Manifold Expansion Replay)
+    architecture_strategy: fixed
+    mitigation_mechanism: greedy sampling strategy to expand the diameter of the knowledge manifold in episodic memory and knowledge distillation using Wasserstein distance
+    key_innovation: Manifold Expansion Replay (MaER) which balances old and new knowledge by expanding the knowledge manifold diameter and uses Wasserstein distance for effective knowledge fusion
+arXiv:2308.04539 (2023) [frontier] "Improving Performance in Continual Learning Tasks using Bio-Inspired
+  Architectures" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: online continual learning (streamed data without task boundaries)
+    core_technique: neuromodulated neural architecture (NNA) with real-time hidden state evolution
+    architecture_strategy: fixed (comprising a feature extraction layer and a neuromodulated learning layer)
+    mitigation_mechanism: neuromodulated learning layer and loss formulation that computes hidden state evolution in real time based on recent inputs
+    key_innovation: integration of biologically inspired neuromodulated neural architecture (NNA) and specific loss formulation to replace/augment conventional SGD
+    evaluation_metrics: classification accuracy
+arXiv:2310.06362 (2023) [frontier] "InfoCL: Alleviating Catastrophic Forgetting in Continual Text
+  Classification from An Information Theoretic Perspective" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental
+    core_technique: replay-based contrastive learning
+    architecture_strategy: fixed
+    mitigation_mechanism: fast-slow and current-past contrastive learning to capture comprehensive representations and mitigate information bottleneck compression effects
+    key_innovation: InfoCL, which uses information theoretic perspective to address confusion on analogous classes via fast-slow and current-past contrastive learning
+arXiv:2308.03810 (2023) [frontier] "AdaER: An Adaptive Experience Replay Approach for Continual Lifelong
+  Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental learning (class-IL)
+    core_technique: adaptive experience replay (ER)
+    mitigation_mechanism: Contextually-Cued Memory Recall (C-CMR) to select memories based on contextual cues and mitigate data/task-conflicting interference, and E-BRS update method
+    key_innovation: AdaER algorithm which enhances both the replay (C-CMR) and update (E-BRS) stages of experience replay to handle non-stationary streaming data
+arXiv:2310.01365 (2023) [frontier] "Elephant Neural Networks: Born to Be a Continual Learner" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental learning, streaming learning, reinforcement learning
+    core_technique: elephant functions (activation functions) and sparse representations
+    mitigation_mechanism: improving training dynamics through specific activation functions to achieve local elasticity and reduce forgetting
+    key_innovation: investigating the role of activation functions in catastrophic forgetting and introducing Elephant Neural Networks (ENNs)
+arXiv:2311.11557 (2023) [frontier] "Replay-enhanced Continual Reinforcement Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: continual reinforcement learning
+    core_technique: replay, adaptive normalization, and distillation
+    architecture_strategy: multi-head neural network (fixed architecture with task-specific heads)
+    mitigation_mechanism: utilizing adaptive normalization on targets to balance task contributions and distillation technique on policies for old tasks
+    key_innovation: RECALL framework combining adaptive normalization for plasticity and policy distillation for stability in RL
+    evaluation_metrics: average performance, forgetting, and forward transfer
+arXiv:2409.11329 (2024) [frontier] "Reducing Catastrophic Forgetting in Online Class Incremental Learning
+  Using Self-Distillation" [cs] (cited-by 1 in-topic, era 2)
+    learning_paradigm: class-incremental learning
+    core_technique: self-distillation
+    mitigation_mechanism: leveraging highly generalized features in the shallow layers of the model via self-distillation loss to improve generalization and prevent overfitting to a limited memory buffer
+    key_innovation: incorporating self-distillation loss using highly generalizable output in shallow layers as a teacher to acquire transferable knowledge
+    evaluation_metrics: classification accuracy
+arXiv:2402.01348 (2024) [frontier] "CORE: Mitigating Catastrophic Forgetting in Continual Learning through
+  Cognitive Replay" [cs] (cited-by 1 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: replay-based method
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: dynamic buffer space allocation and high-quality sample selection inspired by human cognitive review processes
+    key_innovation: COgnitive REplay (CORE), which avoids treating all samples equally by dynamically selecting high-quality samples for the replay buffer to mimic human cognitive review
+    evaluation_metrics: average task accuracy and lowest task accuracy
+arXiv:2405.18758 (2024) [frontier] "Learning to Continually Learn with the Bayesian Principle" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: supervised and unsupervised continual learning
+    core_technique: Sequential Bayesian update rules (SB-MCL)
+    architecture_strategy: fixed architectures (minimal modifications)
+    mitigation_mechanism: sequential Bayesian updates that yield the same outcome as batch training to ensure immunity to catastrophic forgetting
+    key_innovation: Rigorous proof that CL is an NP-hard problem and the introduction of SB-MCL, a framework encompassing prior works and supporting both supervised and unsupervised learning via episode-specific latent variables
+arXiv:2406.09935 (2024) [frontier] "Predicting the Susceptibility of Examples to Catastrophic Forgetting" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning (classification setting with non-overlapping tasks)
+    core_technique: replay-based continual learning (specifically 'Goldilocks' sampling strategy)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: selective rehearsal of 'mid-learned' examples in a fixed-size memory buffer
+    key_innovation: identifying a correlation between learning speed and forgetting susceptibility, proposing to focus rehearsal on examples learned during the middle of the training process
+arXiv:2411.06916 (2024) [frontier] "Slowing Down Forgetting in Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: CIL, DIL, and TIL
+    core_technique: Replay (data reconstruction)
+    mitigation_mechanism: Reconstructing old training data from previous models using the implicit bias of margin maximization points and combining it with current training data.
+    key_innovation: Leveraging trained models as their own memory buffers by exploiting the implicit bias of gradient-based neural networks to reconstruct old data.
+    evaluation_metrics: ACC and BWT
+arXiv:2408.03219 (2024) [frontier] "Learning to Learn without Forgetting using Attention" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental / lifelong learning
+    core_technique: meta-learning (learning to optimize)
+    architecture_strategy: fixed
+    mitigation_mechanism: meta-learned optimizer that dynamically updates classifier weights to minimize interference and promote knowledge transfer without a replay buffer
+    key_innovation: meta-learning an optimizer to customize the optimization process for each task to prevent overwriting patterns and enable adaptation without task identifiers or replay buffers
+arXiv:2410.03955 (2024) [frontier] "A Retention-Centric Framework for Continual Learning with Guaranteed
+  Model Developmental Safety" [cs] (cited-by 0 in-topic, era 2)
+    core_technique: contrastive learning and task-dependent heads
+    architecture_strategy: task-dependent heads
+    mitigation_mechanism: ensuring Model Developmental Safety (MDS) by strictly preserving performance on protected tasks
+    key_innovation: formal definition of Model Developmental Safety (MDS) to guarantee performance preservation on protected tasks during model updates
+    evaluation_metrics: DevSafety(acc) (empirical developmental safety metric)
+arXiv:2404.12526 (2024) [frontier] "Adaptive Memory Replay for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: extended pre-training (continual pre-training)
+    core_technique: adaptive memory replay
+    architecture_strategy: fixed
+    mitigation_mechanism: dynamically adjusting replay samples based on new data using a bandit estimation formulation
+    key_innovation: a novel adaptive memory replay scheme inspired by a bandit estimation formulation that assumes full memory access to dynamically adjust replay samples
+    evaluation_metrics: test data Final Loss and test data loss Forgetting
+arXiv:2405.07142 (2024) [frontier] "Cross-Domain Continual Learning via CLAMP" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: cross-domain continual learning
+    key_innovation: addressing cross-domain adaptation in CL where the source domain is labeled and the target domain is unlabeled, sharing the same target variables but different feature spaces
+arXiv:2512.16871 (2025) [frontier] "Sequencing to Mitigate Catastrophic Forgetting in Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental learning
+    core_technique: sequencing
+    architecture_strategy: fixed architecture (ResNet18)
+    mitigation_mechanism: optimal sequencing of tasks/data nodes to mitigate catastrophic forgetting
+    key_innovation: utilizing optimal task sequencing across distributed data nodes in a knowledge-sharing network (KSN) to reduce forgetting
+arXiv:2503.01595 (2025) [frontier] "STAR: Stability-Inducing Weight Perturbation for Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental learning
+    core_technique: weight perturbation
+    architecture_strategy: fixed
+    mitigation_mechanism: stability-inducing weight perturbation
+    key_innovation: STAR, a plug-and-play component that improves existing SOTA CL frameworks via stability-inducing weight perturbation
+    evaluation_metrics: average accuracy
+arXiv:2509.01533 (2025) [frontier] "Forward-Only Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental
+    core_technique: evolutionary optimization (gradient-free)
+    architecture_strategy: fixed (ViT-B/16 backbone with prompt tuning)
+    mitigation_mechanism: prompt tuning via evolutionary optimization and an incremental knowledge encoding mechanism for the classifier
+    key_innovation: FoRo: a forward-only, gradient-free continual learning method that avoids iterative error backpropagation
+    evaluation_metrics: accuracy and forgetting
+arXiv:2509.01213 (2025) [frontier] "Mitigating Catastrophic Forgetting in Continual Learning through Model Growth" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental (sequential fine-tuning on single tasks with different contexts)
+    core_technique: model growth (stacking-based)
+    architecture_strategy: growing architecture (stacking LLMs)
+    mitigation_mechanism: leveraging smaller models to structure the training of larger ones via stacking-based model growth
+    key_innovation: assessing whether stacked LLMs alleviate catastrophic forgetting more effectively than naïve decoder-based models during continuous instruction tweaking
+    evaluation_metrics: training loss trajectories and benchmark evaluations
+arXiv:2509.10529 (2025) [frontier] "Mitigating Catastrophic Forgetting and Mode Collapse in Text-to-Image Diffusion via Latent Replay" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental (sequential learning of visual concepts)
+    core_technique: latent replay
+    architecture_strategy: fixed
+    mitigation_mechanism: retaining compact, high-level feature representations (latent examples) extracted from the model's internal architecture to revisit past knowledge
+    key_innovation: applying a neuroscience-inspired latent replay approach that stores neural activity patterns (latent features) rather than raw images to reduce memory usage and prevent mode collapse
+    evaluation_metrics: Image Alignment (IA) and output diversity
+arXiv:2511.02025 (2025) [frontier] "Path-Coordinated Continual Learning with Neural Tangent Kernel-Justified Plasticity: A Theoretical Framework with Near State-of-the-Art Performance" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: path-coordinated framework using Neural Tangent Kernel (NTK) theory and plasticity bounds
+    architecture_strategy: fixed architecture with task-specific BatchNorm layers and attention
+    mitigation_mechanism: principled plasticity bounds justified by NTK theory and statistical validation via Wilson confidence intervals
+    key_innovation: uniting NTK theory for plasticity bounds with path quality evaluation to achieve a system that stabilizes over time (forgetting reduces from 27% to 18%)
+    evaluation_metrics: average accuracy and catastrophic forgetting
+arXiv:2510.21836 (2025) [frontier] "COLA: Continual Learning via Autoencoder Retrieval of Adapters" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental (task-aware)
+    core_technique: autoencoder-based adapter retrieval
+    architecture_strategy: growing architecture (adapter-based)
+    mitigation_mechanism: retrieval of task-specific adapters via an autoencoder to prevent overwriting existing knowledge
+    key_innovation: COLA framework which uses an autoencoder to reconstruct and retrieve task networks/adapters for efficient continual learning in LLMs
+arXiv:2502.10966 (2025) [frontier] "Neural Networks Remember More: The Power of Parameter Isolation and
+  Combination" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental (but extends to task-agnostic testing)
+    core_technique: parameter isolation and task arithmetic
+    architecture_strategy: growing architecture (new PEFT module for each task)
+    mitigation_mechanism: freezing backbone parameters and combining task vectors via addition
+    key_innovation: integrating all acquired knowledge by adding task vectors to the original model, eliminating the need for task-ids during testing
+arXiv:2504.08613 (2025) [frontier] "Enhancing knowledge retention for continual learning with
+  domain-specific adapters and features gating" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: domain-incremental learning
+    core_technique: parameter-efficient fine-tuning (LoRA, prefix tuning) and feature gating
+    architecture_strategy: growing architecture (block expansion)
+    mitigation_mechanism: domain-specific adapters within self-attention mechanisms and domain-specific output heads
+    key_innovation: integration of LoRA and feature gating with block expansion to enable domain-specific adaptation without compromising foundational knowledge
+arXiv:2501.01045 (2025) [frontier] "ZeroFlow: Overcoming Catastrophic Forgetting is Easier than You Think" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: continual learning
+    core_technique: zero-order (ZO) optimization
+    mitigation_mechanism: gradient-free optimization algorithms
+    key_innovation: introduction of the ZeroFlow benchmark to evaluate gradient-free optimization for overcoming forgetting and proving catastrophic forgetting can be overcome without gradient access
+    evaluation_metrics: average performance along incremental stages, last stage accuracy, forgetting, and efficiency
+arXiv:2601.05623 (2026) [frontier] "Continual Learning of Achieving Forgetting-free and Positive Knowledge Transfer" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: ETCL (proposed method involving an expansion strategy and an OG-based method)
+    architecture_strategy: growing architecture (expansion strategy)
+    mitigation_mechanism: OG-based method to deal with CF during BKT and an expansion strategy
+    key_innovation: Achieving both forgetting-free learning and positive forward/backward knowledge transfer (FKT/BKT) simultaneously
+arXiv:2602.05454 (2026) [frontier] "Attention Retention for Continual Learning with Vision Transformers" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: class-incremental learning (CIL)
+    core_technique: gradient masking
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: suppressing gradients in previously attended regions via layer-wise rollout and adaptive thresholding to prevent attention drift
+    key_innovation: identifying attention drift in Vision Transformers as a primary source of forgetting and proposing a data-free attention-retaining framework
+arXiv:2603.00624 (2026) [frontier] "IDER: IDempotent Experience Replay for Reliable Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    core_technique: idempotent experience replay (distillation and loss adaptation)
+    mitigation_mechanism: idempotence distillation loss (minimizing distance between reprocessed output and original output)
+    key_innovation: leveraging the idempotent property to improve prediction reliability and reduce forgetting through an idempotence distillation loss
+    evaluation_metrics: accuracy, forgetting, and prediction reliability
+arXiv:2606.08447 (2026) [frontier] "Not Just After One: Sleep-Inspired Replay Prevents Catastrophic Forgetting After Sequential Tasks" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: sleep-inspired replay (SRC)
+    architecture_strategy: fixed architecture
+    mitigation_mechanism: unsupervised sleep-like replay applied after a full sequence of tasks to consolidate and restore performance on older memories
+    key_innovation: demonstrating that a single terminal sleep episode applied after multiple new tasks can rescue/restore performance on previously forgotten tasks
+    evaluation_metrics: accuracy
+arXiv:2602.02767 (2026) [frontier] "Provable Effects of Data Replay in Continual Learning: A Feature Learning Perspective" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental learning
+    core_technique: full data replay
+    architecture_strategy: fixed architecture (overparameterized)
+    mitigation_mechanism: periodic revisiting of all past samples during training
+    key_innovation: theoretical analysis of the effectiveness of full data replay from a feature learning perspective, examining signal learning vs. noise memorization dynamics
+    evaluation_metrics: generalization performance (evaluated after training on the k-th task and after training on the n-th task)
+arXiv:2603.18641 (2026) [survey] "A Comparative Empirical Study of Catastrophic Forgetting Mitigation in Sequential Task Adaptation for Continual Natural Language Processing Systems" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental (label-disjoint scenario)
+    core_technique: comparative study of multiple CL strategies (methods not explicitly named in abstract/method, but evaluated across architectures)
+    architecture_strategy: fixed (ANN, GRU, and Transformer encoder)
+    key_innovation: comparative empirical study of catastrophic forgetting mitigation across different backbone architectures (ANN, GRU, Transformer) in continual intent classification
+    evaluation_metrics: Accuracy, macro F1, AA, AF1, BWT, FWT, and forgetting measures
+arXiv:2606.08013 (2026) [frontier] "Evaluating the Impact of Task Granularity on Catastrophic Forgetting in Continual Learning" [cs] (cited-by 0 in-topic, era 2)
+    learning_paradigm: task-incremental
+    core_technique: multi-head design with frozen heads
+    architecture_strategy: fixed
+    mitigation_mechanism: freezing previously trained classification heads while updating the shared backbone and active head
+    key_innovation: investigating task granularity through a Coarse-to-Fine training trajectory to build a stable foundation of general features
+
+ADJACENCY (each paper -> papers it cites, grouped by intent):
+arXiv:1312.6211: (no out-citations in-graph)
+arXiv:1312.6114: (no out-citations in-graph)
+arXiv:1503.02531: (no out-citations in-graph)
+arXiv:1612.00796: uses[arXiv:1312.6211] background[arXiv:1606.04671]
+arXiv:1611.07725: uses[arXiv:1606.09282, arXiv:1503.02531] background[arXiv:1312.6211, arXiv:1612.00796, arXiv:1606.04671, arXiv:1704.01920]
+arXiv:1606.04671: background[arXiv:1503.02531]
+arXiv:1606.09282: background[arXiv:1312.6211, arXiv:1606.04671] compares[arXiv:1607.00122] uses[arXiv:1503.02531]
+arXiv:1611.06194: uses[arXiv:1606.09282, arXiv:1503.02531] background[arXiv:1312.6211, arXiv:1606.04671]
+arXiv:1606.04080: (no out-citations in-graph)
+arXiv:1607.00122: background[arXiv:1312.6211]
+arXiv:1703.04200: (no out-citations in-graph)
+arXiv:1706.08840: compares[arXiv:1606.04671, arXiv:1611.07725, arXiv:1701.08734, arXiv:1611.06194] background[arXiv:1612.00796, arXiv:1703.04200, arXiv:1607.00122, arXiv:1606.09282, arXiv:1704.01920, arXiv:1503.02531]
+arXiv:1705.08690: background[arXiv:1312.6114, arXiv:1312.6211, arXiv:1612.00796, arXiv:1703.08475, arXiv:1606.09282]
+arXiv:1708.01547: compares[arXiv:1612.00796, arXiv:1606.04671] background[arXiv:1703.04200, arXiv:1703.08475]
+arXiv:1711.09601: uses[arXiv:1612.00796, arXiv:1703.08475] background[arXiv:1312.6211, arXiv:1606.04671] compares[arXiv:1701.08734] critiques[arXiv:1611.07725]
+arXiv:1711.05769: background[arXiv:1611.06194, arXiv:1703.08475, arXiv:1503.02531, arXiv:1606.04671, arXiv:1701.08734] compares[arXiv:1612.00796, arXiv:1704.01920, arXiv:1611.07725] uses[arXiv:1606.09282]
+arXiv:1701.08734: background[arXiv:1606.04671, arXiv:1503.02531]
+arXiv:1703.08475: uses[arXiv:1312.6211, arXiv:1612.00796, arXiv:1606.09282] background[arXiv:1606.04671, arXiv:1701.08734, arXiv:1312.6114]
+arXiv:1710.10628: uses[arXiv:1703.04200] background[arXiv:1312.6211, arXiv:1703.08475, arXiv:1606.09282, arXiv:1706.08840, arXiv:1606.04671, arXiv:1705.08395] extends[arXiv:1612.00796]
+arXiv:1711.10563: background[arXiv:1612.00796, arXiv:1312.6211, arXiv:1701.08734] uses[arXiv:1708.02072] extends[arXiv:1611.07725]
+arXiv:1708.02072: (no out-citations in-graph)
+arXiv:1703.03400: uses[arXiv:1606.04080] background[arXiv:1703.05175] compares[arXiv:1612.00796]
+arXiv:1705.03550: uses[arXiv:1606.09282] background[arXiv:1606.04671, arXiv:1701.08734, arXiv:1312.6211] compares[arXiv:1612.00796, arXiv:1704.01920]
+arXiv:1710.10368: compares[arXiv:1312.6211, arXiv:1703.04200, arXiv:1611.07725, arXiv:1705.08690] uses[arXiv:1612.00796, arXiv:1706.08840] background[arXiv:1606.04671, arXiv:1701.08734, arXiv:1606.09282, arXiv:1312.6114]
+arXiv:1704.01920: uses[arXiv:1606.09282, arXiv:1611.06194] extends[arXiv:1503.02531] background[arXiv:1312.6211, arXiv:1606.04671, arXiv:1612.00796, arXiv:1611.07725]
+arXiv:1705.08395: background[arXiv:1606.09282, arXiv:1312.6114, arXiv:1503.02531, arXiv:1606.04671] uses[arXiv:1612.00796, arXiv:1703.04200]
+arXiv:1703.05175: uses[arXiv:1606.04080] extends[arXiv:1312.6114]
+arXiv:1812.00420: compares[arXiv:1612.00796, arXiv:1711.09601, arXiv:1606.04671, arXiv:1703.04200, arXiv:1611.07725] background[arXiv:1705.08690, arXiv:1710.10628, arXiv:1701.08734, arXiv:1611.06194, arXiv:1805.12369] critiques[arXiv:1805.06370] extends[arXiv:1801.10112]
+arXiv:1802.07569: compares[arXiv:1612.00796, arXiv:1701.08734] background[arXiv:1705.03550, arXiv:1708.02072, arXiv:1806.08568, arXiv:1703.04200, arXiv:1312.6211, arXiv:1611.07725] motivates[arXiv:1705.08690]
+arXiv:1801.01423: background[arXiv:1710.10628, arXiv:1703.04200, arXiv:1612.00796, arXiv:1705.08690, arXiv:1611.07725, arXiv:1606.04671] uses[arXiv:1703.08475, arXiv:1701.08734, arXiv:1711.05769] compares[arXiv:1312.6211, arXiv:1607.00122, arXiv:1606.09282]
+arXiv:1801.10112: compares[arXiv:1611.07725] extends[arXiv:1703.04200, arXiv:1805.06370] background[arXiv:1503.02531, arXiv:1703.08475, arXiv:1708.01547, arXiv:1606.04671, arXiv:1606.09282, arXiv:1710.10628]
+arXiv:1810.11910: uses[arXiv:1803.02999, arXiv:1606.04080, arXiv:1612.00796] background[arXiv:1801.10112, arXiv:1703.04200, arXiv:1703.08475, arXiv:1606.09282, arXiv:1708.01547, arXiv:1611.06194] extends[arXiv:1801.01423] compares[arXiv:1703.03400]
+arXiv:1805.06370: uses[arXiv:1606.04671, arXiv:1612.00796, arXiv:1606.04080] background[arXiv:1705.08690, arXiv:1706.08840, arXiv:1710.10628, arXiv:1801.10112, arXiv:1503.02531, arXiv:1606.09282]
+arXiv:1811.11682: background[arXiv:1802.10269, arXiv:1606.04671, arXiv:1706.08840, arXiv:1802.07569, arXiv:1703.04200, arXiv:1606.09282] uses[arXiv:1805.06370] compares[arXiv:1612.00796]
+arXiv:1810.12488: uses[arXiv:1703.04200, arXiv:1612.00796] background[arXiv:1312.6211, arXiv:1611.07725, arXiv:1703.08475, arXiv:1710.10628, arXiv:1805.07810, arXiv:1805.09733] compares[arXiv:1706.08840, arXiv:1705.08690, arXiv:1809.10635, arXiv:1711.09601, arXiv:1805.06370, arXiv:1606.09282]
+arXiv:1805.09733: background[arXiv:1705.03550, arXiv:1705.08690, arXiv:1706.08840, arXiv:1606.04671, arXiv:1606.09282, arXiv:1703.08475] compares[arXiv:1612.00796, arXiv:1312.6211] uses[arXiv:1703.04200, arXiv:1710.10628] extends[arXiv:1801.10112, arXiv:1805.07810] critiques[arXiv:1805.06370]
+arXiv:1807.09536: background[arXiv:1312.6211] uses[arXiv:1706.08840, arXiv:1611.07725, arXiv:1503.02531] extends[arXiv:1606.09282, arXiv:1607.00122, arXiv:1704.01920] critiques[arXiv:1606.04671, arXiv:1612.00796]
+arXiv:1805.07810: uses[arXiv:1703.04200] compares[arXiv:1612.00796, arXiv:1703.08475, arXiv:1710.10628] background[arXiv:1312.6211, arXiv:1706.08840, arXiv:1705.08690, arXiv:1606.04671, arXiv:1701.08734, arXiv:1801.01423]
+arXiv:1809.10635: uses[arXiv:1703.04200, arXiv:1802.01569, arXiv:1612.00796, arXiv:1606.09282, arXiv:1705.08690, arXiv:1312.6211] compares[arXiv:1711.10563, arXiv:1904.07734] background[arXiv:1708.02072, arXiv:1701.08734, arXiv:1801.01423, arXiv:1503.02531, arXiv:1611.07725, arXiv:1710.10628] extends[arXiv:1805.06370]
+arXiv:1809.02058: uses[arXiv:1705.08395, arXiv:1611.07725, arXiv:1706.08840, arXiv:1705.08690, arXiv:1612.00796] compares[arXiv:1606.09282] background[arXiv:1802.02950, arXiv:1711.10563]
+arXiv:1810.01256: background[arXiv:1312.6211, arXiv:1612.00796, arXiv:1802.01569, arXiv:1703.08475, arXiv:1703.04200, arXiv:1503.02531]
+arXiv:1805.12369: compares[arXiv:1606.04671, arXiv:1708.01547, arXiv:1612.00796, arXiv:1706.08840] background[arXiv:1703.04200, arXiv:1703.08475, arXiv:1701.08734, arXiv:1611.07725]
+arXiv:1802.01569: compares[arXiv:1801.01423, arXiv:1701.08734, arXiv:1711.05769] uses[arXiv:1703.04200, arXiv:1612.00796, arXiv:1312.6211] background[arXiv:1606.04671, arXiv:1606.09282, arXiv:1711.09601, arXiv:1710.10628]
+arXiv:1802.10269: (no out-citations in-graph)
+arXiv:1803.10123: extends[arXiv:1810.12488, arXiv:1809.10635] uses[arXiv:1805.07810, arXiv:1703.04200, arXiv:1703.08475] motivates[arXiv:1805.09733] background[arXiv:1606.04671, arXiv:1705.08690, arXiv:1802.07569, arXiv:1612.00796, arXiv:1801.10112, arXiv:1711.09601]
+arXiv:1806.08568: extends[arXiv:1705.03550] background[arXiv:1606.04671, arXiv:1612.00796, arXiv:1802.07569, arXiv:1312.6211, arXiv:1503.02531] uses[arXiv:1703.04200, arXiv:1606.09282, arXiv:1708.02072] compares[arXiv:1611.07725, arXiv:1711.10563, arXiv:1711.09601]
+arXiv:1802.02950: uses[arXiv:1703.08475, arXiv:1612.00796] compares[arXiv:1611.07725, arXiv:1706.08840, arXiv:1705.08690, arXiv:1801.10112] background[arXiv:1703.04200, arXiv:1801.01423]
+arXiv:1803.02999: extends[arXiv:1703.03400] uses[arXiv:1606.04080]
+arXiv:1806.05421: uses[arXiv:1612.00796, arXiv:1606.09282, arXiv:1703.08475, arXiv:1711.09601, arXiv:1801.01423, arXiv:1703.04200] background[arXiv:1706.08840, arXiv:1606.04671, arXiv:1611.06194, arXiv:1701.08734, arXiv:1711.05769, arXiv:1801.10112] compares[arXiv:1704.01920]
+arXiv:1902.10486: compares[arXiv:1803.02999, arXiv:1612.00796, arXiv:1805.06370] uses[arXiv:1611.07725, arXiv:1801.10112, arXiv:1606.04080, arXiv:1812.00420, arXiv:1810.11910] background[arXiv:1703.04200, arXiv:1708.01547, arXiv:1606.09282, arXiv:1711.09601, arXiv:1703.08475, arXiv:1503.02531]
+arXiv:1904.07734: background[arXiv:1810.12488, arXiv:1503.02531, arXiv:1312.6211, arXiv:1710.10628, arXiv:1711.10563, arXiv:1703.04200] uses[arXiv:1705.08690, arXiv:1606.09282, arXiv:1611.07725, arXiv:1802.01569, arXiv:1312.6114] critiques[arXiv:1612.00796, arXiv:1805.06370]
+arXiv:1903.08671: background[arXiv:1711.05769, arXiv:1805.09733, arXiv:1710.10628, arXiv:1902.10486, arXiv:1802.10269, arXiv:1812.00420] uses[arXiv:1706.08840] compares[arXiv:1611.07725]
+arXiv:1909.08383: compares[arXiv:1805.09733, arXiv:1703.08475, arXiv:1801.01423, arXiv:1312.6211] background[arXiv:1611.07725, arXiv:1612.00796, arXiv:1805.06370, arXiv:1802.02950, arXiv:1703.04200, arXiv:1711.05769] uses[arXiv:1801.10112, arXiv:1706.08840, arXiv:1903.08671] critiques[arXiv:1806.05421]
+arXiv:1905.13260: uses[arXiv:1611.07725, arXiv:1807.09536] compares[arXiv:1606.09282] background[arXiv:1705.08690, arXiv:1607.00122, arXiv:1612.00796, arXiv:1503.02531, arXiv:1704.01920, arXiv:1706.08840]
+arXiv:1908.04742: background[arXiv:1805.12369, arXiv:1903.08671, arXiv:1312.6211, arXiv:1606.09282, arXiv:1606.04671, arXiv:1703.04200] compares[arXiv:1612.00796, arXiv:1611.07725, arXiv:1611.06194] uses[arXiv:1902.10486, arXiv:1706.08840, arXiv:1812.00420, arXiv:1705.08690, arXiv:1606.04080]
+arXiv:1904.00310: compares[arXiv:1612.00796, arXiv:1703.08475, arXiv:1701.08734, arXiv:1606.04671, arXiv:1801.01423, arXiv:1710.10628] uses[arXiv:1805.09733] background[arXiv:1611.07725, arXiv:1805.06370, arXiv:1708.01547]
+arXiv:1910.07104: uses[arXiv:1812.00420, arXiv:1312.6211, arXiv:1612.00796, arXiv:1703.04200] background[arXiv:1805.09733, arXiv:1802.07569, arXiv:1708.02072, arXiv:1909.08383, arXiv:1810.12488, arXiv:1606.04671] compares[arXiv:1706.08840, arXiv:1810.11910]
+arXiv:1905.12588: background[arXiv:1703.03400, arXiv:1612.00796, arXiv:1711.09601, arXiv:1703.04200, arXiv:1802.02950, arXiv:1812.00420] compares[arXiv:1703.08475, arXiv:1810.11910, arXiv:1902.10486]
+arXiv:2004.07211: compares[arXiv:1902.10486, arXiv:1606.09282, arXiv:1503.02531, arXiv:1905.13260, arXiv:1805.09733] background[arXiv:1606.04671, arXiv:1711.05769, arXiv:1801.01423, arXiv:1812.00420, arXiv:2002.08165, arXiv:1703.04200] uses[arXiv:1810.11910, arXiv:1903.08671, arXiv:1706.08840, arXiv:1612.00796, arXiv:1810.12488] extends[arXiv:1611.07725]
+arXiv:2002.08165: compares[arXiv:1612.00796, arXiv:1710.10628, arXiv:1908.04742, arXiv:1611.07725, arXiv:1703.03400, arXiv:1503.02531] uses[arXiv:1812.00420, arXiv:1810.11910, arXiv:1902.10486, arXiv:1801.10112, arXiv:1803.02999] critiques[arXiv:1711.09601, arXiv:1703.04200] background[arXiv:1606.04671, arXiv:1708.01547, arXiv:1802.10269, arXiv:1606.04080, arXiv:1312.6211, arXiv:1701.08734]
+arXiv:2006.06958: uses[arXiv:1812.00420, arXiv:1902.10486, arXiv:2002.08165, arXiv:1909.08383, arXiv:1910.07104, arXiv:1801.10112] background[arXiv:1810.12488, arXiv:1708.02072, arXiv:1802.07569, arXiv:1706.08840, arXiv:1810.11910, arXiv:1705.08690] compares[arXiv:1312.6211, arXiv:1611.07725, arXiv:1612.00796, arXiv:1710.10628, arXiv:1711.05769, arXiv:1805.09733]
+arXiv:2010.15277: compares[arXiv:1706.08840, arXiv:1703.04200, arXiv:1801.10112, arXiv:1711.05769, arXiv:1705.08690] critiques[arXiv:1612.00796, arXiv:1802.02950] background[arXiv:1607.00122, arXiv:1503.02531, arXiv:1312.6211, arXiv:1805.06370, arXiv:1809.02058, arXiv:1703.08475] uses[arXiv:1905.13260, arXiv:1611.07725, arXiv:1904.07734]
+arXiv:2002.09571: background[arXiv:1606.04671, arXiv:1701.08734, arXiv:1703.04200, arXiv:1705.03550, arXiv:1806.08568, arXiv:1802.02950] uses[arXiv:1703.03400, arXiv:1905.12588] motivates[arXiv:1802.01569]
+arXiv:2003.05856: (no out-citations in-graph)
+arXiv:2006.05188: (no out-citations in-graph)
+arXiv:2007.04813: uses[arXiv:1902.10486, arXiv:1706.08840, arXiv:1612.00796, arXiv:1810.11910, arXiv:1811.11682, arXiv:1801.10112] compares[arXiv:1606.09282, arXiv:1503.02531, arXiv:1611.07725, arXiv:1903.08671, arXiv:1711.10563, arXiv:1812.00420] background[arXiv:1802.07569, arXiv:1701.08734, arXiv:1708.01547, arXiv:1703.04200, arXiv:1710.10628, arXiv:1805.07810]
+arXiv:2007.00487: (no out-citations in-graph)
+arXiv:2007.08855: background[arXiv:1705.03550, arXiv:1312.6211, arXiv:1703.04200, arXiv:1703.08475, arXiv:1711.05769, arXiv:1701.08734] uses[arXiv:1612.00796, arXiv:1611.07725, arXiv:1810.01256, arXiv:1706.08840]
+arXiv:2103.09762: uses[arXiv:1710.10368, arXiv:1812.00420, arXiv:1801.01423, arXiv:1706.08840, arXiv:1902.10486, arXiv:1810.01256] background[arXiv:1909.08383, arXiv:1703.04200, arXiv:1711.09601, arXiv:1606.04671, arXiv:1708.01547, arXiv:1904.00310] compares[arXiv:1612.00796, arXiv:1910.07104]
+arXiv:2103.16788: uses[arXiv:1611.07725, arXiv:1807.09536, arXiv:1905.13260, arXiv:1801.01423] background[arXiv:1801.10112, arXiv:1612.00796, arXiv:1703.04200, arXiv:1703.08475, arXiv:1711.09601, arXiv:1503.02531]
+arXiv:2112.08654: uses[arXiv:1706.08840, arXiv:1705.03550, arXiv:2004.07211, arXiv:1812.00420, arXiv:1803.10123, arXiv:1904.07734] background[arXiv:1612.00796, arXiv:1606.09282, arXiv:1904.00310, arXiv:1805.09733, arXiv:1703.04200, arXiv:1711.09601] compares[arXiv:1902.10486, arXiv:1905.13260, arXiv:1909.08383]
+arXiv:2112.02706: background[arXiv:1606.04671, arXiv:1703.08475, arXiv:1705.08395, arXiv:1703.04200, arXiv:1611.07725, arXiv:1705.08690] compares[arXiv:1612.00796, arXiv:1706.08840, arXiv:1812.00420, arXiv:1801.01423, arXiv:2004.07211] uses[arXiv:1909.08383]
+arXiv:2110.11526: background[arXiv:1312.6211, arXiv:1611.07725, arXiv:1703.04200, arXiv:1710.10628, arXiv:1711.09601, arXiv:1706.08840] extends[arXiv:1612.00796, arXiv:1606.09282] uses[arXiv:1812.00420, arXiv:1810.11910] compares[arXiv:1910.07104]
+arXiv:2104.08572: extends[arXiv:1606.09282, arXiv:1611.07725] compares[arXiv:1905.13260] motivates[arXiv:1612.00796, arXiv:1706.08840, arXiv:1801.10112] background[arXiv:1904.07734, arXiv:1705.08690, arXiv:1809.02058, arXiv:1711.10563, arXiv:1711.05769, arXiv:1703.03400]
+arXiv:2110.00908: extends[arXiv:1708.01547, arXiv:1606.04671, arXiv:1606.09282, arXiv:1701.08734, arXiv:1904.00310] background[arXiv:1703.04200, arXiv:1711.09601, arXiv:1705.08690, arXiv:1805.07810, arXiv:1611.07725, arXiv:1612.00796]
+arXiv:2107.12304: extends[arXiv:1909.08383, arXiv:1704.01920, arXiv:1711.09601] uses[arXiv:1606.09282, arXiv:1904.07734, arXiv:1810.12488, arXiv:1801.01423, arXiv:1904.00310, arXiv:1706.08840] compares[arXiv:1612.00796, arXiv:1703.08475, arXiv:1711.05769] background[arXiv:1606.04671, arXiv:1701.08734, arXiv:1503.02531] critiques[arXiv:1703.04200]
+arXiv:2108.12641: background[arXiv:1909.08383, arXiv:1706.08840, arXiv:1612.00796, arXiv:1703.04200, arXiv:1708.01547, arXiv:1705.08690] uses[arXiv:1703.05175] compares[arXiv:1905.12588]
+arXiv:2204.04799: extends[arXiv:1905.13260, arXiv:2103.16788, arXiv:1611.07725] compares[arXiv:1612.00796, arXiv:1606.09282, arXiv:1706.08840, arXiv:1803.10123] uses[arXiv:1902.10486, arXiv:2004.07211, arXiv:1812.00420, arXiv:2112.08654] background[arXiv:1703.04200, arXiv:1904.00310, arXiv:1711.05769, arXiv:1801.01423, arXiv:2010.15277, arXiv:2002.08165]
+arXiv:2201.00766: critiques[arXiv:1703.04200, arXiv:1612.00796, arXiv:1802.07569, arXiv:1606.04671, arXiv:1711.05769] compares[arXiv:1805.09733, arXiv:1902.10486, arXiv:2004.07211] background[arXiv:1606.04080, arXiv:1706.08840, arXiv:1801.01423, arXiv:1503.02531] extends[arXiv:1611.07725, arXiv:1810.11910, arXiv:1903.08671, arXiv:1908.04742, arXiv:2006.06958] uses[arXiv:1905.13260, arXiv:1801.10112]
+arXiv:2201.12522: uses[arXiv:1706.08840, arXiv:1812.00420, arXiv:2103.09762, arXiv:1612.00796, arXiv:1902.10486] background[arXiv:1705.08690, arXiv:1708.01547, arXiv:1312.6211, arXiv:1801.01423, arXiv:1606.04671, arXiv:1701.08734] compares[arXiv:1810.01256]
+arXiv:2212.13242: uses[arXiv:1706.08840, arXiv:1909.08383, arXiv:1902.10486, arXiv:1703.03400] background[arXiv:1606.09282, arXiv:2006.05188, arXiv:1611.07725, arXiv:1802.07569, arXiv:1903.08671, arXiv:1811.11682] compares[arXiv:1612.00796]
+arXiv:2211.15215: background[arXiv:1606.09282, arXiv:1801.10112, arXiv:1703.08475, arXiv:1704.01920, arXiv:2103.09762, arXiv:1910.07104] extends[arXiv:1612.00796, arXiv:1611.07725] uses[arXiv:1805.06370, arXiv:1703.04200, arXiv:2004.07211, arXiv:1909.08383, arXiv:1503.02531] compares[arXiv:1711.09601, arXiv:1706.08840, arXiv:1812.00420, arXiv:1811.11682, arXiv:1903.08671, arXiv:2002.08165]
+arXiv:2210.00713: uses[arXiv:1706.08840, arXiv:1810.11910] background[arXiv:1802.07569, arXiv:1606.04671, arXiv:1708.01547, arXiv:1801.01423, arXiv:1805.07810, arXiv:1611.07725] compares[arXiv:1612.00796, arXiv:1703.04200, arXiv:1803.02999, arXiv:1905.12588, arXiv:1703.03400]
+arXiv:2204.05842: uses[arXiv:1705.03550, arXiv:2010.15277, arXiv:1806.08568, arXiv:1703.04200, arXiv:1904.07734, arXiv:1312.6114] compares[arXiv:1612.00796, arXiv:1801.10112, arXiv:1611.07725, arXiv:1807.09536, arXiv:1905.13260] extends[arXiv:1606.09282] background[arXiv:1909.08383, arXiv:1802.07569, arXiv:1705.08690, arXiv:1903.08671, arXiv:1809.02058, arXiv:1902.10486]
+arXiv:2302.00487: uses[arXiv:1706.08840, arXiv:1801.10112, arXiv:1809.02058, arXiv:1612.00796, arXiv:1805.07810, arXiv:1710.10628] background[arXiv:2204.04799, arXiv:2004.07211, arXiv:1802.07569, arXiv:1904.07734, arXiv:1909.08383, arXiv:2201.00766] motivates[arXiv:1801.01423, arXiv:1805.06370, arXiv:1703.04200, arXiv:1711.09601, arXiv:1810.11910, arXiv:1905.12588] cites[arXiv:1810.12488, arXiv:2103.16788]
+arXiv:2305.13622: extends[arXiv:2004.07211, arXiv:1810.11910, arXiv:1903.08671, arXiv:1503.02531] background[arXiv:1612.00796, arXiv:2006.05188, arXiv:1811.11682, arXiv:1801.10112, arXiv:2201.00766, arXiv:1606.04671] compares[arXiv:1606.09282, arXiv:1611.07725, arXiv:1706.08840, arXiv:1812.00420, arXiv:1805.06370, arXiv:1703.04200] uses[arXiv:2112.08654]
+arXiv:2305.12270: background[arXiv:1909.08383, arXiv:1810.11910, arXiv:1708.01547, arXiv:1801.01423, arXiv:1811.11682, arXiv:1611.07725] uses[arXiv:1706.08840] extends[arXiv:1606.09282, arXiv:1612.00796, arXiv:1711.09601]
+arXiv:2311.15276: background[arXiv:1701.08734, arXiv:1606.04671, arXiv:1706.08840, arXiv:1708.02072, arXiv:1711.09601, arXiv:1801.10112] compares[arXiv:1612.00796] cites[arXiv:1606.09282]
+arXiv:2310.08038: uses[arXiv:1902.10486, arXiv:1706.08840, arXiv:1801.10112] background[arXiv:1802.10269, arXiv:1909.08383, arXiv:1811.11682, arXiv:1903.08671, arXiv:1904.00310, arXiv:1607.00122] compares[arXiv:1703.04200, arXiv:1612.00796, arXiv:1606.04671, arXiv:1611.07725, arXiv:1810.11910, arXiv:1812.00420]
+arXiv:2308.04539: uses[arXiv:1812.00420, arXiv:1611.07725, arXiv:1903.08671, arXiv:2004.07211, arXiv:1908.04742, arXiv:1705.08690] background[arXiv:1802.07569, arXiv:1909.08383, arXiv:1809.10635, arXiv:1706.08840, arXiv:1612.00796, arXiv:1905.12588] compares[arXiv:1810.12488]
+arXiv:2310.06362: background[arXiv:1909.08383, arXiv:1612.00796, arXiv:1611.07725, arXiv:1711.05769, arXiv:1711.09601]
+arXiv:2308.03810: compares[arXiv:1902.10486, arXiv:1611.07725, arXiv:2002.08165, arXiv:1810.11910, arXiv:1904.07734] background[arXiv:1312.6211, arXiv:1612.00796, arXiv:1606.04671, arXiv:2004.07211, arXiv:1805.09733]
+arXiv:2310.01365: background[arXiv:1810.11910, arXiv:1910.07104, arXiv:1612.00796, arXiv:1805.06370, arXiv:1806.05421, arXiv:1703.04200] compares[arXiv:2110.11526]
+arXiv:2311.11557: uses[arXiv:1811.11682, arXiv:1909.08383] background[arXiv:1802.07569, arXiv:2302.00487, arXiv:2006.06958, arXiv:1701.08734, arXiv:1606.04671, arXiv:1810.11910] motivates[arXiv:1611.07725, arXiv:1802.10269] compares[arXiv:1711.05769, arXiv:1612.00796]
+arXiv:2409.11329: background[arXiv:1909.08383, arXiv:1312.6211, arXiv:1606.04671, arXiv:1503.02531, arXiv:1904.07734] uses[arXiv:1812.00420, arXiv:1903.08671, arXiv:1908.04742]
+arXiv:2402.01348: (no out-citations in-graph)
+arXiv:2405.18758: background[arXiv:2006.05188, arXiv:1612.00796, arXiv:1703.04200, arXiv:1801.10112, arXiv:1710.10628, arXiv:1703.05175] uses[arXiv:1312.6114] compares[arXiv:1905.12588, arXiv:2002.09571, arXiv:1803.02999]
+arXiv:2406.09935: background[arXiv:1909.08383, arXiv:1802.07569, arXiv:1708.02072, arXiv:1612.00796, arXiv:1703.08475, arXiv:1904.00310] compares[arXiv:1903.08671, arXiv:1611.07725] uses[arXiv:1811.11682]
+arXiv:2411.06916: background[arXiv:2103.09762, arXiv:1810.12488, arXiv:1802.07569, arXiv:2302.00487, arXiv:1606.04671, arXiv:1606.09282] uses[arXiv:1612.00796, arXiv:1706.08840, arXiv:1811.11682, arXiv:1703.04200, arXiv:1801.01423]
+arXiv:2408.03219: compares[arXiv:1703.04200, arXiv:1612.00796, arXiv:2004.07211, arXiv:1611.07725] background[arXiv:1801.01423, arXiv:1703.03400, arXiv:1611.06194, arXiv:1904.07734, arXiv:2302.00487, arXiv:1706.08840]
+arXiv:2410.03955: background[arXiv:1811.11682, arXiv:1705.08690, arXiv:1606.09282, arXiv:1612.00796, arXiv:2302.00487, arXiv:1910.07104] compares[arXiv:1706.08840, arXiv:1611.07725, arXiv:1807.09536]
+arXiv:2404.12526: background[arXiv:1810.12488, arXiv:1612.00796, arXiv:1801.01423, arXiv:1606.09282, arXiv:1811.11682, arXiv:2004.07211] motivates[arXiv:1807.09536] uses[arXiv:1503.02531]
+arXiv:2405.07142: compares[arXiv:1612.00796, arXiv:1711.09601, arXiv:1703.04200, arXiv:1801.10112, arXiv:1807.09536, arXiv:2002.08165] background[arXiv:1606.04671, arXiv:1708.01547, arXiv:1706.08840, arXiv:1705.08690, arXiv:1312.6114, arXiv:1805.06370] uses[arXiv:2004.07211, arXiv:1611.07725]
+arXiv:2512.16871: (no out-citations in-graph)
+arXiv:2503.01595: compares[arXiv:2006.06958, arXiv:1805.06370] background[arXiv:1711.09601, arXiv:1606.04671, arXiv:1711.05769, arXiv:1612.00796, arXiv:1703.04200, arXiv:1606.09282] uses[arXiv:1902.10486, arXiv:2004.07211, arXiv:2201.00766, arXiv:1706.08840]
+arXiv:2509.01533: background[arXiv:1611.07725, arXiv:2103.16788, arXiv:1711.05769, arXiv:1612.00796, arXiv:2302.00487, arXiv:2204.04799] compares[arXiv:1606.09282] uses[arXiv:2006.06958]
+arXiv:2509.01213: (no out-citations in-graph)
+arXiv:2509.10529: (no out-citations in-graph)
+arXiv:2511.02025: critiques[arXiv:1612.00796, arXiv:1711.05769, arXiv:1701.08734] background[arXiv:1703.04200, arXiv:1802.07569, arXiv:1611.07725, arXiv:1801.01423] compares[arXiv:2402.01348]
+arXiv:2510.21836: background[arXiv:1812.00420, arXiv:1612.00796, arXiv:1312.6211, arXiv:1708.02072, arXiv:1801.10112, arXiv:1711.09601]
+arXiv:2502.10966: background[arXiv:1612.00796]
+arXiv:2504.08613: background[arXiv:2302.00487, arXiv:1909.08383]
+arXiv:2501.01045: background[arXiv:2302.00487, arXiv:2010.15277, arXiv:1909.08383, arXiv:1811.11682, arXiv:1612.00796, arXiv:1706.08840]
+arXiv:2601.05623: uses[arXiv:1706.08840, arXiv:1801.01423, arXiv:1902.10486, arXiv:1711.05769, arXiv:1810.12488, arXiv:1805.09733] compares[arXiv:1711.09601, arXiv:1708.01547, arXiv:2103.09762, arXiv:1612.00796, arXiv:1812.00420, arXiv:1910.07104] background[arXiv:1606.04671, arXiv:1802.07569, arXiv:1904.07734, arXiv:1611.07725, arXiv:2201.12522, arXiv:1805.12369] critiques[arXiv:2302.00487]
+arXiv:2602.05454: background[arXiv:1611.07725, arXiv:2103.16788, arXiv:1612.00796, arXiv:2112.08654, arXiv:2204.04799, arXiv:1703.04200]
+arXiv:2603.00624: (no out-citations in-graph)
+arXiv:2606.08447: background[arXiv:1708.02072]
+arXiv:2602.02767: background[arXiv:1802.07569, arXiv:2302.00487, arXiv:1612.00796, arXiv:1805.07810, arXiv:1711.09601, arXiv:1810.11910]
+arXiv:2603.18641: background[arXiv:1908.04742, arXiv:1801.01423, arXiv:1802.07569, arXiv:1909.08383] uses[arXiv:1606.04671]
+arXiv:2606.08013: (no out-citations in-graph)
+
+STORY THREADS (lineage chains, oldest -> newest):
+  [T1] arXiv:1503.02531 (2015) -> arXiv:1606.09282 (2016) -> arXiv:1704.01920 (2017) -> arXiv:1807.09536 (2018) -> arXiv:1905.13260 (2019) -> arXiv:2010.15277 (2020) -> arXiv:2204.05842 (2022)
+       arXiv:1503.02531 "Distilling the Knowledge in a Neural Network"
+       arXiv:1606.09282 "Learning without Forgetting"
+       arXiv:1704.01920 "Encoder Based Lifelong Learning"
+       arXiv:1807.09536 "End-to-End Incremental Learning"
+       arXiv:1905.13260 "Large Scale Incremental Learning"
+       arXiv:2010.15277 "Class-incremental learning: survey and performance evaluation on image
+  classif"
+       arXiv:2204.05842 "Generative Negative Replay for Continual Learning"
+  [T2] arXiv:1312.6211 (2013) -> arXiv:1612.00796 (2016) -> arXiv:1810.11910 (2018) -> arXiv:1902.10486 (2019) -> arXiv:2006.06958 (2020) -> arXiv:2201.00766 (2022) -> arXiv:2503.01595 (2025)
+       arXiv:1312.6211 "An Empirical Investigation of Catastrophic Forgetting in Gradient-Based
+  Neural"
+       arXiv:1612.00796 "Overcoming catastrophic forgetting in neural networks"
+       arXiv:1810.11910 "Learning to Learn without Forgetting by Maximizing Transfer and
+  Minimizing Int"
+       arXiv:1902.10486 "On Tiny Episodic Memories in Continual Learning"
+       arXiv:2006.06958 "Understanding the Role of Training Regimes in Continual Learning"
+       arXiv:2201.00766 "Class-Incremental Continual Learning into the eXtended DER-verse"
+       arXiv:2503.01595 "STAR: Stability-Inducing Weight Perturbation for Continual Learning"
+  [T3] arXiv:1703.04200 (2017) -> arXiv:1802.01569 (2018) -> arXiv:1904.07734 (2019) -> arXiv:2112.08654 (2021) -> arXiv:2305.13622 (2023)
+       arXiv:1703.04200 "Continual Learning Through Synaptic Intelligence"
+       arXiv:1802.01569 "Alleviating catastrophic forgetting using context-dependent gating and
+  synapti"
+       arXiv:1904.07734 "Three scenarios for continual learning"
+       arXiv:2112.08654 "Learning to Prompt for Continual Learning"
+       arXiv:2305.13622 "Continual Learning with Strong Experience Replay"
+  [T4] arXiv:1701.08734 (2017) -> arXiv:1801.01423 (2018) -> arXiv:2103.09762 (2021) -> arXiv:2302.00487 (2023)
+       arXiv:1701.08734 "PathNet: Evolution Channels Gradient Descent in Super Neural Networks"
+       arXiv:1801.01423 "Overcoming catastrophic forgetting with hard attention to the task"
+       arXiv:2103.09762 "Gradient Projection Memory for Continual Learning"
+       arXiv:2302.00487 "A Comprehensive Survey of Continual Learning: Theory, Method and
+  Application"
+  [T5] arXiv:1710.10628 (2017) -> arXiv:1805.09733 (2018) -> arXiv:1904.00310 (2019) -> arXiv:2107.12304 (2021)
+       arXiv:1710.10628 "Variational Continual Learning"
+       arXiv:1805.09733 "Towards Robust Evaluations of Continual Learning"
+       arXiv:1904.00310 "Learn to Grow: A Continual Structure Learning Framework for Overcoming
+  Catastr"
+       arXiv:2107.12304 "In Defense of the Learning Without Forgetting for Task Incremental
+  Learning"
+MOTIVATION LINKS (problem-framing):
+  arXiv:2302.00487 motivated-by arXiv:1801.01423
+  arXiv:2302.00487 motivated-by arXiv:1805.06370
+  arXiv:2302.00487 motivated-by arXiv:1703.04200
+  arXiv:2302.00487 motivated-by arXiv:1711.09601
+  arXiv:2302.00487 motivated-by arXiv:1810.11910
+  arXiv:2302.00487 motivated-by arXiv:1905.12588
+  arXiv:2302.00487 motivated-by arXiv:1703.03400
+  arXiv:2311.11557 motivated-by arXiv:1611.07725
+  arXiv:2311.11557 motivated-by arXiv:1802.10269
+  arXiv:2404.12526 motivated-by arXiv:1807.09536
+CONNECTORS (bridge papers between landmarks; context only, do NOT analyze):
+  arXiv:2403.05175 (2024) "Continual Learning and Catastrophic Forgetting"
+  arXiv:2305.00316 (2023) "The Ideal Continual Learner: An Agent That Never Forgets"
+  arXiv:1912.01238 (2019) "Overcoming Catastrophic Forgetting by Generative Regularization"
+  arXiv:1810.10612 (2018) "Continual Classification Learning Using Generative Models"
+  arXiv:2202.09826 (2022) "Continual Learning Beyond a Single Model"
+  arXiv:1806.06928 (2018) "Meta Continual Learning"
+  arXiv:1810.13166 (2018) "Don't forget, there is more than forgetting: new metrics for Continual
+  Learnin"
+  arXiv:1802.07239 (2018) "Continual Reinforcement Learning with Complex Synapses"
+  arXiv:1910.02509 (2019) "REMIND Your Neural Network to Prevent Catastrophic Forgetting"
+  arXiv:2009.04381 (2020) "Routing Networks with Co-training for Continual Learning"
+  arXiv:2207.04543 (2022) "Challenging Common Assumptions about Catastrophic Forgetting"
+  arXiv:1905.03980 (2019) "Bayesian Optimized Continual Learning with Attention Mechanism"
+  arXiv:1904.10644 (2019) "Facilitating Bayesian Continual Learning by Natural Gradients and Stein
+  Gradie"
+  arXiv:2010.00373 (2020) "Task Agnostic Continual Learning Using Online Variational Bayes with
+  Fixed-Poi"
+  arXiv:2203.06514 (2022) "Sparsity and Heterogeneous Dropout for Continual Learning in the Null
+  Space of"
+
+TENSIONS / OPEN PROBLEMS (compare/critique/motivate edges):
+  arXiv:2305.13622 compares arXiv:1606.09282
+  arXiv:2305.13622 compares arXiv:1611.07725
+  arXiv:2305.13622 compares arXiv:1706.08840
+  arXiv:2305.13622 compares arXiv:1812.00420
+  arXiv:2305.13622 compares arXiv:1805.06370
+  arXiv:2305.13622 compares arXiv:1703.04200
+  arXiv:2305.13622 compares arXiv:2002.08165
+  arXiv:2308.03810 compares arXiv:1902.10486
+  arXiv:2308.03810 compares arXiv:1611.07725
+  arXiv:2308.03810 compares arXiv:2002.08165
+  arXiv:2308.03810 compares arXiv:1810.11910
+  arXiv:2308.03810 compares arXiv:1904.07734
+  arXiv:2308.04539 compares arXiv:1810.12488
+  arXiv:2310.01365 compares arXiv:2110.11526
+  arXiv:2310.08038 compares arXiv:1703.04200
+  arXiv:2310.08038 compares arXiv:1612.00796
+  arXiv:2310.08038 compares arXiv:1606.04671
+  arXiv:2310.08038 compares arXiv:1611.07725
+  arXiv:2310.08038 compares arXiv:1810.11910
+  arXiv:2310.08038 compares arXiv:1812.00420
+  arXiv:2310.08038 compares arXiv:2002.08165
+  arXiv:2310.08038 compares arXiv:2004.07211
+  arXiv:2310.08038 compares arXiv:1805.06370
+  arXiv:2311.11557 compares arXiv:1711.05769
+  arXiv:2311.11557 compares arXiv:1612.00796
+  arXiv:2311.15276 compares arXiv:1612.00796
+  arXiv:2405.07142 compares arXiv:1612.00796
+  arXiv:2405.07142 compares arXiv:1711.09601
+  arXiv:2405.07142 compares arXiv:1703.04200
+  arXiv:2405.07142 compares arXiv:1801.10112
+  arXiv:2405.07142 compares arXiv:1807.09536
+  arXiv:2405.07142 compares arXiv:2002.08165
+  arXiv:2405.18758 compares arXiv:1905.12588
+  arXiv:2405.18758 compares arXiv:2002.09571
+  arXiv:2405.18758 compares arXiv:1803.02999
+  arXiv:2406.09935 compares arXiv:1903.08671
+  arXiv:2406.09935 compares arXiv:1611.07725
+  arXiv:2408.03219 compares arXiv:1703.04200
+  arXiv:2408.03219 compares arXiv:1612.00796
+  arXiv:2408.03219 compares arXiv:2004.07211
+  arXiv:2408.03219 compares arXiv:1611.07725
+  arXiv:2410.03955 compares arXiv:1706.08840
+  arXiv:2410.03955 compares arXiv:1611.07725
+  arXiv:2410.03955 compares arXiv:1807.09536
+  arXiv:2503.01595 compares arXiv:2006.06958
+  arXiv:2503.01595 compares arXiv:1805.06370
+  arXiv:1908.04742 compares arXiv:1612.00796
+  arXiv:1708.01547 compares arXiv:1612.00796
+  arXiv:1708.01547 compares arXiv:1606.04671
+  arXiv:1801.01423 compares arXiv:1312.6211
+  arXiv:1802.01569 compares arXiv:1801.01423
+  arXiv:2201.00766 compares arXiv:1805.09733
+  arXiv:2201.00766 compares arXiv:1902.10486
+  arXiv:1802.07569 compares arXiv:1612.00796
+  arXiv:1805.07810 compares arXiv:1612.00796
+  arXiv:1805.12369 compares arXiv:1606.04671
+  arXiv:1806.08568 compares arXiv:1611.07725
+  arXiv:1806.08568 compares arXiv:1711.10563
+  arXiv:1809.02058 compares arXiv:1606.09282
+  arXiv:1904.00310 compares arXiv:1612.00796
+  arXiv:1904.00310 compares arXiv:1703.08475
+  arXiv:1904.00310 compares arXiv:1701.08734
+  arXiv:1904.00310 compares arXiv:1606.04671
+  arXiv:1904.00310 compares arXiv:1801.01423
+  arXiv:1904.00310 compares arXiv:1710.10628
+  arXiv:1905.13260 compares arXiv:1606.09282
+  arXiv:2204.04799 compares arXiv:1612.00796
+  arXiv:2204.04799 compares arXiv:1606.09282
+  arXiv:1908.04742 compares arXiv:1611.07725
+  arXiv:1909.08383 compares arXiv:1805.09733
+  arXiv:2002.08165 compares arXiv:1612.00796
+  arXiv:2002.08165 compares arXiv:1710.10628
+  arXiv:2002.08165 compares arXiv:1908.04742
+  arXiv:2002.08165 compares arXiv:1611.07725
+  arXiv:2004.07211 compares arXiv:1902.10486
+  arXiv:2004.07211 compares arXiv:1606.09282
+  arXiv:2104.08572 compares arXiv:1905.13260
+  arXiv:2010.15277 compares arXiv:1706.08840
+  arXiv:2010.15277 compares arXiv:1703.04200
+  arXiv:2112.08654 compares arXiv:1902.10486
+  arXiv:2112.08654 compares arXiv:1905.13260
+  arXiv:2201.00766 compares arXiv:2004.07211
+  arXiv:2204.05842 compares arXiv:1612.00796
+  arXiv:2204.05842 compares arXiv:1801.10112
+  arXiv:2204.05842 compares arXiv:1611.07725
+  arXiv:2204.05842 compares arXiv:1807.09536
+  arXiv:2204.05842 compares arXiv:1905.13260
+  arXiv:2211.15215 compares arXiv:1711.09601
+  arXiv:2211.15215 compares arXiv:1706.08840
+  arXiv:2211.15215 compares arXiv:1812.00420
+  arXiv:2211.15215 compares arXiv:1811.11682
+  arXiv:2211.15215 compares arXiv:1903.08671
+  arXiv:2211.15215 compares arXiv:2002.08165
+  arXiv:2509.01533 compares arXiv:1606.09282
+  arXiv:1902.10486 compares arXiv:1803.02999
+  arXiv:1903.08671 compares arXiv:1611.07725
+  arXiv:2511.02025 compares arXiv:2402.01348
+  arXiv:2601.05623 compares arXiv:1711.09601
+  arXiv:2601.05623 compares arXiv:1708.01547
+  arXiv:2601.05623 compares arXiv:2103.09762
+  arXiv:2601.05623 compares arXiv:1612.00796
+  arXiv:2601.05623 compares arXiv:1812.00420
+  arXiv:2601.05623 compares arXiv:1910.07104
+  arXiv:1606.09282 compares arXiv:1607.00122
+  arXiv:1705.03550 compares arXiv:1612.00796
+  arXiv:1705.03550 compares arXiv:1704.01920
+  arXiv:1706.08840 compares arXiv:1606.04671
+  arXiv:1706.08840 compares arXiv:1611.07725
+  arXiv:1706.08840 compares arXiv:1701.08734
+  arXiv:1706.08840 compares arXiv:1611.06194
+  arXiv:1710.10368 compares arXiv:1312.6211
+  arXiv:1710.10368 compares arXiv:1703.04200
+  arXiv:1710.10368 compares arXiv:1611.07725
+  arXiv:1710.10368 compares arXiv:1705.08690
+  arXiv:1711.05769 compares arXiv:1612.00796
+  arXiv:1711.05769 compares arXiv:1704.01920
+  arXiv:1711.05769 compares arXiv:1611.07725
+  arXiv:1711.09601 compares arXiv:1701.08734
+  arXiv:1801.01423 compares arXiv:1607.00122
+  arXiv:1801.01423 compares arXiv:1606.09282
+  arXiv:1801.10112 compares arXiv:1611.07725
+  arXiv:1802.01569 compares arXiv:1701.08734
+  arXiv:1802.01569 compares arXiv:1711.05769
+  arXiv:1802.02950 compares arXiv:1611.07725
+  arXiv:1802.02950 compares arXiv:1706.08840
+  arXiv:1802.02950 compares arXiv:1705.08690
+  arXiv:1802.02950 compares arXiv:1801.10112
+  arXiv:1802.07569 compares arXiv:1701.08734
+  arXiv:1805.07810 compares arXiv:1703.08475
+  arXiv:1805.07810 compares arXiv:1710.10628
+  arXiv:1805.09733 compares arXiv:1612.00796
+  arXiv:1805.09733 compares arXiv:1312.6211
+  arXiv:1805.12369 compares arXiv:1708.01547
+  arXiv:1805.12369 compares arXiv:1612.00796
+  arXiv:1805.12369 compares arXiv:1706.08840
+  arXiv:1806.05421 compares arXiv:1704.01920
+  arXiv:1806.08568 compares arXiv:1711.09601
+  arXiv:1809.10635 compares arXiv:1711.10563
+  arXiv:1809.10635 compares arXiv:1904.07734
+  arXiv:1810.12488 compares arXiv:1706.08840
+  arXiv:1810.12488 compares arXiv:1705.08690
+  arXiv:1810.12488 compares arXiv:1809.10635
+  arXiv:1810.12488 compares arXiv:1711.09601
+  arXiv:1810.12488 compares arXiv:1805.06370
+  arXiv:1810.12488 compares arXiv:1606.09282
+  arXiv:1811.11682 compares arXiv:1612.00796
+  arXiv:1812.00420 compares arXiv:1612.00796
+  arXiv:1812.00420 compares arXiv:1711.09601
+  arXiv:1812.00420 compares arXiv:1606.04671
+  arXiv:1812.00420 compares arXiv:1703.04200
+  arXiv:1812.00420 compares arXiv:1611.07725
+  arXiv:1902.10486 compares arXiv:1612.00796
+  arXiv:1902.10486 compares arXiv:1805.06370
+  arXiv:1904.00310 compares arXiv:1703.04200
+  arXiv:1904.00310 compares arXiv:1706.08840
+  arXiv:1904.00310 compares arXiv:1705.08690
+  arXiv:1905.12588 compares arXiv:1703.08475
+  arXiv:1905.12588 compares arXiv:1810.11910
+  arXiv:1905.12588 compares arXiv:1902.10486
+  arXiv:1908.04742 compares arXiv:1611.06194
+  arXiv:1909.08383 compares arXiv:1703.08475
+  arXiv:1909.08383 compares arXiv:1801.01423
+  arXiv:1909.08383 compares arXiv:1312.6211
+  arXiv:1910.07104 compares arXiv:1706.08840
+  arXiv:1910.07104 compares arXiv:1810.11910
+  arXiv:2004.07211 compares arXiv:1905.13260
+  arXiv:2004.07211 compares arXiv:1805.09733
+  arXiv:2006.06958 compares arXiv:1312.6211
+  arXiv:2006.06958 compares arXiv:1611.07725
+  arXiv:2006.06958 compares arXiv:1612.00796
+  arXiv:2006.06958 compares arXiv:1710.10628
+  arXiv:2006.06958 compares arXiv:1711.05769
+  arXiv:2006.06958 compares arXiv:1805.09733
+  arXiv:2007.04813 compares arXiv:1606.09282
+  arXiv:2007.04813 compares arXiv:1611.07725
+  arXiv:2007.04813 compares arXiv:1903.08671
+  arXiv:2007.04813 compares arXiv:1711.10563
+  arXiv:2007.04813 compares arXiv:1812.00420
+  arXiv:2010.15277 compares arXiv:1801.10112
+  arXiv:2010.15277 compares arXiv:1711.05769
+  arXiv:2010.15277 compares arXiv:1705.08690
+  arXiv:2103.09762 compares arXiv:1612.00796
+  arXiv:2103.09762 compares arXiv:1910.07104
+  arXiv:2107.12304 compares arXiv:1612.00796
+  arXiv:2107.12304 compares arXiv:1703.08475
+  arXiv:2107.12304 compares arXiv:1711.05769
+  arXiv:2108.12641 compares arXiv:1905.12588
+  arXiv:2110.11526 compares arXiv:1910.07104
+  arXiv:2112.02706 compares arXiv:1612.00796
+  arXiv:2112.02706 compares arXiv:1706.08840
+  arXiv:2112.02706 compares arXiv:1812.00420
+  arXiv:2112.02706 compares arXiv:1801.01423
+  arXiv:2112.02706 compares arXiv:2004.07211
+  arXiv:2112.08654 compares arXiv:1909.08383
+  arXiv:2201.12522 compares arXiv:1810.01256
+  arXiv:2204.04799 compares arXiv:1706.08840
+  arXiv:2204.04799 compares arXiv:1803.10123
+  arXiv:2210.00713 compares arXiv:1612.00796
+  arXiv:2210.00713 compares arXiv:1703.04200
+  arXiv:2210.00713 compares arXiv:1803.02999
+  arXiv:2210.00713 compares arXiv:1905.12588
+  arXiv:2211.15215 compares arXiv:1810.12488
+  arXiv:2211.15215 compares arXiv:2103.16788
+  arXiv:2212.13242 compares arXiv:1612.00796
+  arXiv:2201.00766 critiques arXiv:1703.04200
+  arXiv:2010.15277 critiques arXiv:1612.00796
+  arXiv:2511.02025 critiques arXiv:1612.00796
+  arXiv:2511.02025 critiques arXiv:1711.05769
+  arXiv:2511.02025 critiques arXiv:1701.08734
+  arXiv:2601.05623 critiques arXiv:2302.00487
+  arXiv:1711.09601 critiques arXiv:1611.07725
+  arXiv:1805.09733 critiques arXiv:1805.06370
+  arXiv:1807.09536 critiques arXiv:1606.04671
+  arXiv:1807.09536 critiques arXiv:1612.00796
+  arXiv:1812.00420 critiques arXiv:1805.06370
+  arXiv:1904.07734 critiques arXiv:1612.00796
+  arXiv:1904.07734 critiques arXiv:1805.06370
+  arXiv:1909.08383 critiques arXiv:1806.05421
+  arXiv:2002.08165 critiques arXiv:1711.09601
+  arXiv:2002.08165 critiques arXiv:1703.04200
+  arXiv:2010.15277 critiques arXiv:1802.02950
+  arXiv:2107.12304 critiques arXiv:1703.04200
+  arXiv:2201.00766 critiques arXiv:1612.00796
+  arXiv:2201.00766 critiques arXiv:1802.07569
+  arXiv:2201.00766 critiques arXiv:1606.04671
+  arXiv:2201.00766 critiques arXiv:1711.05769
+  arXiv:2302.00487 motivates arXiv:1801.01423
+  arXiv:2302.00487 motivates arXiv:1805.06370
+  arXiv:2302.00487 motivates arXiv:1703.04200
+  arXiv:2302.00487 motivates arXiv:1711.09601
+  arXiv:2302.00487 motivates arXiv:1810.11910
+  arXiv:2302.00487 motivates arXiv:1905.12588
+  arXiv:2311.11557 motivates arXiv:1611.07725
+  arXiv:2311.11557 motivates arXiv:1802.10269
+  arXiv:2404.12526 motivates arXiv:1807.09536
+  arXiv:1802.07569 motivates arXiv:1705.08690
+  arXiv:1803.10123 motivates arXiv:1805.09733
+  arXiv:2002.09571 motivates arXiv:1802.01569
+  arXiv:2104.08572 motivates arXiv:1612.00796
+  arXiv:2104.08572 motivates arXiv:1706.08840
+  arXiv:2104.08572 motivates arXiv:1801.10112
+
+DEEP CRITIQUES (full-text peer review of key papers):
+arXiv:1703.04200:
+NOVELTY: Introduction of "intelligent synapses" that utilize an online, path-integral-based importance measure ($\omega_k^\mu$) to consolidate parameters, rather than relying on post-hoc Fisher information estimates.
+
+STRENGTHS: Demonstrates significant resistance to forgetting on Permuted MNIST (Fig. 4) and CIFAR-10/100 (Fig. 6), maintaining accuracy comparable to training on all data simultaneously.
+
+WEAKNESSES: The method relies on a hyperparameter $c$ (consolidation strength) that requires empirical tuning (e.g., via grid search in Section 5.2) and introduces a damping parameter $\xi$ to prevent division by zero.
+
+RELEVANCE: Provides a structural regularization approach to continual learning that moves beyond static weight freezing by treating synapses as dynamic entities that track their own contribution to loss reduction.
+arXiv:2601.05623:
+NOVELTY: Proposes ETCL, a non-expansion method that explicitly optimizes for both forgetting-free learning (via task-specific binary masks and sparse sub-networks) and positive knowledge transfer (FKT/BKT) through initial gradient alignment and bi-objective classification layer updates.
+
+STRENGTHS: Provides a theoretical framework for KT bounds (Theorem 1) and introduces an online task similarity detector (SDM) that uses Wasserstein distance between representation bases, avoiding the need for old task data.
+
+WEAKNESSES: The claim of "forgetting-free" learning is potentially undermined by the BKT mechanism, which updates weights of previous tasks; while the paper uses orthogonal gradient projection (GPM) to mitigate this, the risk of interference in the classification layer remains a critical point of failure.
+
+RELEVANCE: Directly addresses the research gap where most continual learning methods focus solely on mitigating catastrophic forgetting while ignoring the potential for positive forward and backward knowledge transfer.
+arXiv:2602.05454:
+NOVELTY: Identifies "attention drift" in Vision Transformers as a primary driver of forgetting and proposes a data-free, regularization-based method (ARCL-ViT) that uses layer-wise rollout and adaptive thresholding to generate gradient masks.
+
+STRENGTHS: Achieves state-of-the-art performance across multiple benchmarks, notably outperforming VPT-CPG by 3.3% accuracy in 50-split ImageNet-R (Table 5) and reducing attention drift to 6.0% (Figure 1b).
+
+WEAKNESSES: The method relies on an "instance-adaptive" thresholding strategy (Eq. 10) that requires careful implementation of second-order derivatives, and the theoretical justification for why gradient masking approximates the attention-retention objective is relegated to an appendix.
+
+RELEVANCE: Provides a specific, architecture-aware approach for Vision Transformers that moves beyond general parameter regularization by targeting the internal attention mechanisms used in modern CL models.

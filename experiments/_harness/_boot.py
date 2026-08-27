@@ -12,7 +12,8 @@ from graphiv.core.config import Config
 
 _C = Config.load()
 
-REPO: Path = Path(__file__).resolve().parents[2]
+HARNESS: Path = Path(__file__).resolve().parent
+REPO: Path = HARNESS.parents[1]
 LLM_BASE_URL: str = _C.llm_base_url
 LLM_ROUTER: str = _C.llm_router
 # the map model gives the best judge discrimination

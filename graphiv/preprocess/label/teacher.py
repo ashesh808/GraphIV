@@ -20,6 +20,8 @@ import httpx
 import psycopg
 from openai import AsyncOpenAI
 
+from graphiv.core.settings import LLM_BASE_URL, LLM_ROUTER
+
 from ._common import (
     ARXIVKG_PG_DSN,
     INTENTS,
@@ -28,8 +30,6 @@ from ._common import (
     SAMPLE_TXT,
 )
 
-BASE_URL: str = "http://localhost:11434/v1"
-ROUTER_BASE: str = "http://localhost:11434"
 API_KEY: str = "none"
 DEFAULT_MODEL: str = "Gemma-4-26B"
 DEFAULT_MODEL_TAG: str = "gemma-4-26b-v6"  # stored in label.model; bumped per prompt version
@@ -163,7 +163,7 @@ _RESTART_GEN: int = 0
 async def _models_status() -> dict[str, str]:
     try:
         async with httpx.AsyncClient(timeout=10.0) as h:
-            r = await h.get(f"{BASE_URL}/models")
+            r = await h.get(f"{LLM_BASE_URL}/models")
             if r.status_code != 200:
                 return {}
             data = r.json()
@@ -183,7 +183,7 @@ async def restart_server(model: str = DEFAULT_MODEL) -> None:
         print("  >>> calling /router/restart", flush=True)
         try:
             async with httpx.AsyncClient(timeout=60.0) as h:
-                r = await h.get(f"{ROUTER_BASE}/router/restart")
+                r = await h.get(f"{LLM_ROUTER}/router/restart")
                 print(f"      restart -> {r.status_code} {r.text[:120]}", flush=True)
         # the endpoint's failure taxonomy is open, and a resumable job must not abort on one
         except Exception as e:  # noqa: BLE001
@@ -339,7 +339,7 @@ async def run(
     # cold restart so we begin from a known state
     await restart_server(model)
 
-    client = AsyncOpenAI(base_url=BASE_URL, api_key=API_KEY)
+    client = AsyncOpenAI(base_url=LLM_BASE_URL, api_key=API_KEY)
     # warmup
     try:
         _ = await client.chat.completions.create(

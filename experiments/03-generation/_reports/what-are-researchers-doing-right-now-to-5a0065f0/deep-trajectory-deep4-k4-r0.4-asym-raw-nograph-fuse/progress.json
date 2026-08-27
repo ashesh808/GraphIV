@@ -1,0 +1,48 @@
+{
+ "question": "What are researchers doing right now to make large language model inference faster and cheaper?",
+ "started_at": "2026-08-27T19:42:26",
+ "elapsed": 256.4,
+ "stages": [
+  {
+   "name": "embed",
+   "seconds": 0.4
+  },
+  {
+   "name": "retrieve+grade",
+   "seconds": 7.2
+  },
+  {
+   "name": "extract+compose",
+   "seconds": 33.6
+  },
+  {
+   "name": "judge",
+   "seconds": 25.3
+  },
+  {
+   "name": "critique",
+   "seconds": 0.1
+  },
+  {
+   "name": "compose-long",
+   "seconds": 145.9
+  },
+  {
+   "name": "viz",
+   "seconds": 0.5
+  },
+  {
+   "name": "summaries",
+   "seconds": 0.0
+  },
+  {
+   "name": "figures",
+   "seconds": 25.6
+  },
+  {
+   "name": "pdf",
+   "seconds": 1.0
+  }
+ ],
+ "done": true
+}

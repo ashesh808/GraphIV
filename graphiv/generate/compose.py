@@ -128,7 +128,7 @@ def build_digest(
 
 _SKEL_SYS = (
     "You draft ONE section of a literature-review SKELETON: a ~120-word synopsis of what the "
-    "section will argue, followed by a CLAIMS list — one line per paper, 'arXiv:<id> — <the "
+    "section will argue, followed by a CLAIMS list, one line per paper, 'arXiv:<id> - <the "
     "single most important claim/number this paper contributes>'. Cover every paper given. "
     "No prose beyond the synopsis; no headings other than '## <title>'."
 )

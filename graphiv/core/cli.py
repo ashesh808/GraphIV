@@ -1,13 +1,14 @@
 """
 The flag grammar and config resolution every scripts/ entrypoint shares
 
-Priority runs --config, then --include and --set overrides, then the stage table in config.toml.
-A stage fails fast when the resolved config is missing a key it declared required.
+Least specific first: the stage table in config.toml, then a --preset file, then --set flags.
+Every flag therefore has a config-file equivalent, which is what makes a run reproducible.
 """
 
 from __future__ import annotations
 
 import json
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,30 @@ class Resolved:
     positionals: list[str]
 
 
+def load_preset(
+    preset_dir: Path, name: str
+) -> dict[str, Any]:  # pyright: ignore[reportExplicitAny]
+    """
+    Read one named preset, which is a flat table of the same keys `--set` would carry
+
+    Args:
+        preset_dir: where preset files live.
+        name: the preset's file stem.
+
+    Returns:
+        The preset's keys.
+
+    Raises:
+        SystemExit: when the preset does not exist, listing the ones that do.
+    """
+    path = preset_dir / f"{name}.toml"
+    if not path.exists():
+        have = sorted(p.stem for p in preset_dir.glob("*.toml")) if preset_dir.is_dir() else []
+        raise SystemExit(f"no preset {name!r} in {preset_dir}; have {have}")
+    with path.open("rb") as fh:
+        return tomllib.load(fh)
+
+
 def resolve(stage: str, argv: list[str], required: tuple[str, ...] = ()) -> Resolved:
     """
     Build the effective stage config from the command line and config.toml
@@ -64,6 +89,7 @@ def resolve(stage: str, argv: list[str], required: tuple[str, ...] = ()) -> Reso
     """
     dry_run = False
     config_path: Path | None = None
+    preset: str | None = None
     overrides: dict[str, Any] = {}  # pyright: ignore[reportExplicitAny]
     positionals: list[str] = []
     i = 0
@@ -73,6 +99,12 @@ def resolve(stage: str, argv: list[str], required: tuple[str, ...] = ()) -> Reso
             dry_run = True
         elif a.startswith("--config="):
             config_path = Path(a.split("=", 1)[1])
+        elif a == "--preset" or a.startswith("--preset="):
+            if "=" in a:
+                preset = a.split("=", 1)[1]
+            else:
+                i += 1
+                preset = argv[i]
         elif a.startswith("--include-"):
             overrides[a[len("--include-") :].replace("-", "_")] = True
         elif a.startswith("--set-"):
@@ -96,7 +128,11 @@ def resolve(stage: str, argv: list[str], required: tuple[str, ...] = ()) -> Reso
     config: dict[str, Any] = dict(cfg.stages.get(stage, {}))  # pyright: ignore[reportExplicitAny]  # fmt: skip
     if not config:
         raise SystemExit(f"config.toml has no [stage.{stage}] table")
+    if preset is not None:
+        config.update(load_preset(cfg.preset_dir, preset))
     config.update(overrides)
+    # the run record carries the label so a finished run says which bundle produced it
+    config["preset"] = preset or ""
 
     missing = [k for k in required if k not in config]
     if missing:

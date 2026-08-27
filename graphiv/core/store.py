@@ -345,6 +345,25 @@ class Store:
             out[str(aid)] = [float(x) for x in str(txt).strip("[]").split(",")]
         return out
 
+    def cosines(self, qvec: list[float], arxiv_ids: list[str]) -> dict[str, float]:
+        """
+        Cosine of each id against the query, computed in the database rather than shipped
+
+        Used to put a whole pool on one score scale, since the pool is assembled from
+        stages that would otherwise each write their own.
+        """
+        if not arxiv_ids:
+            return {}
+        v = _vec(qvec)
+        q = (
+            f"SELECT arxiv_id, 1 - ({self.emb_col} <=> %s::halfvec) FROM {self.emb_table} "
+            f"WHERE arxiv_id = ANY(%s)"
+        )
+        rows: list[tuple[Any, ...]] = self.conn.execute(
+            cast(LiteralString, q), (v, arxiv_ids)
+        ).fetchall()
+        return {str(r[0]): float(r[1]) for r in rows}
+
     def meta_for(self, arxiv_id: str) -> tuple[str, int | None, str | None, str] | None:
         """
         (title, year, category, abstract) for one paper, or None if unknown (seed lookup)

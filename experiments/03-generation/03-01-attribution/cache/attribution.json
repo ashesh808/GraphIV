@@ -1,0 +1,294 @@
+[
+  {
+    "report": "choosing-a-pretrained-text-encoder-back-6da8c215/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 85,
+    "clean": {
+      "yes": 19,
+      "no": 1
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.95,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "contrastive-self-supervised-representat-adbc0e42/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 116,
+    "clean": {
+      "yes": 19,
+      "no": 1
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.95,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "deep-reinforcement-learning/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 110,
+    "clean": {
+      "yes": 14,
+      "no": 6
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.7,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "diffusion-models-for-audio-and-speech-synthesis/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 95,
+    "clean": {
+      "no": 5,
+      "yes": 15
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.75,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "diffusion-models-for-autonomous-driving/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 110,
+    "clean": {
+      "yes": 15,
+      "no": 5
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.75,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "diffusion-models-for-image-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 106,
+    "clean": {
+      "no": 5,
+      "yes": 15
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.75,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "diffusion-models-for-molecular-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 104,
+    "clean": {
+      "no": 7,
+      "yes": 13
+    },
+    "planted": {
+      "no": 17,
+      "yes": 3
+    },
+    "pass_clean": 0.65,
+    "detect_planted": 0.85
+  },
+  {
+    "report": "diffusion-models-for-video-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 89,
+    "clean": {
+      "yes": 14,
+      "no": 6
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.7,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "grafting-layoutlm-2d-spatial-position-e-1bc59c30/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 89,
+    "clean": {
+      "no": 12,
+      "yes": 8
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.4,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "graph-neural-networks/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "fulltext",
+    "pairs_total": 66,
+    "clean": {
+      "no": 6,
+      "yes": 14
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.7,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "choosing-a-pretrained-text-encoder-back-6da8c215/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 85,
+    "clean": {
+      "yes": 20
+    },
+    "planted": {
+      "no": 17,
+      "yes": 3
+    },
+    "pass_clean": 1.0,
+    "detect_planted": 0.85
+  },
+  {
+    "report": "contrastive-self-supervised-representat-adbc0e42/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 116,
+    "clean": {
+      "yes": 19,
+      "no": 1
+    },
+    "planted": {
+      "no": 19,
+      "yes": 1
+    },
+    "pass_clean": 0.95,
+    "detect_planted": 0.95
+  },
+  {
+    "report": "deep-reinforcement-learning/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 110,
+    "clean": {
+      "yes": 15,
+      "no": 5
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.75,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "diffusion-models-for-audio-and-speech-synthesis/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 95,
+    "clean": {
+      "no": 3,
+      "yes": 17
+    },
+    "planted": {
+      "no": 20
+    },
+    "pass_clean": 0.85,
+    "detect_planted": 1.0
+  },
+  {
+    "report": "diffusion-models-for-autonomous-driving/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 110,
+    "clean": {
+      "yes": 14,
+      "no": 6
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.7,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "diffusion-models-for-image-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 106,
+    "clean": {
+      "yes": 17,
+      "no": 3
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.85,
+    "detect_planted": 0.9
+  },
+  {
+    "report": "diffusion-models-for-molecular-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 104,
+    "clean": {
+      "no": 2,
+      "yes": 18
+    },
+    "planted": {
+      "no": 16,
+      "yes": 4
+    },
+    "pass_clean": 0.9,
+    "detect_planted": 0.8
+  },
+  {
+    "report": "diffusion-models-for-video-generation/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 89,
+    "clean": {
+      "yes": 17,
+      "no": 3
+    },
+    "planted": {
+      "no": 19,
+      "yes": 1
+    },
+    "pass_clean": 0.85,
+    "detect_planted": 0.95
+  },
+  {
+    "report": "grafting-layoutlm-2d-spatial-position-e-1bc59c30/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 89,
+    "clean": {
+      "no": 7,
+      "yes": 13
+    },
+    "planted": {
+      "no": 17,
+      "yes": 3
+    },
+    "pass_clean": 0.65,
+    "detect_planted": 0.85
+  },
+  {
+    "report": "graph-neural-networks/deep-ppr-deep4-k4-r0.4-asym-raw-fuse",
+    "mode": "abstract",
+    "pairs_total": 66,
+    "clean": {
+      "no": 3,
+      "yes": 17
+    },
+    "planted": {
+      "no": 18,
+      "yes": 2
+    },
+    "pass_clean": 0.85,
+    "detect_planted": 0.9
+  }
+]

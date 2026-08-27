@@ -1,0 +1,22 @@
+{
+  "judges": [
+    {
+      "judge": "Gemma-4-26B-Batched",
+      "broken citations": 818,
+      "caught": 528,
+      "called partial": 162,
+      "missed": 125,
+      "skipped": 3,
+      "catch rate": 0.645
+    },
+    {
+      "judge": "Qwen3.6-35B-A3B-Batched",
+      "broken citations": 818,
+      "caught": 625,
+      "called partial": 28,
+      "missed": 162,
+      "skipped": 3,
+      "catch rate": 0.764
+    }
+  ]
+}

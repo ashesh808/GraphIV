@@ -11,7 +11,6 @@ from pathlib import Path
 
 from selectolax.lexbor import LexborHTMLParser  # pyright: ignore[reportMissingImports]
 
-from graphiv.core.settings import HTML_DIR
 from graphiv.download.fetch import fetch_html
 
 _WS = re.compile(r"\s+")
@@ -49,14 +48,7 @@ def html_path(arxiv_id: str) -> Path | None:
     """
     Resolve the on-disk HTML for an arxiv id; on a local miss, lazily fetch from ar5iv
     """
-    if "/" in arxiv_id:
-        arch, num = arxiv_id.split("/", 1)
-        yymm = num[:4]
-        p = HTML_DIR / yymm / f"{arch}{num}.html"
-    else:
-        yymm = arxiv_id[:4]
-        p = HTML_DIR / yymm / f"{arxiv_id}.html"
-    return p if p.exists() else fetch_html(arxiv_id)
+    return fetch_html(arxiv_id)
 
 
 def _clean(text: str) -> str:

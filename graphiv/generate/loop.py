@@ -31,7 +31,6 @@ from graphiv.generate.long_compose import compose_long
 from graphiv.generate.narrate import linkify
 from graphiv.generate.pipeline import (
     OUT,
-    TIERS,
     _slug,
     attach_figures,
     cap_spec,
@@ -41,6 +40,7 @@ from graphiv.generate.pipeline import (
     rank_pool,
     retrieve_rank,
     seed_slug,
+    tier_budget,
     write_pool,
 )
 from graphiv.generate.progress import StageTimer
@@ -52,7 +52,27 @@ from graphiv.retrieve.topic_anchor import TopicTree
 
 GAP_POOL = 150  # per-gap retrieval breadth
 M_GROW = 40  # landmark budget growth per round (broaden coverage)
-M_MAX = 260  # hard cap on landmark count
+M_SCALE = 1.3  # the loop may grow a tier budget by this much, which keeps the modes apart
+M_MAX = 260  # absolute ceiling, set by what the digest has to fit into one context
+
+
+def round_budget(m0: int, r: int) -> int:
+    """
+    The landmark budget for round r, growing from the tier budget under two ceilings
+
+    The relative ceiling keeps survey and frontier distinguishable, since a flat cap alone
+    pulled a 200-paper survey and a 120-paper frontier run to within 20 of each other.
+    The absolute ceiling is a context bound and not a policy: past roughly 260 papers the
+    digest leaves no room to write the report.
+
+    Args:
+        m0: The tier budget for this effort and mode.
+        r: The zero-based round index.
+
+    Returns:
+        The landmark count for this round.
+    """
+    return min(m0 + M_GROW * r, int(m0 * M_SCALE), M_MAX)
 
 
 def _embed_gaps(gaps: list[str], embed_mode: str = "sym") -> list[tuple[str, list[float]]]:
@@ -276,11 +296,12 @@ def run_deep(
     seed: str | None = None,
     max_date: str = "",
     exclude: str = "",
+    preset: str = "",
 ) -> dict[str, object]:
     """
     Run the judge-driven deep-research loop and write report.md / report.tex / run.json
     """
-    n_pool, target, m0, _ = TIERS[effort]
+    n_pool, target, m0, _ = tier_budget(effort, rank)
     cap, excl = cap_spec(max_date, exclude)
     now = datetime(cap // 100, cap % 100, 28) if cap else datetime.now()
     # Seed mode mirrors pipeline.run: doc-shaped qtext from the paper, question derived if empty
@@ -358,7 +379,7 @@ def run_deep(
     rounds_run = 0
     for r in range(max_rounds):
         rounds_run = r + 1
-        m = min(m0 + M_GROW * r, M_MAX)
+        m = round_budget(m0, r)
         if r > 0:  # re-rank the (now larger) pool with the grown budget
             with timer.stage("retrieve+grade"):
                 p = rank_pool(
@@ -547,6 +568,7 @@ def run_deep(
         "mode": "deep_loop",
         "effort": effort,
         "rank": rank,
+        "preset": preset,
         "recency": recency,
         "max_rounds": max_rounds,
         "rounds_run": rounds_run,

@@ -60,17 +60,17 @@ _SYS = (
     "You are a meticulous senior researcher reviewing a DRAFT literature review for "
     "completeness. You are given the question, the draft, the structured digest of papers it "
     "was built from, and RETRIEVAL CONTEXT describing everything the pipeline found. Judge "
-    "the draft on six axes (1-5): grounding (claims trace to cited papers — every arXiv id "
+    "the draft on six axes (1-5): grounding (claims trace to cited papers, every arXiv id "
     "has ALREADY been mechanically verified against the corpus, so never judge grounding by "
     "whether an id or its year looks plausible; judge whether CLAIMS match the digest "
-    "evidence), coverage (breadth relative to what the RETRIEVAL CONTEXT shows was found — "
+    "evidence), coverage (breadth relative to what the RETRIEVAL CONTEXT shows was found, "
     "high-relevance papers left uncited cap coverage), lineage (origins->frontier story is "
     "coherent), coherence (well-organized prose), frontier (genuinely covers the LATEST "
     "work, not just classics), and focus (every section serves THE question; a section spent "
     "on an off-domain subfield or generic background caps focus at 2).\n"
     "Then decide: is the review SATURATED (thorough enough to stop), or are there concrete "
     "GAPS? Gaps may be search queries (short topical phrases) OR specific uncited papers "
-    "from the retrieval context, written as 'arXiv:<id>' — prefer naming the uncited papers "
+    "from the retrieval context, written as 'arXiv:<id>', prefer naming the uncited papers "
     "when they exist. Be demanding: a review missing recent methods, a whole sub-area, or "
     "the named high-relevance uncited papers is NOT saturated.\n"
     "Reason as needed, then end your reply with ONE JSON object on its own line:\n"
@@ -182,5 +182,5 @@ def judge_report(
     v = _parse_verdict(text)
     if v.saturated and round_idx == 0 and max_rounds > 1:
         v.saturated = False
-        v.assessment = "(round-1 saturation overridden — one more look) " + v.assessment
+        v.assessment = "(round-1 saturation overridden, one more look) " + v.assessment
     return v

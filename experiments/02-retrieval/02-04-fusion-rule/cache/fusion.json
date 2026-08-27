@@ -1,0 +1,89 @@
+{
+  "gold_in_pool": {
+    "dev": 419,
+    "test": 441
+  },
+  "oracle": {
+    "dev": 419,
+    "test": 441
+  },
+  "best_single_dev": 287,
+  "headroom_dev": 132,
+  "rules": [
+    {
+      "rule": "blend 0.5 graph",
+      "dev": 333,
+      "test": 341
+    },
+    {
+      "rule": "blend 0.65 graph",
+      "dev": 332,
+      "test": 335
+    },
+    {
+      "rule": "multiply, graph x grade",
+      "dev": 331,
+      "test": 338
+    },
+    {
+      "rule": "blend 0.35 graph",
+      "dev": 330,
+      "test": 343
+    },
+    {
+      "rule": "grade first, graph breaks ties",
+      "dev": 324,
+      "test": 338
+    },
+    {
+      "rule": "blend 0.8 graph",
+      "dev": 318,
+      "test": 322
+    },
+    {
+      "rule": "rrf, graph + reader",
+      "dev": 317,
+      "test": 344
+    },
+    {
+      "rule": "rrf, all three",
+      "dev": 315,
+      "test": 345
+    },
+    {
+      "rule": "quota 60 graph / 20 reader",
+      "dev": 299,
+      "test": 334
+    },
+    {
+      "rule": "quota 40 graph / 40 reader",
+      "dev": 298,
+      "test": 339
+    },
+    {
+      "rule": "quota 20 graph / 60 reader",
+      "dev": 294,
+      "test": 335
+    },
+    {
+      "rule": "multiply, cosine x grade",
+      "dev": 292,
+      "test": 303
+    },
+    {
+      "rule": "graph only",
+      "dev": 287,
+      "test": 310
+    },
+    {
+      "rule": "reader only",
+      "dev": 284,
+      "test": 312
+    },
+    {
+      "rule": "cosine only",
+      "dev": 190,
+      "test": 209
+    }
+  ]
+}

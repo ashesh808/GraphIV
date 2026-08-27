@@ -43,7 +43,7 @@ def _plan(r: Resolved, question: str) -> None:
     Print the resolved research plan for --dry-run, doing no work
     """
     tier_key, max_rounds, critique_k, figures = _effort_settings(r, sys.argv[1:])
-    n_pool, target, m, do_extract = pipeline.TIERS[tier_key]
+    n_pool, target, m, do_extract = pipeline.tier_budget(tier_key, str(r.config["rank"]))
     print(f"[research] question: {question!r}")
     print(
         f"[research] effort={r.config['effort']} -> tier={tier_key} rounds={max_rounds} "
@@ -124,6 +124,7 @@ def main() -> None:
             seed=seed,
             max_date=str(r.config["max_date"]),
             exclude=str(r.config["exclude"]),
+            preset=str(r.config.get("preset", "")),
         )
         return
     _ = pipeline.run(
@@ -141,6 +142,7 @@ def main() -> None:
         seed=seed,
         max_date=str(r.config["max_date"]),
         exclude=str(r.config["exclude"]),
+        preset=str(r.config.get("preset", "")),
     )
 
 

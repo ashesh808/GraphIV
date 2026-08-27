@@ -1,0 +1,150 @@
+{
+  "selectors": [
+    {
+      "selector": "oracle (every in-pool gold)",
+      "family": "bound",
+      "dev": 412,
+      "test": 436,
+      "test before score fix": 436,
+      "moved": "+0"
+    },
+    {
+      "selector": "joint (shipped)",
+      "family": "fused",
+      "dev": 336,
+      "test": 341,
+      "test before score fix": 341,
+      "moved": "+0"
+    },
+    {
+      "selector": "citations per year alone",
+      "family": "graph",
+      "dev": 305,
+      "test": 310,
+      "test before score fix": 310,
+      "moved": "+0"
+    },
+    {
+      "selector": "LeyLine on frontier",
+      "family": "fused",
+      "dev": 295,
+      "test": 315,
+      "test before score fix": 318,
+      "moved": "-3"
+    },
+    {
+      "selector": "RRF(ppr, frontier)",
+      "family": "fused",
+      "dev": 293,
+      "test": 298,
+      "test before score fix": 290,
+      "moved": "+8"
+    },
+    {
+      "selector": "frontier",
+      "family": "graph",
+      "dev": 288,
+      "test": 322,
+      "test before score fix": 320,
+      "moved": "+2"
+    },
+    {
+      "selector": "trajectory (LeyLine on ppr)",
+      "family": "fused",
+      "dev": 279,
+      "test": 302,
+      "test before score fix": 290,
+      "moved": "+12"
+    },
+    {
+      "selector": "ppr, no reservation",
+      "family": "graph",
+      "dev": 266,
+      "test": 270,
+      "test before score fix": "",
+      "moved": ""
+    },
+    {
+      "selector": "ppr",
+      "family": "graph",
+      "dev": 265,
+      "test": 293,
+      "test before score fix": 277,
+      "moved": "+16"
+    },
+    {
+      "selector": "in-degree",
+      "family": "graph",
+      "dev": 261,
+      "test": 261,
+      "test before score fix": 260,
+      "moved": "+1"
+    },
+    {
+      "selector": "cosine x grade, top-k",
+      "family": "text",
+      "dev": 208,
+      "test": 236,
+      "test before score fix": "",
+      "moved": ""
+    },
+    {
+      "selector": "mmr",
+      "family": "set coverage",
+      "dev": 196,
+      "test": 213,
+      "test before score fix": "",
+      "moved": ""
+    },
+    {
+      "selector": "cluster proportional",
+      "family": "set coverage",
+      "dev": 184,
+      "test": 209,
+      "test before score fix": "",
+      "moved": ""
+    },
+    {
+      "selector": "facility location",
+      "family": "set coverage",
+      "dev": 166,
+      "test": 176,
+      "test before score fix": "",
+      "moved": ""
+    }
+  ],
+  "by_family": [
+    {
+      "family": "fused",
+      "arms": 4,
+      "best arm": "joint (shipped)",
+      "best dev": 336,
+      "best test": 341
+    },
+    {
+      "family": "graph",
+      "arms": 5,
+      "best arm": "citations per year alone",
+      "best dev": 305,
+      "best test": 310
+    },
+    {
+      "family": "text",
+      "arms": 1,
+      "best arm": "cosine x grade, top-k",
+      "best dev": 208,
+      "best test": 236
+    },
+    {
+      "family": "set coverage",
+      "arms": 3,
+      "best arm": "mmr",
+      "best dev": 196,
+      "best test": 213
+    }
+  ],
+  "gold_in_pool": {
+    "dev": 419,
+    "test": 441
+  }
+}
