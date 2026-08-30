@@ -50,3 +50,6 @@ output/
 # Working space, empty by design
 scratchpad/*
 !scratchpad/README.md
+
+# The pre-rewrite serve path, parked while src/ is rebuilt. Git history is the archive.
+.legacy/

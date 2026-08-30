@@ -1,99 +1,75 @@
-# Restoring the prebuilt store (run GraphIV without building phases 1–5)
+# Restoring the prebuilt store
 
-The serve path needs three things: the Postgres store, an embedding endpoint, and an LLM endpoint.
-Nothing outside `./data` is required at query time.
+Running GraphIV without building anything.
+`docs/preprocess.md` is the other path, which builds the same store from the metadata dump.
 
-## 1. The store (~23 GB dump → ~105 GB restored)
+The serve path needs three things, and nothing outside `./data`.
 
-Download the dump: **link pending** (will be hosted on Hugging Face; current build
-`graphiv-2026-07-03.dump`, `pg_dump -Fc` format — 8 tables incl. both embedding spaces and
-per-paper author lists). Then:
+## 1. The store, 18 GB dump into 87 GB
+
+Download the dump: **link pending**, to be hosted on Hugging Face.
+The current build is `graphiv-2026-08-30.dump`, written by `pg_dump -Fc --compress=zstd:3`.
 
 ```bash
-nix develop                        # provides postgres17+pgvector and the pg-* helpers
-nix run .#pg-init                  # init the project-local cluster at ./data/pg (socket ./.pg, port 5433)
+nix develop                    # postgres17 with pgvector, plus the pg-* helpers
+nix run .#pg-init              # the project-local cluster at ./data/pg, socket ./.pg, port 5433
 nix run .#pg-start
-pg_restore -h ./.pg -p 5433 -d arxivkg --no-owner --jobs 4 arxivkg-<date>.dump
+pg_restore -h ./.pg -p 5433 -d arxivkg --no-owner --jobs 4 graphiv-<date>.dump
 ```
 
-The store is a single database `arxivkg`: `paper` (id ↔ arxiv_id), `citation` (177M edges with
-intent/polarity), `paper_meta`, `paper_embedding` (768-d nomic, HNSW), `paper_topic`/`leaf`
-(topic tree). Peer-auth over the project-local socket — no password. Anything (a rebuild, a
-different location) can override the DSN with `ARXIVKG_PG_DSN`.
+One database, `arxivkg`, holding `papers` (3,141,674), `citations` (180,690,765, of which
+72,835,096 are resolved and labeled) and `topics` (4,368 named tree nodes).
+Peer auth over the project-local socket, so no password, and `ARXIVKG_PG_DSN` overrides the DSN.
+
+`pg_restore` rebuilds every index from scratch and the HNSW over 3.1M halfvec rows is most of
+that time, so give it `maintenance_work_mem` and expect it to outlast the data load.
 
 ## 2. The embedding endpoint
 
-Queries (and delta-ingest documents) are embedded by a llama.cpp server hosting the
-[nomic-ai/nomic-embed-text-v2-moe GGUF](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF)
-(f16 recommended — verified cosine > 0.999 against the original SentenceTransformer). The server
-must expose `/v1/embeddings` plus llama.cpp's `/tokenize`/`/detokenize` (used for exact
-truncation), so it has to be llama-server, not an arbitrary OpenAI-compatible host:
+Queries and delta documents are embedded by a llama.cpp server hosting the
+[nomic-embed-text-v2-moe GGUF](https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF) at
+f16, which is cosine > 0.999 against the original SentenceTransformer.
 
 ```bash
 llama-server --embedding -m nomic-embed-text-v2-moe.f16.gguf --alias nomic-embed-text-v2-moe \
   --port 11435 -ngl 99 -c 8192 -b 8192 -ub 2048 --parallel 4 --pooling mean
 ```
 
-Point `embeddings.api` in `config.toml` (or `GRAPHIV_EMBED_API`) at it.
+It has to be llama-server rather than any OpenAI-compatible host, since documents are truncated
+client-side through `/tokenize`. Point `embeddings.api` or `GRAPHIV_EMBED_API` at it.
 
 ## 3. The LLM endpoint
 
-GraphIV talks to **any OpenAI-compatible endpoint** — configure `llm` in
-`config.toml`:
+Any OpenAI-compatible host, configured under `llm` in `config.toml`.
 
-- `base_url` / `router` — the endpoint (default `http://localhost:11434`).
-- `map_model` — schema/extract/judge calls; `narrator_model` — thinking-heavy compose/critique
-  (a long-context variant of the same model works well); `vision_model` — the optional figure
-  gallery (omit figures with effort ≤ 2 if you have no vision model).
+| key | role |
+| --- | --- |
+| `base_url`, `router` | the endpoint, default `http://localhost:11434` |
+| `map_model` | schema, extract and judge calls |
+| `narrator_model` | compose and critique, so a long-context variant of the same model fits |
+| `vision_model` | the figure gallery, optional below effort 3 |
 
-Set these to whatever model names your server exposes; a ~27B instruct model with ≥32k context
-is the reference point. We serve via [llama-router](https://git.kuroma.dev/kkuroma/llama-router)
-(llama.cpp with load-on-demand model routing); its `/router/restart` recovery endpoint is used
-opportunistically and failures are non-fatal on plain servers.
+A 27B instruct model with 32k context is the reference point.
+We serve through [llama-router](https://git.kuroma.dev/kkuroma/llama-router), whose
+`/router/restart` is called opportunistically and is non-fatal on a plain server.
 
-## 4. Full text (PDFs / HTML)
+## Full text
 
-The dump ships **no full text** — none is needed up front. Per-paper extraction reads
-`data/pdf/<YYMM>/` and `data/html/<YYMM>/` when present and otherwise **fetches on demand** from
-arXiv/ar5iv (rate-limited ~1 req/3 s, written through to the same layout, cached forever; disable
-with `--set-fetch false`). Missing full text degrades to abstract-only. To bulk-build these stores
-instead, run phases 1–2.
+The dump ships none, and none is needed up front.
+Extraction reads `data/pdf/<YYMM>/` and `data/html/<YYMM>/` when present and otherwise fetches
+from arXiv or ar5iv at about one request every three seconds, writing through to the same layout.
+Missing full text degrades to abstract only, and `--set-fetch false` disables the network half.
+To bulk build the stores instead, run `stage1_download_pdf.py` and `stage2_download_html.py`.
 
-## 5. Run
+## Run it
 
 ```bash
 uv sync
 uv run python scripts/research.py "your question" --set-effort 4
+
+uv run python scripts/serve.py            # MCP over stdio
+uv run python scripts/serve.py --http     # streamable-http, 127.0.0.1:$GRAPHIV_MCP_PORT, 8756
 ```
-
-## 6. Serve as an MCP tool (optional)
-
-`scripts/serve.py` exposes GraphIV to any MCP client (librechat, Claude Desktop, …)
-over stdio (default) or loopback streamable-http (`--http`, port `$GRAPHIV_MCP_PORT`, default
-8756 — for sandboxed clients that can't spawn a process in the repo). Tools:
-`deep_research(question, effort, seed_arxiv_id, force_new)` (the endpoint; seeding retrieves
-from a specific paper's title+abstract; when finished reports already cover a similar question
-it returns `{"status":"similar_reports_exist", reports:[…]}` instead of running — the host asks
-the user reuse-vs-fresh, `force_new` reruns), `refine_question` (corpus-probed candidate
-questions on the local LLM — the host model only relays, so a small local host works),
-`search_papers` / `paper_details` (grounded follow-ups, no GPU), `list_reports` /
-`similar_reports` (past runs; the latter LLM-matches a question against past run questions),
-`retrieve_research(research_ids)` (reload 1-3 past reports by research_id = report slug,
-optionally `slug/config`; multiple ids come back banner-joined for side-by-side reading),
-`list_report_papers` (a deep run's cohort: per-paper reader summaries + role/relevance grades
-from `papers.json`), `ask_paper` (QA over one paper's full text) and
-`ask_research(research_ids, question)` (QA over 1-3 finished reviews + cohorts — follow-ups
-and cross-report synthesis without re-running), plus a `deep_research_flow`
-prompt template packaging the refine → run → follow-up loop. The host chat model shares the GPU
-with the pipeline: it gets evicted during a deep run and reloads on demand afterward
-(Gemma-4-26B works well as the host — MoE, fast reload).
-
-The http transport additionally serves run artifacts at `/files/<slug>/<cfg>/…` (figures,
-`graph.png`, the interactive `graph.html`, `papers.json`, `report.pdf`) and a **run dashboard**
-at `/` (all runs, per-stage timings, live progress) with per-run control centers at
-`/run/<slug>/<cfg>` (report/papers/graph/judge/timings tabs + delete / purge-caches /
-compile-pdf actions). Markdown returned over MCP rewrites relative asset links to
-`$GRAPHIV_PUBLIC_URL` (default `http://127.0.0.1:<port>`) so images render in the client.
 
 ```json
 {
@@ -107,15 +83,15 @@ compile-pdf actions). Markdown returned over MCP rewrites relative asset links t
 }
 ```
 
-Or, for a client that can't spawn stdio servers (e.g. a systemd-hardened librechat), run
-`uv run python scripts/serve.py --http` and point the client at
-`http://127.0.0.1:8756/mcp` with `type: streamable-http`. A NixOS reference deployment
-(librechat + a `graphiv-mcp` unit wrapping this in the project dev shell) lives in the
-author's nixos-configs (`parts/services/{librechat,graphiv}.nix`).
+Use `--http` for a client that cannot spawn a process in the repo, such as a systemd-hardened
+librechat, and point it at `http://127.0.0.1:8756/mcp` with `type: streamable-http`.
+That transport also serves run artifacts under `/files/<slug>/<cfg>/`, PDFs at `/pdf/<arxiv_id>`
+and the Research Library dashboard at `/`.
 
-Calls are serialized (single GPU); each run is subprocess-isolated and returns the finished
-`report.md`. A cold-cache effort-4 deep run measures ~9 minutes on one RTX 3090 — keep client
-tool timeouts generous (the librechat wiring uses 7,200,000 ms).
+Deep runs serialize on the one GPU and each is subprocess isolated.
+A cold-cache effort-4 run measures about 9 minutes on one RTX 3090, so keep client tool timeouts
+generous. The librechat wiring uses 7,200,000 ms.
 
-Figures use the repo `theme.json`
-([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme) Material palette).
+The tool list, the dashboard and the NixOS reference deployment get their own page in the next
+docs pass. Figures use the repo `theme.json`
+([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme)).

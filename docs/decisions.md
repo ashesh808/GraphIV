@@ -119,7 +119,7 @@ constant-neutral baseline, and the definition itself conflated praise of the cit
 citing paper reporting a win over it.
 `critiques` already carries the signal the tensions list needs.
 
-**Distil rather than run the teacher on the corpus.** Argued, on cost.
+**Distill rather than run the teacher on the corpus.** Argued, on cost.
 177M teacher calls was never on the table.
 
 **Density-aware bisecting tree, against k-means, DBSCAN and HDBSCAN.**
@@ -133,7 +133,7 @@ Shipped shape is 3,582 leaves over 2.92M papers (`01-05-topic-tree`).
 The motivating measurement was real and is kept: base nomic ranks a text-similar non-cited paper
 above the true citation 87% of the time (triplet accuracy 0.128, cos 0.786 against 0.666), which is
 a clean statement of the blind spot the graph exists to cover.
-The 45k LoRA reached 0.513, the 380k run went backwards to 0.462, and the cause was measured:
+The 45k LoRA reached 0.513, the 380k run went backward to 0.462, and the cause was measured:
 29% of the mined hard negatives were real citations of the anchor, putting the metric ceiling near
 0.71.
 A clean v2 miner fixed the contamination to 0/200, but the retrieval litmus had already collapsed
@@ -229,7 +229,7 @@ seven iterations, recorded at the time and now only in this entry.
 | consensus, quota 15 | rel2 0.650 at spine 0.850, a paid upgrade |
 | consensus, quota 8 | Pareto, gold 0.767 and spine 0.933 against 0.753 and 0.917 |
 
-The pairwise gate afterwards was 1 win, 0 losses, 3 ties overall, with the wins on lineage, which
+The pairwise gate afterward was 1 win, 0 losses, 3 ties overall, with the wins on lineage, which
 is what the sampler was designed for.
 The independent check is section 04-04 of `docs/audits/EXPERIMENTS_AUDIT.md`: on survey
 reference lists neither method was tuned against, trajectory wins core-reference recall in 6 of 6
@@ -379,7 +379,7 @@ as the tripwire:
 Every arm that moves the oracle meaningfully costs recall, and every arm that holds recall barely
 moves it.
 The reason is not fixable structurally: a hub genuinely used in a niche, Attention in theorem
-proving, cannot be removed without loss, because "generic here" is partly a narrative judgement.
+proving, cannot be removed without loss, because "generic here" is partly a narrative judgment.
 So the fix moved into compose, where it was A/B validated: Attention, BERT, GPT-3 and Adam went
 from 3/1/3/1 mentions to 0/0/0/0 on RL-for-theorem-proving, the "Rise of Transformers" section
 disappeared, and the ATP-specific coverage survived.

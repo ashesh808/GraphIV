@@ -1,183 +1,59 @@
-# GraphIV configuration. Relative paths resolve against the repo root.
-# Every constant carries its provenance: measured (an experiment picked it),
-# inherited (literature evidence, unverified here), or hand-set (never swept).
+# GraphIV global configuration. Local configurations live in TBA
 
-[postgres]
-# Project-local flake Postgres (pg-init/pg-start), peer-auth socket, no secrets.
-# ARXIVKG_PG_DSN env overrides everything.
-socket_dir = ".pg"
-port = 5433
-dbname = "arxivkg"
+[database]
+PG_DEST = "host=/home/kuroma/Documents/projects/nlp/arxivkg/.pg port=5433 dbname=arxivkg"
 
-[embeddings]
-# llama-embed systemd unit: llama-server --embedding on nomic-embed-text-v2-moe f16.
-# Local model behind an API so it stays replaceable with external sources.
-# GRAPHIV_EMBED_API env overrides `api`.
-api = "http://127.0.0.1:11435"
-model = "nomic-embed-text-v2-moe"
-dim = 768
-# asym is THE prod space (measured, 2026-07-15 A/B vs sym+HyDE)
-space = "asym"
-query_prompt = "search_query: "
-# sym-space prefix the corpus was encoded with; pairs with a HyDE-shaped query
-sym_prompt = "Instruct: classifying the research topic of a paper's abstract.\nQuery:"
-rows = 2918448
-max_seq = 2048
+[source]
+SOURCE_URL = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
+SOURCE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv.json"
+PDF_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv/arxiv/pdf"
+PDF_LEGACY_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv"
+HTML_BASE_URL = "https://arxiv.org/html"
+HTML_FALLBACK_URL = "https://ar5iv.labs.arxiv.org/html"
 
-[llm]
-# Any OpenAI-compatible endpoint; we serve via llama-router.
-base_url = "http://localhost:11434/v1"
-router = "http://localhost:11434"
-map_model = "Gemma-4-26B-Batched"
-narrator_model = "Gemma-4-26B"
-vision_model = "Gemma-4-26B-Vision"
+[dataset]
+PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/pdf"
+HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/html"
 
-[paths]
-data_dir = "data"
-topic_tree_db = "data/metadata/topic_tree_nomic.db"
-grade_cache_db = "data/metadata/grade_cache.db"
-arxiv_json = "data/arxiv.json"
-sqlite_db = "data/metadata/arxiv.db"
-sqlite_schemas = "data/metadata/schemas.sql"
-pdf_dir = "data/pdf"
-html_dir = "data/html"
-citation_stats = "data/citation_stats"
-citation_labels = "data/citation_labels"
-models_dir = "data/models"
-hf_cache = "data/models/hf_cache"
-community_summary_db = "data/metadata/community_summaries.db"
-fulltext_cache_db = "data/metadata/fulltext_cache.db"
-theme = "theme.json"
-# every research run lands here as <slug>/<config>/; served by the dashboard
-output_dir = "output/research"
-preset_dir = "research-preset"   # named run bundles, --preset <stem>
+[endpoints]
+EMBED_API = "http://127.0.0.1:11435"
+EMBED_NAME = "nomic-embed-text-v2-moe"
+EMBED_PARALLEL = 1
+EMBED_BATCH = 256
+EMBED_MAX_SEQ = 512
+EMBED_PREFIX = "search_document: "
+LLM_API = "http://localhost:11434/v1"
+LLM_NAME = "Gemma-4-26B-Batched"
 
-[download]
-kaggle_url = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
-# one-shot html migration source (pre-existing ar5iv dump)
-html_migrate_src = "/mnt/Vault-Storage/temp/ar5iv"
+[umap]
+UMAP_MODEL_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/umap_50.joblib"
+UMAP_SAMPLE = 400000
+UMAP_SEED = 69420
+UMAP_DIM = 50
+UMAP_BATCH = 50000
 
-[embeddings_build]
-# BUILD-TIME inputs only (preprocess); the serve path never reads these
-nomic_npy = "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic.npy"
-nomic_umap50_npy = "/mnt/Vault-Academics/the-great-arxiv-db/data/embeddings/embeddings_nomic_umap50.npy"
-old_sqlite = "/mnt/Vault-Academics/the-great-arxiv-db/data/arxiv_latest.db"
+[topics]
+TREE_METHODS = ["kmeans", "kmeans", "kmeans"]
+TREE_K = 16
+TREE_MIN_CLUSTER_SIZE = 60
+TREE_N_PARALLEL = 8
+TREE_BATCH = 50000
+TREE_SEED = 69420
+# Papers shown to the namer, taken nearest the leaf centroid rather than at random
+N_TOPIC_LABEL = 10
+TOPIC_BATCH = 8
 
-# Defaults for the retrieval redesign parked in scratchpad/graphiv-redesign.
-# The shipped pipeline reads [stage.research], not this section.
-[retrieve]
-# --- step 1: channels ---
-n_pool = 400            # hand-set; sweep 2.1 {200,400,600,800}
-k_lexical = 400         # hand-set; sweep 2.1 {100,400,800}
-# --- step 2: reranker ---
-reranker = "rrf"        # slot: rrf | (learned, later)
-rrf_k = 60              # inherited (Cormack et al. 2009); sweep 2.2 {10,60,300}
-# --- step 3: topic map ---
-topic_map = true        # battery arm 2.3 decides; false = reshaper off
-vote_k = 30             # hand-set: top-k pool papers vote for the home leaf
-use_siblings = true     # keep same-parent leaves, not just the winner
-# --- step 4: injection ---
-frontier_pull_max = 60  # hand-set; papers injected past the +1SD line
-frontier_probe = 1500   # hand-set KNN probe width for the year-filtered pull
-ancestor_max_add = 120  # hand-set cap on citation-injected ancestors
-ancestor_min_citers = 3 # hand-set: >= distinct pool citers to qualify
-ancestor_min_cosine = 0.30  # measured (02-03/02-07; coupled to m >= 60)
-# --- step 5: grading ---
-m = 200                 # landmark budget AND per-arm grading width (2026-07-20)
-grade_concurrency = 4
-# --- step 6: selection ---
-selector = "hybrid"     # slot: hybrid | ppr | leyline
-quota = 8               # measured (battery Pareto 2026-07-14); sweep 2.6 {8,16,24,m}
-gamma = 0.4             # hand-set decay; sweep 2.6 {0.2,0.4,0.7}
-seeds = 10              # hand-set walker-ensemble size
-max_lineages = 50       # hand-set per-run walk cap
-recency = 0.4           # measured (exp-2 sweep); fraction of m reserved for frontier
-ppr_alpha = 0.85        # inherited (PageRank convention)
-ppr_iters = 80          # hand-set convergence cap
-
-# Per-stage defaults for the scripts/ entrypoints. A flag layers on top:
-# --include-NAME sets NAME true, --set-NAME V sets NAME to V.
-
-[stage.seed]
-url = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
-force = false
-keep_zip = false
-
-[stage.pdf]
-metadata_only = false
-threads = 8
-connections = 10
-
-[stage.html]
-migrate = false
-rate = 5.0
-threads = 8
-limit = 0
-
-[stage.citations]
-stage = "parse"
-step = ""
-limit = 0
-workers = 10
-checkpoint_every = 100000
-no_write = false
-sample_target = 100000
-generations = 6
-label_source = "gold"
-stratified = 300
-rare = 0
-seed = 0
-refine_batch_size = 25
-refine_parallelism = 4
-holdout = 0.4
-parallelism = 4
-batch_size = 50
-epochs = 4
-train_batch_size = 64
-infer_batch_size = 512
-suffix = "v1"
-# empty means the module default, so a v2 run names its own store and never clobbers v1
-teacher_model = ""
-teacher_prompt = ""
-labels_db = ""
-model_tag = ""
-dataset_cache = ""
-intent_table = "citation_intent_v2"
-relabel_chunk = 200000
-# the student-v3 recipe: the sampler balances the classes, so CE weights would double-count
-oversample_power = 0.6
-class_weights = false
-
-[stage.consolidate]
-only = "all"
-force = false
-
-[stage.topics]
-min_leaf = 250
-coherence = 0.14
-target_leaf = 600
-max_depth = 8
-max_k = 12
-summaries = false
-summary_sample = 12
-summary_limit = 0
-force = false
-
-[stage.research]
-effort = 2
-rank = "ppr"
-no_cluster = false
-no_graph = false
-recency = 0.4
-max_rounds = 1
-critique_k = 4
-figures = true
-no_frontier_pull = false
-embed_mode = "asym"
-use_hyde = false
-no_grade = false
-fuse = true
-seed = ""
-max_date = ""
-exclude = ""
-fetch = true
+[citation_labeler]
+LABELER_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_labeler"
+LABELER_MODEL = "distilbert/distilbert-base-uncased"
+LABELER_BATCH = 512
+LABELER_MAX_SEQ = 256
+LABELER_APE_MODEL = "Gemma-4-26B-Batched"
+LABELER_APE_GENERATIONS = 6
+LABELER_APE_PARALLEL = 4
+LABELER_TEACHER_SAMPLE = 10000
+LABELER_SEED = 0
+LABELER_SPLITS = [0.8, 0.1, 0.1]
+LABELER_EPOCHS = 12
+LABELER_TRAIN_BATCH = 64
+LABELER_LR = 2e-5

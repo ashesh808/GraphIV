@@ -303,24 +303,26 @@
 % ===================================================================
 \section{Results}
 
-\begin{frame}{Positive Citations, by Stage}
+\begin{frame}{Where the Damage Is}
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \includegraphics[width=\linewidth, height=0.5\textheight, keepaspectratio]{figures/by_stage.png}
     \end{column}
     \begin{column}{0.46\textwidth}
-      Eleven levers, grouped by stage. Spread:
-      \begin{kbox}{positive citations moved, of 1{,}617}
-        vector channel \hfill 20
+      Eleven settings, changed one at a time. Best and worst each stage can do, against the
+      shipped default:
+      \begin{kbox}{papers gained or lost, of 1{,}617}
+        vector search \hfill $+8$ \ / \ $-12$
 
-        lexical channel \hfill 14
+        keyword search \hfill $+3$ \ / \ $-11$
 
-        \textbf{citation graph} \hfill \textbf{96}
+        \textbf{citation graph} \hfill $+6$ \ / \ $\mathbf{-90}$
       \end{kbox}
     \end{column}
   \end{columns}
   \medskip
-  \textbf{The ceiling is set before ranking.} 757 of 1,617 never reach the pool at all.
+  \textbf{No setting gains much. The graph is the one that can lose you everything.}
+  Get the search wrong and you drop a dozen papers; get the graph wrong and you drop ninety.
 \end{frame}
 
 \begin{frame}{Two Ways to Spot a Paper}

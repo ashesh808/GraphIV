@@ -48,7 +48,7 @@
       # create the database + schema on first start (idempotent)
       ${pgWithVec}/bin/createdb -h "$PGHOST" -p "$PGPORT" "$PGDATABASE" 2>/dev/null || true
       ${pgWithVec}/bin/psql -h "$PGHOST" -p "$PGPORT" -d "$PGDATABASE" -v ON_ERROR_STOP=1 \
-        -f "$PWD/data/metadata/pg_schema.sql"
+        -f "$PWD/scripts/papers_preprocess/schema.sql"
       echo "up: host=$PGHOST port=$PGPORT db=$PGDATABASE"
     '';
 

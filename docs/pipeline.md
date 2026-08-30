@@ -1,65 +1,22 @@
 # How GraphIV works
 
-Five phases, in order.
+Four parts, in order.
 Each step gets one plain line for what it does, and one for how we know it was the right call.
 The knobs nobody ever measured are listed at the end, so they are not mistaken for results.
 
 ---
 
-## 1. Download: get the papers
+## 1. Build the store
 
-**seed** grabs arXiv's list of every paper it has ever published, with the title, authors,
-abstract and date, about 3.1 million rows.
-Nothing to prove here, it is plumbing.
+Moved out of this page.
+`docs/preprocess.md` is the runbook: what to supply, what to run in what order, what each stage
+costs and how to check it landed. The short version is that a metadata dump becomes three tables,
+`papers`, `citations` and `topics`, and nothing downstream ever writes to them.
 
-**download_pdf** fetches the actual PDF of each paper from Google's mirror.
-We keep all 5.6 TB locally instead of fetching on demand, because the whole store fits on the
-production box with room to spare (`docs/release-plan.md`).
+The decisions behind it, with the numbers that settled each one, are in `docs/decisions.md` and
+the experiments under `experiments/01-preprocessing/`.
 
-**download_html** fetches arXiv's HTML version of each paper, which is what everything downstream
-actually reads.
-HTML wins because the bibliography is already marked up as a list, while pulling references back
-out of a PDF needs a tool that mangles them (`docs/release-plan.md`).
-
-## 2. Preprocess: turn the papers into a graph
-
-**parse** reads each paper's reference list and works out which arXiv paper each entry points to.
-It tries six things in order, from an explicit link down to a fuzzy title match, and stops at the
-first that works.
-About 40% of 177 million references resolve, and the risky fuzzy match accounts for only 11% of
-those, so the ladder buys reach without leaning on guesswork
-(`experiments/01-preprocessing/01-01-resolver-quality`).
-
-**label** asks a big model, for a sample of citations, why one paper cited another.
-Six reasons, with the prompt written by a loop that labels, judges its own mistakes and redrafts,
-which moved held-out agreement from 0.54 to 0.75 over eight generations
-(`experiments/01-preprocessing/01-06-prompt-refinement`).
-
-**bert** trains a small model on that sample and lets it label every resolved citation, because
-running the big model that many times is not affordable.
-The shipped student gets the reason right 89% of the time and is weakest on exactly the interesting
-case, one paper criticizing another (`experiments/01-preprocessing/01-02-labeling-quality`).
-A newer student trained on the refined prompt is stronger there, F1 0.56 to 0.71, and has labeled
-all 71.6 million edges into a side table, but it is not promoted: no sample exists that ranks the
-two without circularity (`experiments/01-preprocessing/01-07-student-classifier`).
-
-**consolidate** puts the metadata, the citations and the vectors into a single Postgres database.
-The resulting graph behaves like a real citation network, and sorting papers by how often they are
-cited returns ResNet, BERT and Transformer at the top, which is the sanity check
-(`experiments/01-preprocessing/01-03-graph-structure`).
-
-**embed** turns every abstract into a vector, so papers can be found by meaning rather than by
-keyword.
-We store two versions and use the asymmetric one, because it matches the best recall we measured
-and needs no extra trick at query time (removed with the 03 rebuild).
-
-**topics** sorts the whole corpus into a tree of about 3,600 topics, by repeatedly splitting
-whichever clump is still too broad.
-The alternative methods throw away papers they cannot place, up to 59% of them, and this one
-places every single paper (`experiments/01-preprocessing/01-04-clustering-comparison` and
-`01-05-topic-tree`).
-
-## 3. Retrieve: turn a question into the papers that matter
+## 2. Retrieve: turn a question into the papers that matter
 
 **embed the question** the same way the abstracts were embedded, so they live in one space.
 We feed it the raw question, because dressing it up as a fake abstract first helps the other
@@ -126,7 +83,7 @@ PageRank on survey reference lists neither method had seen
 another, and collects the places where papers disagree.
 The disagreements come from the citation labels, which is what phase 2 was for.
 
-## 4. Generate: write the review
+## 3. Generate: write the review
 
 **schema** asks the model what fields are worth knowing about every paper, given this specific
 question, instead of using one fixed template.
@@ -161,7 +118,7 @@ every run we have inspected (`experiments/deep-research/results/h2h`).
 
 **render** writes the report out as markdown, LaTeX, a bibliography and a graph picture.
 
-## 5. Serve: hand it to a person
+## 4. Serve: hand it to a person
 
 The MCP server exposes the whole thing as tools an assistant can call, and the same process serves
 the dashboard where reports are read.
@@ -176,7 +133,7 @@ Three questions, three answers.
 **Does it find the right papers?** Against survey reference lists: hide a survey, freeze the
 corpus to the month it came out, ask the same question, count how many of its references come
 back. Sixty surveys, in `experiments/02-retrieval`. What decides the outcome is which papers
-enter the pool, not how they are ranked afterwards.
+enter the pool, not how they are ranked afterward.
 
 **Is what it writes true?** Seven in ten of the sentences that cite a paper are supported by that
 paper, agreed on by two judge families that match on 90.6% of individual sentences. The checker
