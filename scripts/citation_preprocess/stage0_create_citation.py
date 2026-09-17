@@ -1,7 +1,7 @@
 """
 Parse the rendered HTML of every finished paper into citation rows
 
-Papers already present in citations.source_id are skipped, so a delta run only reads new files
+A paper is asked once and its verdict kept in is_citation_parsable, so a null is the queue
 Workers are forked after the index is built, which lets them share it instead of pickling 3M rows
 """
 
@@ -209,7 +209,10 @@ class CitationBuilder:
 
     def pending(self, pg_dest: str, min_stage: int) -> list[str]:
         """
-        Every finished paper with no rows in citations yet
+        Every finished paper that has never been asked for its citations
+
+        `is_citation_parsable` is the queue rather than the presence of rows, since about a fifth
+        of the corpus renders html that carries no bibliography and would be parsed on every run.
 
         Args:
             pg_dest: libpq connection string.
@@ -220,9 +223,7 @@ class CitationBuilder:
         """
         with psycopg.connect(pg_dest) as conn:
             rows: list[tuple[str]] = conn.execute(
-                "SELECT p.arxiv_id FROM papers p"
-                " WHERE p.stage >= %s"
-                "   AND NOT EXISTS (SELECT 1 FROM citations c WHERE c.source_id = p.arxiv_id)",
+                "SELECT arxiv_id FROM papers" " WHERE stage >= %s AND is_citation_parsable IS NULL",
                 (min_stage,),
             ).fetchall()
         return [r[0] for r in rows]
@@ -230,13 +231,13 @@ class CitationBuilder:
     def populate_citation_table(
         self,
         pg_dest: str,
-        min_stage: int = 4,
+        min_stage: int = 3,
         workers: int = 10,
         batch: int = 2000,
         limit: int = 0,
     ) -> int:
         """
-        Parse every pending paper and write its citations at stage 0
+        Parse every pending paper, write its citations and record whether it had any
 
         Args:
             pg_dest: libpq connection string.
@@ -258,17 +259,20 @@ class CitationBuilder:
 
         INDEX = Index.load(pg_dest)
         HTML_ROOT = self.html_path
-        written = 0
+        written, parsable = 0, 0
         ctx = multiprocessing.get_context("fork")
         with psycopg.connect(pg_dest, autocommit=True) as conn:
+            _ = conn.execute("CREATE TEMP TABLE q (arxiv_id text, v boolean)")
             with ProcessPoolExecutor(max_workers=workers, mp_context=ctx) as pool:
                 for i in range(0, len(todo), batch):
                     chunk = todo[i : i + batch]
+                    verdicts: list[tuple[str, bool]] = []
                     with conn.cursor().copy(
                         "COPY citations (source_id, target_id, section, resolved_by,"
                         " sentence, stage) FROM STDIN"
                     ) as cp:
                         for arxiv_id, found in pool.map(citations_for, chunk):
+                            verdicts.append((arxiv_id, bool(found)))
                             for c in found:
                                 cp.write_row(
                                     (
@@ -281,8 +285,18 @@ class CitationBuilder:
                                     )
                                 )
                                 written += 1
+                    with conn.cursor().copy("COPY q (arxiv_id, v) FROM STDIN") as cp:
+                        for arxiv_id, verdict in verdicts:
+                            cp.write_row((arxiv_id, verdict))
+                    _ = conn.execute(
+                        "UPDATE papers p SET is_citation_parsable = q.v"
+                        " FROM q WHERE p.arxiv_id = q.arxiv_id"
+                    )
+                    _ = conn.execute("TRUNCATE q")
+                    parsable += sum(1 for _a, v in verdicts if v)
                     print(
-                        f"[stage0] {i + len(chunk):,}/{len(todo):,} papers, {written:,} citations",
+                        f"[stage0] {i + len(chunk):,}/{len(todo):,} papers, {written:,} citations,"
+                        f" {parsable:,} with a bibliography",
                         flush=True,
                     )
         return written
@@ -290,11 +304,11 @@ class CitationBuilder:
 
 def main() -> None:
     """
-    Read the config, then parse every finished paper that has no citations yet
+    Read the config, then parse every finished paper that has never been asked
     """
     ap = argparse.ArgumentParser()
     _ = ap.add_argument("--config_path", default="config.toml")
-    _ = ap.add_argument("--min-stage", type=int, default=4)
+    _ = ap.add_argument("--min-stage", type=int, default=3)
     _ = ap.add_argument("--workers", type=int, default=16)
     _ = ap.add_argument("--limit", type=int, default=0, help="stop after N papers")
     args = ap.parse_args()

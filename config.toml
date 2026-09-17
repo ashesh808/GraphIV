@@ -11,6 +11,15 @@ PDF_LEGACY_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv"
 HTML_BASE_URL = "https://arxiv.org/html"
 HTML_FALLBACK_URL = "https://ar5iv.labs.arxiv.org/html"
 
+# aria2c batching against the arXiv bulk mirror on Google Cloud Storage
+[download]
+PDF_BATCH = 500
+PDF_N_PARALLEL = 8
+# permits a second across every worker, and a paper costs two when the first source misses
+HTML_RATE = 8.0
+HTML_BATCH = 200
+HTML_N_PARALLEL = 16
+
 [dataset]
 PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/pdf"
 HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/html"
@@ -25,12 +34,19 @@ EMBED_PREFIX = "search_document: "
 LLM_API = "http://localhost:11434/v1"
 LLM_NAME = "Gemma-4-26B-Batched"
 
+# The literature review scorer, whose checkpoint and recipe live in data/survey_detection
+[survey]
+BATCH = 64
+CHUNK = 50000
+
 [umap]
 UMAP_MODEL_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/umap_50.joblib"
 UMAP_SAMPLE = 400000
 UMAP_SEED = 69420
 UMAP_DIM = 50
 UMAP_BATCH = 50000
+# transform processes, each loading its own 4.1GB copy of the model
+UMAP_WORKERS = 4
 
 [topics]
 TREE_METHODS = ["kmeans", "kmeans", "kmeans"]
@@ -46,7 +62,7 @@ TOPIC_BATCH = 8
 [citation_labeler]
 LABELER_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_labeler"
 LABELER_MODEL = "distilbert/distilbert-base-uncased"
-LABELER_BATCH = 512
+LABELER_BATCH = 48             # the resident llama models leave under 400MB of the 3090
 LABELER_MAX_SEQ = 256
 LABELER_APE_MODEL = "Gemma-4-26B-Batched"
 LABELER_APE_GENERATIONS = 6

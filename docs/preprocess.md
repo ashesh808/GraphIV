@@ -1,6 +1,6 @@
 # Building the store
 
-Reproduce the PostGreSQL DB (`papers`, `citations` and `topics`) creation. `docs/restore.md` is the shortcut: restore the published dump and skip this page.
+Reproduce the PostGreSQL DB (`papers`, `citations`, `topic_tree` and `topic_names`) creation. `docs/restore.md` is the shortcut: restore the published dump and skip this page.
 
 ## What you supply
 
@@ -23,15 +23,20 @@ Run the following in this exact order:
 ```sh
 nix develop
 uv sync
-nix run .#pg-start          # applies scripts/papers_preprocess/schema.sql, idempotent
+nix run .#pg-start          # applies both schema.sql files, idempotent
 
 P=scripts/papers_preprocess
+T=scripts/topic_tree_creation
 uv run python $P/stage0_fetch_source_json.py
 uv run python $P/stage1_download_pdf.py
 uv run python $P/stage2_download_html.py
 uv run python $P/stage3_embed_papers.py
-uv run python $P/stage4_create_topic_tree.py
-uv run python $P/stage5_topic_labeling.py
+uv run python $P/stage4_label_survey.py
+
+uv run python $T/stage0_umap.py
+uv run python $T/stage1_create_topic_tree.py
+psql -h ./.pg -p 5433 -d arxivkg -f $T/indexes.sql
+uv run python $T/stage2_topic_labeling.py
 
 uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 psql -h ./.pg -p 5433 -d arxivkg -f $P/indexes.sql
@@ -63,8 +68,9 @@ One RTX 3090, one NVMe, 3,141,674 papers.
 | stage1, PDF | network bound | days, resumable |
 | stage2, HTML | network bound, rate limited | days, resumable |
 | stage3, embed and reduce | 499,537 embedded, 3,103,758 reduced | 2 h 32 m |
-| stage4, cluster | three kmeans levels | 2 m 52 s |
-| stage5, name the tree | 4,368 nodes | 1 h 45 m |
+| papers stage4, review verdict | one forward pass a paper | 2 h 15 m |
+| tree stage1, cluster | three kmeans levels | 8 m |
+| tree stage2, name the tree | 4,368 nodes | 1 h 45 m |
 | citations stage0, parse | 3,103,758 papers into 180,690,765 rows | 8 h 15 m |
 | indexes | six, including HNSW | 9 m 34 s |
 | citations stage1, label | 68,911,128 rows at 3,412 rows/s | 5 h 37 m |
@@ -90,7 +96,7 @@ The tree is three levels of MiniBatchKMeans at k=16, so 16 grandparents over 256
 ## Delta re-ingest
 
 New papers arrive about twice a month, and the whole list above runs again.
-Clustering is global, so stage4 refits from scratch and **stage5 always relabels the whole tree**.
+Clustering is global, so tree stage1 refits from scratch and **tree stage2 always relabels the whole tree**.
 `fit_umap` refuses to run while the stage 2 queue is non-empty, since a half-finished embed pass
 would otherwise fit the model on a biased sample and fail with no error.
 

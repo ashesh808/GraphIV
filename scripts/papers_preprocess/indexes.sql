@@ -5,8 +5,10 @@ SET maintenance_work_mem = '8GB';
 SET max_parallel_maintenance_workers = 4;
 
 CREATE INDEX IF NOT EXISTS papers_stage_idx  ON papers (stage);
-CREATE INDEX IF NOT EXISTS papers_levels_idx ON papers (level_0, level_1, level_2);
 CREATE INDEX IF NOT EXISTS papers_hnsw_idx   ON papers USING hnsw (embed_full halfvec_cosine_ops);
+
+-- the review score is read as a range, since the threshold is chosen per query
+CREATE INDEX IF NOT EXISTS papers_survey_idx ON papers (survey_probability);
 
 CREATE INDEX IF NOT EXISTS citations_source_idx ON citations (source_id);
 

@@ -17,6 +17,8 @@ stage1_label_citation.py   run the trained student over every citation with a ta
 
 Only citations that resolved to a paper are labeled. An unresolved reference has no cited work to reason about, so it keeps `stage = 0` forever.
 
+`stage0` queues on `papers.is_citation_parsable IS NULL` rather than on the absence of citation rows. About a fifth of the corpus renders html with no bibliography, and keying on the rows meant those papers were parsed again on every run. After a paper is parsed the column records whether anything was found, so it is asked exactly once.
+
 ## How a citation resolves
 
 `matcher.py` tries seven rungs in order and records which one fired in `resolved_by`.
@@ -41,6 +43,6 @@ uv run python scripts/citation_preprocess/stage1_label_citation.py
 uv run python scripts/citation_preprocess/stage1_label_citation.py --relabel
 ```
 
-`stage0` waits for papers at stage 4 and takes `--min-stage 2` to start as soon as the HTML is on disk instead. `stage1` needs `best.pt`, which `scripts/citation_labeler/` produces, and `--relabel` resets every resolved row so a new student can redo the whole table.
+`stage0` waits for papers at stage 3 and takes `--min-stage 2` to start as soon as the HTML is on disk instead. `stage1` needs `best.pt`, which `scripts/citation_labeler/` produces, and `--relabel` resets every resolved row so a new student can redo the whole table.
 
 `matcher.py` is imported by `stage0_create_citation.py` as a sibling module, which keeps every preprocessing step inside `scripts/`.

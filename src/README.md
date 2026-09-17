@@ -1,12 +1,13 @@
 # src
 
-The importable library, empty while the serve path is rebuilt against the three-table store.
+The importable library, being rebuilt against the three-table store.
 
 ```
-retrieve/    query -> a graded, ranked cohort        not yet written
-generate/    cohort -> a grounded, cited review      not yet written
-serve/       MCP tools and the dashboard             not yet written
-core/        config, store, embedding, LLM           not yet written
+core/        config, contracts, embedding, LLM              schema.py only
+eval/        benchmarks that score a retriever pipeline      survey_match.py
+retrieve/    query -> a graded, ranked cohort               not yet written
+generate/    cohort -> a grounded, cited review             not yet written
+serve/       MCP tools and the dashboard                    not yet written
 ```
 
 The pre-rewrite versions are parked in `.legacy/graphiv/`, which git does not track. Nothing

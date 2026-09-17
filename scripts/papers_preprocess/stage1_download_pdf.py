@@ -2,7 +2,7 @@
 Fetch the PDF of every paper sitting at stage 0 and advance the ones that land
 
 Each aria2c batch carries a per-entry destination, so one batch spans months and stays saturated
-A paper only advances when its file is on disk, which makes a partial batch safe to re-run
+One paper has one file, named for the version papers calls latest, whatever version the bytes are
 """
 
 from __future__ import annotations
@@ -119,27 +119,29 @@ class PDFDownloader:
         f = self.path / ym / flat_name(arxiv_id, version)
         return f.is_file() and f.stat().st_size > 0
 
-    def fetch_batch(self, batch: list[tuple[str, str]], parallel: int) -> None:
+    def fetch_batch(self, batch: list[tuple[str, str, str]], parallel: int) -> None:
         """
         Run one aria2c invocation over a batch, writing each file to its own month
 
+        The two versions differ only on a fallback, where older bytes land under the latest name.
+
         Args:
-            batch: the papers to fetch.
+            batch: the papers to fetch, as id, version to ask for, version to save as.
             parallel: concurrent connections for aria2c.
         """
         lines: list[str] = []
-        for arxiv_id, version in batch:
-            url = self.url_for(arxiv_id, version)
+        for arxiv_id, want, save in batch:
+            url = self.url_for(arxiv_id, want)
             ym = yymm(arxiv_id)
             if url is None or ym is None:
                 continue
             # already on disk, so a delta run does not ask GCS for it again
-            if self.landed(arxiv_id, version):
+            if self.landed(arxiv_id, save):
                 continue
             (self.path / ym).mkdir(parents=True, exist_ok=True)
             lines.append(url)
             lines.append(f"  dir={self.path / ym}")
-            lines.append(f"  out={flat_name(arxiv_id, version)}")
+            lines.append(f"  out={flat_name(arxiv_id, save)}")
         if not lines:
             return
 
@@ -180,11 +182,24 @@ class PDFDownloader:
             _ = self.create_queue(pg_dest)
         queue = sorted(self.download_set)
         done = 0
+        fell_back = 0
         with psycopg.connect(pg_dest, autocommit=True) as conn:
             for i in range(0, len(queue), batch):
                 chunk = queue[i : i + batch]
-                self.fetch_batch(chunk, parallel)
+                self.fetch_batch([(a, v, v) for a, v in chunk], parallel)
                 ok = [a for a, v in chunk if self.landed(a, v)]
+                """
+                The bulk mirror carries only v1 of most revised papers, so a miss asks for v1 and
+                saves it under the latest name. `latest_version` is the source's answer and is
+                never rewritten, or the next stage 0 would read the row as a new version forever.
+                """
+                missed = [(a, v) for a, v in chunk if v != "v1" and not self.landed(a, v)]
+                if missed:
+                    self.fetch_batch([(a, "v1", v) for a, v in missed], parallel)
+                    older = [a for a, v in missed if self.landed(a, v)]
+                    if older:
+                        ok += older
+                        fell_back += len(older)
                 if ok:
                     _ = conn.execute(
                         "UPDATE papers SET stage = 1 WHERE arxiv_id = ANY(%s) AND stage = 0",
@@ -192,7 +207,8 @@ class PDFDownloader:
                     )
                 done += len(ok)
                 print(
-                    f"[stage1] {i + len(chunk):,}/{len(queue):,} tried, {done:,} landed",
+                    f"[stage1] {i + len(chunk):,}/{len(queue):,} tried, {done:,} landed, "
+                    f"{fell_back:,} of them as v1",
                     flush=True,
                 )
         return done

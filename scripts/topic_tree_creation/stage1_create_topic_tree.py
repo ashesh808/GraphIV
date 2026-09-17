@@ -1,8 +1,8 @@
 """
-Cluster the reduced vectors into a fixed-depth topic tree and write one label per level
+Cluster the projected vectors into a fixed-depth topic tree and write one label per level
 
 Each level runs its own method over its parent's members only, so labels are scoped to a parent
-Every run refits the whole corpus, since two independent fits share one integer namespace
+Every run reclusters the whole corpus, since two independent fits share one integer namespace
 """
 
 from __future__ import annotations
@@ -21,17 +21,17 @@ from threadpoolctl import threadpool_limits
 LEVELS = ("level_0", "level_1", "level_2")
 
 
-def parse_vector(raw: str) -> list[float]:
+def parse_block(raws: list[str]) -> NDArray[np.float32]:
     """
-    Decode the `[a,b,c]` text form pgvector returns without its own adapter
+    Decode a chunk of `[a,b,c]` text vectors, one numpy call per row rather than one per float
 
     Args:
-        raw: the column value as text.
+        raws: the column values as text, all of the same width.
 
     Returns:
-        The vector as plain floats.
+        One row per input vector.
     """
-    return [float(x) for x in raw.strip("[]").split(",")]
+    return np.asarray([np.fromstring(r[1:-1], dtype=np.float32, sep=",") for r in raws])
 
 
 class TopicTree:
@@ -86,7 +86,7 @@ class TopicTree:
 
     def cluster(self, pg_dest: str, methods: list[str], batch: int) -> int:
         """
-        Label every embedded paper, then write the levels back and advance the stage
+        Label every projected paper, then rewrite the table with its place in the tree
 
         Args:
             pg_dest: libpq connection string.
@@ -104,16 +104,15 @@ class TopicTree:
 
         with psycopg.connect(pg_dest) as conn:
             rows: list[tuple[str, str]] = conn.execute(
-                "SELECT arxiv_id, embed_umap::text FROM papers"
-                " WHERE stage >= 3 AND embed_umap IS NOT NULL"
+                "SELECT arxiv_id, embed_umap::text FROM topic_tree"
             ).fetchall()
         if not rows:
-            print("[stage4] nothing embedded with a reduced vector", flush=True)
+            print("[stage1] nothing projected to cluster", flush=True)
             return 0
 
         ids = [r[0] for r in rows]
-        vecs = np.asarray([parse_vector(r[1]) for r in rows], dtype=np.float32)
-        print(f"[stage4] clustering {len(ids):,} papers over {len(methods)} levels", flush=True)
+        vecs = parse_block([r[1] for r in rows])
+        print(f"[stage1] clustering {len(ids):,} papers over {len(methods)} levels", flush=True)
 
         labels = np.full((len(ids), len(methods)), -1, dtype=np.int32)
         groups: list[NDArray[np.int64]] = [np.arange(len(ids))]
@@ -136,30 +135,25 @@ class TopicTree:
                 for value in np.unique(got):
                     nxt.append(members[got == value])
             groups = nxt
-            print(f"[stage4]   level {depth} ({method}): {len(groups):,} groups", flush=True)
+            print(f"[stage1]   level {depth} ({method}): {len(groups):,} groups", flush=True)
 
         cols = ", ".join(LEVELS[: len(methods)])
         with psycopg.connect(pg_dest) as conn:
-            _ = conn.execute(
-                f"CREATE TEMP TABLE t (arxiv_id text PRIMARY KEY, {
-                    ', '.join(f'{c} smallint' for c in LEVELS[: len(methods)])
-                })"
-            )
-            with conn.cursor().copy(f"COPY t (arxiv_id, {cols}) FROM STDIN") as cp:
+            _ = conn.execute("TRUNCATE topic_tree")
+            with conn.cursor().copy(
+                f"COPY topic_tree (arxiv_id, stage, embed_umap, {cols}) FROM STDIN"
+            ) as cp:
                 for i, arxiv_id in enumerate(ids):
-                    cp.write_row((arxiv_id, *(int(x) for x in labels[i])))
-            sets = ", ".join(f"{c} = t.{c}" for c in LEVELS[: len(methods)])
-            n = conn.execute(
-                f"UPDATE papers p SET {sets}, stage = 4 FROM t WHERE p.arxiv_id = t.arxiv_id"
-            ).rowcount
+                    vector = "[" + ",".join(f"{x:.6g}" for x in vecs[i]) + "]"
+                    cp.write_row((arxiv_id, 1, vector, *(int(x) for x in labels[i])))
             conn.commit()
-        print(f"[stage4] labeled {n:,} papers", flush=True)
-        return n
+        print(f"[stage1] placed {len(ids):,} papers", flush=True)
+        return len(ids)
 
 
 def main() -> None:
     """
-    Read the config, then build the tree over every embedded paper
+    Read the config, then build the tree over every projected paper
     """
     ap = argparse.ArgumentParser()
     _ = ap.add_argument("--config_path", default="config.toml")

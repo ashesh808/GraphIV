@@ -16,23 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
-import joblib
-import numpy as np
 import psycopg
-from numpy.typing import NDArray
-
-
-def parse_vector(raw: str) -> list[float]:
-    """
-    Decode the `[a,b,c]` text form pgvector returns without its own adapter
-
-    Args:
-        raw: the column value as text.
-
-    Returns:
-        The vector as plain floats.
-    """
-    return [float(x) for x in raw.strip("[]").split(",")]
 
 
 class Embedder:
@@ -169,97 +153,10 @@ class Embedder:
                     print(f"[stage3]   {done:,}/{len(rows):,}", flush=True)
         return done
 
-    def fit_umap(self, pg_dest: str, sample: int, path: str, dim: int, seed: int) -> None:
-        """
-        Fit the reducer on a sample of the full vectors, save it and drop every reduced vector
-
-        Refuses to run while papers are still waiting to be embedded, since fitting on a partial
-        corpus produces a valid-looking model whose neighborhoods are wrong.
-        The refit moves every vector, so the old reductions are cleared and `umap_to_db` redoes
-        the whole corpus rather than only the delta.
-
-        Args:
-            pg_dest: libpq connection string.
-            sample: how many vectors to fit on.
-            path: where the fitted model is saved.
-            dim: output dimensionality.
-            seed: fixes the projection trees and the layout sgd, at the cost of one core.
-
-        Raises:
-            SystemExit: if any paper is still at stage 2.
-        """
-        import umap  # noqa: PLC0415
-
-        with psycopg.connect(pg_dest) as conn:
-            row = conn.execute("SELECT count(*) FROM papers WHERE stage = 2").fetchone()
-            waiting = int(row[0]) if row else 0
-            if waiting:
-                raise SystemExit(f"{waiting:,} papers still at stage 2, embed them before fitting")
-            rows: list[tuple[str]] = conn.execute(
-                "SELECT embed_full::text FROM papers WHERE embed_full IS NOT NULL"
-                " ORDER BY random() LIMIT %s",
-                (sample,),
-            ).fetchall()
-
-        train = np.asarray([parse_vector(r[0]) for r in rows], dtype=np.float32)
-        print(f"[stage3] fitting umap on {train.shape[0]:,} vectors", flush=True)
-        model = umap.UMAP(n_components=dim, metric="cosine", random_state=seed)
-        _ = model.fit(train)
-        target = Path(path)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        _ = joblib.dump(model, target)
-        print(f"[stage3] saved {target}", flush=True)
-
-        """
-        The model lands before the column is cleared, so a kill leaves a queue that matches it.
-        """
-        with psycopg.connect(pg_dest) as conn:
-            cleared = conn.execute("UPDATE papers SET embed_umap = NULL").rowcount
-            conn.commit()
-        print(f"[stage3] cleared {cleared:,} reduced vectors", flush=True)
-
-    def umap_to_db(self, pg_dest: str, batch: int, path: str) -> int:
-        """
-        Transform every full vector that has no reduced vector yet
-
-        Args:
-            pg_dest: libpq connection string.
-            batch: rows per transform call.
-            path: the fitted model.
-
-        Returns:
-            How many papers were reduced.
-        """
-        model: Any = joblib.load(path)  # pyright: ignore[reportExplicitAny, reportAny]
-        done = 0
-        while True:
-            with psycopg.connect(pg_dest) as conn:
-                rows: list[tuple[str, str]] = conn.execute(
-                    "SELECT arxiv_id, embed_full::text FROM papers"
-                    " WHERE embed_full IS NOT NULL AND embed_umap IS NULL LIMIT %s",
-                    (batch,),
-                ).fetchall()
-                if not rows:
-                    break
-                block = np.asarray([parse_vector(r[1]) for r in rows], dtype=np.float32)
-                reduced: NDArray[np.float32] = model.transform(block)  # pyright: ignore[reportAny]
-                _ = conn.execute("CREATE TEMP TABLE u (arxiv_id text PRIMARY KEY, v text)")
-                with conn.cursor().copy("COPY u (arxiv_id, v) FROM STDIN") as cp:
-                    for (arxiv_id, _raw), v in zip(rows, reduced, strict=True):
-                        cp.write_row((arxiv_id, "[" + ",".join(f"{x:.6g}" for x in v) + "]"))
-                _ = conn.execute(
-                    "UPDATE papers p SET embed_umap = u.v::vector"
-                    " FROM u WHERE p.arxiv_id = u.arxiv_id"
-                )
-                conn.commit()
-            done += len(rows)
-            print(f"[stage3]   reduced {done:,}", flush=True)
-        return done
-
 
 def main() -> None:
     """
-    Read the config, then embed, fit the reducer and reduce
+    Read the config, then embed every paper waiting at stage 2
     """
     ap = argparse.ArgumentParser()
     _ = ap.add_argument("--config_path", default="config.toml")
@@ -268,7 +165,7 @@ def main() -> None:
     cfg = tomllib.loads(
         Path(str(args.config_path)).read_text(encoding="utf-8")
     )  # pyright: ignore[reportAny]
-    ep, um = cfg["endpoints"], cfg["umap"]
+    ep = cfg["endpoints"]
     dsn = str(cfg["database"]["PG_DEST"])
     emb = Embedder(
         base_url=str(ep["EMBED_API"]),
@@ -278,14 +175,6 @@ def main() -> None:
         parallel=int(ep["EMBED_PARALLEL"]),
     )
     _ = emb.embed_to_db(dsn, batch=int(ep["EMBED_BATCH"]))
-    emb.fit_umap(
-        dsn,
-        int(um["UMAP_SAMPLE"]),
-        str(um["UMAP_MODEL_PATH"]),
-        int(um["UMAP_DIM"]),
-        int(um["UMAP_SEED"]),
-    )
-    _ = emb.umap_to_db(dsn, int(um["UMAP_BATCH"]), str(um["UMAP_MODEL_PATH"]))
 
 
 if __name__ == "__main__":

@@ -224,7 +224,7 @@ class TopicTreeLabeler:
             else:
                 out.append(spare)
                 self.fallbacks += 1
-        print(f"[stage5] named {len(out):,} {tag}", flush=True)
+        print(f"[stage2] named {len(out):,} {tag}", flush=True)
         return out
 
     def _sample(self, pg_dest: str) -> tuple[list[tuple[int, int, int]], list[list[Paper]]]:
@@ -241,16 +241,16 @@ class TopicTreeLabeler:
             SystemExit: if any paper is still waiting to be clustered.
         """
         with psycopg.connect(pg_dest) as conn:
-            row = conn.execute("SELECT count(*) FROM papers WHERE stage = 3").fetchone()
+            row = conn.execute("SELECT count(*) FROM topic_tree WHERE stage = 0").fetchone()
             waiting = int(row[0]) if row else 0
             if waiting:
-                raise SystemExit(f"{waiting:,} papers still at stage 3, cluster them before naming")
+                raise SystemExit(f"{waiting:,} papers still at stage 0, cluster them before naming")
 
             leaves: list[tuple[int, int, int]] = conn.execute(
-                "SELECT level_0, level_1, level_2 FROM papers WHERE stage = 4"
+                "SELECT level_0, level_1, level_2 FROM topic_tree WHERE stage = 1"
                 " GROUP BY 1, 2, 3 ORDER BY 1, 2, 3"
             ).fetchall()
-            print(f"[stage5] {len(leaves):,} leaves to name", flush=True)
+            print(f"[stage2] {len(leaves):,} leaves to name", flush=True)
 
             """
             The sample is pulled up front rather than inside a worker, so the pool holds one
@@ -260,17 +260,19 @@ class TopicTreeLabeler:
             for l0, l1, l2 in leaves:
                 rows: list[tuple[str, str]] = conn.execute(
                     "WITH c AS ("
-                    "  SELECT avg(embed_umap) AS mid FROM papers"
+                    "  SELECT avg(embed_umap) AS mid FROM topic_tree"
                     "  WHERE level_0 = %s AND level_1 = %s AND level_2 = %s"
                     ")"
-                    " SELECT title, abstract FROM papers, c"
-                    " WHERE level_0 = %s AND level_1 = %s AND level_2 = %s"
-                    " AND title IS NOT NULL AND abstract IS NOT NULL"
-                    " ORDER BY embed_umap <-> c.mid LIMIT %s",
+                    " SELECT p.title, p.abstract FROM topic_tree t"
+                    " JOIN papers p ON p.arxiv_id = t.arxiv_id"
+                    " CROSS JOIN c"
+                    " WHERE t.level_0 = %s AND t.level_1 = %s AND t.level_2 = %s"
+                    " AND p.title IS NOT NULL AND p.abstract IS NOT NULL"
+                    " ORDER BY t.embed_umap <-> c.mid LIMIT %s",
                     (l0, l1, l2, l0, l1, l2, self.n_papers),
                 ).fetchall()
                 samples.append([Paper(title=t, abstract=a) for t, a in rows])
-        print(f"[stage5] sampled {sum(len(s) for s in samples):,} papers", flush=True)
+        print(f"[stage2] sampled {sum(len(s) for s in samples):,} papers", flush=True)
         return leaves, samples
 
     def label_tree(self, pg_dest: str) -> int:
@@ -317,7 +319,7 @@ class TopicTreeLabeler:
         for g, names in enumerate(grouped):
             for i, name in zip(under[g], names, strict=True):
                 mid_names[i] = name
-        print(f"[stage5] named {len(mids):,} parents", flush=True)
+        print(f"[stage2] named {len(mids):,} parents", flush=True)
 
         top_children: list[list[str]] = [[] for _ in tops]
         for (a, _b), name in zip(mids, mid_names, strict=True):
@@ -325,7 +327,7 @@ class TopicTreeLabeler:
         top_names = self.label_sibling_group(
             top_children, word_cap([n for group in top_children for n in group])
         )
-        print(f"[stage5] named {len(top_names):,} grandparents", flush=True)
+        print(f"[stage2] named {len(top_names):,} grandparents", flush=True)
 
         return self._write(pg_dest, tops, top_names, mids, mid_names, leaves, leaf_names)
 
@@ -355,9 +357,9 @@ class TopicTreeLabeler:
             How many nodes were written.
         """
         with psycopg.connect(pg_dest) as conn:
-            _ = conn.execute("TRUNCATE topics")
+            _ = conn.execute("TRUNCATE topic_names")
             with conn.cursor().copy(
-                "COPY topics (level_0, level_1, level_2, name) FROM STDIN"
+                "COPY topic_names (level_0, level_1, level_2, name) FROM STDIN"
             ) as cp:
                 for top, name in zip(tops, top_names, strict=True):
                     cp.write_row((top, None, None, name))
@@ -368,7 +370,7 @@ class TopicTreeLabeler:
             conn.commit()
 
         written = len(tops) + len(mids) + len(leaves)
-        print(f"[stage5] wrote {written:,} nodes, {self.fallbacks:,} placeholders", flush=True)
+        print(f"[stage2] wrote {written:,} nodes, {self.fallbacks:,} placeholders", flush=True)
         return written
 
 
