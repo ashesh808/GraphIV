@@ -101,7 +101,7 @@ def read_paper(
     missing: list[str] = []
     for arxiv_id in arxiv_ids:
         title = meta.get(arxiv_id, ("", "", ""))[0]
-        found = read_html(handles.html, arxiv_id, title)
+        found = read_html(handles.html, arxiv_id, title, handles.fetched, handles.fetch)
         if found is None or not found.sections:
             missing.append(arxiv_id)
             continue

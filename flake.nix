@@ -1,6 +1,6 @@
 {
   description = "GraphIV";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/8a1b0127302ea51e05bf4ea5a291743fac442406";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/34ca302a9572963c02e385c056be37c85ff51b77";
   outputs = { self, nixpkgs }:
   let
     system = "x86_64-linux";
@@ -64,7 +64,41 @@
       ${pgEnv}
       exec ${pgWithVec}/bin/psql -h "$PGHOST" -p "$PGPORT" -d "$PGDATABASE" "$@"
     '';
+    overlay = final: _: { graphiv = final.callPackage ./nix/package.nix { python3 = final.python313; }; };
+    graphiv = pkgs.callPackage ./nix/package.nix { python3 = pkgs.python313; };
   in {
+    packages.${system} = {
+      default = graphiv;
+      inherit graphiv;
+    };
+
+    overlays.default = overlay;
+
+    nixosModules.default = { ... }: {
+      imports = [ ./nix/module.nix ];
+      nixpkgs.overlays = [ overlay ];
+    };
+
+    checks.${system}.tests = pkgs.runCommand "graphiv-tests"
+      {
+        nativeBuildInputs = [ (pkgs.python313.withPackages (p: [
+          p.pytest
+          p.mcp
+          p.numpy
+          p.psycopg
+          p.pydantic
+          p.scipy
+          p.selectolax
+          p.starlette
+        ])) ];
+      }
+      ''
+        cp -r ${lib.cleanSource ./.}/{src,tests,retrieval_recipes,pyproject.toml} .
+        chmod -R u+w .
+        PYTHONPATH=$PWD pytest tests -q
+        touch $out
+      '';
+
     devShells.${system}.default = pkgs.mkShell {
       packages = with pkgs; [
         python3

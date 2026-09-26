@@ -1,3 +1,0 @@
-# lualatex by default: the theme wants a Unicode engine for fontspec.
-$pdf_mode = 4;
-$lualatex = 'lualatex -interaction=nonstopmode -halt-on-error %O %S';

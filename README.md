@@ -57,11 +57,16 @@ changing the score edits a toml and no code.
 | `write_report` | the document, written to disk and grounded |
 | `what_cites` | who took a position on one paper, and the sentence they used |
 | `search_papers` | plain cosine, to turn a title into an id |
+| `find_runs` | which report this server already wrote for a question, and the document itself |
 
 ```bash
-uv run python scripts/serve.py          # stdio
-uv run python scripts/serve.py --http   # streamable-http, and the dashboard, on 8756
+uv run python scripts/serve.py                          # stdio
+uv run python scripts/serve.py --http --role api        # the tools, 6767
+uv run python scripts/serve.py --http --role frontend   # the dashboard, 6969
 ```
+
+`nix/README.md` is the deployment page, since `nixosModules.default` runs both roles as units and
+writes their config.
 
 ## What is measured
 

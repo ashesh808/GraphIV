@@ -25,6 +25,20 @@ PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/pdf"
 HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/html"
 GRAPH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_graph_export.npy"
 
+# The daemon: the ports it listens on, and the paths it reads and writes
+[serve]
+HOST = "127.0.0.1"
+API_PORT = 6767
+FRONTEND_PORT = 6969
+# hosts the streamable-http transport answers to, empty meaning loopback only
+ALLOWED_HOSTS = []
+RECIPE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/retrieval_recipes"
+RUNS_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
+CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/llm_cache"
+# where a paper the corpus never had is written, since the corpus itself is read only
+FETCH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/fetched"
+FETCH = true
+
 [endpoints]
 EMBED_API = "http://127.0.0.1:11435"
 EMBED_NAME = "nomic-embed-text-v2-moe"
@@ -132,16 +146,3 @@ ConsensusMatch = [
   "cosine_only.toml",
 ]
 PrecisionMatch = ["survey.toml", "frontier.toml", "cosine_only.toml"]
-
-# What a frontier answer looks like, and where one is written
-[frontier]
-RECIPE = "survey.toml"
-OUTPUT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
-CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/llm_cache"
-STATE = 20
-FRESH = 12
-SEED_LIMIT = 5000
-# how recent a paper must be to count as what the area currently is
-WINDOW_DAYS = 365
-# how far back a paper may sit and still count as having just appeared
-SUCCESSOR_DAYS = 240

@@ -551,11 +551,13 @@ function drawGraph(graph) {
   const c0 = Math.min(...cos);
   const c1 = Math.max(Math.max(...cos), c0 + 0.01);
   const years = (t1 - t0) / 3.156e10;
-  const pad = { l: 66, r: 30, t: 22, b: 52 };
   // the whole span has to be visible without scrolling, since the paths are read left to right
   const room = (document.getElementById("gwrap") || {}).clientWidth || 1100;
-  const width = Math.max(900, Math.min(room - 2, Math.round(years * 150) + pad.l + pad.r));
-  const height = 620;
+  const tight = room < 560;
+  const pad = { l: tight ? 40 : 66, r: tight ? 14 : 30, t: 22, b: 52 };
+  const floor = Math.min(900, room - 2);
+  const width = Math.max(floor, Math.min(room - 2, Math.round(years * 150) + pad.l + pad.r));
+  const height = tight ? 420 : 620;
   const X = (d) => pad.l + ((Date.parse(d) - t0) / (t1 - t0)) * (width - pad.l - pad.r);
   const Y = (c) => pad.t + (1 - ((c ?? 0) - c0) / (c1 - c0)) * (height - pad.t - pad.b);
   const R = (n) => 3.5 + 7 * Math.sqrt(Math.min(1, (n.cited_by || 0) / 400));
@@ -575,7 +577,7 @@ function drawGraph(graph) {
       <text class="gaxis" x="${pad.l - 10}" y="${y + 4}" text-anchor="end">${c.toFixed(2)}</text>`);
   }
   grid.push(`<text class="gaxis" x="${width / 2}" y="${height - 12}" text-anchor="middle">year &rarr;</text>`);
-  grid.push(`<text class="gaxis" transform="translate(16 ${height / 2}) rotate(-90)" text-anchor="middle">closeness to the question &rarr;</text>`);
+  grid.push(`<text class="gaxis" transform="translate(${tight ? 11 : 16} ${height / 2}) rotate(-90)" text-anchor="middle">${tight ? "closeness &rarr;" : "closeness to the question &rarr;"}</text>`);
 
   const neighbours = new Set();
   if (focusedNode) {
@@ -615,12 +617,15 @@ cited by ${n.cited_by}, closeness ${n.cosine ?? "?"}${n.lines.length ? ", line "
     .map((n) => {
       const x = X(n.date) + R(n) + 6;
       const y = Y(n.cosine) + 4;
-      if (placed.some((p) => Math.abs(p.y - y) < 13 && Math.abs(p.x - x) < 230)) return "";
+      const cut = tight ? 16 : 30;
+      if (placed.some((p) => Math.abs(p.y - y) < (tight ? 24 : 13) && Math.abs(p.x - x) < cut * 7)) {
+        return "";
+      }
       placed.push({ x, y });
-      return `<text class="glabel" x="${x}" y="${y}">${esc(deTeX(n.title).slice(0, 30))}</text>`;
+      return `<text class="glabel" x="${x}" y="${y}">${esc(deTeX(n.title).slice(0, cut))}</text>`;
     })
     .filter(Boolean)
-    .slice(0, 18)
+    .slice(0, tight ? 4 : 18)
     .join("");
 
   host.innerHTML = `<svg width="${width}" height="${height}" role="img">
@@ -662,6 +667,8 @@ function tab(name, quiet) {
   if (!quiet && run) location.hash = `#/run/${encodeURIComponent(run.slug)}/${name}`;
   for (const p of document.querySelectorAll(".tab-panel")) p.classList.toggle("active", p.id === "p-" + name);
   for (const b of document.querySelectorAll(".tabs button")) b.classList.toggle("active", b.dataset.t === name);
+  // a hidden panel measures zero, so the chart is laid out once its own tab is showing
+  if (name === "graph" && run) graphTab(run.graph);
 }
 
 async function reading(slug, wanted) {
@@ -700,7 +707,6 @@ async function reading(slug, wanted) {
 
   reportTab(run);
   referencesTab();
-  graphTab(run.graph);
   detailsTab();
   const first = papers.find((p) => p.cited) || papers[0];
   document.getElementById("topcited").onclick = () => first && openPaper(first.arxiv_id);
@@ -723,10 +729,28 @@ function route() {
   library();
 }
 
+// the report runs long, so the way back up is always one press away
+function backToTop() {
+  const button = document.getElementById("totop");
+  const mark = () => button.classList.toggle("on", window.scrollY > 600);
+  window.addEventListener("scroll", mark, { passive: true });
+  button.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  mark();
+}
+
 async function start() {
   theme();
+  backToTop();
   window.addEventListener("hashchange", route);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePanel(); });
+  let sized = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(sized);
+    sized = setTimeout(() => {
+      const on = document.getElementById("p-graph");
+      if (on && on.classList.contains("active") && run) graphTab(run.graph);
+    }, 150);
+  });
   try { runs = await (await fetch("api/runs")).json(); } catch (e) { runs = []; }
   route();
 }

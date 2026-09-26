@@ -97,7 +97,9 @@ def table(
         return None, []
     read: list[tuple[FullText, str, str]] = []
     for paper in papers[:depth]:
-        found = read_paper(handles.html, paper.arxiv_id, paper.title)
+        found = read_paper(
+            handles.html, paper.arxiv_id, paper.title, handles.fetched, handles.fetch
+        )
         if found is not None and found.sections:
             read.append((found, str(paper.date.year), paper.abstract))
     if not read:
@@ -273,7 +275,8 @@ def open_questions(handles: Handles, areas: list[Area], papers: list[Paper], dep
     for area in areas:
         sections: list[tuple[str, str, str]] = []
         for arxiv_id in area.arxiv_ids[:depth]:
-            for name, body in read_open(handles.html, arxiv_id)[:2]:
+            found = read_open(handles.html, arxiv_id, cache=handles.fetched, fetch=handles.fetch)
+            for name, body in found[:2]:
                 sections.append((arxiv_id, name, body))
         area.unanswered = unanswered(handles.model, area.question or "", sections)
         LOG.info("%s: %d open questions", area.question[:40], len(area.unanswered))

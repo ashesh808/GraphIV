@@ -39,9 +39,14 @@ a matched scorer and miner. The caller picks the mode by name, never the numbers
 ## Running it
 
 ```sh
-uv run python scripts/serve.py          # stdio
-uv run python scripts/serve.py --http   # streamable-http on GRAPHIV_MCP_PORT, default 8756
+uv run python scripts/serve.py                          # stdio
+uv run python scripts/serve.py --http --role api        # the tools, 6767
+uv run python scripts/serve.py --http --role frontend   # the dashboard, 6969
 ```
+
+Both ports sit in the `[serve]` block of `config.toml`, which `GRAPHIV_CONFIG` can point elsewhere.
+The frontend role builds a second server carrying no tools, so it loads neither the store nor the
+graph and cannot reach the corpus.
 
 The graph export is 400 MB and is loaded once at start, so the first question costs the same as
 the tenth.

@@ -14,10 +14,9 @@ from pathlib import Path
 
 from selectolax.lexbor import LexborHTMLParser, LexborNode
 
-LOG = logging.getLogger(__name__)
+from src.core.fetch import html_file
 
-MODERN = re.compile(r"^(\d{2})(\d{2})\.(\d{4,5})")
-LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Z]{2})?/(\d{2})(\d{2})(\d{3})")
+LOG = logging.getLogger(__name__)
 
 METHOD = ("method", "approach", "model", "architecture", "framework", "algorithm", "our ")
 RESULT = ("result", "experiment", "evaluation", "benchmark", "comparison", "ablation", "analysis")
@@ -104,35 +103,6 @@ class FullText:
         return "\n\n".join(got[:limit])
 
 
-def yymm(arxiv_id: str) -> str | None:
-    """
-    The directory a paper's html sits in
-
-    Args:
-        arxiv_id: A modern or legacy arXiv id.
-
-    Returns:
-        The four digit YYMM, or None when the id does not parse.
-    """
-    got = MODERN.match(arxiv_id) or LEGACY.match(arxiv_id)
-    return f"{got.group(1)}{got.group(2)}" if got else None
-
-
-def html_path(root: Path, arxiv_id: str) -> Path | None:
-    """
-    Where one paper's html lives
-
-    Args:
-        root: The html store root.
-        arxiv_id: The paper.
-
-    Returns:
-        The path, or None when the id does not parse.
-    """
-    stem = yymm(arxiv_id)
-    return None if stem is None else root / stem / f"{arxiv_id.replace('/', '')}.html"
-
-
 def read_cell(node: LexborNode) -> str:
     """
     One table cell as text, with the MathML echo of its own number removed
@@ -211,7 +181,13 @@ def read_tables(tree: LexborHTMLParser) -> list[Table]:
     return out
 
 
-def read_open(root: Path, arxiv_id: str, chars: int = SECTION_CHARS) -> list[tuple[str, str]]:
+def read_open(
+    root: Path,
+    arxiv_id: str,
+    chars: int = SECTION_CHARS,
+    cache: Path | None = None,
+    fetch: bool = False,
+) -> list[tuple[str, str]]:
     """
     The sections whose titles say the authors are discussing what they did not solve
 
@@ -219,11 +195,13 @@ def read_open(root: Path, arxiv_id: str, chars: int = SECTION_CHARS) -> list[tup
         root: The html store root.
         arxiv_id: The paper.
         chars: How much of each section to keep.
+        cache: Where a fetched paper is written, defaulting to the store root.
+        fetch: Whether a paper the store never had may be fetched from arXiv.
 
     Returns:
         One title and body per matching section, empty when the html never landed.
     """
-    found = read_paper(root, arxiv_id)
+    found = read_paper(root, arxiv_id, cache=cache, fetch=fetch)
     if found is None:
         return []
     return [
@@ -233,7 +211,13 @@ def read_open(root: Path, arxiv_id: str, chars: int = SECTION_CHARS) -> list[tup
     ]
 
 
-def read_paper(root: Path, arxiv_id: str, title: str = "") -> FullText | None:
+def read_paper(
+    root: Path,
+    arxiv_id: str,
+    title: str = "",
+    cache: Path | None = None,
+    fetch: bool = False,
+) -> FullText | None:
     """
     One paper's sections and tables, or None when the html never landed
 
@@ -241,12 +225,14 @@ def read_paper(root: Path, arxiv_id: str, title: str = "") -> FullText | None:
         root: The html store root.
         arxiv_id: The paper.
         title: Its title, carried through for the prompts.
+        cache: Where a fetched paper is written, defaulting to the store root.
+        fetch: Whether a paper the store never had may be fetched from arXiv.
 
     Returns:
         The paper, or None.
     """
-    path = html_path(root, arxiv_id)
-    if path is None or not path.is_file():
+    path = html_file(root, cache if cache is not None else root, arxiv_id, fetch)
+    if path is None:
         return None
     try:
         tree = LexborHTMLParser(path.read_text(encoding="utf-8", errors="ignore"))

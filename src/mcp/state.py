@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import tomllib
 from dataclasses import dataclass, field
 from datetime import date
@@ -23,7 +24,8 @@ from src.core.schema import Grade, Paper
 
 LOG = logging.getLogger(__name__)
 
-CONFIG = Path(__file__).resolve().parents[2] / "config.toml"
+REPO = Path(__file__).resolve().parents[2] / "config.toml"
+CONFIG = Path(os.environ.get("GRAPHIV_CONFIG") or REPO)
 MODES = {"survey": "survey.toml", "frontier": "frontier.toml", "consensus": "consensus.toml"}
 ID_CHARS = 12
 
@@ -41,7 +43,9 @@ class Handles:
     recipes: Path
     html: Path
     pdfs: Path
+    fetched: Path
     runs: Path
+    fetch: bool = False
 
     def embed(self, text: str) -> list[float]:
         """
@@ -102,6 +106,49 @@ HEAD = 300
 STORE: dict[str, Held] = {}
 
 
+@dataclass(frozen=True)
+class Serving:
+    """
+    What the transport itself needs, which is the half of the config that needs no corpus
+    """
+
+    host: str
+    api_port: int
+    frontend_port: int
+    allowed_hosts: list[str]
+    runs: Path
+    html: Path
+    pdfs: Path
+    fetched: Path
+    fetch: bool
+
+
+@lru_cache(maxsize=1)
+def serving(config_path: str | Path = CONFIG) -> Serving:
+    """
+    The ports and the paths, read without opening the store or the graph
+
+    Args:
+        config_path: Where config.toml lives.
+
+    Returns:
+        The settings.
+    """
+    config: dict[str, Any] = tomllib.loads(Path(config_path).read_text(encoding="utf-8"))
+    block = dict(config["serve"])
+    return Serving(
+        host=str(block["HOST"]),
+        api_port=int(block["API_PORT"]),
+        frontend_port=int(block["FRONTEND_PORT"]),
+        allowed_hosts=[str(one) for one in block.get("ALLOWED_HOSTS", [])],
+        runs=Path(str(block["RUNS_PATH"])),
+        html=Path(str(config["dataset"]["HTML_PATH"])),
+        pdfs=Path(str(config["dataset"]["PDF_PATH"])),
+        fetched=Path(str(block["FETCH_PATH"])),
+        fetch=bool(block.get("FETCH", False)),
+    )
+
+
 @lru_cache(maxsize=1)
 def load(config_path: str | Path = CONFIG) -> Handles:
     """
@@ -115,17 +162,20 @@ def load(config_path: str | Path = CONFIG) -> Handles:
     """
     config: dict[str, Any] = tomllib.loads(Path(config_path).read_text(encoding="utf-8"))
     endpoints = {k: str(v) for k, v in config["endpoints"].items()}
-    settings = dict(config["frontier"])
+    block = dict(config["serve"])
+    settings = serving(config_path)
     graph = load_graph_export(str(config["dataset"]["GRAPH_PATH"]))
     handles = Handles(
         dsn=str(config["database"]["PG_DEST"]),
         endpoints=endpoints,
         graph=graph,
-        model=Gemma(endpoints["LLM_API"], endpoints["LLM_NAME"], str(settings["CACHE_PATH"])),
-        recipes=Path(str(config["retriever_eval"]["RECIPE_PATH"])),
-        html=Path(str(config["dataset"]["HTML_PATH"])),
-        pdfs=Path(str(config["dataset"]["PDF_PATH"])),
-        runs=Path(str(settings["OUTPUT_PATH"])),
+        model=Gemma(endpoints["LLM_API"], endpoints["LLM_NAME"], str(block["CACHE_PATH"])),
+        recipes=Path(str(block["RECIPE_PATH"])),
+        html=settings.html,
+        pdfs=settings.pdfs,
+        fetched=settings.fetched,
+        runs=settings.runs,
+        fetch=settings.fetch,
     )
     LOG.info("loaded %d papers", graph.n_papers)
     return handles

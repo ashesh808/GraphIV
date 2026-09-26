@@ -31,9 +31,9 @@ class Effort:
 
 LEVELS = {
     "quick": Effort(
-        "quick", "about two minutes", areas=2, read=60, keep=15, full_text=0, compose=False
+        "quick", "about a minute", areas=2, read=60, keep=15, full_text=0, compose=False
     ),
-    "standard": Effort("standard", "about ten minutes", areas=3, read=200, keep=40, full_text=12),
+    "standard": Effort("standard", "two to four minutes", areas=3, read=200, keep=40, full_text=12),
     "deep": Effort(
         "deep",
         "as long as the caller keeps going",

@@ -50,6 +50,14 @@ Under the chart every path is written out as a dated list, since a trajectory is
 the field moved and a reader wants to check it paper by paper. Isolating one there redraws the
 chart around it.
 
+## On a phone
+
+Below 760px the rail becomes a sticky strip of numbers above the sections, the sub-tabs stack full
+width, the reference rows go vertical and the panel takes the whole screen. The chart is laid out
+when its own tab opens rather than at load, since a hidden panel measures zero and the chart would
+otherwise size itself for a desktop and force a sideways scroll. A back-to-top button appears after
+600px of scrolling, because the report is long by design.
+
 ## Where the data comes from
 
 `src/mcp/dashboard.py` mounts read-only routes: `/api/runs`, `/api/runs/{slug}`,
@@ -60,7 +68,8 @@ path escapes it, and nothing here writes.
 ## Looking at it
 
 ```sh
-GRAPHIV_MCP_PORT=8799 uv run python scripts/serve.py --http
+uv run python scripts/serve.py --http --role frontend
 ```
 
-Then open `http://127.0.0.1:8799/`. Production serves the same page on the `graphiv-mcp` port.
+Then open the `[serve] FRONTEND_PORT` from `config.toml`, 6969 by default.
+A scratch copy belongs on another port, which is one line of a copied config.

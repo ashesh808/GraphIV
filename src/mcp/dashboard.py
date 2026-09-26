@@ -15,7 +15,7 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, Response
 
-from src.report.fulltext import html_path
+from src.core.fetch import pdf_file
 
 LOG = logging.getLogger(__name__)
 
@@ -107,27 +107,7 @@ def read_one(root: Path, slug: str) -> dict[str, Any] | None:
     return parsed
 
 
-def one_pdf(root: Path, arxiv_id: str) -> Path | None:
-    """
-    Where one paper's pdf sits, whichever version was the latest when it was fetched
-
-    The store names a file after the version it downloaded, so the id alone never resolves.
-
-    Args:
-        root: The pdf store root.
-        arxiv_id: The paper.
-
-    Returns:
-        The newest version on disk, or None when the store never fetched it.
-    """
-    where = html_path(root, arxiv_id)
-    if where is None:
-        return None
-    found = sorted(where.parent.glob(f"{where.stem}v*.pdf"))
-    return found[-1] if found else None
-
-
-def mount(mcp: FastMCP, root: Path, pdfs: Path) -> None:
+def mount(mcp: FastMCP, root: Path, pdfs: Path, cache: Path, fetch: bool = False) -> None:
     """
     Registers the dashboard on the http transport, which serves nothing that writes
 
@@ -135,6 +115,8 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path) -> None:
         mcp: The server.
         root: The directory runs are written to.
         pdfs: The pdf store, which the reading panel shows a paper out of.
+        cache: Where a fetched pdf is written, since the store itself is read only.
+        fetch: Whether a paper the store never had may be fetched from arXiv.
     """
 
     @mcp.custom_route("/api/runs", methods=["GET"])
@@ -260,8 +242,8 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path) -> None:
         """
         One paper's pdf out of the local store, which the reading panel shows inline
 
-        Nothing is fetched here, so a paper the store never downloaded is a 404 and the page
-        falls back to the arXiv link.
+        A paper the store never had is fetched when this instance is allowed to, and is
+        otherwise a 404 that the page turns back into an arXiv link.
 
         Args:
             request: The http request, whose path carries the arXiv id.
@@ -269,7 +251,7 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path) -> None:
         Returns:
             The pdf, or a 404.
         """
-        found = one_pdf(pdfs, str(request.path_params.get("arxiv_id", "")))
+        found = pdf_file(pdfs, cache, str(request.path_params.get("arxiv_id", "")), fetch)
         if found is None:
             return JSONResponse({"error": "not in the local store"}, status_code=404)
         return FileResponse(found, media_type="application/pdf")

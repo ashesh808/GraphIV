@@ -13,7 +13,9 @@ from collections.abc import Callable
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
+from src.mcp import find_runs as finding
 from src.mcp import identify_areas as splitting
 from src.mcp import mine as mining
 from src.mcp import read_paper as reading
@@ -23,11 +25,10 @@ from src.mcp import search_papers as searching
 from src.mcp import what_cites as citing
 from src.mcp import write_report as writing
 from src.mcp.dashboard import mount
-from src.mcp.state import load
+from src.mcp.state import Serving, load, serving
 
 LOG = logging.getLogger(__name__)
 
-PORT = int(os.environ.get("GRAPHIV_MCP_PORT", "8756"))
 # the public vhost reaches this, so an instance set read only registers nothing that writes a file
 READONLY = os.environ.get("GRAPHIV_READONLY") == "1"
 mcp = FastMCP("graphiv")
@@ -188,19 +189,74 @@ def search_papers(text: str, limit: int = 20, before: str = "", after: str = "")
     return searching.search_papers(load(), text, limit, before, after)
 
 
-def run(http: bool = False) -> None:
+@tool()
+def find_runs(question: str = "", slug: str = "", limit: int = 10) -> str:
+    """
+    Find a report this server already wrote, and read it back.
+
+    Call this before doing the work: a question this corpus was already asked has a document on
+    disk, and reading it costs nothing. With `question`, returns the past runs closest to it by
+    meaning, each with its slug, the question it answered, its date, its paper count and its link.
+    With `slug`, returns that run's document and the papers behind it. With neither, returns the
+    newest runs. A close match is the report to build on rather than repeat.
+    """
+    return finding.find_runs(load(), question, slug, limit)
+
+
+def run(http: bool = False, role: str = "both") -> None:
     """
     Serves the tools, over stdio by default
 
+    The frontend role serves a second server carrying no tools at all, so it opens neither the
+    store nor the graph and cannot reach the corpus.
+
     Args:
-        http: Serve streamable-http on `GRAPHIV_MCP_PORT` instead.
+        http: Serve streamable-http instead of stdio.
+        role: api for the tools, frontend for the dashboard, both for one listener carrying each.
     """
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
-    handles = load()
-    LOG.info("serving %d tools, read only %s", len(mcp._tool_manager.list_tools()), READONLY)
-    if http:
-        mount(mcp, handles.runs, handles.pdfs)
-        mcp.settings.port = PORT
-        mcp.run(transport="streamable-http")
-    else:
+    settings = serving()
+    if not http:
+        _ = load()
         mcp.run()
+        return
+    if role == "frontend":
+        page = FastMCP("graphiv-dashboard")
+        secure(page, settings)
+        page.settings.port = settings.frontend_port
+        mount(page, settings.runs, settings.pdfs, settings.fetched)
+        LOG.info("serving the dashboard on %s:%d", page.settings.host, page.settings.port)
+        page.run(transport="streamable-http")
+        return
+    secure(mcp, settings)
+    mcp.settings.port = settings.api_port
+    if role != "api":
+        mount(mcp, settings.runs, settings.pdfs, settings.fetched, settings.fetch)
+    _ = load()
+    LOG.info(
+        "serving %d tools on %s:%d, read only %s",
+        len(mcp._tool_manager.list_tools()),
+        mcp.settings.host,
+        mcp.settings.port,
+        READONLY,
+    )
+    mcp.run(transport="streamable-http")
+
+
+def secure(server: FastMCP, settings: Serving) -> None:
+    """
+    Binds one server to its interface, and to the names it answers to
+
+    A transport with no allowed host answers only what it is bound to, which is what rejects a
+    proxy that forwards its own name.
+
+    Args:
+        server: The server to configure.
+        settings: The transport half of the config.
+    """
+    server.settings.host = settings.host
+    if settings.allowed_hosts:
+        server.settings.transport_security = TransportSecuritySettings(
+            allowed_hosts=settings.allowed_hosts,
+            allowed_origins=[f"https://{one}" for one in settings.allowed_hosts],
+        )
