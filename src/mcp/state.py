@@ -43,7 +43,6 @@ class Handles:
     recipes: Path
     html: Path
     pdfs: Path
-    fetched: Path
     runs: Path
     fetch: bool = False
 
@@ -119,7 +118,6 @@ class Serving:
     runs: Path
     html: Path
     pdfs: Path
-    fetched: Path
     fetch: bool
 
 
@@ -144,7 +142,6 @@ def serving(config_path: str | Path = CONFIG) -> Serving:
         runs=Path(str(block["RUNS_PATH"])),
         html=Path(str(config["dataset"]["HTML_PATH"])),
         pdfs=Path(str(config["dataset"]["PDF_PATH"])),
-        fetched=Path(str(block["FETCH_PATH"])),
         fetch=bool(block.get("FETCH", False)),
     )
 
@@ -173,7 +170,6 @@ def load(config_path: str | Path = CONFIG) -> Handles:
         recipes=Path(str(block["RECIPE_PATH"])),
         html=settings.html,
         pdfs=settings.pdfs,
-        fetched=settings.fetched,
         runs=settings.runs,
         fetch=settings.fetch,
     )

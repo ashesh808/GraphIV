@@ -27,10 +27,8 @@ nix flake check          # the test suite, which needs no store and no GPU
 {
   services.graphiv = {
     enable = true;
+    stateDir = "/srv/graphiv";          # data/, cache/ and runs/ default under it
     database.dsn = "host=/run/graphiv port=5433 dbname=arxivkg";
-    corpus.graph = "/Vault/graphiv/state/citation_graph_export.npy";
-    corpus.html = "/mnt/corpus/html";   # optional, read only
-    corpus.pdf = "/mnt/corpus/pdf";     # optional, read only
     endpoints.llm.name = "Gemma-4-26B";
     allowedHosts = [ "graphiv.example.com" ];
   };
@@ -45,6 +43,18 @@ The options name the deployment and nothing else. Every tuned constant lives in 
 that ship with the package, because a Nix option is a promise to support whatever value is put
 there, and a detuned retriever still reports numbers.
 
+`stateDir` is the whole layout, and `dataDir`, `cacheDir` and `runsDir` override one piece of it:
+
+```
+<stateDir>/data     the cluster, the corpus and the graph export, all expensive to rebuild
+<stateDir>/cache    model replies keyed by their prompt, safe to delete at any time
+<stateDir>/runs     one directory per report written
+```
+
+Point `corpus.html` and `corpus.pdf` at their resolved paths when the full text is on another
+mount. They default under `dataDir`, and a symlink there leaves the unit ordering on the wrong
+mount, which turns every full-text read into a silent miss.
+
 What the module does not do is provision postgres. It takes a dsn, and the cluster behind it needs
 pgvector and the four tables the published dump restores. Reads are all the daemon ever issues, so
 the role it connects as needs `CONNECT` and `SELECT` and nothing more.
@@ -56,7 +66,8 @@ the role it connects as needs `CONNECT` and `SELECT` and nothing more.
 | the store | a postgres with pgvector, restored from the dump or built by `scripts/` |
 | the graph export | `stage2_export_graph.py` writes it, and the dump does not carry it |
 | two endpoints | a llama-server for embedding, any OpenAI compatible host for the model |
-| the corpus, optionally | directories of `YYMM/<id>.html` and `YYMM/<id>v<n>.pdf` |
+| the corpus, optionally | trees of `YYMM/<id>.html` and `YYMM/<id>v<n>.pdf` under `dataDir/arxiv` |
 
 With no corpus, a paper is fetched from arXiv on the first read, one request every three seconds,
-into the state directory. The corpus itself is always mounted read only.
+into those same trees, so the second read is local. Set `fetch = false` when they cannot be
+written, and the daemon then answers out of whatever is already there.

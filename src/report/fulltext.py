@@ -185,7 +185,6 @@ def read_open(
     root: Path,
     arxiv_id: str,
     chars: int = SECTION_CHARS,
-    cache: Path | None = None,
     fetch: bool = False,
 ) -> list[tuple[str, str]]:
     """
@@ -195,13 +194,12 @@ def read_open(
         root: The html store root.
         arxiv_id: The paper.
         chars: How much of each section to keep.
-        cache: Where a fetched paper is written, defaulting to the store root.
         fetch: Whether a paper the store never had may be fetched from arXiv.
 
     Returns:
         One title and body per matching section, empty when the html never landed.
     """
-    found = read_paper(root, arxiv_id, cache=cache, fetch=fetch)
+    found = read_paper(root, arxiv_id, fetch=fetch)
     if found is None:
         return []
     return [
@@ -215,7 +213,6 @@ def read_paper(
     root: Path,
     arxiv_id: str,
     title: str = "",
-    cache: Path | None = None,
     fetch: bool = False,
 ) -> FullText | None:
     """
@@ -225,13 +222,12 @@ def read_paper(
         root: The html store root.
         arxiv_id: The paper.
         title: Its title, carried through for the prompts.
-        cache: Where a fetched paper is written, defaulting to the store root.
         fetch: Whether a paper the store never had may be fetched from arXiv.
 
     Returns:
         The paper, or None.
     """
-    path = html_file(root, cache if cache is not None else root, arxiv_id, fetch)
+    path = html_file(root, arxiv_id, fetch)
     if path is None:
         return None
     try:

@@ -1,7 +1,7 @@
 """
 Where one paper's full text sits on disk, fetched from arXiv when the store never had it
 
-A supplied corpus is read only, so a fetched paper is written to a separate cache directory
+A fetched paper lands in the corpus itself, under the YYMM directory the bulk store uses
 The wait between requests blocks the calling thread, which is a tool worker and not the loop
 """
 
@@ -130,18 +130,18 @@ def get(url: str, host: str) -> bytes | None:
         return None
 
 
-def fetch_html(cache: Path, arxiv_id: str) -> Path | None:
+def fetch_html(corpus: Path, arxiv_id: str) -> Path | None:
     """
-    One paper's html from ar5iv or arxiv.org, written into the cache
+    One paper's html from ar5iv or arxiv.org, written into the corpus
 
     Args:
-        cache: The writable root fetched papers land under.
+        corpus: The html store root, which this writes into.
         arxiv_id: The paper.
 
     Returns:
         The written path, or None when neither source rendered it.
     """
-    dest = html_path(cache, arxiv_id)
+    dest = html_path(corpus, arxiv_id)
     if dest is None:
         return None
     for host, template in HTML_URLS:
@@ -154,12 +154,12 @@ def fetch_html(cache: Path, arxiv_id: str) -> Path | None:
     return None
 
 
-def fetch_pdf(cache: Path, arxiv_id: str) -> Path | None:
+def fetch_pdf(corpus: Path, arxiv_id: str) -> Path | None:
     """
-    One paper's pdf from arxiv.org, written into the cache
+    One paper's pdf from arxiv.org, written into the corpus
 
     Args:
-        cache: The writable root fetched papers land under.
+        corpus: The pdf store root, which this writes into.
         arxiv_id: The paper.
 
     Returns:
@@ -171,48 +171,44 @@ def fetch_pdf(cache: Path, arxiv_id: str) -> Path | None:
     body = get(PDF_URL.format(arxiv_id), "arxiv.org")
     if body is None or not body.startswith(PDF_MAGIC):
         return None
-    dest = cache / found / f"{stem(arxiv_id)}.pdf"
+    dest = corpus / found / f"{stem(arxiv_id)}.pdf"
     dest.parent.mkdir(parents=True, exist_ok=True)
     _ = dest.write_bytes(body)
     LOG.info("fetched pdf %s, %d KB", arxiv_id, len(body) // 1024)
     return dest
 
 
-def html_file(corpus: Path, cache: Path, arxiv_id: str, fetch: bool = False) -> Path | None:
+def html_file(corpus: Path, arxiv_id: str, fetch: bool = False) -> Path | None:
     """
-    One paper's html, from the corpus, then the cache, then arXiv
+    One paper's html, from the corpus and then arXiv
 
     Args:
-        corpus: The supplied store, which is never written to.
-        cache: The writable root fetched papers land under.
+        corpus: The html store root.
         arxiv_id: The paper.
         fetch: Whether a miss may reach the network.
 
     Returns:
         The path to read, or None when the paper has no html anywhere.
     """
-    for root in (corpus, cache):
-        found = html_path(root, arxiv_id)
-        if found is not None and found.is_file():
-            return found
-    return fetch_html(cache, arxiv_id) if fetch else None
+    found = html_path(corpus, arxiv_id)
+    if found is not None and found.is_file():
+        return found
+    return fetch_html(corpus, arxiv_id) if fetch else None
 
 
-def pdf_file(corpus: Path, cache: Path, arxiv_id: str, fetch: bool = False) -> Path | None:
+def pdf_file(corpus: Path, arxiv_id: str, fetch: bool = False) -> Path | None:
     """
-    One paper's pdf, from the corpus, then the cache, then arXiv
+    One paper's pdf, from the corpus and then arXiv
 
     Args:
-        corpus: The supplied store, which is never written to.
-        cache: The writable root fetched papers land under.
+        corpus: The pdf store root.
         arxiv_id: The paper.
         fetch: Whether a miss may reach the network.
 
     Returns:
         The path to read, or None when the paper has no pdf anywhere.
     """
-    for root in (corpus, cache):
-        found = newest_pdf(root, arxiv_id)
-        if found is not None:
-            return found
-    return fetch_pdf(cache, arxiv_id) if fetch else None
+    found = newest_pdf(corpus, arxiv_id)
+    if found is not None:
+        return found
+    return fetch_pdf(corpus, arxiv_id) if fetch else None

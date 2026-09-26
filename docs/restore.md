@@ -69,10 +69,11 @@ uv run python scripts/citation_preprocess/stage2_export_graph.py
 
 The dump ships none, and none is needed up front.
 The reader parses `<html>/<YYMM>/<id>.html` when it is there, and otherwise pulls it from ar5iv
-or arxiv.org at one request every three seconds, writing it under `[serve] FETCH_PATH` so the
-supplied store stays read only. The dashboard serves a paper inline out of
-`<pdf>/<YYMM>/<id>v<n>.pdf` on the same terms. `[serve] FETCH = false` turns the network half off,
-and a paper with no full text anywhere degrades to its abstract rather than failing.
+or arxiv.org at one request every three seconds, writing it back under that same root so the
+second read is local. The dashboard serves a paper inline out of `<pdf>/<YYMM>/<id>v<n>.pdf` on
+the same terms. `[serve] FETCH = false` turns the network half off, which is what a store on
+read only media needs, and a paper with no full text anywhere degrades to its abstract rather
+than failing.
 To build the stores up front, run `stage1_download_pdf.py` and `stage2_download_html.py`.
 
 ## Run it
@@ -114,5 +115,5 @@ The effort a caller passes decides the cost. `quick` is retrieve and mine at abo
 seconds over two areas on one RTX 3090, and `deep` lifts every cap. Runs serialize on the one GPU,
 so keep client tool timeouts generous: the librechat wiring uses 7,200,000 ms.
 
-Figures use the repo `theme.json`
+Figures use `themes/theme.json`
 ([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme)).

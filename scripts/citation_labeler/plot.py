@@ -1,5 +1,5 @@
 """
-The project plot theme, read from theme.json at the repo root
+The project plot theme, read from themes/theme.json
 
 Dark is the default, since the figures land in dark-surfaced reports
 Agg is selected on import because every caller writes a file rather than opening a window
@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 from matplotlib import font_manager  # noqa: E402
 from matplotlib import pyplot as plt  # noqa: E402
 
-THEME_PATH = Path(__file__).resolve().parents[2] / "theme.json"
+THEME_PATH = Path(__file__).resolve().parents[2] / "themes" / "theme.json"
 FONT_NAME = "Google Sans Flex"
 
 

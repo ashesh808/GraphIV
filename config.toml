@@ -21,11 +21,12 @@ HTML_BATCH = 200
 HTML_N_PARALLEL = 16
 
 [dataset]
-PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/pdf"
-HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/html"
+PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv/pdfs"
+HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv/html"
 GRAPH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_graph_export.npy"
 
 # The daemon: the ports it listens on, and the paths it reads and writes
+# A paper the corpus never had is fetched into HTML_PATH or PDF_PATH, under its own YYMM
 [serve]
 HOST = "127.0.0.1"
 API_PORT = 6767
@@ -34,9 +35,7 @@ FRONTEND_PORT = 6969
 ALLOWED_HOSTS = []
 RECIPE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/retrieval_recipes"
 RUNS_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
-CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/llm_cache"
-# where a paper the corpus never had is written, since the corpus itself is read only
-FETCH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/fetched"
+CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/cache"
 FETCH = true
 
 [endpoints]

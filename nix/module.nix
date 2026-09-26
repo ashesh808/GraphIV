@@ -11,8 +11,8 @@ let
     database.PG_DEST = cfg.database.dsn;
     dataset = {
       GRAPH_PATH = toString cfg.corpus.graph;
-      HTML_PATH = toString (if cfg.corpus.html != null then cfg.corpus.html else "${cfg.stateDir}/html");
-      PDF_PATH = toString (if cfg.corpus.pdf != null then cfg.corpus.pdf else "${cfg.stateDir}/pdf");
+      HTML_PATH = toString cfg.corpus.html;
+      PDF_PATH = toString cfg.corpus.pdf;
     };
     serve = {
       HOST = cfg.listenAddress;
@@ -20,9 +20,8 @@ let
       FRONTEND_PORT = cfg.frontend.port;
       ALLOWED_HOSTS = cfg.allowedHosts;
       RECIPE_PATH = toString cfg.recipes;
-      RUNS_PATH = "${cfg.stateDir}/runs";
-      CACHE_PATH = "${cfg.stateDir}/llm_cache";
-      FETCH_PATH = "${cfg.stateDir}/fetched";
+      RUNS_PATH = toString cfg.runsDir;
+      CACHE_PATH = toString cfg.cacheDir;
       FETCH = cfg.fetch;
     };
     endpoints = {
@@ -35,8 +34,9 @@ let
 
   file = toml.generate "graphiv-config.toml" (lib.recursiveUpdate base cfg.settings);
 
-  # the corpus is mounted read only, so a fetched paper lands in the state directory instead
-  corpusPaths = lib.filter (p: p != null) [ cfg.corpus.html cfg.corpus.pdf cfg.corpus.graph ];
+  # a fetched paper lands in the corpus beside the bulk store, so both roots are writable
+  writable = map toString [ cfg.cacheDir cfg.runsDir cfg.corpus.html cfg.corpus.pdf ];
+  readable = [ (toString cfg.corpus.graph) ];
 
   unit = role: {
     description = "GraphIV ${role}";
@@ -52,7 +52,7 @@ let
       RestartSec = 10;
       # the api loads a 400MB graph export before it answers anything
       TimeoutStartSec = "5min";
-      RequiresMountsFor = lib.unique ([ cfg.stateDir ] ++ map toString corpusPaths);
+      RequiresMountsFor = lib.unique ([ (toString cfg.dataDir) ] ++ writable ++ readable);
       UMask = "0002";
       NoNewPrivileges = true;
       PrivateTmp = true;
@@ -60,8 +60,8 @@ let
       ProtectKernelTunables = true;
       ProtectControlGroups = true;
       RestrictSUIDSGID = true;
-      ReadWritePaths = [ cfg.stateDir ];
-      ReadOnlyPaths = map toString corpusPaths;
+      ReadWritePaths = lib.unique writable;
+      ReadOnlyPaths = readable;
     };
   };
 in
@@ -75,7 +75,7 @@ in
       type = lib.types.str;
       default = "graphiv";
       description = ''
-        The unix user both listeners run as.
+        The unix user both listeners run as, and the owner of every directory below.
         Peer auth maps it to the postgres role of the same name, which needs SELECT and no more.
       '';
     };
@@ -83,13 +83,40 @@ in
     group = lib.mkOption {
       type = lib.types.str;
       default = "graphiv";
-      description = "The group owning the state directory, which a human member can also write.";
+      description = "The group owning those directories, which a human member can also write.";
     };
 
     stateDir = lib.mkOption {
       type = lib.types.path;
       default = "/var/lib/graphiv";
-      description = "Where the runs, the model cache and anything fetched are written.";
+      description = ''
+        The root the three directories below default under.
+        Nothing is read from here directly, so pointing it at another disk is a one line change.
+      '';
+    };
+
+    dataDir = lib.mkOption {
+      type = lib.types.path;
+      default = "${cfg.stateDir}/data";
+      defaultText = lib.literalExpression ''"''${stateDir}/data"'';
+      description = ''
+        The cold data: the corpus, the graph export, and a cluster this module never provisions.
+        It is the one directory that holds anything expensive to rebuild.
+      '';
+    };
+
+    cacheDir = lib.mkOption {
+      type = lib.types.path;
+      default = "${cfg.stateDir}/cache";
+      defaultText = lib.literalExpression ''"''${stateDir}/cache"'';
+      description = "Model replies keyed by their prompt, which is safe to delete at any time.";
+    };
+
+    runsDir = lib.mkOption {
+      type = lib.types.path;
+      default = "${cfg.stateDir}/runs";
+      defaultText = lib.literalExpression ''"''${stateDir}/runs"'';
+      description = "One directory per report written, which the dashboard reads and lists.";
     };
 
     listenAddress = lib.mkOption {
@@ -112,15 +139,15 @@ in
       type = lib.types.bool;
       default = true;
       description = ''
-        Whether a paper the corpus never had may be fetched from arXiv, one request every
-        three seconds, into the state directory. The frontend never fetches whatever this says.
+        Whether a paper the corpus never had may be fetched from arXiv, one request every three
+        seconds, into the corpus itself. Turn it off when those paths cannot be written.
       '';
     };
 
     recipes = lib.mkOption {
       type = lib.types.path;
       default = "${cfg.package}/share/graphiv/retrieval_recipes";
-      defaultText = lib.literalExpression "\"\${package}/share/graphiv/retrieval_recipes\"";
+      defaultText = lib.literalExpression ''"''${package}/share/graphiv/retrieval_recipes"'';
       description = "The tuned recipes, which ship with the package and are read only.";
     };
 
@@ -135,26 +162,29 @@ in
 
     corpus.graph = lib.mkOption {
       type = lib.types.path;
-      example = "/var/lib/graphiv/citation_graph_export.npy";
+      default = "${cfg.dataDir}/citation_graph_export.npy";
+      defaultText = lib.literalExpression ''"''${dataDir}/citation_graph_export.npy"'';
       description = ''
-        The citation graph export, loaded once at start.
+        The citation graph export, loaded once at start and never written.
         The dump does not carry it, so `stage2_export_graph.py` writes it after a restore.
       '';
     };
 
     corpus.html = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
-      default = null;
+      type = lib.types.path;
+      default = "${cfg.dataDir}/arxiv/html";
+      defaultText = lib.literalExpression ''"''${dataDir}/arxiv/html"'';
       description = ''
-        A directory of `YYMM/<id>.html`, mounted read only.
-        Null means there is none, and every paper read is fetched into the state directory.
+        A tree of `YYMM/<id>.html`, which a fetch also writes into.
+        Point it at the real path rather than a symlink, so the unit orders on the right mount.
       '';
     };
 
     corpus.pdf = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
-      default = null;
-      description = "A directory of `YYMM/<id>v<n>.pdf`, mounted read only, on the same terms.";
+      type = lib.types.path;
+      default = "${cfg.dataDir}/arxiv/pdfs";
+      defaultText = lib.literalExpression ''"''${dataDir}/arxiv/pdfs"'';
+      description = "A tree of `YYMM/<id>v<n>.pdf`, on the same terms.";
     };
 
     endpoints.embed.url = lib.mkOption {
@@ -245,14 +275,16 @@ in
 
     users.groups = lib.mkIf (cfg.group == "graphiv") { graphiv = { }; };
 
-    # setgid so a human in the group can read and delete what the daemon wrote
-    systemd.tmpfiles.rules =
-      [ "d ${cfg.stateDir} 2775 ${cfg.user} ${cfg.group} - -" ]
-      ++ map (d: "d ${cfg.stateDir}/${d} 2775 ${cfg.user} ${cfg.group} - -") [
-        "runs"
-        "llm_cache"
-        "fetched"
-      ];
+    # setgid so a human in the group can read and delete what the daemon wrote, and a symlinked
+    # corpus is left alone rather than followed and chmodded
+    systemd.tmpfiles.rules = map (d: "d ${d} 2775 ${cfg.user} ${cfg.group} - -") (
+      lib.unique [
+        (toString cfg.stateDir)
+        (toString cfg.dataDir)
+        (toString cfg.cacheDir)
+        (toString cfg.runsDir)
+      ]
+    );
 
     systemd.services.graphiv-api = lib.mkIf cfg.api.enable (
       lib.recursiveUpdate (unit "api") {

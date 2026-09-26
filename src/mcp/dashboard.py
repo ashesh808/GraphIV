@@ -107,7 +107,7 @@ def read_one(root: Path, slug: str) -> dict[str, Any] | None:
     return parsed
 
 
-def mount(mcp: FastMCP, root: Path, pdfs: Path, cache: Path, fetch: bool = False) -> None:
+def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
     """
     Registers the dashboard on the http transport, which serves nothing that writes
 
@@ -115,7 +115,6 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, cache: Path, fetch: bool = False
         mcp: The server.
         root: The directory runs are written to.
         pdfs: The pdf store, which the reading panel shows a paper out of.
-        cache: Where a fetched pdf is written, since the store itself is read only.
         fetch: Whether a paper the store never had may be fetched from arXiv.
     """
 
@@ -251,7 +250,7 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, cache: Path, fetch: bool = False
         Returns:
             The pdf, or a 404.
         """
-        found = pdf_file(pdfs, cache, str(request.path_params.get("arxiv_id", "")), fetch)
+        found = pdf_file(pdfs, str(request.path_params.get("arxiv_id", "")), fetch)
         if found is None:
             return JSONResponse({"error": "not in the local store"}, status_code=404)
         return FileResponse(found, media_type="application/pdf")

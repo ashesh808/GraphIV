@@ -31,25 +31,15 @@ def test_the_html_name_carries_no_version(tmp_path: Path):
     assert html_path(tmp_path, "2006.10637") == tmp_path / "2006" / "2006.10637.html"
 
 
-def test_the_corpus_is_read_before_the_cache(tmp_path: Path):
-    corpus, cache = tmp_path / "corpus", tmp_path / "cache"
-    for root in (corpus, cache):
-        (root / "2006").mkdir(parents=True)
-        _ = (root / "2006" / "2006.10637.html").write_text("x", encoding="utf-8")
-    assert html_file(corpus, cache, "2006.10637") == corpus / "2006" / "2006.10637.html"
-
-
-def test_a_paper_only_in_the_cache_is_still_found(tmp_path: Path):
-    corpus, cache = tmp_path / "corpus", tmp_path / "cache"
-    corpus.mkdir()
-    (cache / "2006").mkdir(parents=True)
-    _ = (cache / "2006" / "2006.10637.html").write_text("x", encoding="utf-8")
-    assert html_file(corpus, cache, "2006.10637") == cache / "2006" / "2006.10637.html"
+def test_a_paper_in_the_corpus_is_found(tmp_path: Path):
+    (tmp_path / "2006").mkdir()
+    _ = (tmp_path / "2006" / "2006.10637.html").write_text("x", encoding="utf-8")
+    assert html_file(tmp_path, "2006.10637") == tmp_path / "2006" / "2006.10637.html"
 
 
 def test_a_miss_with_fetch_off_returns_nothing(tmp_path: Path):
-    assert html_file(tmp_path, tmp_path, "2006.10637") is None
-    assert pdf_file(tmp_path, tmp_path, "2006.10637") is None
+    assert html_file(tmp_path, "2006.10637") is None
+    assert pdf_file(tmp_path, "2006.10637") is None
 
 
 def test_the_highest_pdf_version_wins(tmp_path: Path):

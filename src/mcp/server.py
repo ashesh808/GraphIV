@@ -224,14 +224,14 @@ def run(http: bool = False, role: str = "both") -> None:
         page = FastMCP("graphiv-dashboard")
         secure(page, settings)
         page.settings.port = settings.frontend_port
-        mount(page, settings.runs, settings.pdfs, settings.fetched)
+        mount(page, settings.runs, settings.pdfs)
         LOG.info("serving the dashboard on %s:%d", page.settings.host, page.settings.port)
         page.run(transport="streamable-http")
         return
     secure(mcp, settings)
     mcp.settings.port = settings.api_port
     if role != "api":
-        mount(mcp, settings.runs, settings.pdfs, settings.fetched, settings.fetch)
+        mount(mcp, settings.runs, settings.pdfs, settings.fetch)
     _ = load()
     LOG.info(
         "serving %d tools on %s:%d, read only %s",
