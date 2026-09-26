@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import psycopg
-from matcher import SENTINEL, Index, extract_citations
+from citation_regex import SENTINEL, Index, extract_citations
 
 MODERN = re.compile(r"^(\d{2})(\d{2})\.\d{4,5}$")
 LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Za-z-]+)?/(\d{2})(\d{2})\d{3}$")

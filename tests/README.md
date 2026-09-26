@@ -1,10 +1,27 @@
 # tests
 
-Empty while `src/` is rebuilt.
+Tests for the logic in `src`, not for the entrypoints in `scripts`. Every test builds a situation small enough to check by hand, so the suite needs no database, no model and no network and finishes in well under a second.
 
-The pre-rewrite suite covered retrieval, the mode decision in front of it and full-text
-acquisition against a hand-built pool, with no database, no embedding endpoint and no GPU. It is
-parked in `.legacy/tests/` and comes back a file at a time as each module is repointed at the
-three-table store.
+```
+run.py                runs the whole suite, or one subdirectory
+retrieve/conftest.py  an eight paper citation graph written in the format stage2 exports
+retrieve/             the graph reader, the score, the expanders and the pipeline
+frontier/             the extends chains, the successor order and the page
+```
 
-Run: `uv run pytest tests -q`.
+```sh
+uv run python tests/run.py
+uv run python tests/run.py retrieve -v
+```
+
+## The fixture graph
+
+`retrieve/conftest.py` builds eight papers and eight edges, chosen so that every quantity the retrieval code computes has one obviously correct answer.
+
+```
+p0 -> p4, p5      p1 -> p4      p2 -> p5, p6      p3 -> p0, p1      p7 -> p3
+```
+
+p0 and p1 carry the two highest cosines, so they are the core. p4 and p5 are what the core cites, which makes them the ancestors, and p4 leads because both core papers reach it. p3 is what cites the core, which makes it the frontier. p7 sits two hops out and scores zero on every one-step channel, which is what the distance channel exists to fix. p3 is dated after p0 and p1, so a date cap of 2021 removes it and the citation counts of p0 and p1 fall to zero.
+
+`-m "not slow and not gpu"` is the default, so a heavy test added later is skipped unless `--slow` is passed.

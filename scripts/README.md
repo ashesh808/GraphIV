@@ -33,7 +33,23 @@ uv run python scripts/papers_preprocess/stage1_download_pdf.py --limit 1000
 uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 ```
 
+## Measuring the retriever
+
+`evaluate_retrieval/` runs the four benchmarks. Every recipe under `retrieval_recipes/` names
+which components a pipeline holds and what every exponent is, and `config.toml` says which
+recipes each benchmark compares. Recipes sharing a retrieval prefix share one pool, so six of
+them cost one retrieval.
+
+```sh
+uv run python scripts/evaluate_retrieval/stage0_surveymatch.py
+```
+
 ## The endpoint
 
-`research.py` and `serve.py` are parked in `.legacy/scripts/` until `src/` is rebuilt against the
-three-table store.
+```sh
+uv run python scripts/research.py "<question>"    # one answer, written to data/answers
+uv run python scripts/serve.py --http             # the MCP server and its tools
+```
+
+`research.py` answers as of today unless `--asked` names a past date, and `--no-llm` skips the
+written sections, which is the configuration every measurement was taken in.

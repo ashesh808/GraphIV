@@ -1,0 +1,19 @@
+# themes
+
+The palette and the typeface every figure in this project uses, copied from
+`~/Documents/coding-style` so the repository carries its own.
+
+```
+theme.json        the source palette, dark and light, in the form the terminal and editor read
+matplotlibrc      the light half of it as rcParams, plus the font and the Agg backend
+fonts/            Google Sans Flex, the variable font matplotlibrc names
+```
+
+Nothing imports or applies this. `.envrc` exports `MPLCONFIGDIR` pointing here, and matplotlib
+reads `matplotlibrc` out of that directory on import, so any script launched through
+`direnv exec .` is themed without naming a color, a font or a style file. A plot that sets its own
+colors is overriding the theme, which is what to look for when one figure does not match the rest.
+
+`fonts/` is the project's copy of the typeface. Matplotlib resolves it by family name through
+fontconfig, so it uses whichever copy is installed on the machine and falls back to DejaVu Sans
+when none is, in which case install the file here.

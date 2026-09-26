@@ -476,3 +476,107 @@ Nobody in the comparable literature does this cap.
 7. **`M_SCALE = 1.3` was hand-set.** It is what keeps the two modes apart under the loop's
    growth, and nothing measured it. The frontier deep run it shortens, 240 landmarks to 156, has
    not been re-measured against the old budget.
+
+---
+
+## 2026-09-26, the port out of `.legacy/graphiv` and out of the scratchpad
+
+The system above `src/retrieve` was rebuilt into `src/miner`, `src/report`, `src/mcp` and
+`src/webui`, and `src/frontier`, `src/serve` and `scratchpad/` were deleted. What follows is what
+was carried over and what was not, with the measurement behind each call.
+
+### Taken
+
+| from | what | why |
+| --- | --- | --- |
+| `generate/narrate.py` | the grounding guard | every arXiv id in a finished document exists by construction |
+| `generate/story.py` | connectors | a paper bridging two retrieved papers is invisible otherwise |
+| `retrieve/joint.py` | citations per year blended with the reader, 0.65 and 0.35 | 341 of 441 against frontier 320 and ppr 277, junk 9% against 14 and 16 |
+| `retrieve/recency.py` | the era cutoff, and the newest-cohort-first fill | a fixed window buries recent work in a fast field and admits a decade of it in a slow one |
+| `retrieve/grade.py` | the six roles, and that a paper graded out stays in the graph | the reader decides the answer, the graph decides the bridges |
+| `serve/mcp_server.py` | `refine_question` | candidates, a mode each, one clarifying question, grounded in a title probe |
+| `scratchpad/leyline` | the magnets, the walk, the method table, the reader | the whole mining layer |
+
+### Left behind, each for a measurement
+
+| module | why |
+| --- | --- |
+| `retrieve/landmarks.py` | its own docstring records that experiment 02-06 measured these and none shipped |
+| `retrieve/pagerank.py` | the six-term score is tuned on 300 cases and reaches 0.812 |
+| `retrieve/hybrid.py` | reciprocal rank fusion loses at every budget |
+| `retrieve/frontier.py` | reserving landmark slots for recent work measured worse than the blend |
+| `retrieve/select.py` | its eight reserved slots for the walk added nothing once relevance was in the score |
+| `generate/loop.py`, `judge.py` | the calling agent owns the loop, and a model-side stop is not usable |
+| `generate/pipeline.py`, `compose.py`, `long_compose.py`, `latex.py` | the tool surface and the caller replace the driver and the writer |
+
+### Measured while porting
+
+1. Splitting one question into areas and merging them back cost recall: 0.763 whole against 0.614
+   split at a budget of 1000, over 3 SurveyMatch cases replayed against the stored run.
+2. The union of the area pools held 0.87 and 0.89 of a survey's bibliography where the single
+   pool held 0.64 and 0.69, so the split reaches more and the merge throws it away. Areas
+   therefore keep separate pages and are never merged into one ranking.
+3. The second search inside an area was dropped: over 12 cases the question pool alone scored
+   0.632, the anchor pool alone 0.566, the two merged 0.612, and question-only won 9 of 12.
+   `src/core/embed.py` puts the query prefix on everything, so the anchor was never being embedded
+   as a document and the reason for a second pool was wrong.
+4. The anchor stays as what the gate measures against, which was measured separately and won.
+5. A genuinely new area shares 0 or 1 of its 300-paper head with an area already searched, and an
+   area renamed rather than changed shared 61, which is what `new_share` reports.
+
+### Settled by reading the output rather than by a number
+
+The walk roots at the node with the most reachable magnet mass weighted by how argued-with that
+node is itself, and the focus term enters as a power rather than a factor. Both were changed
+because the first reports ran every lineage back to Adam and to graph convolution, which are
+upstream of the whole field and tell a reader nothing. With both changes the three strongest
+lineages of one temporal knowledge graph question came back as three genuinely different threads.
+
+### Still open
+
+8. **The miner block is one set of numbers for all three modes.** Nothing measured whether the
+   frontier mode wants a different decay, walk prefix or successor span from the survey mode.
+9. **The era cutoff lands on its six-year clamp for three fields in four.** Only a fast-growing
+   field triggers the detection it was written for.
+10. **`FOCUS = 4.0` is the gate's exponent reused.** It answers the same question about the same
+   cosine, which is the argument for it, but it was never swept on its own.
+
+
+---
+
+## 2026-09-26, the dashboard, and what a report is
+
+The first version of the rebuilt report was a paper list with headings, which is what an agent
+wants and not what a person does. Reading it beside `.legacy/graphiv/serve/webui` settled three
+things.
+
+**A report is a review.** `src/report/compose.py` is the old `long_compose` shape: a digest of the
+evidence, one outline call over it, then one call per section, because a single call self-limits to
+about a thousand words however much it is given. `quick` skips it, `standard` and `deep` write it
+at about 45 seconds. The outline needs 1,800 tokens: at 700 the json for five sections truncates
+and parses as nothing, which silently produced a report with no prose at all.
+
+**The page is navigated, not scrolled.** The report has six numbered sections, and where one holds
+several things at one depth they share the space as a strip over one panel: one tab per claim, one
+per area under active research, one per area under unanswered questions. `report.json` carries the
+parts, so the page never parses the markdown back apart.
+
+**Unanswered questions were extractable all along.** `fulltext.OPEN` matched the limitations,
+future work and discussion sections and nothing read them. `compose.unanswered` now does, one call
+per area over its own papers, and the questions come back with the paper that raised each one.
+
+### Faults the reading found
+
+| fault | fix |
+| --- | --- |
+| the guard only matched `arXiv:<id>` mentions, so it never inspected the markdown links the renderer writes | it matches both shapes, and strips a fabricated id's whole link |
+| every graph-only paper plotted at closeness 0 | `as_papers` carries the cosine the mining pass read |
+| 123 of 124 papers counted as cited, because the evidence lists link everything | cited means discussed in the prose |
+| every dispute named the same paper, since they are ordered by magnet weight | at most two per target |
+| the pdf route resolved `2006.10637.pdf`, and the store names files by version | it globs `<id>v*.pdf` |
+
+### Still open
+
+11. **A model can attach the wrong name to a right id.** One section called `2305.10613`
+   TimeTraveler, which is a different paper; the id and the description were right. The guard
+   checks ids and cannot catch this.

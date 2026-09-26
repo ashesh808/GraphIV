@@ -23,6 +23,7 @@ HTML_N_PARALLEL = 16
 [dataset]
 PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/pdf"
 HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/html"
+GRAPH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_graph_export.npy"
 
 [endpoints]
 EMBED_API = "http://127.0.0.1:11435"
@@ -73,3 +74,74 @@ LABELER_SPLITS = [0.8, 0.1, 0.1]
 LABELER_EPOCHS = 12
 LABELER_TRAIN_BATCH = 64
 LABELER_LR = 2e-5
+
+# Review case selection, grouping by a tree node then keeping one mutually similar set per node
+[surveymatch]
+SURVEY_THRESHOLD = 0.5
+# roughly p95 of the within-node cosine, which leaves the graph sparse enough for an exact clique
+MUTUAL_COSINE_THRESHOLD = 0.65
+SURVEYMATCH_LEVEL = 2
+
+
+# Retrieval benchmarks, one run directory per metric under OUTPUT_PATH
+[retriever_eval]
+RECIPE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/retrieval_recipes"
+OUTPUT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/experiments/retrieve"
+RETURN_LIMIT = 1000
+BUDGETS = [100, 200, 500, 1000]
+SEED = 0
+# a candidate is kept when its hash falls under this, before MAX_SAMPLES caps what survives
+SAMPLE_RATE = 1.0
+MAX_SAMPLES = 300
+# the survey classifier floor, where precision is 0.937 against 0.787 at 0.5
+SURVEY_THRESHOLD = 0.95
+MIN_REFERENCES = 25
+# the widest gap between two reviews that still counts as the same moment
+GAP_DAYS = 190
+FRONTIER_COSINE = 0.80
+FRONTIER_MIN_KEY = 10
+# how far before the earlier review a frontier answer may have been published
+FRONTIER_WINDOW_DAYS = 730
+CONSENSUS_COSINE = 0.75
+CONSENSUS_MIN_KEY = 5
+# the judge, which calls a paper related when it shares the leaf or a reviewer of that leaf cites it
+PRECISION_LEVEL = 2
+
+# Which recipes each benchmark runs and compares, relative to RECIPE_PATH
+[retriever_eval.recipes]
+SurveyMatch = [
+  "survey.toml",
+  "anc_only.toml",
+  "survey_no_forward.toml",
+  "all_terms.toml",
+  "no_expansion.toml",
+  "cosine_only.toml",
+]
+FrontierMatch = [
+  "frontier.toml",
+  "survey.toml",
+  "frontier_no_forward.toml",
+  "all_terms.toml",
+  "cosine_only.toml",
+]
+ConsensusMatch = [
+  "consensus.toml",
+  "consensus_no_forward.toml",
+  "survey.toml",
+  "all_terms.toml",
+  "cosine_only.toml",
+]
+PrecisionMatch = ["survey.toml", "frontier.toml", "cosine_only.toml"]
+
+# What a frontier answer looks like, and where one is written
+[frontier]
+RECIPE = "survey.toml"
+OUTPUT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
+CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/llm_cache"
+STATE = 20
+FRESH = 12
+SEED_LIMIT = 5000
+# how recent a paper must be to count as what the area currently is
+WINDOW_DAYS = 365
+# how far back a paper may sit and still count as having just appeared
+SUCCESSOR_DAYS = 240

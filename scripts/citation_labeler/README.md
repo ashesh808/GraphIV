@@ -51,4 +51,4 @@ nothing here: the longest citation sentence in a 1,962-row sample was 205 tokens
 
 ## What ground_truth.csv actually is
 
-Of its 1,002 rows only 58 carry `labeler = human`. The other 944 are `labeler = accepted`, meaning the previous student's own prediction was taken when no hand label existed. A prompt scored against the whole file is therefore measured mostly on agreement with the old model, so `report()` prints the accuracy on the 58 human rows separately.
+Its 985 rows are hand labeled, carrying the sentence, its section and its intent. That file is the ground truth for this task, and both a prompt and a student are scored on all of it.

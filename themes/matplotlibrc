@@ -1,0 +1,50 @@
+# Every rcParam below comes from the light half of theme.json in this directory
+# Matplotlib reads this file because .envrc points MPLCONFIGDIR here, so no script sets a style
+
+backend:            Agg
+
+font.family:        sans-serif
+font.sans-serif:    Google Sans Flex, DejaVu Sans, sans-serif
+font.size:          10
+
+figure.facecolor:   FFFFFF
+figure.edgecolor:   FFFFFF
+figure.dpi:         150
+savefig.facecolor:  FFFFFF
+savefig.edgecolor:  FFFFFF
+savefig.dpi:        150
+savefig.bbox:       tight
+
+axes.facecolor:     FFFFFF
+axes.edgecolor:     C8C8D8
+axes.labelcolor:    252535
+axes.titlecolor:    252535
+axes.titlesize:     11
+axes.titleweight:   medium
+axes.labelsize:     10
+axes.linewidth:     0.8
+axes.grid:          True
+axes.spines.top:    False
+axes.spines.right:  False
+axes.prop_cycle:    cycler('color', ['C04868', '2A8A60', '6248B8', '3060B0', '8A6A00', '206878', 'B00020', '252535'])
+
+grid.color:         C8C8D8
+grid.linewidth:     0.6
+grid.alpha:         0.5
+
+text.color:         252535
+xtick.color:        565662
+ytick.color:        565662
+xtick.labelsize:    9
+ytick.labelsize:    9
+xtick.direction:    out
+ytick.direction:    out
+
+legend.frameon:     True
+legend.framealpha:  0.9
+legend.facecolor:   FFFFFF
+legend.edgecolor:   C8C8D8
+legend.fontsize:    9
+
+lines.linewidth:    1.8
+lines.markersize:   5
