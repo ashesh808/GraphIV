@@ -65,15 +65,13 @@
       exec ${pgWithVec}/bin/psql -h "$PGHOST" -p "$PGPORT" -d "$PGDATABASE" "$@"
     '';
     overlay = final: _: {
-      graphiv = final.callPackage ./nix/package.nix { python3 = final.python313; };
-      graphiv-manager = final.graphiv.override { withManager = true; };
+      graphiv = final.callPackage ./nix/package.nix { };
     };
-    graphiv = pkgs.callPackage ./nix/package.nix { python3 = pkgs.python313; };
-    graphiv-manager = graphiv.override { withManager = true; };
+    graphiv = pkgs.callPackage ./nix/package.nix { };
   in {
     packages.${system} = {
       default = graphiv;
-      inherit graphiv graphiv-manager;
+      inherit graphiv;
     };
 
     overlays.default = overlay;
@@ -83,31 +81,10 @@
       nixpkgs.overlays = [ overlay ];
     };
 
-    checks.${system}.tests = pkgs.runCommand "graphiv-tests"
-      {
-        nativeBuildInputs = [ (pkgs.python313.withPackages (p: [
-          p.pytest
-          p.mcp
-          p.numpy
-          p.psycopg
-          p.pydantic
-          p.scipy
-          p.selectolax
-          p.starlette
-          p.uvicorn
-        ])) ];
-      }
-      ''
-        cp -r ${lib.cleanSource ./.}/{src,scripts,tests,retrieval_recipes,pyproject.toml} .
-        chmod -R u+w .
-        PYTHONPATH=$PWD pytest tests -q
-        touch $out
-      '';
-
     devShells.${system}.default = pkgs.mkShell {
       packages = with pkgs; [
-        python3
-        uv
+        graphiv.python313
+        graphiv.uv
         ruff
         black
         pyright
@@ -131,7 +108,10 @@
         })
       ];
       DEV_SHELL = "GraphIV";
-      LD_LIBRARY_PATH = "/run/opengl-driver/lib:" + lib.makeLibraryPath (with pkgs; [ stdenv.cc.cc.lib zlib libGL cudaPackages.cuda_cudart cudaPackages.libcublas cudaPackages.cuda_cccl ]);
+      # the same interpreter and libraries the daemons run on, so .venv and the deployed venv match
+      UV_PYTHON = "${graphiv.python313}/bin/python3.13";
+      UV_PYTHON_DOWNLOADS = "never";
+      LD_LIBRARY_PATH = graphiv.libraryPath + ":" + lib.makeLibraryPath (with pkgs; [ cudaPackages.cuda_cudart cudaPackages.libcublas cudaPackages.cuda_cccl ]);
       shellHook = ''
         export PGHOST="''${PGHOST:-$PWD/.pg}"
         export PGPORT="''${PGPORT:-5433}"

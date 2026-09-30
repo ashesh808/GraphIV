@@ -4,26 +4,31 @@ The daemon as a package and as a NixOS module, which is how GraphIV is deployed.
 The dev shell and the postgres helpers stay in `flake.nix`, since they are for working on the code rather than for running it.
 
 ```
-package.nix   the interpreter, the libraries it imports, and the tree it runs from
+package.nix   the tree the daemons run from, and the wrappers that start them over a uv venv
 module.nix    services.graphiv: the cluster, the three units, and config.toml in the store
 ```
 
 ## The package
 
-`src/`, `scripts/` and `retrieval_recipes/` are copied into `share/graphiv` and put on `PYTHONPATH` rather than installed, so `src` never takes that name in site-packages.
+Nix supplies the interpreter, uv and the native libraries the wheels load, and no Python package.
+Every Python dependency comes from `uv.lock`, the same file the dev shell's `.venv` is synced from, so what runs deployed is what the code was run against.
 
-| output | wraps | carries |
-| --- | --- | --- |
-| `graphiv` | `bin/graphiv-serve`, `scripts/serve.py` | the serve path, no torch and no CUDA |
-| `graphiv-manager` | `bin/graphiv-manager`, `scripts/graphiv_manager/main.py` | the serve path plus torch, transformers, umap-learn and scikit-learn |
+`src/`, `scripts/`, `retrieval_recipes/`, `pyproject.toml`, `uv.lock` and `.python-version` are copied into `share/graphiv`, and `src` goes on `PYTHONPATH` rather than being installed.
 
-The manager variant is `graphiv.override { withManager = true; }`.
-Its torch is the upstream CUDA 13 wheel, since a CUDA torch built from source is hours of compile and the binary cache carries no CUDA variant.
+| wrapper | runs |
+| --- | --- |
+| `bin/graphiv-sync` | `uv sync --frozen --no-install-project` into `GRAPHIV_VENV`, on the package's own `python313` |
+| `bin/graphiv-serve` | `scripts/serve.py` on that venv |
+| `bin/graphiv-manager` | `scripts/graphiv_manager/main.py` on that venv |
+
+`GRAPHIV_VENV` defaults to `$XDG_STATE_HOME/graphiv/venv`, and the module sets it to `venvDir`.
+The wrappers put `/run/opengl-driver/lib`, libstdc++, zlib and libGL on `LD_LIBRARY_PATH`, which is where a manylinux wheel expects them on any other distribution.
+uv never downloads an interpreter and rebuilds the venv whenever it was made with another one, so a nixpkgs bump that moves `python313` moves the venv with it.
+The dev shell sets `UV_PYTHON` to that same interpreter, so `.venv` and the deployed venv sit on one Python.
 
 ```sh
 nix build .#graphiv
-nix build .#graphiv-manager
-nix flake check          # the test suite, which needs no store and no GPU
+GRAPHIV_VENV=/tmp/graphiv-venv ./result/bin/graphiv-sync
 ```
 
 ## The module
@@ -44,6 +49,7 @@ nix flake check          # the test suite, which needs no store and no GPU
 | unit | port | holds |
 | --- | --- | --- |
 | `graphiv-pg` | socket only | the cluster, one postmaster of its own |
+| `graphiv-venv` | | a oneshot running `graphiv-sync` into `venvDir`, which every unit below requires |
 | `graphiv-api` | `serve.API_PORT`, 6767 | the nine tools, the store, the graph export |
 | `graphiv-frontend` | `serve.FRONTEND_PORT`, 6969 | the dashboard, from a second process registering no tools |
 | `graphiv-manager` | `manager.PORT`, 6868 | the snapshot fetch and every preprocess stage, on the GPU |
@@ -55,6 +61,7 @@ The manager writes the store and the corpus, so it belongs on a private vhost on
 `stateDir` and `dataDir` are the layout, and every path in `settings` defaults under one of them:
 
 ```
+<stateDir>/venv          the venv uv fills from uv.lock, torch and its CUDA wheels included
 <stateDir>/data          the snapshot, the models, the graph export and the cluster
 <stateDir>/data/arxiv    the corpus, as trees of YYMM/<id>.html and YYMM/<id>v<n>.pdf
 <stateDir>/cache         model replies keyed by their prompt, safe to delete at any time
@@ -77,6 +84,7 @@ The exponents and the `[miner]` block live in the recipe files that ship with th
 
 | | |
 | --- | --- |
+| network on the first sync | PyPI, for the wheels `uv.lock` names, cached under `CACHE_PATH/uv` |
 | the store | the dump restored into the cluster, or built by the manager from a snapshot |
 | the graph export | the manager's last stage writes it, and the dump does not carry it |
 | two endpoints | a llama-server for embedding, any OpenAI compatible host for the model |

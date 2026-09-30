@@ -1,103 +1,79 @@
-# The daemon, which is the interpreter, the libraries it imports, and the tree it runs from
-# The serve path pulls no torch or CUDA, since every model it uses is an endpoint
-# Only the manager variant carries what the preprocess stages load onto the GPU
+# The tree the daemons run from, and the wrappers that start them over a venv uv fills from uv.lock
+# Nix supplies the interpreter, uv and the native libraries the wheels load, and no Python package
 {
   lib,
+  stdenv,
   stdenvNoCC,
-  makeWrapper,
-  python3,
-  cudaPackages_13,
-  withManager ? false,
+  symlinkJoin,
+  writeShellScriptBin,
+  python313,
+  uv,
+  zlib,
+  libGL,
 }:
 
 let
-  serve = p: [
-    p.mcp
-    p.numpy
-    p.psycopg
-    p.pydantic
-    p.scipy
-    p.selectolax
-    p.starlette
-    p.uvicorn
-  ];
-
-  # the two classifiers, the projection, the clustering, the citation parser and the eval figures
-  # torch-bin is the upstream CUDA wheel, since a CUDA torch built from source is hours of compile
-  stages = p: [
-    (torch p)
-    p.transformers
-    p.umap-learn
-    p.scikit-learn
-    p.joblib
-    p.threadpoolctl
-    p.rapidfuzz
-    p.matplotlib
-  ];
-
-  # NVIDIA moved the v2.32.3-1 tag after some nixpkgs revs pinned it, and master carries this hash
-  stale = "sha256-ytAJn8F0QEHhUadiOmVKTUiL7lsUnasoP4MOv/t60xk=";
-  cuda = cudaPackages_13.overrideScope (
-    _: prev: {
-      nccl =
-        if prev.nccl.src.outputHash == stale then
-          prev.nccl.overrideAttrs (old: {
-            src = old.src.overrideAttrs { outputHash = "sha256-xUllfdWAL0Ee9P9T9CZC2ddkPRnSXZXgwApgO398i6g="; };
-          })
-        else
-          prev.nccl;
-    }
-  );
-
-  # the wheel links CUDA 13, which the default cudaPackages predates
-  torch =
-    p:
-    p.torch-bin.override {
-      cudaPackages = cuda;
-      cuda-bindings = p.cuda-bindings.override { cudaPackages = cuda; };
-    };
-
-  # src/ is put on the path rather than installed, so it never takes that name in site-packages
-  env = python3.withPackages serve;
-  heavy = python3.withPackages (p: serve p ++ stages p);
-in
-stdenvNoCC.mkDerivation {
-  pname = if withManager then "graphiv-manager" else "graphiv";
   version = "0.3.0";
-  src = lib.cleanSource ../.;
 
-  nativeBuildInputs = [ makeWrapper ];
+  tree = stdenvNoCC.mkDerivation {
+    pname = "graphiv-tree";
+    inherit version;
+    src = lib.cleanSource ../.;
+    installPhase = ''
+      mkdir -p $out/share/graphiv
+      cp -r src scripts retrieval_recipes pyproject.toml uv.lock .python-version $out/share/graphiv/
+    '';
+  };
 
-  installPhase = ''
-    runHook preInstall
+  root = "${tree}/share/graphiv";
+  python = "${python313}/bin/python3.13";
 
-    mkdir -p $out/share/graphiv
-    cp -r src scripts retrieval_recipes $out/share/graphiv/
+  # manylinux wheels load these by soname, and NixOS keeps the driver's libcuda under /run
+  libraryPath =
+    "/run/opengl-driver/lib:"
+    + lib.makeLibraryPath [
+      stdenv.cc.cc.lib
+      zlib
+      libGL
+    ];
 
-    makeWrapper ${env}/bin/python $out/bin/graphiv-serve \
-      --add-flags "$out/share/graphiv/scripts/serve.py" \
-      --set PYTHONPATH "$out/share/graphiv" \
-      --set PYTHONDONTWRITEBYTECODE 1
-  ''
-  + lib.optionalString withManager ''
-    makeWrapper ${heavy}/bin/python $out/bin/graphiv-manager \
-      --add-flags "$out/share/graphiv/scripts/graphiv_manager/main.py" \
-      --set PYTHONPATH "$out/share/graphiv" \
-      --set PYTHONDONTWRITEBYTECODE 1
-  ''
-  + ''
-    runHook postInstall
+  venv = ''venv="''${GRAPHIV_VENV:-''${XDG_STATE_HOME:-$HOME/.local/state}/graphiv/venv}"'';
+
+  # uv rebuilds the venv whenever the interpreter it was made with is not this one
+  sync = writeShellScriptBin "graphiv-sync" ''
+    ${venv}
+    export UV_PROJECT_ENVIRONMENT="$venv" UV_PYTHON=${python} UV_PYTHON_DOWNLOADS=never
+    exec ${uv}/bin/uv sync --frozen --no-install-project --project ${root} "$@"
   '';
 
+  run =
+    name: script:
+    writeShellScriptBin name ''
+      ${venv}
+      export PYTHONPATH=${root} PYTHONDONTWRITEBYTECODE=1
+      export LD_LIBRARY_PATH=${libraryPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      exec "$venv/bin/python" ${root}/${script} "$@"
+    '';
+in
+symlinkJoin {
+  pname = "graphiv";
+  inherit version;
+  paths = [
+    tree
+    sync
+    (run "graphiv-serve" "scripts/serve.py")
+    (run "graphiv-manager" "scripts/graphiv_manager/main.py")
+  ];
+
   passthru = {
-    pythonEnv = if withManager then heavy else env;
+    inherit libraryPath python313 uv;
   };
 
   meta = {
     description = "A grounded literature review endpoint over the arXiv citation graph";
     homepage = "https://git.kuroma.dev/kkuroma/graphiv";
     license = lib.licenses.gpl3Only;
-    mainProgram = if withManager then "graphiv-manager" else "graphiv-serve";
+    mainProgram = "graphiv-serve";
     platforms = lib.platforms.linux;
   };
 }

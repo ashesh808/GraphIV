@@ -1,4 +1,4 @@
-# The NixOS module: the cluster, three listeners over one package, and config.toml in the store
+# The NixOS module: the cluster, the venv, three listeners over one package, and config.toml
 # settings is config.toml key for key, so the whole deployment is one services.graphiv block
 {
   config,
@@ -59,6 +59,7 @@ let
   );
 
   store = lib.optional pg.enable "graphiv-pg.service";
+  venv = toString cfg.venvDir;
 
   hardened = {
     User = cfg.user;
@@ -78,10 +79,18 @@ let
     description = "GraphIV ${role}";
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
-    after = [ "network-online.target" ] ++ store ++ cfg.endpointUnits;
-    requires = lib.optionals (role == "api") store;
+    after = [
+      "network-online.target"
+      "graphiv-venv.service"
+    ]
+    ++ store
+    ++ cfg.endpointUnits;
+    requires = [ "graphiv-venv.service" ] ++ lib.optionals (role == "api") store;
     unitConfig.RequiresMountsFor = mounts;
-    environment.GRAPHIV_CONFIG = "${file}";
+    environment = {
+      GRAPHIV_CONFIG = "${file}";
+      GRAPHIV_VENV = venv;
+    };
     serviceConfig = hardened // {
       ExecStart = "${cfg.package}/bin/graphiv-serve --http --role ${role}";
       # the api loads a 400MB graph export before it answers anything
@@ -123,6 +132,10 @@ in
 
     dataDir = derived types.path "${toString cfg.stateDir}/data" ''"''${stateDir}/data"'' ''
       The cold data: the snapshot, the corpus, the graph export, the models and the cluster.
+    '';
+
+    venvDir = derived types.path "${toString cfg.stateDir}/venv" ''"''${stateDir}/venv"'' ''
+      The venv graphiv-venv fills from uv.lock on the package's own python, which every unit runs.
     '';
 
     endpointUnits = opt (types.listOf types.str) [ ] ''
@@ -198,11 +211,6 @@ in
         Serve the page that fetches the snapshot and runs every preprocess stage, one at a time.
         It writes the store and the corpus and loads the GPU, so keep it off a public vhost.
       '';
-
-      package =
-        derived types.package (cfg.package.override { withManager = true; })
-          "package.override { withManager = true; }"
-          "The package variant carrying torch, transformers, umap and scikit-learn.";
 
       databaseUser = opt (types.nullOr types.str) null ''
         The role the stages connect as, passed as PGUSER, when it is not the unit's own user.
@@ -519,6 +527,32 @@ in
       };
     };
 
+    # uv installs every Python dependency here, and a new lock or a new python re-runs it on switch
+    systemd.services.graphiv-venv = {
+      description = "GraphIV venv, synced from uv.lock";
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      unitConfig.RequiresMountsFor = [
+        venv
+        s.serve.CACHE_PATH
+      ];
+      environment = {
+        GRAPHIV_VENV = venv;
+        UV_CACHE_DIR = "${s.serve.CACHE_PATH}/uv";
+      };
+      serviceConfig = hardened // {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${cfg.package}/bin/graphiv-sync";
+        # the first sync downloads torch and its CUDA wheels
+        TimeoutStartSec = "2h";
+        ReadWritePaths = lib.unique [
+          (dirOf venv)
+          s.serve.CACHE_PATH
+        ];
+      };
+    };
+
     systemd.services.graphiv-api = lib.mkIf cfg.api.enable (
       lib.recursiveUpdate (listener "api") {
         environment.GRAPHIV_READONLY = lib.mkIf cfg.api.readOnly "1";
@@ -531,19 +565,25 @@ in
       description = "GraphIV manager";
       wantedBy = [ "multi-user.target" ];
       wants = [ "network-online.target" ];
-      after = [ "network-online.target" ] ++ store ++ cfg.endpointUnits;
-      requires = store;
+      after = [
+        "network-online.target"
+        "graphiv-venv.service"
+      ]
+      ++ store
+      ++ cfg.endpointUnits;
+      requires = [ "graphiv-venv.service" ] ++ store;
       unitConfig.RequiresMountsFor = mounts;
       path = cfg.manager.path;
       environment = {
         GRAPHIV_CONFIG = "${file}";
+        GRAPHIV_VENV = venv;
         HF_HOME = "${s.serve.CACHE_PATH}/huggingface";
         # umap and pynndescent compile with numba, whose cache cannot sit beside the store's source
         NUMBA_CACHE_DIR = "${s.serve.CACHE_PATH}/numba";
       }
       // lib.optionalAttrs (cfg.manager.databaseUser != null) { PGUSER = cfg.manager.databaseUser; };
       serviceConfig = hardened // {
-        ExecStart = "${cfg.manager.package}/bin/graphiv-manager --config_path ${file}";
+        ExecStart = "${cfg.package}/bin/graphiv-manager --config_path ${file}";
         # a stop sends the running stage SIGINT and waits for it to roll back, up to ten minutes
         KillMode = "mixed";
         TimeoutStopSec = "15min";
