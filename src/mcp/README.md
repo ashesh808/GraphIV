@@ -30,9 +30,16 @@ refine -> identify_areas -> retrieve per area -> mine -> read_paper -> write_rep
 Measured: two genuinely different areas share none of their heads, and an area renamed rather than
 changed shares a fifth of it.
 
+Five modes pick five recipes.
+`survey` and `frontier` are the tuned wide nets, weighted to what a field cites and to what it is doing now, and `consensus` is what its reviews agree on.
+`ancestry` is survey with every frontier term at zero, and `evolution` is frontier with every ancestor term at zero.
+Both start from a paper rather than the question: its stored vector is the query, so it sits at a cosine of 1 and leads the kept list whatever the blend made of it.
+`arxiv_id` names that paper, and without one it is the paper closest to the question inside the dates.
+`date_min` and `date_max` bound every mode, and the floor cuts the ranking after scoring, so the retrieval itself is unchanged.
+
 ## What the caller cannot set
 
-The seed, the gate exponent, the era rule, how deep the reader reads, the walk parameters and the
+The pool size, the gate exponent, the era rule, how deep the reader reads, the walk parameters and the
 scoring exponents. Those live in `retrieval_recipes/*.toml`, and `mode` picks one file which gives
 a matched scorer and miner. The caller picks the mode by name, never the numbers.
 

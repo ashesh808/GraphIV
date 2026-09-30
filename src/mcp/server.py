@@ -79,10 +79,12 @@ def identify_areas(question: str, cap: int = 4) -> str:
 
 @tool()
 def retrieve(
-    question: str,
+    question: str = "",
+    arxiv_id: str = "",
     methods: list[str] | None = None,
     mode: str = "survey",
-    asked: str = "",
+    date_min: str = "",
+    date_max: str = "",
     seen: list[str] | None = None,
     effort: str = "standard",
 ) -> str:
@@ -93,12 +95,21 @@ def retrieve(
     the result to the area, cuts to the field's current era and has a reader grade every candidate
     as foundational, core, frontier, adjacent, survey or unrelated.
 
+    Pick a mode. `survey` casts a wide net weighted to what the field cites, `frontier` a wide net
+    weighted to what it is doing now, `ancestry` what led to one paper and `evolution` what came
+    of it. Pass `arxiv_id` to start from that paper instead of the question; ancestry and
+    evolution always start from a paper, the closest one to the question when none is named, and
+    that paper leads the reply. `date_min` and `date_max` bound the dates, iso, both open when
+    empty, so ancestry usually caps at the paper's date and evolution starts from it.
+
     Pass `methods` from identify_areas to hold the search to that area. Pass every earlier
     `query_id` as `seen`: the reply carries `new_share`, which is the share of this ranking
     nothing earlier already found, and a value near zero means you have renamed an area rather
     than opened a new one. Keep the `query_id` and pass it to mine and write_report.
     """
-    return retrieving.retrieve(load(), question, methods, mode, asked, seen, effort)
+    return retrieving.retrieve(
+        load(), question, arxiv_id, methods, mode, date_min, date_max, seen, effort
+    )
 
 
 @tool()

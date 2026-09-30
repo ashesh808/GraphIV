@@ -26,7 +26,13 @@ LOG = logging.getLogger(__name__)
 
 REPO = Path(__file__).resolve().parents[2] / "config.toml"
 CONFIG = Path(os.environ.get("GRAPHIV_CONFIG") or REPO)
-MODES = {"survey": "survey.toml", "frontier": "frontier.toml", "consensus": "consensus.toml"}
+MODES = {
+    "survey": "survey.toml",
+    "frontier": "frontier.toml",
+    "consensus": "consensus.toml",
+    "ancestry": "ancestry.toml",
+    "evolution": "evolution.toml",
+}
 ID_CHARS = 12
 
 
@@ -63,7 +69,7 @@ class Handles:
         The recipe file one mode names
 
         Args:
-            mode: survey, frontier or consensus.
+            mode: survey, frontier, consensus, ancestry or evolution.
 
         Returns:
             The path, falling back to survey for a mode nothing defines.
@@ -82,6 +88,7 @@ class Held:
     anchor: str
     mode: str
     asked: date
+    seed: str = ""
     vector: list[float] = field(default_factory=list)
     ranked: list[Paper] = field(default_factory=list)
     kept: list[Paper] = field(default_factory=list)

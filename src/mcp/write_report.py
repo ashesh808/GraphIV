@@ -75,7 +75,8 @@ def gather(query_ids: list[str]) -> Session:
         question = question or held.question
         mode, asked, spent = held.mode, held.asked, spent + held.seconds
         grades |= held.grades
-        areas.append(Area(question=held.question, arxiv_ids=[p.arxiv_id for p in held.kept]))
+        kept = [p.arxiv_id for p in held.kept]
+        areas.append(Area(question=held.question, arxiv_ids=kept, seed=held.seed))
         for paper in held.kept:
             papers.setdefault(paper.arxiv_id, paper)
     return list(papers.values()), areas, grades, question, mode, asked, spent
@@ -337,7 +338,12 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
             "spread": spread(draft.design, draft.methods) if draft.design else "",
             "gaps": gaps(draft.design, draft.methods) if draft.design else "",
             "columns": [
-                {"name": c.name, "description": c.description, "options": list(c.options)}
+                {
+                    "name": c.name,
+                    "kind": c.kind,
+                    "description": c.description,
+                    "options": list(c.options),
+                }
                 for c in (made.columns if made else ())
             ],
             "rows": [
@@ -346,7 +352,12 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
             ],
         },
         "areas": [
-            {"question": a.question, "papers": a.arxiv_ids, "unanswered": a.unanswered}
+            {
+                "question": a.question,
+                "seed": a.seed,
+                "papers": a.arxiv_ids,
+                "unanswered": a.unanswered,
+            }
             for a in draft.areas
         ],
         "successors": [
@@ -489,7 +500,9 @@ def write_report(
                 "queries": query_ids,
                 "papers": [p.arxiv_id for p in papers],
                 "cited": sorted(discussed or set(checked.held)),
-                "areas": [{"question": a.question, "papers": a.arxiv_ids} for a in areas],
+                "areas": [
+                    {"question": a.question, "seed": a.seed, "papers": a.arxiv_ids} for a in areas
+                ],
                 "counts": mined.counts,
                 "seconds": draft.seconds,
                 "corrected": checked.fixed,

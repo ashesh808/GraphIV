@@ -38,6 +38,7 @@ class Area(BaseModel):
     question: str
     arxiv_ids: list[str] = Field(default_factory=list)
     unanswered: list[str] = Field(default_factory=list)
+    seed: str = ""
 
 
 class LineName(BaseModel):
@@ -141,7 +142,7 @@ def state(draft: Draft) -> str:
     for area in areas:
         if area.question:
             lines += [f"### {area.question}", ""]
-        mine = by_role([held[a] for a in area.arxiv_ids if a in held], draft)
+        mine = by_role([held[a] for a in area.arxiv_ids if a in held], draft, area.seed)
         for spot, paper in enumerate(mine, 1):
             grade = draft.grades.get(paper.arxiv_id)
             role = grade.role if grade is not None else "ungraded"
@@ -153,13 +154,14 @@ def state(draft: Draft) -> str:
     return "\n".join(lines).rstrip()
 
 
-def by_role(papers: list[Paper], draft: Draft) -> list[Paper]:
+def by_role(papers: list[Paper], draft: Draft, seed: str = "") -> list[Paper]:
     """
-    One area's papers, the work it is built on first and the tangents last
+    One area's papers, the seed first, then the work it is built on and the tangents last
 
     Args:
         papers: The papers of one area.
         draft: What the document is built from, which carries the grades.
+        seed: The paper the area's search started from, empty when it started from a question.
 
     Returns:
         The reordered papers.
@@ -168,6 +170,7 @@ def by_role(papers: list[Paper], draft: Draft) -> list[Paper]:
     return sorted(
         papers,
         key=lambda p: (
+            p.arxiv_id != seed,
             order.get(draft.grades[p.arxiv_id].role if p.arxiv_id in draft.grades else "", 9),
             -(p.score or 0.0),
         ),

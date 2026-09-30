@@ -41,6 +41,11 @@ SELECT arxiv_id, title, abstract, date, 1 - (embed_full <=> %s::halfvec)
 FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
 """
 
+SEED = """
+SELECT arxiv_id, title, abstract, date, embed_full::vector::real[]
+FROM papers WHERE arxiv_id = %s AND stage >= 3
+"""
+
 RECORDS = """
 SELECT p.arxiv_id, p.title, p.abstract, p.date, p.primary_category, p.authors,
        t.level_0, t.level_1, t.level_2, g.name, m.name, l.name
@@ -133,6 +138,28 @@ def read_papers(dsn: str, vector: list[float], arxiv_ids: list[str]) -> list[Pap
         )
         for a, t, abstract, when, cosine in rows
     ]
+
+
+def read_seed(dsn: str, arxiv_id: str) -> tuple[Paper, list[float]] | None:
+    """
+    One paper and its stored vector, which is what a search seeded on that paper sends
+
+    Args:
+        dsn: libpq connection string.
+        arxiv_id: The paper.
+
+    Returns:
+        The paper at a cosine of 1 and its vector, or None when the store holds no vector for it.
+    """
+    with psycopg.connect(dsn) as conn:
+        row = conn.execute(SEED, (arxiv_id,)).fetchone()
+    if row is None:
+        return None
+    a, t, abstract, when, vector = row
+    paper = Paper(
+        arxiv_id=str(a), title=str(t or ""), abstract=str(abstract or ""), date=when, cosine=1.0
+    )
+    return paper, [float(x) for x in vector]
 
 
 def read_successors(

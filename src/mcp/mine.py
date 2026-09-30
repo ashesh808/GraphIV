@@ -55,7 +55,7 @@ def mine(
         query_id: What a retrieve call returned, whose kept papers are mined.
         arxiv_ids: Papers to mine instead, when the caller picked them itself.
         question: What to hold the result to, when papers were named rather than retrieved.
-        mode: survey, frontier or consensus, which picks the recipe.
+        mode: survey, frontier, consensus, ancestry or evolution, which picks the recipe.
         effort: quick, standard or deep.
 
     Returns:
