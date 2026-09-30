@@ -37,7 +37,7 @@ CLAUDE.md
 *.pkl
 
 # The project-local Postgres socket; its datadir lives under data/
-.pg/
+.pg
 
 # Large stores. Schemas are small and reviewable, so they are force-added back.
 data

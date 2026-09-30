@@ -44,12 +44,22 @@ them cost one retrieval.
 uv run python scripts/evaluate_retrieval/stage0_surveymatch.py
 ```
 
+## The manager
+
+`graphiv_manager/` is one page that fetches the weekly snapshot, stages it, and runs every stage
+above in order, one job at a time, with the dashboard of what each table holds.
+
+```sh
+uv run python scripts/graphiv_manager/main.py
+```
+
 ## The endpoint
 
 ```sh
-uv run python scripts/research.py "<question>"    # one answer, written to data/answers
-uv run python scripts/serve.py --http             # the MCP server and its tools
+uv run python scripts/serve.py                         # stdio
+uv run python scripts/serve.py --http --role api       # the nine tools
+uv run python scripts/serve.py --http --role frontend  # the dashboard, no tools at all
 ```
 
-`research.py` answers as of today unless `--asked` names a past date, and `--no-llm` skips the
-written sections, which is the configuration every measurement was taken in.
+`serve.py` and the manager are the only entrypoints outside the preprocess tasks and the benchmarks.
+The loop belongs to the caller, so nothing here answers a question on its own.

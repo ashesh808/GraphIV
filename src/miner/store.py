@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from datetime import date
+from typing import Any
 
 import psycopg
 
@@ -41,8 +42,15 @@ FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
 """
 
 RECORDS = """
-SELECT arxiv_id, title, abstract, date, primary_category, authors
-FROM papers WHERE arxiv_id = ANY(%s)
+SELECT p.arxiv_id, p.title, p.abstract, p.date, p.primary_category, p.authors,
+       t.level_0, t.level_1, t.level_2, g.name, m.name, l.name
+FROM papers p
+LEFT JOIN topic_tree t ON t.arxiv_id = p.arxiv_id AND t.stage = 1
+LEFT JOIN topic_names g ON g.level_0 = t.level_0 AND g.level_1 IS NULL
+LEFT JOIN topic_names m ON m.level_0 = t.level_0 AND m.level_1 = t.level_1 AND m.level_2 IS NULL
+LEFT JOIN topic_names l
+  ON l.level_0 = t.level_0 AND l.level_1 = t.level_1 AND l.level_2 = t.level_2
+WHERE p.arxiv_id = ANY(%s)
 """
 
 
@@ -180,7 +188,7 @@ def read_successors(
     return {key: (papers[key], held, sentences[key]) for key, held in targets.items()}
 
 
-def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, str]]:
+def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, Any]]:
     """
     The columns a reader sees but a ranking never needs, which is what the dashboard shows
 
@@ -189,7 +197,8 @@ def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, str]]:
         arxiv_ids: The papers.
 
     Returns:
-        One record per paper the store holds.
+        One record per paper the store holds, with its topic tree path from the top level down,
+        empty for a paper the tree has not placed.
     """
     if not arxiv_ids:
         return {}
@@ -202,6 +211,8 @@ def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, str]]:
             "date": str(d),
             "category": str(c or ""),
             "authors": " ".join(str(w or "").split()),
+            "topic": [] if l0 is None else [str(g or ""), str(m or ""), str(f or "")],
+            "topic_id": [] if l0 is None else [int(l0), int(l1), int(l2)],
         }
-        for a, t, b, d, c, w in rows
+        for a, t, b, d, c, w, l0, l1, l2, g, m, f in rows
     }

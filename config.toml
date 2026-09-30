@@ -38,6 +38,11 @@ RUNS_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
 CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/cache"
 FETCH = true
 
+# The manager, one page running every stage below, keeping its jobs and charts in STATE_PATH
+[manager]
+PORT = 6868
+STATE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/manager"
+
 [endpoints]
 EMBED_API = "http://127.0.0.1:11435"
 EMBED_NAME = "nomic-embed-text-v2-moe"
@@ -48,8 +53,9 @@ EMBED_PREFIX = "search_document: "
 LLM_API = "http://localhost:11434/v1"
 LLM_NAME = "Gemma-4-26B-Batched"
 
-# The literature review scorer, whose checkpoint and recipe live in data/survey_detection
+# The literature review scorer, whose checkpoint and recipe live in MODEL_PATH
 [survey]
+MODEL_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/survey_detection"
 BATCH = 64
 CHUNK = 50000
 

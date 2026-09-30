@@ -15,22 +15,25 @@ from datetime import date
 from typing import Any
 
 from src.core.parse_graph_export import GraphExport
-from src.core.schema import Paper
+from src.core.schema import Edge, Paper
 from src.mcp.effort import Effort, level
 from src.mcp.state import Handles, get, reset
 from src.miner.miner import Mined, Miner
 from src.miner.recipe import read_recipe
 from src.miner.store import read_records
 from src.report import ground
-from src.report.compose import OPEN_PAPERS, compose, unanswered
+from src.report.compose import OPEN_PAPERS, answer, compose, digest, name_lines, unanswered
 from src.report.fulltext import FullText, read_open, read_paper
-from src.report.render import Area, Draft, Section, document
+from src.report.render import Area, Draft, LineName, Section, document, inside
 from src.report.table import Design, Method, design, extract, gaps, merge, render, repair, spread
 
 LOG = logging.getLogger(__name__)
 
 SLUG = re.compile(r"[^a-z0-9]+")
 SAMPLES = 20
+# what the answer is asked from, since the whole review runs past the context a reply needs
+EVIDENCE_CHARS = 24000
+SENTENCE_CHARS = 300
 
 
 def slug(text: str, when: date) -> str:
@@ -178,6 +181,8 @@ def as_papers(
                 "date": record["date"],
                 "year": record["date"][:4],
                 "category": record["category"],
+                "topic": record["topic"],
+                "topic_id": record["topic_id"],
                 "role": grade.role if grade is not None else "",
                 "relevance": grade.relevance if grade is not None else None,
                 "cosine": (
@@ -243,6 +248,7 @@ def as_graph(found: Mined, papers: list[dict[str, Any]], graph: GraphExport) -> 
             "source": e.source,
             "target": e.target,
             "intent": e.intent,
+            "sentence": e.sentence[:SENTENCE_CHARS],
             "walked": (e.source, e.target) in walked,
         }
         for e in found.edges
@@ -281,6 +287,31 @@ def open_questions(handles: Handles, areas: list[Area], papers: list[Paper], dep
     _ = held
 
 
+def between(nodes: list[str], edges: list[Edge]) -> list[dict[str, str]]:
+    """
+    The citations among one line's papers, once per citing pair and intent
+
+    Args:
+        nodes: The line's papers.
+        edges: Every edge that was mined, one per occurrence in the text.
+
+    Returns:
+        One entry per pair and intent, carrying the first sentence found for it.
+    """
+    held = set(nodes)
+    out: dict[tuple[str, str, str], dict[str, str]] = {}
+    for e in edges:
+        key = (e.source, e.target, e.intent)
+        if e.source in held and e.target in held and key not in out:
+            out[key] = {
+                "source": e.source,
+                "target": e.target,
+                "intent": e.intent,
+                "sentence": e.sentence[:SENTENCE_CHARS],
+            }
+    return list(out.values())
+
+
 def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
     """
     The document as the parts a reader navigates, rather than as one page to scroll
@@ -292,7 +323,9 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
     Returns:
         One entry per section the dashboard draws.
     """
+    made = draft.design
     return {
+        "answer": ground.linkify(draft.answer),
         "opening": next((s.body for s in draft.written if s.title == "What this is about"), ""),
         "claims": [
             {"title": s.title, "body": s.body}
@@ -303,6 +336,14 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
             "table": render(draft.design, draft.methods) if draft.design else "",
             "spread": spread(draft.design, draft.methods) if draft.design else "",
             "gaps": gaps(draft.design, draft.methods) if draft.design else "",
+            "columns": [
+                {"name": c.name, "description": c.description, "options": list(c.options)}
+                for c in (made.columns if made else ())
+            ],
+            "rows": [
+                {"name": m.name, "year": m.year, "values": m.values, "papers": m.papers}
+                for m in draft.methods
+            ],
         },
         "areas": [
             {"question": a.question, "papers": a.arxiv_ids, "unanswered": a.unanswered}
@@ -330,19 +371,26 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
         ],
         "lineages": [
             {
+                "name": named.name,
+                "description": named.description,
                 "runs": line.runs,
                 "papers": [
                     {
                         "arxiv_id": n,
                         "date": found.papers[n].date.isoformat(),
                         "title": " ".join(found.papers[n].title.split()),
-                        "magnet": n in line.magnets,
                     }
                     for n in line.nodes
                     if n in found.papers
                 ],
+                "intents": inside(line.nodes, found.edges),
+                "edges": between(line.nodes, found.edges),
             }
-            for line in found.lineages
+            for line, named in zip(
+                found.lineages,
+                draft.names + [LineName()] * (len(found.lineages) - len(draft.names)),
+                strict=True,
+            )
         ],
     }
 
@@ -389,6 +437,13 @@ def write_report(
         told = compose(handles.model, question, asked, papers, grades, found, made, methods)
     if hard.compose:
         open_questions(handles, areas, papers, OPEN_PAPERS)
+    evidence = "\n\n".join(f"## {one.title}\n\n{one.body}" for one in told) or digest(
+        question, papers, grades, found, made, methods
+    )
+    allowed = {p.arxiv_id for p in papers} | set(found.papers)
+    short = ground.check(
+        handles.dsn, answer(handles.model, question, asked, evidence[:EVIDENCE_CHARS]), allowed
+    ).text
     draft = Draft(
         question=title or question,
         asked=asked,
@@ -399,6 +454,8 @@ def write_report(
         design=made,
         methods=methods,
         written=told,
+        answer=short,
+        names=name_lines(handles.model, question, found),
         counts={"queries": len(query_ids), "papers": len(papers)},
         seconds={
             "retrieve and read": round(spent, 1),
@@ -407,10 +464,9 @@ def write_report(
     )
     text = document(draft)
 
-    allowed = {p.arxiv_id for p in papers} | set(found.papers)
     checked = ground.check(handles.dsn, text, allowed)
     body = ground.linkify(checked.text)
-    discussed = ground.read_ids("\n\n".join(one.body for one in told))
+    discussed = ground.read_ids("\n\n".join([short] + [one.body for one in told]))
 
     where = handles.runs / slug(draft.question, asked)
     where.mkdir(parents=True, exist_ok=True)
@@ -450,6 +506,7 @@ def write_report(
         {
             "path": str(where / "report.md"),
             "papers": len(papers),
+            "answer": short,
             "corrected": checked.fixed,
             "cut": checked.cut,
             "report": body,

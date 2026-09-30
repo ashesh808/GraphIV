@@ -1,7 +1,7 @@
 """
 Score every embedded paper for how much it looks like a literature review
 
-The checkpoint and its recipe live in data/survey_detection, which is also what trained them
+The checkpoint and its recipe live in [survey] MODEL_PATH, which is also what trained them
 The probability is stored rather than a verdict, so the threshold is chosen when the table is read
 """
 
@@ -16,22 +16,19 @@ import torch
 from torch import nn
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-SURVEY_DIR = Path("/home/kuroma/Documents/projects/nlp/arxivkg/data/survey_detection")
-CHECKPOINT = SURVEY_DIR / "model.pt"
-RECIPE = SURVEY_DIR / "hyperparam.toml"
-
 
 class SurveyLabeler:
     """
     The trained classifier and the stage 3 queue it drains
     """
 
-    def __init__(self, batch: int) -> None:
+    def __init__(self, batch: int, model_dir: Path) -> None:
         """
         Args:
             batch: papers per forward pass.
+            model_dir: the directory holding model.pt and hyperparam.toml.
         """
-        recipe = tomllib.loads(RECIPE.read_text(encoding="utf-8"))
+        recipe = tomllib.loads((model_dir / "hyperparam.toml").read_text(encoding="utf-8"))
         self.base = str(recipe["model"]["NAME"])
         self.max_len = int(recipe["model"]["MAX_LEN"])
         self.batch = batch
@@ -40,7 +37,7 @@ class SurveyLabeler:
         model: nn.Module = AutoModelForSequenceClassification.from_pretrained(
             self.base, num_labels=2
         )
-        _ = model.load_state_dict(torch.load(CHECKPOINT, map_location="cpu"))
+        _ = model.load_state_dict(torch.load(model_dir / "model.pt", map_location="cpu"))
         self.model = model.to(self.device)
         _ = self.model.eval()
 
@@ -129,7 +126,7 @@ def main() -> None:
         Path(str(args.config_path)).read_text(encoding="utf-8")
     )  # pyright: ignore[reportAny]
     sv = cfg["survey"]
-    labeler = SurveyLabeler(batch=int(sv["BATCH"]))
+    labeler = SurveyLabeler(batch=int(sv["BATCH"]), model_dir=Path(str(sv["MODEL_PATH"])))
     _ = labeler.label(str(cfg["database"]["PG_DEST"]), chunk=int(sv["CHUNK"]))
 
 

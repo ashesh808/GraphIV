@@ -64,12 +64,16 @@
       ${pgEnv}
       exec ${pgWithVec}/bin/psql -h "$PGHOST" -p "$PGPORT" -d "$PGDATABASE" "$@"
     '';
-    overlay = final: _: { graphiv = final.callPackage ./nix/package.nix { python3 = final.python313; }; };
+    overlay = final: _: {
+      graphiv = final.callPackage ./nix/package.nix { python3 = final.python313; };
+      graphiv-manager = final.graphiv.override { withManager = true; };
+    };
     graphiv = pkgs.callPackage ./nix/package.nix { python3 = pkgs.python313; };
+    graphiv-manager = graphiv.override { withManager = true; };
   in {
     packages.${system} = {
       default = graphiv;
-      inherit graphiv;
+      inherit graphiv graphiv-manager;
     };
 
     overlays.default = overlay;
@@ -90,10 +94,11 @@
           p.scipy
           p.selectolax
           p.starlette
+          p.uvicorn
         ])) ];
       }
       ''
-        cp -r ${lib.cleanSource ./.}/{src,tests,retrieval_recipes,pyproject.toml} .
+        cp -r ${lib.cleanSource ./.}/{src,scripts,tests,retrieval_recipes,pyproject.toml} .
         chmod -R u+w .
         PYTHONPATH=$PWD pytest tests -q
         touch $out

@@ -1,297 +1,578 @@
-# The NixOS module: two listeners over one package, and a config.toml written into the store
-# Every tuned constant stays in the recipe files, so nothing measured is an option here
-{ config, lib, pkgs, ... }:
+# The NixOS module: the cluster, three listeners over one package, and config.toml in the store
+# settings is config.toml key for key, so the whole deployment is one services.graphiv block
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
+  inherit (lib) mkOption types;
   cfg = config.services.graphiv;
+  pg = cfg.postgres;
+  s = cfg.settings;
   toml = pkgs.formats.toml { };
 
-  # the daemon reads these four sections and nothing else in the file
-  base = {
-    database.PG_DEST = cfg.database.dsn;
-    dataset = {
-      GRAPH_PATH = toString cfg.corpus.graph;
-      HTML_PATH = toString cfg.corpus.html;
-      PDF_PATH = toString cfg.corpus.pdf;
+  opt =
+    type: default: description:
+    mkOption { inherit type default description; };
+
+  # a default read off another option, which the manual shows as text rather than evaluating
+  derived =
+    type: default: text: description:
+    mkOption {
+      inherit type default description;
+      defaultText = lib.literalExpression text;
     };
-    serve = {
-      HOST = cfg.listenAddress;
-      API_PORT = cfg.api.port;
-      FRONTEND_PORT = cfg.frontend.port;
-      ALLOWED_HOSTS = cfg.allowedHosts;
-      RECIPE_PATH = toString cfg.recipes;
-      RUNS_PATH = toString cfg.runsDir;
-      CACHE_PATH = toString cfg.cacheDir;
-      FETCH = cfg.fetch;
+
+  section =
+    description: options:
+    mkOption {
+      inherit description;
+      default = { };
+      type = types.submodule {
+        freeformType = toml.type;
+        inherit options;
+      };
     };
-    endpoints = {
-      EMBED_API = cfg.endpoints.embed.url;
-      EMBED_NAME = cfg.endpoints.embed.name;
-      LLM_API = cfg.endpoints.llm.url;
-      LLM_NAME = cfg.endpoints.llm.name;
-    };
+
+  file = toml.generate "graphiv-config.toml" s;
+
+  # the setgid directories a human in the group shares with the daemons
+  shared = lib.unique [
+    (toString cfg.stateDir)
+    (toString cfg.dataDir)
+    s.serve.CACHE_PATH
+    s.serve.RUNS_PATH
+    s.manager.STATE_PATH
+  ];
+
+  mounts = lib.unique (
+    shared
+    ++ [
+      s.dataset.HTML_PATH
+      s.dataset.PDF_PATH
+      s.dataset.GRAPH_PATH
+    ]
+    ++ lib.optional pg.enable (toString pg.dataDir)
+  );
+
+  store = lib.optional pg.enable "graphiv-pg.service";
+
+  hardened = {
+    User = cfg.user;
+    Group = cfg.group;
+    UMask = "0002";
+    Restart = "on-failure";
+    RestartSec = 10;
+    NoNewPrivileges = true;
+    PrivateTmp = true;
+    ProtectSystem = "strict";
+    ProtectKernelTunables = true;
+    ProtectControlGroups = true;
+    RestrictSUIDSGID = true;
   };
 
-  file = toml.generate "graphiv-config.toml" (lib.recursiveUpdate base cfg.settings);
-
-  # a fetched paper lands in the corpus beside the bulk store, so both roots are writable
-  writable = map toString [ cfg.cacheDir cfg.runsDir cfg.corpus.html cfg.corpus.pdf ];
-  readable = [ (toString cfg.corpus.graph) ];
-
-  unit = role: {
+  listener = role: {
     description = "GraphIV ${role}";
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
+    after = [ "network-online.target" ] ++ store ++ cfg.endpointUnits;
+    requires = lib.optionals (role == "api") store;
+    unitConfig.RequiresMountsFor = mounts;
     environment.GRAPHIV_CONFIG = "${file}";
-    serviceConfig = {
+    serviceConfig = hardened // {
       ExecStart = "${cfg.package}/bin/graphiv-serve --http --role ${role}";
-      User = cfg.user;
-      Group = cfg.group;
-      Restart = "on-failure";
-      RestartSec = 10;
       # the api loads a 400MB graph export before it answers anything
       TimeoutStartSec = "5min";
-      RequiresMountsFor = lib.unique ([ (toString cfg.dataDir) ] ++ writable ++ readable);
-      UMask = "0002";
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      ProtectKernelTunables = true;
-      ProtectControlGroups = true;
-      RestrictSUIDSGID = true;
-      ReadWritePaths = lib.unique writable;
-      ReadOnlyPaths = readable;
+      ReadWritePaths = lib.unique [
+        s.serve.CACHE_PATH
+        s.serve.RUNS_PATH
+        s.dataset.HTML_PATH
+        s.dataset.PDF_PATH
+      ];
+      ReadOnlyPaths = [ s.dataset.GRAPH_PATH ];
     };
   };
+
+  pgValue = v: if lib.isBool v then (if v then "on" else "off") else toString v;
+  pgFlags = lib.concatStringsSep " " (
+    lib.mapAttrsToList (k: v: "-c ${lib.escapeShellArg "${k}=${pgValue v}"}") pg.settings
+  );
+  pgBin = "${pg.package}/bin";
+  pgAt = "-h ${pg.socketDir} -p ${toString pg.port}";
 in
 {
   options.services.graphiv = {
-    enable = lib.mkEnableOption "the GraphIV literature review endpoint";
+    enable = lib.mkEnableOption "GraphIV, a grounded literature review endpoint over arXiv";
 
     package = lib.mkPackageOption pkgs "graphiv" { };
 
-    user = lib.mkOption {
-      type = lib.types.str;
-      default = "graphiv";
-      description = ''
-        The unix user both listeners run as, and the owner of every directory below.
-        Peer auth maps it to the postgres role of the same name, which needs SELECT and no more.
+    user = opt types.str "graphiv" ''
+      The unix user every unit runs as, and the owner of every directory below.
+    '';
+
+    group = opt types.str "graphiv" ''
+      The group owning those directories, which a human member can also write.
+    '';
+
+    stateDir = opt types.path "/var/lib/graphiv" ''
+      The root the cache, the runs, the manager's state and the eval output default under.
+    '';
+
+    dataDir = derived types.path "${toString cfg.stateDir}/data" ''"''${stateDir}/data"'' ''
+      The cold data: the snapshot, the corpus, the graph export, the models and the cluster.
+    '';
+
+    endpointUnits = opt (types.listOf types.str) [ ] ''
+      Units serving the endpoints in settings.endpoints, which the api and the manager start after.
+    '';
+
+    postgres = {
+      enable = opt types.bool true ''
+        Run the cluster as graphiv-pg, one postmaster of its own over a unix socket.
+        Turn it off to point settings.database.PG_DEST at a cluster run elsewhere.
+      '';
+
+      package = derived types.package (pkgs.postgresql_17.withPackages (p: [
+        p.pgvector
+      ])) "pkgs.postgresql_17.withPackages (p: [ p.pgvector ])" "The server, which needs pgvector.";
+
+      dataDir = derived types.path "${toString cfg.dataDir}/pg" ''"''${dataDir}/pg"'' ''
+        The cluster, created by initdb on first start when it holds no PG_VERSION.
+      '';
+
+      socketDir = opt types.str "/run/graphiv" ''
+        Where the socket goes, a directory under /run that the unit creates.
+      '';
+
+      port = opt types.port 5433 ''
+        The port, which names the socket file even though nothing listens on TCP.
+      '';
+
+      database = opt types.str "arxivkg" ''
+        The database, created with the vector extension when the cluster has none by this name.
+      '';
+
+      settings =
+        opt
+          (types.attrsOf (
+            types.oneOf [
+              types.bool
+              types.int
+              types.float
+              types.str
+            ]
+          ))
+          {
+            listen_addresses = "";
+            default_toast_compression = "lz4";
+            shared_buffers = "4GB";
+            work_mem = "256MB";
+            maintenance_work_mem = "2GB";
+            max_parallel_maintenance_workers = 4;
+          }
+          "Passed as -c flags, which take precedence over the cluster's own postgresql.conf.";
+    };
+
+    api = {
+      enable = opt types.bool true "Serve the nine tools over streamable-http.";
+
+      readOnly = opt types.bool false ''
+        Register every tool but write_report, the only one that writes a file.
+      '';
+
+      restartOnExport = opt types.bool true ''
+        Restart the api when the graph export is rewritten, since it loads the file once at start.
       '';
     };
 
-    group = lib.mkOption {
-      type = lib.types.str;
-      default = "graphiv";
-      description = "The group owning those directories, which a human member can also write.";
-    };
+    frontend.enable = opt types.bool true ''
+      Serve the dashboard from a second process carrying no tools.
+      It opens neither the store nor the graph, so it cannot reach the corpus.
+    '';
 
-    stateDir = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/lib/graphiv";
-      description = ''
-        The root the three directories below default under.
-        Nothing is read from here directly, so pointing it at another disk is a one line change.
+    manager = {
+      enable = opt types.bool true ''
+        Serve the page that fetches the snapshot and runs every preprocess stage, one at a time.
+        It writes the store and the corpus and loads the GPU, so keep it off a public vhost.
       '';
-    };
 
-    dataDir = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.stateDir}/data";
-      defaultText = lib.literalExpression ''"''${stateDir}/data"'';
-      description = ''
-        The cold data: the corpus, the graph export, and a cluster this module never provisions.
-        It is the one directory that holds anything expensive to rebuild.
+      package =
+        derived types.package (cfg.package.override { withManager = true; })
+          "package.override { withManager = true; }"
+          "The package variant carrying torch, transformers, umap and scikit-learn.";
+
+      databaseUser = opt (types.nullOr types.str) null ''
+        The role the stages connect as, passed as PGUSER, when it is not the unit's own user.
+        The stages insert, truncate and copy, so it has to own the four tables.
       '';
+
+      path = opt (types.listOf types.package) [
+        pkgs.aria2
+        pkgs.curl
+      ] "Programs the stages run: aria2c for the PDFs, and nvidia-smi when the GPU should show.";
     };
 
-    cacheDir = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.stateDir}/cache";
-      defaultText = lib.literalExpression ''"''${stateDir}/cache"'';
-      description = "Model replies keyed by their prompt, which is safe to delete at any time.";
-    };
-
-    runsDir = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.stateDir}/runs";
-      defaultText = lib.literalExpression ''"''${stateDir}/runs"'';
-      description = "One directory per report written, which the dashboard reads and lists.";
-    };
-
-    listenAddress = lib.mkOption {
-      type = lib.types.str;
-      default = "127.0.0.1";
-      description = "The interface both listeners bind, which a reverse proxy sits in front of.";
-    };
-
-    allowedHosts = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      example = [ "graphiv.example.com" ];
-      description = ''
-        Host headers the transport answers to, on top of the address it is bound to.
-        Empty rejects every forwarded name, which is what a proxy has to rewrite around.
-      '';
-    };
-
-    fetch = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Whether a paper the corpus never had may be fetched from arXiv, one request every three
-        seconds, into the corpus itself. Turn it off when those paths cannot be written.
-      '';
-    };
-
-    recipes = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.package}/share/graphiv/retrieval_recipes";
-      defaultText = lib.literalExpression ''"''${package}/share/graphiv/retrieval_recipes"'';
-      description = "The tuned recipes, which ship with the package and are read only.";
-    };
-
-    database.dsn = lib.mkOption {
-      type = lib.types.str;
-      example = "host=/run/graphiv port=5433 dbname=arxivkg";
-      description = ''
-        The store, which this module never provisions.
-        It needs pgvector and the four tables the published dump restores.
-      '';
-    };
-
-    corpus.graph = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.dataDir}/citation_graph_export.npy";
-      defaultText = lib.literalExpression ''"''${dataDir}/citation_graph_export.npy"'';
-      description = ''
-        The citation graph export, loaded once at start and never written.
-        The dump does not carry it, so `stage2_export_graph.py` writes it after a restore.
-      '';
-    };
-
-    corpus.html = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.dataDir}/arxiv/html";
-      defaultText = lib.literalExpression ''"''${dataDir}/arxiv/html"'';
-      description = ''
-        A tree of `YYMM/<id>.html`, which a fetch also writes into.
-        Point it at the real path rather than a symlink, so the unit orders on the right mount.
-      '';
-    };
-
-    corpus.pdf = lib.mkOption {
-      type = lib.types.path;
-      default = "${cfg.dataDir}/arxiv/pdfs";
-      defaultText = lib.literalExpression ''"''${dataDir}/arxiv/pdfs"'';
-      description = "A tree of `YYMM/<id>v<n>.pdf`, on the same terms.";
-    };
-
-    endpoints.embed.url = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:11435";
-      description = "A llama-server hosting the embedding model, which must expose /tokenize.";
-    };
-
-    endpoints.embed.name = lib.mkOption {
-      type = lib.types.str;
-      default = "nomic-embed-text-v2-moe";
-      description = "The embedding model, which has to be the one the corpus was built with.";
-    };
-
-    endpoints.llm.url = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:11434/v1";
-      description = "Any OpenAI compatible host.";
-    };
-
-    endpoints.llm.name = lib.mkOption {
-      type = lib.types.str;
-      example = "Gemma-4-26B";
-      description = "The model every call goes to, a 26B instruct class being the reference.";
-    };
-
-    api.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Serve the tools over streamable-http.";
-    };
-
-    api.port = lib.mkOption {
-      type = lib.types.port;
-      default = 6767;
-      description = "The port the tools listen on.";
-    };
-
-    api.readOnly = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Register every tool but write_report, the only one that writes a file.";
-    };
-
-    frontend.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Serve the dashboard from a second process carrying no tools.
-        It opens neither the store nor the graph, so it cannot reach the corpus.
-      '';
-    };
-
-    frontend.port = lib.mkOption {
-      type = lib.types.port;
-      default = 6969;
-      description = "The port the dashboard listens on.";
-    };
-
-    settings = lib.mkOption {
-      type = toml.type;
+    settings = mkOption {
       default = { };
-      example = lib.literalExpression ''{ serve.FETCH = false; }'';
-      description = "Merged over the generated config.toml, for a key this module does not name.";
+      description = "config.toml, one attribute per key, written into the store and read by every unit.";
+      type = types.submodule {
+        freeformType = toml.type;
+        options = {
+          database = section "The store." {
+            PG_DEST =
+              derived types.str "host=${pg.socketDir} port=${toString pg.port} dbname=${pg.database}"
+                ''"host=''${postgres.socketDir} port=''${postgres.port} dbname=''${postgres.database}"''
+                "The libpq connection string every unit and stage opens.";
+          };
+
+          source = section "Where the snapshot and the full text come from." {
+            SOURCE_URL =
+              opt types.str "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
+                "The snapshot archive, which Kaggle serves anonymously as a redirect.";
+            SOURCE_PATH =
+              derived types.str "${toString cfg.dataDir}/arxiv.json" ''"''${dataDir}/arxiv.json"''
+                "The snapshot in use, with a fetched one staged beside it as arxiv-new.json.";
+            PDF_BASE_URL =
+              opt types.str "https://storage.googleapis.com/arxiv-dataset/arxiv/arxiv/pdf"
+                "The bulk PDF mirror.";
+            PDF_LEGACY_BASE_URL = opt types.str "https://storage.googleapis.com/arxiv-dataset/arxiv" ''
+              The mirror's layout for the old slash ids.
+            '';
+            HTML_BASE_URL = opt types.str "https://arxiv.org/html" "The first HTML source.";
+            HTML_FALLBACK_URL = opt types.str "https://ar5iv.labs.arxiv.org/html" ''
+              The HTML source tried when the first has no render.
+            '';
+          };
+
+          download = section "How hard the corpus stages pull." {
+            PDF_BATCH = opt types.int 500 "Papers per aria2c invocation.";
+            PDF_N_PARALLEL = opt types.int 8 "Connections per aria2c invocation.";
+            HTML_RATE = opt types.float 8.0 ''
+              Requests a second over every worker, where a miss on the first source costs two.
+            '';
+            HTML_BATCH = opt types.int 200 "Papers per HTML batch.";
+            HTML_N_PARALLEL = opt types.int 16 "HTML workers.";
+          };
+
+          dataset = section "The corpus and the graph export." {
+            PDF_PATH = derived types.str "${toString cfg.dataDir}/arxiv/pdfs" ''"''${dataDir}/arxiv/pdfs"'' ''
+              A tree of YYMM/<id>v<n>.pdf.
+              Name the real path rather than a symlink, so the units order on the right mount.
+            '';
+            HTML_PATH = derived types.str "${toString cfg.dataDir}/arxiv/html" ''"''${dataDir}/arxiv/html"'' ''
+              A tree of YYMM/<id>.html, on the same terms, which a fetch also writes into.
+            '';
+            GRAPH_PATH =
+              derived types.str "${toString cfg.dataDir}/citation_graph_export.npy"
+                ''"''${dataDir}/citation_graph_export.npy"''
+                "The citation graph export, which the api loads once and the last stage rewrites.";
+          };
+
+          serve = section "The two listeners." {
+            HOST = opt types.str "127.0.0.1" "The interface every listener binds, the manager's too.";
+            API_PORT = opt types.port 6767 "The tools.";
+            FRONTEND_PORT = opt types.port 6969 "The dashboard.";
+            ALLOWED_HOSTS = opt (types.listOf types.str) [ ] ''
+              Host headers the transport answers to beyond its own address, which a proxy forwards.
+            '';
+            RECIPE_PATH =
+              derived types.str "${cfg.package}/share/graphiv/retrieval_recipes"
+                ''"''${package}/share/graphiv/retrieval_recipes"''
+                "The tuned recipes, which ship with the package.";
+            RUNS_PATH = derived types.str "${toString cfg.stateDir}/runs" ''"''${stateDir}/runs"'' ''
+              One directory per report written, which the dashboard lists.
+            '';
+            CACHE_PATH = derived types.str "${toString cfg.stateDir}/cache" ''"''${stateDir}/cache"'' ''
+              Model replies keyed by their prompt, safe to delete at any time.
+            '';
+            FETCH = opt types.bool true ''
+              Whether a paper the corpus never had may be fetched from arXiv into the corpus.
+            '';
+          };
+
+          manager = section "The manager." {
+            PORT = opt types.port 6868 "The page.";
+            STATE_PATH = derived types.str "${toString cfg.stateDir}/manager" ''"''${stateDir}/manager"'' ''
+              Job logs, the cached charts and the rates it measured.
+            '';
+          };
+
+          endpoints = section "The models, all of them served elsewhere." {
+            EMBED_API = opt types.str "http://127.0.0.1:11435" ''
+              A llama-server hosting the embedding model, which must expose /tokenize.
+            '';
+            EMBED_NAME = opt types.str "nomic-embed-text-v2-moe" ''
+              The embedding model, which has to be the one the corpus was built with.
+            '';
+            EMBED_PARALLEL = opt types.int 1 "Embedding requests in flight.";
+            EMBED_BATCH = opt types.int 256 "Documents per embedding request.";
+            EMBED_MAX_SEQ = opt types.int 512 "Tokens a document is truncated to.";
+            EMBED_PREFIX = opt types.str "search_document: " "What a stored document is prefixed with.";
+            LLM_API = opt types.str "http://127.0.0.1:11434/v1" "Any OpenAI compatible host.";
+            LLM_NAME = mkOption {
+              type = types.str;
+              example = "Gemma-4-26B-Batched";
+              description = "The model every call goes to, a 26B instruct class being the reference.";
+            };
+          };
+
+          survey = section "The literature review scorer." {
+            MODEL_PATH =
+              derived types.str "${toString cfg.dataDir}/survey_detection" ''"''${dataDir}/survey_detection"''
+                ''
+                  The checkpoint and the recipe that trained it.
+                '';
+            BATCH = opt types.int 64 "Papers per forward pass.";
+            CHUNK = opt types.int 50000 "Papers per commit.";
+          };
+
+          umap = section "The projection the topic tree clusters." {
+            UMAP_MODEL_PATH =
+              derived types.str "${toString cfg.dataDir}/umap_50.joblib" ''"''${dataDir}/umap_50.joblib"''
+                ''
+                  The fitted model, a pickle that loads only under the umap-learn it was fitted with.
+                '';
+            UMAP_SAMPLE = opt types.int 400000 "Papers a refit samples.";
+            UMAP_SEED = opt types.int 69420 "The seed, which forces a refit onto one core.";
+            UMAP_DIM = opt types.int 50 "Dimensions.";
+            UMAP_BATCH = opt types.int 50000 "Papers per transform call.";
+            UMAP_WORKERS = opt types.int 4 "Transform processes, each loading its own copy of the model.";
+          };
+
+          topics = section "The topic tree and its names." {
+            TREE_METHODS = opt (types.listOf types.str) [
+              "kmeans"
+              "kmeans"
+              "kmeans"
+            ] "The clusterer per level.";
+            TREE_K = opt types.int 16 "Children per node.";
+            TREE_MIN_CLUSTER_SIZE = opt types.int 60 "The smallest leaf.";
+            TREE_N_PARALLEL = opt types.int 8 "Clustering workers.";
+            TREE_BATCH = opt types.int 50000 "Rows per write.";
+            TREE_SEED = opt types.int 69420 "The seed.";
+            N_TOPIC_LABEL = opt types.int 10 "Papers shown to the namer, nearest the leaf centroid.";
+            TOPIC_BATCH = opt types.int 8 "Naming calls in flight.";
+          };
+
+          citation_labeler = section "The citation intent classifier and the job that trains it." {
+            LABELER_PATH =
+              derived types.str "${toString cfg.dataDir}/citation_labeler" ''"''${dataDir}/citation_labeler"''
+                ''
+                  The student checkpoint and the ground truth it is scored on.
+                '';
+            LABELER_MODEL = opt types.str "distilbert/distilbert-base-uncased" "The student's base.";
+            LABELER_BATCH = opt types.int 48 "Sentences per forward pass.";
+            LABELER_MAX_SEQ = opt types.int 256 "Tokens a sentence is truncated to.";
+            LABELER_APE_MODEL = derived types.str s.endpoints.LLM_NAME "settings.endpoints.LLM_NAME" ''
+              The teacher that evolves the prompt.
+            '';
+            LABELER_APE_GENERATIONS = opt types.int 6 "Prompt generations.";
+            LABELER_APE_PARALLEL = opt types.int 4 "Teacher calls in flight.";
+            LABELER_TEACHER_SAMPLE = opt types.int 10000 "Citations the teacher labels.";
+            LABELER_SEED = opt types.int 0 "The seed.";
+            LABELER_SPLITS = opt (types.listOf types.float) [ 0.8 0.1 0.1 ] "Train, validation and test.";
+            LABELER_EPOCHS = opt types.int 12 "Epochs.";
+            LABELER_TRAIN_BATCH = opt types.int 64 "Training batch.";
+            LABELER_LR = opt types.float 2.0e-5 "Learning rate.";
+          };
+
+          surveymatch = section "Review case selection for the benchmarks." {
+            SURVEY_THRESHOLD = opt types.float 0.5 "The review score a case needs.";
+            MUTUAL_COSINE_THRESHOLD = opt types.float 0.65 "The cosine two reviews in one case share.";
+            SURVEYMATCH_LEVEL = opt types.int 2 "The tree level cases group by.";
+          };
+
+          retriever_eval = section "The retrieval benchmarks." {
+            RECIPE_PATH =
+              derived types.str "${cfg.package}/share/graphiv/retrieval_recipes"
+                ''"''${package}/share/graphiv/retrieval_recipes"''
+                "Where the compared recipes are read from.";
+            OUTPUT_PATH =
+              derived types.str "${toString cfg.stateDir}/experiments/retrieve"
+                ''"''${stateDir}/experiments/retrieve"''
+                ''
+                  One directory per metric and recipe.
+                '';
+            RETURN_LIMIT = opt types.int 1000 "Papers a query returns.";
+            BUDGETS = opt (types.listOf types.int) [ 100 200 500 1000 ] "The cutoffs recall is read at.";
+            SEED = opt types.int 0 "The seed.";
+            SAMPLE_RATE = opt types.float 1.0 "The hash share a candidate case must fall under.";
+            MAX_SAMPLES = opt types.int 300 "Cases per metric.";
+            SURVEY_THRESHOLD = opt types.float 0.95 "The review score a case needs.";
+            MIN_REFERENCES = opt types.int 25 "Resolved references a case needs.";
+            GAP_DAYS = opt types.int 190 "The widest gap between two reviews of one moment.";
+            FRONTIER_COSINE = opt types.float 0.8 "The cosine two FrontierMatch reviews share.";
+            FRONTIER_MIN_KEY = opt types.int 10 "The smallest FrontierMatch answer key.";
+            FRONTIER_WINDOW_DAYS = opt types.int 730 "How early a frontier answer may be published.";
+            CONSENSUS_COSINE = opt types.float 0.75 "The cosine three ConsensusMatch reviews share.";
+            CONSENSUS_MIN_KEY = opt types.int 5 "The smallest ConsensusMatch answer key.";
+            PRECISION_LEVEL = opt types.int 2 "The tree level the PrecisionMatch judge reads.";
+            recipes = opt (types.attrsOf (types.listOf types.str)) {
+              SurveyMatch = [
+                "survey.toml"
+                "anc_only.toml"
+                "survey_no_forward.toml"
+                "all_terms.toml"
+                "no_expansion.toml"
+                "cosine_only.toml"
+              ];
+              FrontierMatch = [
+                "frontier.toml"
+                "survey.toml"
+                "frontier_no_forward.toml"
+                "all_terms.toml"
+                "cosine_only.toml"
+              ];
+              ConsensusMatch = [
+                "consensus.toml"
+                "consensus_no_forward.toml"
+                "survey.toml"
+                "all_terms.toml"
+                "cosine_only.toml"
+              ];
+              PrecisionMatch = [
+                "survey.toml"
+                "frontier.toml"
+                "cosine_only.toml"
+              ];
+            } "Which recipes each benchmark runs and compares, relative to RECIPE_PATH.";
+          };
+        };
+      };
     };
   };
 
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.api.enable || cfg.frontend.enable;
-        message = "services.graphiv needs at least one of api.enable and frontend.enable";
+        assertion = cfg.api.enable || cfg.frontend.enable || cfg.manager.enable;
+        message = "services.graphiv enables no unit";
       }
       {
-        assertion = cfg.api.port != cfg.frontend.port;
-        message = "services.graphiv.api.port and frontend.port must differ";
+        assertion = lib.allUnique [
+          s.serve.API_PORT
+          s.serve.FRONTEND_PORT
+          s.manager.PORT
+        ];
+        message = "services.graphiv.settings needs API_PORT, FRONTEND_PORT and manager.PORT to differ";
+      }
+      {
+        assertion = !pg.enable || lib.hasPrefix "/run/" pg.socketDir;
+        message = "services.graphiv.postgres.socketDir has to sit under /run, which the unit creates";
       }
     ];
 
     users.users = lib.mkIf (cfg.user == "graphiv") {
       graphiv = {
-        isSystemUser = true;
-        group = cfg.group;
-        home = cfg.stateDir;
-        description = "GraphIV";
+        isSystemUser = lib.mkDefault true;
+        group = lib.mkDefault cfg.group;
+        home = lib.mkDefault (toString cfg.stateDir);
+        description = lib.mkDefault "GraphIV";
       };
     };
 
     users.groups = lib.mkIf (cfg.group == "graphiv") { graphiv = { }; };
 
-    # setgid so a human in the group can read and delete what the daemon wrote, and a symlinked
-    # corpus is left alone rather than followed and chmodded
-    systemd.tmpfiles.rules = map (d: "d ${d} 2775 ${cfg.user} ${cfg.group} - -") (
-      lib.unique [
-        (toString cfg.stateDir)
-        (toString cfg.dataDir)
-        (toString cfg.cacheDir)
-        (toString cfg.runsDir)
-      ]
-    );
+    # setgid so a human in the group can read and delete what a daemon wrote
+    # A d rule touches only the directory it names, so a symlinked corpus is left alone
+    systemd.tmpfiles.rules =
+      map (d: "d ${d} 2775 ${cfg.user} ${cfg.group} - -") shared
+      ++ lib.optional pg.enable "d ${toString pg.dataDir} 0700 ${cfg.user} ${cfg.group} - -";
+
+    systemd.services.graphiv-pg = lib.mkIf pg.enable {
+      description = "GraphIV postgres";
+      wantedBy = [ "multi-user.target" ];
+      unitConfig.RequiresMountsFor = [ (toString pg.dataDir) ];
+      preStart = ''
+        if [ ! -e ${toString pg.dataDir}/PG_VERSION ]; then
+          ${pgBin}/initdb -D ${toString pg.dataDir} -U ${cfg.user} --encoding=UTF8 --no-locale --auth-local=peer
+        fi
+      '';
+      # a failed probe leaves the cluster up, since this only fills in a missing database
+      postStart = ''
+        found=$(${pgBin}/psql ${pgAt} -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '${pg.database}'") || exit 0
+        if [ -z "$found" ]; then
+          ${pgBin}/createdb ${pgAt} ${pg.database}
+          ${pgBin}/psql ${pgAt} -d ${pg.database} -c "CREATE EXTENSION IF NOT EXISTS vector"
+        fi
+      '';
+      serviceConfig = {
+        Type = "notify";
+        ExecStart = "${pgBin}/postgres -D ${toString pg.dataDir} -k ${pg.socketDir} -p ${toString pg.port} ${pgFlags}";
+        User = cfg.user;
+        Group = cfg.group;
+        RuntimeDirectory = lib.removePrefix "/run/" pg.socketDir;
+        RuntimeDirectoryMode = "0755";
+        Restart = "on-failure";
+        RestartSec = 10;
+        TimeoutStartSec = "5min";
+        TimeoutStopSec = "10min";
+        KillSignal = "SIGINT";
+        KillMode = "mixed";
+        # logind clears the POSIX shm of a uid >= 1000 on logout, which kills a backend using it
+        # A system user is already exempt, and this says so out loud
+        RemoveIPC = false;
+        OOMScoreAdjust = -900;
+      };
+    };
 
     systemd.services.graphiv-api = lib.mkIf cfg.api.enable (
-      lib.recursiveUpdate (unit "api") {
+      lib.recursiveUpdate (listener "api") {
         environment.GRAPHIV_READONLY = lib.mkIf cfg.api.readOnly "1";
       }
     );
 
-    systemd.services.graphiv-frontend = lib.mkIf cfg.frontend.enable (unit "frontend");
+    systemd.services.graphiv-frontend = lib.mkIf cfg.frontend.enable (listener "frontend");
+
+    systemd.services.graphiv-manager = lib.mkIf cfg.manager.enable {
+      description = "GraphIV manager";
+      wantedBy = [ "multi-user.target" ];
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ] ++ store ++ cfg.endpointUnits;
+      requires = store;
+      unitConfig.RequiresMountsFor = mounts;
+      path = cfg.manager.path;
+      environment = {
+        GRAPHIV_CONFIG = "${file}";
+        HF_HOME = "${s.serve.CACHE_PATH}/huggingface";
+        # umap and pynndescent compile with numba, whose cache cannot sit beside the store's source
+        NUMBA_CACHE_DIR = "${s.serve.CACHE_PATH}/numba";
+      }
+      // lib.optionalAttrs (cfg.manager.databaseUser != null) { PGUSER = cfg.manager.databaseUser; };
+      serviceConfig = hardened // {
+        ExecStart = "${cfg.manager.package}/bin/graphiv-manager --config_path ${file}";
+        # a stop sends the running stage SIGINT and waits for it to roll back, up to ten minutes
+        KillMode = "mixed";
+        TimeoutStopSec = "15min";
+        ReadWritePaths = lib.unique (
+          shared
+          ++ [
+            s.dataset.HTML_PATH
+            s.dataset.PDF_PATH
+            "-${dirOf s.source.SOURCE_PATH}"
+            "-${dirOf s.dataset.GRAPH_PATH}"
+            "-${dirOf s.umap.UMAP_MODEL_PATH}"
+            "-${dirOf s.retriever_eval.OUTPUT_PATH}"
+          ]
+        );
+      };
+    };
+
+    systemd.paths.graphiv-graph = lib.mkIf (cfg.api.enable && cfg.api.restartOnExport) {
+      description = "GraphIV graph export";
+      wantedBy = [ "paths.target" ];
+      # a watch set before the mount would sit on the empty mountpoint
+      unitConfig.RequiresMountsFor = [ s.dataset.GRAPH_PATH ];
+      pathConfig.PathChanged = s.dataset.GRAPH_PATH;
+    };
+
+    systemd.services.graphiv-graph = lib.mkIf (cfg.api.enable && cfg.api.restartOnExport) {
+      description = "Restart graphiv-api onto a new graph export";
+      serviceConfig.Type = "oneshot";
+      script = "systemctl try-restart graphiv-api.service";
+    };
   };
 }

@@ -15,3 +15,6 @@ CREATE INDEX IF NOT EXISTS citations_source_idx ON citations (source_id);
 -- Partial as only 72.8M of 180.7M rows carry a target
 CREATE INDEX IF NOT EXISTS citations_target_idx ON citations (target_id) WHERE target_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS citations_queue_idx  ON citations (stage) WHERE target_id IS NOT NULL;
+
+-- The manager's breakdowns read this rather than the sentences, which are most of the table
+CREATE INDEX IF NOT EXISTS citations_intent_idx ON citations (intent, stage) WHERE target_id IS NOT NULL;

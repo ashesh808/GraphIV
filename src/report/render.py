@@ -7,11 +7,12 @@ A section with nothing behind it is left out rather than printed empty
 
 from __future__ import annotations
 
+from collections import Counter
 from datetime import date
 
 from pydantic import BaseModel, Field
 
-from src.core.schema import Grade, Paper
+from src.core.schema import Edge, Grade, Paper
 from src.miner.miner import Mined
 from src.report.table import Design, Method, gaps, render, spread
 
@@ -39,6 +40,15 @@ class Area(BaseModel):
     unanswered: list[str] = Field(default_factory=list)
 
 
+class LineName(BaseModel):
+    """
+    What one lineage is about, in a few words and then in a sentence or two
+    """
+
+    name: str = ""
+    description: str = ""
+
+
 class Draft(BaseModel):
     """
     Everything one document is built from, none of which it computes itself
@@ -53,6 +63,8 @@ class Draft(BaseModel):
     design: Design | None = None
     methods: list[Method] = Field(default_factory=list)
     written: list[Section] = Field(default_factory=list)
+    answer: str = ""
+    names: list[LineName] = Field(default_factory=list)
     counts: dict[str, int] = Field(default_factory=dict)
     seconds: dict[str, float] = Field(default_factory=dict)
 
@@ -96,6 +108,19 @@ def head(draft: Draft) -> str:
     total = sum(draft.seconds.values())
     spent = f" in {total:.0f} seconds" if total else ""
     return f"# {draft.question}\n\nAnswered as of {draft.asked.isoformat()}{spent}."
+
+
+def short(draft: Draft) -> str:
+    """
+    The question answered in one sentence, set apart so it reads before anything else
+
+    Args:
+        draft: What the document is built from.
+
+    Returns:
+        The quoted paragraph, empty when none was written.
+    """
+    return f"> **TL;DR.** {draft.answer}" if draft.answer else ""
 
 
 def state(draft: Draft) -> str:
@@ -149,9 +174,25 @@ def by_role(papers: list[Paper], draft: Draft) -> list[Paper]:
     )
 
 
+def inside(nodes: list[str], edges: list[Edge]) -> dict[str, int]:
+    """
+    How the papers of one line cite each other, one count per citing pair and intent
+
+    Args:
+        nodes: The line's papers.
+        edges: Every edge that was mined.
+
+    Returns:
+        A count per intent, the most frequent first.
+    """
+    held = set(nodes)
+    pairs = {(e.source, e.target, e.intent) for e in edges if e.source in held and e.target in held}
+    return dict(Counter(intent for _, _, intent in pairs).most_common())
+
+
 def lineages(draft: Draft) -> str:
     """
-    How the area got here, one dated path per line, marking the papers it argues with
+    How the area got here, one dated path per line with its name and how its papers cite each other
 
     Args:
         draft: What the document is built from.
@@ -162,22 +203,27 @@ def lineages(draft: Draft) -> str:
     if draft.mined is None or not draft.mined.lineages:
         return ""
     papers = draft.mined.papers
-    magnets = {m.node: m.weight for m in draft.mined.magnets}
     lines = ["## How it got here", ""]
     for spot, line in enumerate(draft.mined.lineages, 1):
-        mass = sum(magnets.get(n, 0.0) for n in line.magnets)
+        named = draft.names[spot - 1] if spot <= len(draft.names) else LineName()
         runs = "once" if line.runs == 1 else f"{line.runs} times"
+        lines.append(f"### Line {spot}{': ' + named.name if named.name else ''}")
+        lines.append("")
+        if named.description:
+            lines.append(named.description)
+            lines.append("")
+        counted = inside(line.nodes, draft.mined.edges)
+        said = ", ".join(f"{n} {intent}" for intent, n in counted.items())
         lines.append(
-            f"### Line {spot}, {len(line.nodes)} papers, "
-            f"argued-with mass {mass:.2f}, reproduced {runs}"
+            f"{len(line.nodes)} papers, reproduced {runs}"
+            + (f", citing each other as {said}." if said else ".")
         )
         lines.append("")
         for node in line.nodes:
             paper = papers.get(node)
             if paper is None:
                 continue
-            mark = "*" if node in line.magnets else " "
-            lines.append(f"- {mark} {paper.date.isoformat()} {link(node)} {clean(paper.title)}")
+            lines.append(f"- {paper.date.isoformat()} {link(node)} {clean(paper.title)}")
         lines.append("")
     return "\n".join(lines).rstrip()
 
@@ -331,6 +377,7 @@ def document(draft: Draft) -> str:
     """
     parts = [
         head(draft),
+        short(draft),
         written(draft),
         methods(draft),
         state(draft),

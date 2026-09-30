@@ -1,73 +1,87 @@
 # nix
 
 The daemon as a package and as a NixOS module, which is how GraphIV is deployed.
-The dev shell and the postgres helpers stay in `flake.nix`, since they are for working on the code
-rather than for running it.
+The dev shell and the postgres helpers stay in `flake.nix`, since they are for working on the code rather than for running it.
 
 ```
-package.nix   the interpreter, the seven libraries the serve path imports, and the tree it runs from
-module.nix    services.graphiv: the options, the generated config.toml, and the two units
+package.nix   the interpreter, the libraries it imports, and the tree it runs from
+module.nix    services.graphiv: the cluster, the three units, and config.toml in the store
 ```
 
 ## The package
 
-`src/` is copied into `share/graphiv` and put on `PYTHONPATH` rather than installed, so it never
-takes the name `src` in site-packages.
-`bin/graphiv-serve` wraps `scripts/serve.py`, and the closure is 645 MB with no torch and no CUDA,
-since every model the serve path uses is an endpoint it calls.
+`src/`, `scripts/` and `retrieval_recipes/` are copied into `share/graphiv` and put on `PYTHONPATH` rather than installed, so `src` never takes that name in site-packages.
+
+| output | wraps | carries |
+| --- | --- | --- |
+| `graphiv` | `bin/graphiv-serve`, `scripts/serve.py` | the serve path, no torch and no CUDA |
+| `graphiv-manager` | `bin/graphiv-manager`, `scripts/graphiv_manager/main.py` | the serve path plus torch, transformers, umap-learn and scikit-learn |
+
+The manager variant is `graphiv.override { withManager = true; }`.
+Its torch is the upstream CUDA 13 wheel, since a CUDA torch built from source is hours of compile and the binary cache carries no CUDA variant.
 
 ```sh
 nix build .#graphiv
+nix build .#graphiv-manager
 nix flake check          # the test suite, which needs no store and no GPU
 ```
 
 ## The module
 
+`settings` is `config.toml`, one attribute per key, and every key has a default, so a host names only what differs.
+
 ```nix
 {
   services.graphiv = {
     enable = true;
-    stateDir = "/srv/graphiv";          # data/, cache/ and runs/ default under it
-    database.dsn = "host=/run/graphiv port=5433 dbname=arxivkg";
-    endpoints.llm.name = "Gemma-4-26B";
-    allowedHosts = [ "graphiv.example.com" ];
+    stateDir = "/srv/graphiv";
+    settings.endpoints.LLM_NAME = "Gemma-4-26B";
+    settings.serve.ALLOWED_HOSTS = [ "graphiv.example.com" ];
   };
 }
 ```
 
-`graphiv-api` on 6767 serves the nine tools.
-`graphiv-frontend` on 6969 serves the dashboard from a second process carrying no tools at all, so
-it opens neither the store nor the graph export and cannot reach the corpus.
+| unit | port | holds |
+| --- | --- | --- |
+| `graphiv-pg` | socket only | the cluster, one postmaster of its own |
+| `graphiv-api` | `serve.API_PORT`, 6767 | the nine tools, the store, the graph export |
+| `graphiv-frontend` | `serve.FRONTEND_PORT`, 6969 | the dashboard, from a second process registering no tools |
+| `graphiv-manager` | `manager.PORT`, 6868 | the snapshot fetch and every preprocess stage, on the GPU |
+| `graphiv-graph` | | a path unit restarting the api when the graph export is rewritten |
 
-The options name the deployment and nothing else. Every tuned constant lives in the recipe files
-that ship with the package, because a Nix option is a promise to support whatever value is put
-there, and a detuned retriever still reports numbers.
+The frontend opens neither the store nor the graph export, so it cannot reach the corpus.
+The manager writes the store and the corpus, so it belongs on a private vhost only.
 
-`stateDir` is the whole layout, and `dataDir`, `cacheDir` and `runsDir` override one piece of it:
+`stateDir` and `dataDir` are the layout, and every path in `settings` defaults under one of them:
 
 ```
-<stateDir>/data     the cluster, the corpus and the graph export, all expensive to rebuild
-<stateDir>/cache    model replies keyed by their prompt, safe to delete at any time
-<stateDir>/runs     one directory per report written
+<stateDir>/data          the snapshot, the models, the graph export and the cluster
+<stateDir>/data/arxiv    the corpus, as trees of YYMM/<id>.html and YYMM/<id>v<n>.pdf
+<stateDir>/cache         model replies keyed by their prompt, safe to delete at any time
+<stateDir>/runs          one directory per report written
+<stateDir>/manager       the manager's jobs, logs and cached charts
 ```
 
-Point `corpus.html` and `corpus.pdf` at their resolved paths when the full text is on another
-mount. They default under `dataDir`, and a symlink there leaves the unit ordering on the wrong
-mount, which turns every full-text read into a silent miss.
+Point `settings.dataset.HTML_PATH` and `PDF_PATH` at their resolved paths when the full text is on another mount.
+A symlink under `dataDir` leaves every unit ordering on the wrong mount, which turns every full-text read into a silent miss.
 
-What the module does not do is provision postgres. It takes a dsn, and the cluster behind it needs
-pgvector and the four tables the published dump restores. Reads are all the daemon ever issues, so
-the role it connects as needs `CONNECT` and `SELECT` and nothing more.
+`postgres.enable` runs the cluster under `postgres.dataDir`, created by `initdb` when it holds no `PG_VERSION`, and `postgres.settings` reaches the server as `-c` flags.
+Turn it off to point `settings.database.PG_DEST` at a cluster run elsewhere.
+The api and the frontend only ever read, so their role needs `CONNECT` and `SELECT`.
+The stages insert, truncate and copy, so `manager.databaseUser` names the role that owns the four tables when it is not the unit's own user.
+
+No option names a tuned constant.
+The exponents and the `[miner]` block live in the recipe files that ship with the package, because an option is a promise to support whatever value is put there, and a detuned retriever still reports numbers.
 
 ## What a host has to supply
 
 | | |
 | --- | --- |
-| the store | a postgres with pgvector, restored from the dump or built by `scripts/` |
-| the graph export | `stage2_export_graph.py` writes it, and the dump does not carry it |
+| the store | the dump restored into the cluster, or built by the manager from a snapshot |
+| the graph export | the manager's last stage writes it, and the dump does not carry it |
 | two endpoints | a llama-server for embedding, any OpenAI compatible host for the model |
-| the corpus, optionally | trees of `YYMM/<id>.html` and `YYMM/<id>v<n>.pdf` under `dataDir/arxiv` |
+| a GPU, for the manager | the two classifiers load onto it, and `manager.path` carries `nvidia-smi` |
+| the corpus, optionally | the two trees above, which the manager's stages fill |
 
-With no corpus, a paper is fetched from arXiv on the first read, one request every three seconds,
-into those same trees, so the second read is local. Set `fetch = false` when they cannot be
-written, and the daemon then answers out of whatever is already there.
+With no corpus, a paper is fetched from arXiv on the first read, one request every three seconds, into those same trees, so the second read is local.
+Set `settings.serve.FETCH = false` when they cannot be written, and the daemon then answers out of whatever is already there.

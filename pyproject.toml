@@ -46,6 +46,8 @@ target-version = ["py313"]
 # a cache holds data, including upstream code cloned to reproduce a published number
 line-length = 100
 target-version = "py313"
+# the manager imports its own modules flat, so they sort as first party
+src = [".", "scripts/graphiv_manager"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N", "UP", "B", "ANN", "BLE", "D"]
@@ -69,6 +71,8 @@ known-first-party = ["graphiv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# the manager is a flat script directory rather than a package, as its entrypoint sees it
+pythonpath = ["scripts/graphiv_manager"]
 norecursedirs = [".legacy"]
 addopts = "-ra -m 'not slow and not gpu'"
 markers = [

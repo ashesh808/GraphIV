@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-palette="haruhana" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GraphIV Manager</title>
+<meta name="description" content="Keeps the GraphIV store current: the snapshot, every preprocessing stage, and what the tables hold.">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <a class="brand" href="#/dashboard"><img src="icon.svg" alt="" width="26" height="26"><b>GraphIV</b><span>Manager</span></a>
+  <span class="leds" id="leds"></span>
+  <span class="right">
+    <span class="tech" id="counted"></span>
+    <button class="pill sm" id="recount" title="Count every queue again">Recount</button>
+    <span class="swatches" id="swatches"></span>
+    <button class="pill sm" id="mode" title="Light or dark">&#9680;</button>
+  </span>
+</nav>
+<div class="shell">
+  <aside class="rail" id="rail"></aside>
+  <main class="deck">
+    <div class="tabs" id="tabs">
+      <button data-t="dashboard">Dashboard</button>
+      <button data-t="download">Download Manager</button>
+      <button data-t="history">History</button>
+    </div>
+    <section class="tab-panel" id="p-dashboard"></section>
+    <section class="tab-panel" id="p-download"></section>
+    <section class="tab-panel" id="p-history"></section>
+  </main>
+</div>
+<div class="tip" id="tip"></div>
+<script src="app.js"></script>
+</body>
+</html>

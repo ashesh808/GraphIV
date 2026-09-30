@@ -13,7 +13,7 @@ from datetime import date
 from src.core import llm
 from src.core.schema import Grade, Paper
 from src.miner.miner import Mined
-from src.report.render import Section
+from src.report.render import LineName, Section, inside
 from src.report.table import Design, Method, render
 
 LOG = logging.getLogger(__name__)
@@ -26,6 +26,8 @@ MIN_SECTIONS = 3
 OUTLINE_TOKENS = 1800
 SECTION_TOKENS = 1400
 CLOSE_TOKENS = 900
+ANSWER_TOKENS = 900
+NAME_TOKENS = 900
 OPEN_TOKENS = 700
 OPEN_CHARS = 1600
 OPEN_PAPERS = 10
@@ -112,6 +114,46 @@ The first says what this field is trying to do and what makes it hard.
 The second says how the answer has moved, naming the papers the lineages run through as
 arXiv:<id>, and ends by saying what the sections below settle.
 Cite only ids from the evidence. Never invent a number.
+"""
+
+ANSWER = """A researcher asked this.
+
+{question}
+
+This is what the review found, as of {asked}.
+
+{evidence}
+
+Answer the question in one sentence of at most 35 words, the TL;DR a reader stops at.
+
+Rules:
+- The sentence is the answer itself, not a description of the field or of this review.
+- When the question asks two things, the sentence answers both.
+- Name the approach that carries the answer rather than listing every approach.
+- Cite at most two papers, as arXiv:<id>, using only ids from above.
+- Never invent a number, and where the evidence leaves the question open, say that instead.
+- No heading, no label and no preamble, only the sentence.
+"""
+
+NAME = """A citation walk reproduced this path through a field, oldest paper first.
+
+{question}
+
+{papers}
+
+How the papers on it cite each other: {cites}.
+
+Names already given to other paths through this field: {taken}.
+
+Say what thread of work runs through this path.
+
+Rules:
+- The name is at most six plain words a researcher would use, with no arXiv id.
+- The description is one or two sentences on what changed from the first paper to the last.
+- The name differs from every name already given, by saying what sets this path apart.
+
+Reply with json only, no preamble:
+{{"name": "...", "description": "..."}}
 """
 
 
@@ -309,3 +351,86 @@ def strip_heading(text: str, title: str) -> str:
             body = body[len(opener) :].lstrip(" :\n")
             break
     return body.strip()
+
+
+def answer(model: llm.Gemma, question: str, asked: date, evidence: str) -> str:
+    """
+    The question answered in one sentence, which the document opens on
+
+    Args:
+        model: The router client.
+        question: What was asked.
+        asked: The date the run is capped at.
+        evidence: The written sections when there are any, the digest otherwise.
+
+    Returns:
+        The sentence, empty when the model returned nothing.
+    """
+    reply = model.ask(
+        ANSWER.format(question=question, asked=asked.isoformat(), evidence=evidence),
+        max_tokens=ANSWER_TOKENS,
+    )
+    return " ".join(reply.split())
+
+
+def name_line(
+    model: llm.Gemma, question: str, found: Mined, nodes: list[str], taken: list[str]
+) -> LineName:
+    """
+    A name and a description for one lineage, from its papers and how they cite each other
+
+    Args:
+        model: The router client.
+        question: What was asked.
+        found: What was mined, which holds the papers and the edges.
+        nodes: The lineage, oldest first.
+        taken: The names earlier lines were given, which this one must differ from.
+
+    Returns:
+        The name and description, both empty when the reply did not parse.
+    """
+    held = found.papers
+    listing = "\n".join(
+        f"- ({held[n].date.year}) {' '.join(held[n].title.split())}" for n in nodes if n in held
+    )
+    counted = inside(nodes, found.edges)
+    cites = ", ".join(f"{n} {intent}" for intent, n in counted.items()) or "none recorded"
+    parsed = llm.parse_json(
+        model.ask(
+            NAME.format(
+                question=question,
+                papers=listing,
+                cites=cites,
+                taken="; ".join(taken) or "none yet",
+            ),
+            max_tokens=NAME_TOKENS,
+        )
+    )
+    if not isinstance(parsed, dict):
+        return LineName()
+    return LineName(
+        name=" ".join(str(parsed.get("name", "")).split()),
+        description=" ".join(str(parsed.get("description", "")).split()),
+    )
+
+
+def name_lines(model: llm.Gemma, question: str, found: Mined | None) -> list[LineName]:
+    """
+    A name and a description per lineage, one call each, every call told the names already given
+
+    Args:
+        model: The router client.
+        question: What was asked.
+        found: What was mined.
+
+    Returns:
+        One entry per lineage in order.
+    """
+    if found is None:
+        return []
+    named: list[LineName] = []
+    for line in found.lineages:
+        taken = [n.name for n in named if n.name]
+        named.append(name_line(model, question, found, line.nodes, taken))
+    LOG.info("named %d of %d lines", sum(1 for n in named if n.name), len(named))
+    return named
