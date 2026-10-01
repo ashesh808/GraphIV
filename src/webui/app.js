@@ -157,17 +157,16 @@ async function openPanel(o) {
   panel.classList.add("open");
   document.getElementById("panel-t").textContent = o.title || "";
   document.getElementById("panel-m").innerHTML = o.meta || "";
-  document.getElementById("panel-l").innerHTML =
-    (o.ext ? `<a class="pill sm" target="_blank" href="${o.ext}">arXiv &#8599;</a>` : "") +
-    (o.url ? `<a class="pill sm" target="_blank" href="${o.url}">Open in a new tab &#8599;</a>` : "");
+  const links = document.getElementById("panel-l");
   const body = document.getElementById("panel-b");
   body.innerHTML = '<div class="panel-msg">Loading the paper&hellip;</div>';
   let there = false;
   try { there = (await fetch(o.url, { method: "HEAD" })).ok; } catch (e) { there = false; }
-  if (there) { body.innerHTML = `<iframe src="${o.url}"></iframe>`; return; }
-  body.innerHTML = o.abstract
-    ? `<div class="panel-abs"><p class="tech">No PDF on this server, so here is the abstract.</p>${esc(o.abstract)}</div>`
-    : '<div class="panel-msg">No PDF on this server and no abstract for this paper. The arXiv link above still works.</div>';
+  const shown = there ? o.url : o.remote;
+  links.innerHTML =
+    `<a class="pill sm" target="_blank" href="${o.ext}">arXiv &#8599;</a>` +
+    `<a class="pill sm" target="_blank" href="${shown}">Open in a new tab &#8599;</a>`;
+  body.innerHTML = `<iframe src="${shown}"></iframe>`;
 }
 
 function openPaper(id) {
@@ -178,8 +177,8 @@ function openPaper(id) {
     title: p ? deTeX(p.title) : "arXiv:" + id,
     meta: p ? esc([authors(p.authors), p.year || yearOf(id), p.category, id].filter(Boolean).join(" · ")) : esc(id),
     url: "pdf/" + id,
+    remote: "https://arxiv.org/pdf/" + id,
     ext: "https://arxiv.org/abs/" + id,
-    abstract: p ? deTeX(p.abstract) : "",
   });
 }
 

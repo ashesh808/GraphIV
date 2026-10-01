@@ -39,7 +39,7 @@ A method column filters and crosses only when its kind is `choice`, since a free
 A run written before columns carried their kind is read by which columns list options, which are exactly the choice ones.
 
 Hovering a citation anywhere shows the paper's card.
-Clicking one opens the panel, which shows the pdf from the local store when it is there and the abstract when it is not.
+Clicking one opens the panel, which shows the pdf from the local store when it is there and arXiv's own pdf when it is not.
 
 ## On a phone
 
