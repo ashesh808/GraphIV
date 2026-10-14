@@ -16,6 +16,7 @@ P = "papers_preprocess"
 T = "topic_tree_creation"
 C = "citation_preprocess"
 E = "evaluate_retrieval"
+X = "export"
 
 # rows per second measured on this box, replaced by what a finished run here measured
 RATES = {
@@ -52,6 +53,8 @@ class Stage:
     # script, or fetch for the one stage the manager runs in process
     kind: str = "script"
     unit: str = "rows"
+    # the disks it reads or fills, by the names the health check gives them
+    disks: tuple[str, ...] = ("State",)
 
     def command(self) -> str:
         """
@@ -81,6 +84,7 @@ STAGES = [
         delta=False,
         kind="fetch",
         unit="bytes",
+        disks=("State", "Snapshot"),
     ),
     Stage(
         key="papers.0",
@@ -93,6 +97,7 @@ STAGES = [
         fetches="nothing, the snapshot is fetched in the stage before",
         queue="snapshot",
         note="a new version also deletes that paper's files and its outgoing citations",
+        disks=("State", "Snapshot"),
     ),
     Stage(
         key="papers.1",
@@ -103,6 +108,7 @@ STAGES = [
         writes="papers.stage to 1, and a pdf per paper under the corpus",
         fetches="PDFs from the arXiv bulk mirror, falling back to v1 when the latest is missing",
         queue="papers.0",
+        disks=("State", "PDF store"),
     ),
     Stage(
         key="papers.2",
@@ -114,6 +120,7 @@ STAGES = [
         fetches="HTML from ar5iv, then arxiv.org, at HTML_RATE a second",
         queue="papers.1",
         note="about 60% land, and a paper with no render stays queued for the next run",
+        disks=("State", "HTML store"),
     ),
     Stage(
         key="papers.3",
@@ -178,6 +185,7 @@ STAGES = [
         writes="citations: one row per citation occurrence, and papers.is_citation_parsable",
         fetches="nothing, it reads the html on disk",
         queue="unparsed",
+        disks=("State", "HTML store"),
     ),
     Stage(
         key="citations.1",
@@ -250,6 +258,32 @@ STAGES = [
         writes="experiments/retrieve/PrecisionMatch",
         delta=False,
     ),
+    Stage(
+        key="export.0",
+        table="export",
+        label="Dump the store",
+        script=f"{X}/stage0_dump_store.py",
+        reads="every table in the store, from one snapshot of it",
+        writes="graphiv-<date>.dump under EXPORT_PATH, a pg_dump custom archive at zstd:3",
+        fetches="nothing",
+        queue="store",
+        note="the full backup, sentences included, which docs/restore.md restores",
+        delta=False,
+        disks=("State", "Export"),
+    ),
+    Stage(
+        key="export.1",
+        table="export",
+        label="Export to Parquet",
+        script=f"{X}/stage1_export_parquet.py",
+        reads="papers at stage 3 or later, their topics, and the citations between them",
+        writes="graphiv-<date>/ under EXPORT_PATH: papers, topics, citations and both classifiers",
+        fetches="the classifiers' base config from the hub when it is not cached",
+        queue="exportable",
+        note="citation sentences stay out, since they are the papers' own text",
+        delta=False,
+        disks=("State", "Export"),
+    ),
 ]
 BY_KEY = {s.key: s for s in STAGES}
 TABLES = {
@@ -257,6 +291,7 @@ TABLES = {
     "tree": "Topic tree",
     "citations": "Citations",
     "eval": "Evaluation",
+    "export": "Export",
 }
 
 
@@ -314,12 +349,13 @@ def of_table(table: str) -> list[str]:
     The stages of one table that a delta runs
 
     Args:
-        table: papers, tree, citations or eval.
+        table: papers, tree, citations, eval or export.
 
     Returns:
         Their keys in order.
     """
-    return [s.key for s in STAGES if s.table == table and (s.delta or table == "eval")]
+    whole = table in ("eval", "export")
+    return [s.key for s in STAGES if s.table == table and (s.delta or whole)]
 
 
 def everything() -> list[str]:
@@ -362,6 +398,15 @@ def waiting(stage: Stage, queues: dict[str, Any], stats: dict[str, Any], found: 
         return queues.get("names")
     if stage.queue in ("unparsed", "unlabeled"):
         return queues.get(stage.queue)
+    if stage.queue == "store":
+        held = stats.get("s_tables", {}).get("rows") or []
+        return sum(int(row[4]) for row in held) or None
+    if stage.queue == "exportable":
+        totals = dict(stats.get("c_totals", {}).get("rows") or [])
+        embedded = queues.get("embedded")
+        if embedded is None or "resolved" not in totals:
+            return None
+        return 2 * int(embedded) + int(totals["resolved"])
     if stage.queue in ("resolved", "export"):
         totals = dict(stats.get("c_totals", {}).get("rows") or [])
         return int(totals["resolved"]) if "resolved" in totals else None

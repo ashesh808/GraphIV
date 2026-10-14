@@ -43,6 +43,10 @@ FETCH = true
 PORT = 6868
 STATE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/manager"
 
+# What leaves the store: graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release
+[export]
+EXPORT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/export"
+
 [endpoints]
 EMBED_API = "http://127.0.0.1:11435"
 EMBED_NAME = "nomic-embed-text-v2-moe"

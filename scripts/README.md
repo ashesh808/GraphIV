@@ -44,6 +44,15 @@ them cost one retrieval.
 uv run python scripts/evaluate_retrieval/stage0_surveymatch.py
 ```
 
+## The export
+
+`export/` writes the full pg_dump that `docs/restore.md` restores, and the Parquet release that gets published, both under `[export] EXPORT_PATH`.
+
+```sh
+uv run python scripts/export/stage0_dump_store.py
+uv run python scripts/export/stage1_export_parquet.py
+```
+
 ## The manager
 
 `graphiv_manager/` is one page that fetches the weekly snapshot, stages it, and runs every stage
@@ -61,5 +70,5 @@ uv run python scripts/serve.py --http --role api       # the nine tools
 uv run python scripts/serve.py --http --role frontend  # the dashboard, no tools at all
 ```
 
-`serve.py` and the manager are the only entrypoints outside the preprocess tasks and the benchmarks.
+`serve.py` and the manager are the only entrypoints outside the preprocess tasks, the benchmarks and the export.
 The loop belongs to the caller, so nothing here answers a question on its own.

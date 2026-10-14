@@ -4,7 +4,7 @@ The grounding guard, on the two shapes a document cites in and the three things 
 
 from __future__ import annotations
 
-from src.report.ground import distance, linkify, nearest, read_ids, strip
+from src.report.ground import distance, linkify, mark, nearest, read_ids, strip
 
 GIVEN = {"2006.10637": "2006.10637", "hep-th/0409210": "hep-th/0409210"}
 
@@ -57,3 +57,13 @@ def test_linkify_turns_a_mention_into_a_link():
     assert linkify("see arXiv:2006.10637 now") == (
         "see [arXiv:2006.10637](https://arxiv.org/abs/2006.10637) now"
     )
+
+
+def test_a_bare_id_is_given_its_prefix():
+    text = "BA-Cite [2510.19246] and (2408.03934, physics/0612122)."
+    assert read_ids(mark(text)) == {"2510.19246", "2408.03934", "physics/0612122"}
+
+
+def test_a_prefixed_or_linked_id_is_left_alone():
+    text = "arXiv:2510.19246 and [`2006.10637`](https://arxiv.org/abs/2006.10637) at 0.9734"
+    assert mark(text) == text

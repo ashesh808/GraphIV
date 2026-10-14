@@ -57,7 +57,7 @@ class Gemma:
         stamp = hashlib.sha1(f"{self.model}|{max_tokens}|{prompt}".encode()).hexdigest()[:16]
         return self.cache / f"{stamp}.txt"
 
-    def post(self, prompt: str, max_tokens: int) -> str:
+    def post(self, prompt: str, max_tokens: int) -> tuple[str, bool]:
         """
         One completion against the router, retried, with reasoning off
 
@@ -66,7 +66,7 @@ class Gemma:
             max_tokens: The completion budget.
 
         Returns:
-            The reply, empty when every attempt failed.
+            The reply, empty when every attempt failed, and whether the budget cut it off.
         """
         body = {
             "model": self.model,
@@ -84,13 +84,14 @@ class Gemma:
             try:
                 with urllib.request.urlopen(request, timeout=600) as response:
                     payload = json.load(response)
-                reply = str(payload["choices"][0]["message"]["content"] or "")
+                choice = payload["choices"][0]
+                reply = str(choice["message"]["content"] or "")
             except (urllib.error.URLError, TimeoutError, OSError, KeyError, ValueError):
                 continue
             if reply.strip():
-                return reply
+                return reply, choice.get("finish_reason") == "length"
         LOG.warning("the router returned nothing after %d attempts", ATTEMPTS)
-        return ""
+        return "", False
 
     def ask(self, prompt: str, max_tokens: int = 512) -> str:
         """
@@ -106,9 +107,12 @@ class Gemma:
         path = self.get_cache_path(prompt, max_tokens)
         if path.exists():
             return path.read_text(encoding="utf-8")
-        reply = self.post(prompt, max_tokens)
-        if reply.strip():
+        reply, cut = self.post(prompt, max_tokens)
+        # a reply cut at the budget parses as nothing, so caching it would replay the failure
+        if reply.strip() and not cut:
             _ = path.write_text(reply, encoding="utf-8")
+        elif cut:
+            LOG.warning("a reply ran out of its %d token budget and was not cached", max_tokens)
         return reply
 
     def ask_many(self, prompts: list[str], max_tokens: int = 512) -> list[str]:

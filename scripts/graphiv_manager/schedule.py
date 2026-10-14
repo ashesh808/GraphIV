@@ -274,6 +274,7 @@ class Manager:
             "Snapshot": self.source.resolve().parent,
             "PDF store": Path(str(data.get("PDF_PATH", self.state))),
             "HTML store": Path(str(data.get("HTML_PATH", self.state))),
+            "Export": Path(str(self.cfg.get("export", {}).get("EXPORT_PATH", self.state))),
         }
         store, llm, embed, card, disk = await asyncio.gather(
             asyncio.to_thread(probes.store, self.dsn),
@@ -519,10 +520,17 @@ class Manager:
             one = health["foreign"][0]
             return f"{one['script']} is already running as pid {one['pid']}"
         named = {s.path: s for s in self.found}
+        disk = health.get("disk", {})
         wanted: set[str] = set()
+        touched: set[str] = set()
         for step in job.steps[job.current :]:
             script = named.get(step.script)
             wanted |= set(script.needs) if script else {"store"}
+            stage = stages.BY_KEY.get(step.stage)
+            if stage is not None:
+                touched |= set(stage.disks)
+            elif step.kind == "script":
+                touched |= set(disk)
         names = {
             "store": "the database",
             "llm": "the language model",
@@ -533,7 +541,11 @@ class Manager:
                 return f"waiting for {label}: {health.get(key, {}).get('note', 'not checked yet')}"
         if "gpu" in wanted and not health.get("gpu", {}).get("ok"):
             return "waiting for the GPU, which nvidia-smi cannot see"
-        low = [k for k, v in health.get("disk", {}).items() if not v.get("ok")]
+        mine = {k: v for k, v in disk.items() if k in touched}
+        for key, said in mine.items():
+            if "note" in said:
+                return f"cannot reach the {key}: {said['note']}"
+        low = [k for k, v in mine.items() if not v.get("ok")]
         if low:
             return f"waiting for disk space on {', '.join(low)}"
         return ""

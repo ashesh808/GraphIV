@@ -9,6 +9,7 @@ The serve path needs four things, and nothing outside `./data`.
 
 Download the dump: **link pending**, to be hosted on Hugging Face.
 The current build is `graphiv-2026-09-26.dump`, written by `pg_dump -Fc --compress=zstd:3`.
+The manager's Export tab writes a new one into `data/export`, through `scripts/export/stage0_dump_store.py`.
 
 ```bash
 nix develop                    # postgres17 with pgvector, plus the pg-* helpers

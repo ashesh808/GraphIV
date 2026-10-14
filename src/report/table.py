@@ -518,7 +518,14 @@ def gaps(made: Design, rows: list[Method], thin: int = 0) -> str:
             for a in left.options:
                 cells = " | ".join(str(grid[(a, b)]) for b in right.options)
                 out.append(f"| {a} | {cells} |")
-            empty = [f"{a} + {b}" for (a, b), n in grid.items() if n <= thin]
+            # a cell is only a gap when both of its options were each used somewhere
+            used = {(a, b) for (a, b), n in grid.items() if n}
+            lefts, rights = {a for a, _ in used}, {b for _, b in used}
+            empty = [
+                f"{a} + {b}"
+                for (a, b), n in grid.items()
+                if n <= thin and a in lefts and b in rights
+            ]
             if empty:
                 out.append("")
                 out.append(f"Nobody here does: {', '.join(sorted(empty))}.")

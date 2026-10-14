@@ -63,6 +63,7 @@ The manager writes the store and the corpus, so it belongs on a private vhost on
 ```
 <stateDir>/venv          the venv uv fills from uv.lock, torch and its CUDA wheels included
 <stateDir>/data          the snapshot, the models, the graph export and the cluster
+<stateDir>/data/export   the manager's store dumps and Parquet releases
 <stateDir>/data/arxiv    the corpus, as trees of YYMM/<id>.html and YYMM/<id>v<n>.pdf
 <stateDir>/cache         model replies keyed by their prompt, safe to delete at any time
 <stateDir>/runs          one directory per report written
@@ -76,6 +77,7 @@ A symlink under `dataDir` leaves every unit ordering on the wrong mount, which t
 Turn it off to point `settings.database.PG_DEST` at a cluster run elsewhere.
 The api and the frontend only ever read, so their role needs `CONNECT` and `SELECT`.
 The stages insert, truncate and copy, so `manager.databaseUser` names the role that owns the four tables when it is not the unit's own user.
+The manager's path carries `postgres.package` for the dump stage, and with `postgres.enable` off, `manager.path` has to name a `pg_dump` no older than the cluster.
 
 No option names a tuned constant.
 The exponents and the `[miner]` block live in the recipe files that ship with the package, because an option is a promise to support whatever value is put there, and a detuned retriever still reports numbers.

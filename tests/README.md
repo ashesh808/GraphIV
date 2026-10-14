@@ -7,7 +7,7 @@ run.py                runs the whole suite, or one subdirectory
 retrieve/conftest.py  an eight paper citation graph written in the format stage2 exports
 retrieve/             the graph reader, the score, the expanders and the pipeline
 frontier/             the extends chains, the successor order and the page
-graphiv_manager/      the manager's runner against fake stages, and its fetch against a local server
+graphiv_manager/      the manager's runner against fake stages, its disk gate, and its fetch against a local server
 ```
 
 ```sh

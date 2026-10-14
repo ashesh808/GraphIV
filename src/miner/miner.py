@@ -8,6 +8,7 @@ The walk runs on the head of the list and the forward look on all of it, which p
 from __future__ import annotations
 
 import logging
+import re
 from datetime import date, timedelta
 
 from pydantic import BaseModel, Field
@@ -21,6 +22,8 @@ from src.miner.recipe import Recipe
 LOG = logging.getLogger(__name__)
 
 SENTENCE_FLOOR = 40
+# the marker sits at the cited paper's slot, so one sentence differs per target until it is dropped
+MARKS = re.compile(r"\d{4}[a-z]\b|\W|\d|CITE")
 # without a cap the most argued with paper takes every slot and the section names one paper
 PER_TARGET = 2
 
@@ -169,7 +172,13 @@ class Miner:
             },
         )
 
-    def disputes(self, edges: list[Edge], weight: dict[str, float]) -> list[Edge]:
+    def disputes(
+        self,
+        edges: list[Edge],
+        weight: dict[str, float],
+        intents: tuple[str, ...] = (),
+        sources: set[str] | None = None,
+    ) -> list[Edge]:
         """
         One sentence per citing pair that took a position, the most argued with paper first
 
@@ -178,21 +187,30 @@ class Miner:
         Args:
             edges: The labeled citations.
             weight: Magnet weight per paper, which orders the result.
+            intents: Which labels count, the recipe's argued with labels when empty.
+            sources: The only papers whose sentences count, every paper when None.
 
         Returns:
             The sentences.
         """
+        counted = intents or self.recipe.settings.argues
         seen: set[tuple[str, str]] = set()
+        # one sentence citing six papers would otherwise be quoted six times
+        said: set[tuple[str, str]] = set()
         held: dict[str, int] = {}
         out: list[Edge] = []
         for edge in sorted(edges, key=lambda e: -weight.get(e.target, 0.0)):
-            if edge.intent not in self.recipe.settings.argues:
+            if edge.intent not in counted:
+                continue
+            if sources is not None and edge.source not in sources:
                 continue
             if len(edge.sentence) < SENTENCE_FLOOR or (edge.source, edge.target) in seen:
                 continue
-            if held.get(edge.target, 0) >= PER_TARGET:
+            words = MARKS.sub("", edge.sentence)
+            if held.get(edge.target, 0) >= PER_TARGET or (edge.source, words) in said:
                 continue
             seen.add((edge.source, edge.target))
+            said.add((edge.source, words))
             held[edge.target] = held.get(edge.target, 0) + 1
             out.append(edge)
         return out

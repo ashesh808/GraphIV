@@ -943,7 +943,7 @@ function download(full) {
   if (!mine.some((s) => s.key === where.stage)) where.stage = (mine[0] || {}).key;
   const st = mine.find((s) => s.key === where.stage);
   if (full || !$("stagebox") || $("stagebox").dataset.key !== where.stage) {
-    const delta = mine.filter((s) => s.delta || s.table === "eval");
+    const delta = mine.filter((s) => s.delta || ["eval", "export"].includes(s.table));
     host.innerHTML = `<div class="subbar"><div class="seg">${Object.entries(tables).map(([k, l]) => {
       const ss = (S.stages || []).filter((s) => s.table === k);
       const busy = ss.some((s) => stageStatus(s).led === "run");

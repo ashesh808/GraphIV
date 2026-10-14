@@ -160,18 +160,22 @@ def write_report(
     sections: list[dict[str, str]] | None = None,
     effort: str = "standard",
     end: bool = True,
+    question: str = "",
 ) -> str:
     """
     Assemble the document and write it to disk.
 
-    Pass every `query_id` from this session. The report carries what the area currently is with
-    each paper's role, how it got here as dated lineages, a table comparing the methods on axes
-    this question decides, what has just appeared against it, and what is contested in the citing
-    authors' own words. Pass your own prose as `sections`, each a title and a body, and it is
-    carried as written. Every arXiv id is then checked against the corpus: a typo is corrected and
-    an id no paper carries is cut out. Setting `end` false keeps the session open for a follow-up.
+    Pass every `query_id` from this session, and the question as the reader asked it as `question`,
+    since the report is mined, written and answered against it, while `title` names the document
+    and stands in for the question when it is empty. The report carries what the area
+    currently is with each paper's role, how it got here as dated lineages, a table comparing the
+    methods on axes this question decides, what has just appeared against it, and what is
+    contested in the citing authors' own words. Pass your own prose as `sections`, each a title
+    and a body, and it is carried as written. Every arXiv id is then checked against the corpus: a
+    typo is corrected and an id no paper carries is cut out. Setting `end` false keeps the session
+    open for a follow-up.
     """
-    return writing.write_report(load(), query_ids, title, sections, effort, end)
+    return writing.write_report(load(), query_ids, title, sections, effort, end, question)
 
 
 @tool()

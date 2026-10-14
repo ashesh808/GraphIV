@@ -20,7 +20,7 @@ from src.mcp.effort import Effort, level
 from src.mcp.state import Handles, get, reset
 from src.miner.miner import Mined, Miner
 from src.miner.recipe import read_recipe
-from src.miner.store import read_records
+from src.miner.store import read_cosines, read_records
 from src.report import ground
 from src.report.compose import OPEN_PAPERS, answer, compose, digest, name_lines, unanswered
 from src.report.fulltext import FullText, read_open, read_paper
@@ -34,6 +34,8 @@ SAMPLES = 20
 # what the answer is asked from, since the whole review runs past the context a reply needs
 EVIDENCE_CHARS = 24000
 SENTENCE_CHARS = 300
+# a successor sits at least as close to the question as all but the farthest tenth of what was kept
+FLOOR_SHARE = 0.1
 
 
 def slug(text: str, when: date) -> str:
@@ -130,12 +132,52 @@ def trim(found: Mined, hard: Effort) -> Mined:
     return found.model_copy(
         update={
             "magnets": found.magnets[: hard.magnets],
-            "lineages": found.lineages[: hard.lineages],
+            "lineages": [line for line in found.lineages if len(line.nodes) > 1][: hard.lineages],
             "disputes": found.disputes[: hard.disputes],
             "successors": found.successors[: hard.successors],
             "connectors": found.connectors[: hard.magnets],
         }
     )
+
+
+def focus(miner: Miner, found: Mined, papers: list[Paper], close: dict[str, float]) -> Mined:
+    """
+    Holds the disagreements and the successors to the papers the run kept
+
+    A backbone every field cites otherwise fills both, from papers that never touch the question.
+
+    Args:
+        miner: The miner that found it, whose dispute picking is reused.
+        found: Everything the miner returned, before any cut.
+        papers: What the run kept.
+        close: Each kept paper's cosine to the question.
+
+    Returns:
+        The same result with only kept papers' critiques and only successors near the question.
+    """
+    kept = {p.arxiv_id for p in papers}
+    weight = {m.node: m.weight for m in found.magnets}
+    disputes = miner.disputes(found.edges, weight, ("critiques",), kept)
+    ranked = sorted(close.get(a, 0.0) for a in kept)
+    floor = ranked[int(len(ranked) * FLOOR_SHARE)] if ranked else 0.0
+    ahead = [s for s in found.successors if (s.paper.cosine or 0.0) >= floor]
+    return found.model_copy(update={"disputes": disputes, "successors": ahead})
+
+
+def closest(papers: list[Paper], areas: list[Area], close: dict[str, float]) -> list[Paper]:
+    """
+    The kept papers in the order the method table reads them, seeds first and then the closest
+
+    Args:
+        papers: What the run kept, in the order the rankings were made.
+        areas: The areas, which name their seeds.
+        close: Each kept paper's cosine to the question.
+
+    Returns:
+        The same papers, reordered.
+    """
+    seeds = {a.seed for a in areas if a.seed}
+    return sorted(papers, key=lambda p: (p.arxiv_id not in seeds, -close.get(p.arxiv_id, 0.0)))
 
 
 def as_papers(
@@ -413,6 +455,7 @@ def write_report(
     sections: list[dict[str, str]] | None = None,
     effort: str = "standard",
     end: bool = True,
+    question: str = "",
 ) -> str:
     """
     The whole document, written to disk and returned
@@ -420,25 +463,30 @@ def write_report(
     Args:
         handles: The shared handles.
         query_ids: The retrievals this report is built from.
-        title: What to call it, defaulting to the first question asked.
+        title: What to call it, defaulting to the question.
         sections: The caller's own prose, each a title and a body.
         effort: quick, standard or deep, which decides how many papers are read in full.
         end: Forget every ranking afterwards, which is what closes a session.
+        question: What the report is mined, written and answered against, defaulting to the title.
 
     Returns:
         The markdown, where it was written and what the guard had to change, as json.
     """
     clock = time.perf_counter()
     hard = level(effort)
-    papers, areas, grades, question, mode, asked, spent = gather(query_ids)
+    papers, areas, grades, first, mode, asked, spent = gather(query_ids)
     if not papers:
         return json.dumps({"error": "no ranking under those ids, call retrieve first"})
 
-    mined = Miner(handles.dsn, handles.graph, read_recipe(handles.recipe(mode))).mine(
-        papers, handles.embed(question), asked
-    )
-    found = trim(mined, hard)
-    made, methods = table(handles, question, papers, hard.full_text)
+    # each area rewords the question, so the report is held to the one the caller named
+    named = " ".join(title.split())
+    question = " ".join(question.split()) or named or first
+    vector = handles.embed(question)
+    miner = Miner(handles.dsn, handles.graph, read_recipe(handles.recipe(mode)))
+    mined = miner.mine(papers, vector, asked)
+    close = read_cosines(handles.dsn, vector, [p.arxiv_id for p in papers])
+    found = trim(focus(miner, mined, papers, close), hard)
+    made, methods = table(handles, question, closest(papers, areas, close), hard.full_text)
     told = [
         Section(title=str(s.get("title", "")), body=str(s.get("body", "")))
         for s in sections or []
@@ -453,10 +501,19 @@ def write_report(
     )
     allowed = {p.arxiv_id for p in papers} | set(found.papers)
     short = ground.check(
-        handles.dsn, answer(handles.model, question, asked, evidence[:EVIDENCE_CHARS]), allowed
+        handles.dsn,
+        ground.mark(answer(handles.model, question, asked, evidence[:EVIDENCE_CHARS])),
+        allowed,
     ).text
+    told = [
+        Section(
+            title=one.title,
+            body=ground.check(handles.dsn, ground.mark(one.body), allowed).text,
+        )
+        for one in told
+    ]
     draft = Draft(
-        question=title or question,
+        question=named or question,
         asked=asked,
         papers=papers,
         areas=areas,

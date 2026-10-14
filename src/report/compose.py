@@ -22,6 +22,8 @@ ABSTRACT_CHARS = 420
 SENTENCE_CHARS = 240
 MAX_SECTIONS = 6
 MIN_SECTIONS = 3
+# asking the outline to cover every kept paper ran it past its budget at 120 papers
+SECTION_IDS = 8
 # five sections with their ids and a sentence each runs past a shorter budget and parses as nothing
 OUTLINE_TOKENS = 1800
 SECTION_TOKENS = 1400
@@ -48,8 +50,8 @@ Rules:
   for an audit trail" is a section. "Rule-based methods" is not.
 - Keep every title under 12 words and every point to one short sentence.
 - Give each section the arXiv ids it has to discuss, from the list above and nowhere else.
-- Every id appears in at most one section, and the sections together cover the papers graded
-  core, foundational and frontier.
+- Every id appears in at most one section, and a section lists at most {per} ids, the ones it
+  cannot be written without.
 - The last section is what is unresolved, drawn from the disputes and the open questions above.
 
 Reply with json only, no preamble:
@@ -268,7 +270,12 @@ def outline(
         One title, its ids and its point per section.
     """
     prompt = OUTLINE.format(
-        question=question, asked=asked.isoformat(), digest=body, low=MIN_SECTIONS, high=MAX_SECTIONS
+        question=question,
+        asked=asked.isoformat(),
+        digest=body,
+        low=MIN_SECTIONS,
+        high=MAX_SECTIONS,
+        per=SECTION_IDS,
     )
     parsed = llm.parse_json(model.ask(prompt, max_tokens=OUTLINE_TOKENS))
     entries = parsed.get("sections") if isinstance(parsed, dict) else None
@@ -277,7 +284,7 @@ def outline(
         if not isinstance(entry, dict):
             continue
         title = " ".join(str(entry.get("title", "")).split())
-        ids = [str(i).strip() for i in entry.get("ids", []) if str(i).strip()]
+        ids = [str(i).strip() for i in entry.get("ids", []) if str(i).strip()][:SECTION_IDS]
         point = " ".join(str(entry.get("point", "")).split())
         if title and ids:
             out.append((title, ids, point))

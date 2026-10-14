@@ -46,6 +46,7 @@ let
     s.serve.CACHE_PATH
     s.serve.RUNS_PATH
     s.manager.STATE_PATH
+    s.export.EXPORT_PATH
   ];
 
   mounts = lib.unique (
@@ -220,7 +221,10 @@ in
       path = opt (types.listOf types.package) [
         pkgs.aria2
         pkgs.curl
-      ] "Programs the stages run: aria2c for the PDFs, and nvidia-smi when the GPU should show.";
+      ] ''
+        Programs the stages run: aria2c for the PDFs, and nvidia-smi when the GPU should show.
+        postgres.package joins them when postgres is enabled, for pg_dump, and otherwise name one.
+      '';
     };
 
     settings = mkOption {
@@ -305,6 +309,12 @@ in
             PORT = opt types.port 6868 "The page.";
             STATE_PATH = derived types.str "${toString cfg.stateDir}/manager" ''"''${stateDir}/manager"'' ''
               Job logs, the cached charts and the rates it measured.
+            '';
+          };
+
+          export = section "What leaves the store." {
+            EXPORT_PATH = derived types.str "${toString cfg.dataDir}/export" ''"''${dataDir}/export"'' ''
+              Where the manager writes graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release.
             '';
           };
 
@@ -573,7 +583,8 @@ in
       ++ cfg.endpointUnits;
       requires = [ "graphiv-venv.service" ] ++ store;
       unitConfig.RequiresMountsFor = mounts;
-      path = cfg.manager.path;
+      # the dump stage runs pg_dump, which cannot be older than the cluster
+      path = cfg.manager.path ++ lib.optional pg.enable pg.package;
       environment = {
         GRAPHIV_CONFIG = "${file}";
         GRAPHIV_VENV = venv;

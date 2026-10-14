@@ -27,6 +27,9 @@ LINKABLE = re.compile(
     re.IGNORECASE,
 )
 
+# an id the writer left without its prefix, never one inside a link, a path or a longer number
+BARE = re.compile(r"(?<![\w/:.`\-])([a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5})(?!\d)", re.IGNORECASE)
+
 SHORT_ID = 8
 
 
@@ -163,6 +166,19 @@ def strip(text: str, arxiv_ids: set[str]) -> str:
     joined = re.sub(r"\(\s*\)|\[\s*\]", "", joined)
     joined = re.sub(r" {2,}", " ", joined)
     return re.sub(r"\s+([.,;])", r"\1", joined)
+
+
+def mark(text: str) -> str:
+    """
+    Gives every bare id its prefix, since the check and the links only see a prefixed one
+
+    Args:
+        text: What the writer returned.
+
+    Returns:
+        The text with each bare id written as arXiv:<id>.
+    """
+    return BARE.sub(r"arXiv:\1", text)
 
 
 def linkify(text: str) -> str:
