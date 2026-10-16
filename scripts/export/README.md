@@ -6,6 +6,7 @@ Both read and never write the store.
 ```
 stage0_dump_store.py      graphiv-<date>.dump, the whole store as one pg_dump archive, sentences included
 stage1_export_parquet.py  graphiv-<date>/, every paper with its pdf, html and embedding, as Parquet, and both classifiers
+cards/<name>/             one Hugging Face repo's README and figures each: data, citation_labeler and survey_labeler
 ```
 
 ```sh
