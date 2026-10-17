@@ -1,7 +1,7 @@
 """
 Copies each figure in assets/figures beside the Hugging Face card that links it
 
-A figure whose card is not written yet stays in assets/figures only
+A figure no card links stays in assets/figures, where the root README links it
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ def main() -> None:
     for figure in sorted((HERE / "figures").glob("*.png")):
         card = DESTINATIONS.get(figure.stem)
         if card is None:
-            print(f"[move] {figure.name} has no card yet", flush=True)
+            print(f"[move] {figure.name} stays here, for the README that links it", flush=True)
             continue
         _ = shutil.copy2(figure, CARDS / card / figure.name)
         print(f"[move] {figure.name} -> {CARDS / card}", flush=True)

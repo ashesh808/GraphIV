@@ -20,6 +20,10 @@ FIGURES = (
     "citation-labeling-pipeline",
     "survey-labeler",
     "survey-labeling-pipeline",
+    "poster",
+    "bounded-field",
+    "leyline",
+    "research-pipeline",
 )
 
 

@@ -85,6 +85,8 @@ def apply_theme() -> None:
         {
             "font.family": "Google Sans Flex",
             "font.size": 12,
+            # equations in Computer Modern, the face LaTeX sets them in
+            "mathtext.fontset": "cm",
             "text.color": INK,
             "figure.facecolor": PAGE,
             "savefig.facecolor": PAGE,
@@ -254,17 +256,20 @@ class Page:
     One card figure, laid out in inches from its top left corner on an overlay that spans it
     """
 
-    def __init__(self, high: float) -> None:
+    def __init__(self, high: float, wide: float = WIDE) -> None:
         """
-        A blank page of the full width
+        A blank page, as wide as a card unless told otherwise
 
         Args:
             high: The page's height in inches.
+            wide: The page's width in inches, its right margin matching a card's.
         """
         self.high = high
-        self.fig = plt.figure(figsize=(WIDE, high))
+        self.wide = wide
+        self.right = wide - (WIDE - RIGHT)
+        self.fig = plt.figure(figsize=(wide, high))
         self.ax = self.fig.add_axes((0, 0, 1, 1))
-        self.ax.set_xlim(0, WIDE)
+        self.ax.set_xlim(0, wide)
         self.ax.set_ylim(high, 0)
         self.ax.axis("off")
         self.ax.patch.set_visible(False)
@@ -281,7 +286,7 @@ class Page:
         Returns:
             The point.
         """
-        return x / WIDE, 1 - top / self.high
+        return x / self.wide, 1 - top / self.high
 
     def place(self, left: float, top: float, width: float, height: float) -> Axes:
         """
@@ -296,9 +301,8 @@ class Page:
         Returns:
             The panel.
         """
-        return self.fig.add_axes(
-            (left / WIDE, 1 - (top + height) / self.high, width / WIDE, height / self.high)
-        )
+        x, y = self.at(left, top + height)
+        return self.fig.add_axes((x, y, width / self.wide, height / self.high))
 
     def measure(self, text: str, size: float, **style: Any) -> float:
         """
@@ -566,7 +570,7 @@ class Page:
         self.fig.legend(
             handles=handles,
             loc="lower right",
-            bbox_to_anchor=self.at(RIGHT, 0.95),
+            bbox_to_anchor=self.at(self.right, 0.95),
             ncol=len(handles),
             fontsize=12,
             handlelength=1.4,
@@ -588,7 +592,7 @@ class Page:
             The last line's baseline.
         """
         sides = 2 if len(notes) > 1 else 1
-        column = (RIGHT - LEFT) / sides
+        column = (self.right - LEFT) / sides
         lines = [self.wrapped(note, column - 0.45, 11) for note in notes]
         heights = [0.205 * len(each) + 0.09 for each in lines]
         split = len(notes)
@@ -630,7 +634,7 @@ class Page:
         bottom = self.footnotes(notes_top, notes)
         if bottom > self.high - 0.3:
             print(f"[{path.stem}] the notes run {bottom - self.high + 0.3:.2f} in too low")
-        self.fig.savefig(path, bbox_inches=Bbox([[0, 0], [WIDE, self.high]]))
+        self.fig.savefig(path, bbox_inches=Bbox([[0, 0], [self.wide, self.high]]))
         plt.close(self.fig)
         print(f"[{path.stem}] wrote {path}", flush=True)
 

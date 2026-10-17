@@ -7,6 +7,9 @@ each package README.
 ```
 preprocess.md    the build: what to supply, what to run in what order, how to check it landed
 restore.md       skip the build, restore the published dump and serve from it
+retrieval.md     BoundedField, the retriever and reranker: its pool, its score, its tuning and its benchmarks
+leyline.md       LeyLine, the miner: magnets, the Monte Carlo walks, lineages and successors
+supplement.md    the Topic Queries behind LeyLine's Unseen Newcomer evaluation
 pipeline.md      how the whole thing works, one plain line per step
 decisions.md     every choice, what it ran against, and the number that settled it
 release-plan.md  the 2026-07-03 release status, kept as a record

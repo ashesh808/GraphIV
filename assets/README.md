@@ -1,10 +1,10 @@
 # Assets
 
-This directory contains the code to regenerate figures and visualizations used in the HF cards.
+This directory contains the code to regenerate figures and visualizations used in the HF cards and the root README.
 
 ```
 run.py                draws every figure into figures/, or only the ones specified
-move.py               copies dataset*.png into cards/data, citation-label*.png into cards/citation_labeler and survey-label*.png into cards/survey_labeler
+move.py               copies dataset*.png into cards/data, citation-label*.png into cards/citation_labeler and survey-label*.png into cards/survey_labeler, leaving the README's figures in figures/
 code/
   style.py            the shared look: theme colors, static font cuts, the run-by-run title
   generate_<name>.py  <name>.png, one script per figure, written to the path run.py gives it
@@ -12,9 +12,16 @@ code/
   labeler_scores.py   the scores behind citation-labeler.png and citation-labeling-pipeline.png
   survey_scores.py    the scores behind survey-labeler.png and survey-labeling-pipeline.png
   external_types.py   what Semantic Scholar and OpenAlex call each held-out paper, for survey-labeler.png
+  field_map.py        a 2-d layout of 250k papers and their fields' disciplines, for poster.png
+  example_run.py      the temporal knowledge graph run and BoundedField rerun on it, for poster.png, leyline.png and research-pipeline.png
+  benchmark_scores.py the retrieval benchmarks' scores, ceilings and ablation, and the recipes' exponents, for poster.png and bounded-field.png
+  leyline_scores.py   the Unseen Newcomers of frontier-system-REPORT.md, for leyline.png
+  lineage_chart.py    a run's lineages as subway lanes, drawn on poster.png and leyline.png
+  overview.py         the steps, formulas and toy graph that open bounded-field.png and leyline.png
 data/
   fonts/              stores the four weights style.py cuts from themes/fonts on its first run
   *.json              stores the numbers each figure draws, derived/cached from the data/logs
+  field_map.npz       stores the 2-d layout, which takes about 5 minutes on one core to fit
 figures/              every figure, before move.py copies it
 ```
 
@@ -32,6 +39,10 @@ direnv exec . uv run python assets/move.py # copies the figures to their suppose
 | `cards/citation_labeler/citation-labeling-pipeline.png` | the stage0 run's accuracy per generation, `teacher_labeled.csv`, and `logs/student.log` |
 | `cards/survey_labeler/survey-labeler.png` | the database's `survey_probability` for the held-out papers of `is_survey.csv`, plus Semantic Scholar's and OpenAlex's types for them |
 | `cards/survey_labeler/survey-labeling-pipeline.png` | the same, plus the three-family labeling check of 2026-09-15 |
+| `figures/poster.png` | `topic_tree.embed_umap` of a 250k sample, `dataset.json`, the run directory of 2026-09-28, BoundedField rerun at that run's date, and `experiments/retrieve` |
+| `figures/bounded-field.png` | `experiments/retrieve`, the recipes, each term set to 0 in `frontier-terms-REPORT.md`, and the two-review agreement in `survey-agreement-REPORT.md` |
+| `figures/leyline.png` | the recipe's `[miner]` block, the Unseen Newcomers in `frontier-system-REPORT.md` and the run directory of 2026-09-28 |
+| `figures/research-pipeline.png` | the run directory of 2026-09-28 and BoundedField rerun at that run's date |
 
 `cards/` is shortened for `scripts/export/cards/` so the card preview contains the figures.
 
