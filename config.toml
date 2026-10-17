@@ -42,10 +42,16 @@ FETCH = true
 [manager]
 PORT = 6868
 STATE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/manager"
+# the Hugging Face token the publish stage uploads with, empty for none
+HF_TOKEN_PATH = ""
 
 # What leaves the store: graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release
 [export]
 EXPORT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/export"
+# the Hugging Face repos the publish stage uploads to, empty to skip one
+DATA_REPO = "kkuroma/GraphIV"
+CITATION_REPO = "kkuroma/GraphIV-citation-intent"
+SURVEY_REPO = "kkuroma/GraphIV-survey"
 
 [endpoints]
 EMBED_API = "http://127.0.0.1:11435"

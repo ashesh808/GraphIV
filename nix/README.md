@@ -78,6 +78,9 @@ Turn it off to point `settings.database.PG_DEST` at a cluster run elsewhere.
 The api and the frontend only ever read, so their role needs `CONNECT` and `SELECT`.
 The stages insert, truncate and copy, so `manager.databaseUser` names the role that owns the four tables when it is not the unit's own user.
 The manager's path carries `postgres.package` for the dump stage, and with `postgres.enable` off, `manager.path` has to name a `pg_dump` no older than the cluster.
+`manager.huggingface.tokenFile` is the file holding the Hugging Face token the publish stage uploads with, such as a sops secret, and systemd hands it to the manager's unit alone as a credential.
+Name it as a string, since a path literal copies the token into the store.
+`settings.export.DATA_REPO`, `CITATION_REPO` and `SURVEY_REPO` say where it publishes, and an empty one is skipped.
 
 No option names a tuned constant.
 The exponents and the `[miner]` block live in the recipe files that ship with the package, because an option is a promise to support whatever value is put there, and a detuned retriever still reports numbers.

@@ -39,6 +39,9 @@ let
 
   file = toml.generate "graphiv-config.toml" s;
 
+  # where systemd puts the manager's Hugging Face token, readable by that unit alone
+  credential = "/run/credentials/graphiv-manager.service/hf-token";
+
   # the setgid directories a human in the group shares with the daemons
   shared = lib.unique [
     (toString cfg.stateDir)
@@ -225,6 +228,12 @@ in
         Programs the stages run: aria2c for the PDFs, and nvidia-smi when the GPU should show.
         postgres.package joins them when postgres is enabled, for pg_dump, and otherwise name one.
       '';
+
+      huggingface.tokenFile = opt (types.nullOr types.str) null ''
+        A file holding the Hugging Face token the publish stage uploads with, such as a sops secret.
+        systemd reads it as a credential of the manager's unit alone, so no other unit and no cache sees it.
+        Name it as a string rather than a path literal, which would copy the token into the store.
+      '';
     };
 
     settings = mkOption {
@@ -310,12 +319,19 @@ in
             STATE_PATH = derived types.str "${toString cfg.stateDir}/manager" ''"''${stateDir}/manager"'' ''
               Job logs, the cached charts and the rates it measured.
             '';
+            HF_TOKEN_PATH =
+              derived types.str (lib.optionalString (cfg.manager.huggingface.tokenFile != null) credential)
+                ''"${credential}" when manager.huggingface.tokenFile is set, and "" otherwise''
+                "Where the manager reads the Hugging Face token, empty when there is none.";
           };
 
           export = section "What leaves the store." {
             EXPORT_PATH = derived types.str "${toString cfg.dataDir}/export" ''"''${dataDir}/export"'' ''
               Where the manager writes graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release.
             '';
+            DATA_REPO = opt types.str "" "The Hugging Face dataset repo the publish stage uploads the release to, empty to skip it.";
+            CITATION_REPO = opt types.str "" "The model repo for the citation intent classifier, empty to skip it.";
+            SURVEY_REPO = opt types.str "" "The model repo for the survey classifier, empty to skip it.";
           };
 
           endpoints = section "The models, all of them served elsewhere." {
@@ -470,6 +486,12 @@ in
         message = "services.graphiv enables no unit";
       }
       {
+        assertion =
+          cfg.manager.huggingface.tokenFile == null
+          || !lib.hasPrefix builtins.storeDir cfg.manager.huggingface.tokenFile;
+        message = "services.graphiv.manager.huggingface.tokenFile is in the store, which every user can read";
+      }
+      {
         assertion = lib.allUnique [
           s.serve.API_PORT
           s.serve.FRONTEND_PORT
@@ -595,6 +617,9 @@ in
       // lib.optionalAttrs (cfg.manager.databaseUser != null) { PGUSER = cfg.manager.databaseUser; };
       serviceConfig = hardened // {
         ExecStart = "${cfg.package}/bin/graphiv-manager --config_path ${file}";
+        LoadCredential = lib.optional (
+          cfg.manager.huggingface.tokenFile != null
+        ) "hf-token:${cfg.manager.huggingface.tokenFile}";
         # a stop sends the running stage SIGINT and waits for it to roll back, up to ten minutes
         KillMode = "mixed";
         TimeoutStopSec = "15min";

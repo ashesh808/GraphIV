@@ -1,62 +1,61 @@
 # webui
 
-The dashboard over past runs, served by the frontend role of the same http transport the tools run on.
-No build step, no node_modules and no framework.
+The dashboard over past runs, served by the frontend role.
+There is no build step and no framework, and the one dependency, the markdown renderer, is vendored.
 
 ```
-index.html            the shell, the navbar and the slide-over panel
-app.js                the library, the six tabs, the graph, the topic tree, the router and the theme
-style.css             the four shunka-shuutou palettes, light and dark, and the layout
-icon.svg              the wordmark, a G in a circle in the accent
-vendor/marked.min.js  the markdown renderer, vendored rather than fetched at runtime
+index.html            the page layout and the slide-over panel
+app.js                everything the page does, from the run library to the graph
+style.css             the four palettes, light and dark, and the layout
+icon.svg              the G mark
+vendor/marked.min.js  the markdown renderer
 ```
 
-## A run
+## A Run
 
-The library is a search box, a pager and one card per run.
-A run opens on six tabs, and the tab is in the url, so `#/run/<slug>/graph` is a link someone can send.
+The front page lists every run as a card, with a search box and paging.
+A run opens on six tabs, and the tab is part of the url, so `#/run/<slug>/graph` is a link you can send.
 
-| tab | what it is for |
+| Tab | What it shows |
 | --- | --- |
 | Report | a one-sentence answer over six numbered sections, with a rail that tracks where you are |
 | Methods | the method table filtered by answer, and a grid of the answer pairs no paper tried |
 | Papers | every paper the run touched, under nine filters |
-| Graph | one line at a time, picked by tabs named for the lines, every citation among its papers in its intent color |
-| Topics | the run's papers placed in the corpus topic tree, each topic with its count and a bar split by role |
-| Details | what the run did, what it cost, and what the grounding guard had to change |
+| Graph | one lineage at a time, every citation among its papers in its intent color |
+| Topics | the run's papers placed in the corpus topic tree, each topic with a bar split by role |
+| Details | what the run did, what it cost, and what the citation check had to change |
 
-| section | holds |
+| Section | What it holds |
 | --- | --- |
-| 1 Overview | the opening, which frames the question and how the answer has moved |
-| 2 What the papers show | one tab per claim the review makes, each argued from the papers that carry it |
-| 3 Methods | the table as the report wrote it, and a link into the Methods tab |
+| 1 Overview | the opening, which frames the question and how the answer has changed |
+| 2 What the papers show | one tab per claim the review makes, argued from the papers behind it |
+| 3 Methods | the table as the report wrote it, with a link into the Methods tab |
 | 4 Current work | one tab per area, plus what has appeared against the answer since |
 | 5 Open questions | one tab per area, read out of the papers' own limitations sections |
 | 6 Disagreements | one paper telling another it is wrong, in the citing author's words |
 
-An area whose search started from a paper lists that paper first, whatever the reader graded it.
-A method column filters and crosses only when its kind is `choice`, since a free text answer is unique per row.
+An area that started from a paper lists that paper first, whatever grade the reader gave it.
+A method column filters and crosses only when its kind is `choice`, since free text is unique per row.
 A run written before columns carried their kind is read by which columns list options, which are exactly the choice ones.
 
-Hovering a citation anywhere shows the paper's card.
-Clicking one opens the panel, which shows the pdf from the local store when it is there and arXiv's own pdf when it is not.
+Hovering a citation shows the paper's card, and clicking it opens the pdf in the panel, from the local store when it is there and from arXiv when it is not.
 
-## On a phone
+## On a Phone
 
-Below 760px the layout goes to one column and the panel takes the whole screen.
-A back-to-top button appears after 600px of scrolling, because the report is long by design.
+Below 760px the page goes to one column and the panel fills the screen.
+A back-to-top button appears after 600px of scrolling, since the report is long by design.
 
-## Where the data comes from
+## Where the Data Comes From
 
-`src/mcp/dashboard.py` mounts read-only routes: `/api/runs`, `/api/runs/{slug}`, `/files/{slug}/{name}` for the five files a run writes, and `/pdf/{arxiv_id}` out of the local pdf store.
-`report.json` is what the page draws, so nothing here parses the markdown back apart.
-A run's name is checked against what is on disk rather than joined onto the root, so no path escapes it, and nothing here writes.
+The routes are in `src/mcp/dashboard.py`, and every one of them only reads: `/api/runs`, `/api/runs/{slug}`, `/files/{slug}/{name}` for the five files a run writes, and `/pdf/{arxiv_id}` from the local pdf store.
+The page draws `report.json`, so nothing parses the markdown back apart.
+A run's name is checked against what is on disk rather than joined onto the root, so no path can escape it.
 
-## Looking at it
+## Looking at It
 
 ```sh
 uv run python scripts/serve.py --http --role frontend
 ```
 
-Then open the `[serve] FRONTEND_PORT` from `config.toml`, 6969 by default.
-A scratch copy belongs on another port, which is one line of a copied config.
+Then open `[serve] FRONTEND_PORT` from `config.toml`, 6969 by default.
+For a scratch copy, give a copied config another port.

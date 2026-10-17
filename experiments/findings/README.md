@@ -3,6 +3,8 @@
 What every scratchpad task measured, kept after the directories themselves were deleted on
 2026-09-26. One file per task, named `<task>-<file>.md`, copied as it was written.
 
+The set is frozen as of 2026-10-17, since the public docs and the figures cite these files, and later findings are kept outside the repository.
+
 The code that produced these is gone. What survives is the measurement and the reasoning, which is
 what `docs/decisions.md` cites and what the paper draws on. Anything still running lives in `src/`.
 

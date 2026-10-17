@@ -18,7 +18,10 @@ import urllib.request
 from pathlib import Path
 from typing import Any, LiteralString
 
+import httpx
 import psycopg
+from huggingface_hub import HfApi
+from huggingface_hub.errors import HfHubHTTPError
 
 TIMEOUT = 4.0
 # a download step stops waiting below this, since a full disk fails half way through a batch
@@ -34,6 +37,60 @@ QUEUES: dict[str, LiteralString] = {
     "names": "SELECT count(*) FROM topic_names",
     "newest": "SELECT max(date) FROM papers",
 }
+
+
+def writable(who: dict[str, Any], repo: str) -> bool:
+    """
+    Whether the token whoami describes may push to one repo
+
+    A write token reaches every repo its user can, and a fine-grained one only what its scopes list
+
+    Args:
+        who: What whoami returned.
+        repo: The repo, as owner/name.
+
+    Returns:
+        Whether a commit to it would be accepted.
+    """
+    access = who.get("auth", {}).get("accessToken", {})
+    if access.get("role") == "write":
+        return True
+    owner = repo.split("/", 1)[0]
+    for scope in access.get("fineGrained", {}).get("scoped", []):
+        entity = scope.get("entity", {})
+        whole = entity.get("type") in ("user", "org") and entity.get("name") == owner
+        if (whole or entity.get("name") == repo) and "repo.write" in scope.get("permissions", []):
+            return True
+    return False
+
+
+def hub(token_path: str, repos: list[str]) -> dict[str, Any]:
+    """
+    Who the publish token belongs to, and which repos it may push to, from whoami alone
+
+    Args:
+        token_path: [manager] HF_TOKEN_PATH, empty when there is none.
+        repos: The repos [export] gives an id to.
+
+    Returns:
+        Whether there is a token, its user and role, each repo with whether it may push, and a note.
+    """
+    out: dict[str, Any] = {"token": False, "user": "", "role": "", "taken": time.time()}
+    out["repos"] = [{"id": r, "write": False} for r in repos]
+    if not token_path or not Path(token_path).is_file():
+        return out | {"note": "no token, so set [manager] HF_TOKEN_PATH"}
+    try:
+        who = HfApi(token=Path(token_path).read_text(encoding="utf-8").strip()).whoami()
+    except (HfHubHTTPError, httpx.HTTPError, OSError) as error:
+        return out | {"token": True, "note": f"whoami failed: {str(error)[:200]}"}
+    access = who.get("auth", {}).get("accessToken", {})
+    return out | {
+        "token": True,
+        "user": str(who.get("name", "")),
+        "role": str(access.get("role", "")),
+        "repos": [{"id": r, "write": writable(who, r)} for r in repos],
+        "note": "",
+    }
 
 
 def store(dsn: str) -> tuple[bool, str]:

@@ -1,7 +1,6 @@
 """
-Embed every stage 2 abstract, then reduce the whole corpus to the vectors clustering reads
+Embed the title and abstract of every stage 2 paper into embed_full
 
-UMAP is refit on every run and the whole corpus is reduced again, since a refit moves every vector
 The document is `Title: ...\\nAbstract: ...` because the existing corpus vectors were built that way
 """
 

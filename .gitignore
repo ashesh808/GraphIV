@@ -47,9 +47,6 @@ data
 # them from disk rather than from git
 output/
 
-# Working space, empty by design
+# Working space, one directory per task, plus .records/, which keeps every finding on this machine
 scratchpad/*
 !scratchpad/README.md
-
-# The pre-rewrite serve path, parked while src/ is rebuilt. Git history is the archive.
-.legacy/

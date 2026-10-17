@@ -1,41 +1,38 @@
 # miner
 
-A list of papers into what the field argues with, how it got there, and what has answered it
-since. Nothing here takes a question, so the caller decides which papers are worth mining and this
-decides what they mean together.
+LeyLine, the miner.
+It takes the papers a search kept, never the question, and reads them as one citation graph to find what the field argues about and how it got there.
+The math is in [`docs/leyline.md`](../../docs/leyline.md).
 
 ```
-leyline.py   LeyLine, the algorithm on a typed graph, which knows nothing about papers
-miner.py     Miner, which knows what a paper is and calls LeyLine once
-reader.py    the six-role grade, the only model call in the package
-era.py       where a field's current era starts, read off its own dates
-rank.py      the area gate, and citations per year blended with the reader
-store.py     every statement this package sends to Postgres
-recipe.py    the [miner] block, which is where every constant lives
+leyline.py   LeyLine itself, on a typed graph, knowing nothing about papers
+miner.py     Miner, which turns papers into that graph and calls LeyLine once
+reader.py    grades each paper into one of six roles, the only model call here
+era.py       finds where a field's current era starts, from its own dates
+rank.py      the area gate, then citations per year blended with the reader's grade
+store.py     every query this package sends to Postgres
+recipe.py    reads the [miner] block, where every constant lives
 ```
 
-## Why LeyLine takes no papers
+## Why LeyLine Takes No Papers
 
-It takes a typed edge list, a score per node, an order per node and a weight per edge type. That
-is the whole input, so `tests/miner/test_leyline.py` runs it on a hand-built ten-node graph with
-no store, no endpoint and no GPU. Everything that knows an arXiv id from a commit hash is in
-`miner.py`.
+Its whole input is an edge list typed by intent, a score and an order per node, and a weight per intent.
+So `tests/miner/test_leyline.py` runs it on a hand-built ten-node graph with no store and no GPU, and only `miner.py` knows what an arXiv id is.
 
-## What a call does
+## What a Call Does
 
 ```python
 found = Miner(dsn, graph, read_recipe("retrieval_recipes/survey.toml")).mine(papers, vector, asked)
 ```
 
-The list is expanded one citation hop first, because papers a reader kept rarely cite each other
-and the papers a field argues with are the ones they all cite. The walk then runs on the head of
-the list and the forward look runs on all of it, since the two pull opposite ways: lineages stop
-reproducing once the graph is too wide, and successors keep scaling with every paper added.
+The list is first expanded by one citation hop, because papers a reader kept rarely cite each other, while the papers a field argues with are the ones they all cite.
+The walks run on the head of the list and the successors on all of it.
+Lineages stop repeating once the graph gets wide, while successors keep growing with every paper added.
 
-| what comes back | what it is |
+| Field | What it holds |
 | --- | --- |
-| `magnets` | the papers the list takes positions on, with the counts per intent |
-| `lineages` | dated paths through the graph, and how many runs reproduced each |
+| `magnets` | the papers the list takes positions on, with their counts per intent |
+| `lineages` | dated paths through the graph, and how many runs repeated each one |
 | `disputes` | one sentence per citing pair that took a position |
-| `successors` | papers from the recent window citing the list, which need no citations of their own |
-| `connectors` | papers that are not in the list but sit on a path between two that are |
+| `successors` | recent papers that extend, critique or compare against the list, which need no citations of their own |
+| `connectors` | papers outside the list that sit on a path between two papers inside it |

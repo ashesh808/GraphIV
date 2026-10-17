@@ -1,7 +1,8 @@
 # scratchpad
 
-Gitignored working space, empty by design since 2026-09-26.
+Gitignored working space: one directory per task in flight, plus `.records/`.
 
-Anything that measures something belongs in the experiment that cites it, anything that ships
-belongs in `src/`, and a finished write-up belongs in `docs/audits/` and a measurement in `experiments/findings/`. Use this directory
-for a task in flight, and empty it when the task lands.
+When a task lands, its finding becomes one markdown file in `.records/`, named `<date>-<task>.md`, with its date, its setting, its results and how it was made.
+Then the task directory is deleted.
+`.records/` is the one part of this directory that is never deleted, and a record is never rewritten.
+Anything that ships belongs in `src/` or `scripts/`.

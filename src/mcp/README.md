@@ -1,49 +1,54 @@
 # mcp
 
-The tool surface an outside agent drives. The loop belongs to the caller, so nothing here decides
-what to search next or when to stop, and every constant that was tuned against a benchmark stays
-on this side of the wire.
+The tools an outside agent calls.
+The agent runs the loop and decides what to search next and when to stop, while the server holds the corpus and the tuned settings and answers one call at a time.
 
 ```
-refine.py           a freeform interest into focused questions, each tagged survey or frontier
-identify_areas.py   one question into the areas that must be searched separately
-retrieve.py         one area into graded papers, and an id for the ranking behind them
-mine.py             a set of papers into what the field argues with and how it got there
-read_paper.py       full text, at the depth asked for, into a schema the caller invented
-write_report.py     the document, grounded and written to disk
-what_cites.py       who took a position on one paper, and the sentence they used
-search_papers.py    plain cosine, to turn a title into an id
-server.py           the registrations and both transports
-state.py            the handles, and the rankings kept between calls
-effort.py           quick, standard and deep
+refine.py          turns a freeform interest into focused questions, each tagged survey or frontier
+identify_areas.py  splits one question into the areas that need separate searches
+retrieve.py        one area into graded papers, plus an id for the ranking behind them
+mine.py            runs LeyLine over the papers a search kept
+read_paper.py      a paper's full text at the depth asked for, or a schema the caller invented, filled in
+write_report.py    the document, checked and written to disk
+what_cites.py      who took a position on one paper, and the sentence they used
+search_papers.py   plain cosine, to turn a title into an id
+find_runs.py       the reports this server already wrote, matched to a new question
+server.py          registers the tools and serves both transports
+state.py           what every tool opens once, and the rankings kept between calls
+effort.py          the quick, standard and deep presets
+dashboard.py       the read-only routes the dashboard reads its runs from
 ```
 
-## The shape of a session
+## A Session
 
 ```
 refine -> identify_areas -> retrieve per area -> mine -> read_paper -> write_report
 ```
 
-`retrieve` returns a `query_id` and keeps the ranking here, because it is thousands of papers and
-`mine` needs three hundred of them rather than the forty that come back. Pass every earlier id as
-`seen` and the reply carries `new_share`, the share of the new ranking nothing earlier found.
-Measured: two genuinely different areas share none of their heads, and an area renamed rather than
-changed shares a fifth of it.
+`retrieve` keeps its ranking on the server and returns a `query_id`, since the ranking is thousands of papers and `mine` needs three hundred of them rather than the forty that come back.
+Pass every earlier id as `seen`, and the reply carries `new_share`, the share of the new ranking nothing earlier found.
+Two different areas share almost none of their top papers, while an area that was only renamed shares about a fifth.
 
-Five modes pick five recipes.
-`survey` and `frontier` are the tuned wide nets, weighted to what a field cites and to what it is doing now, and `consensus` is what its reviews agree on.
-`ancestry` is survey with every frontier term at zero, and `evolution` is frontier with every ancestor term at zero.
-Both start from a paper rather than the question: its stored vector is the query, so it sits at a cosine of 1 and leads the kept list whatever the blend made of it.
-`arxiv_id` names that paper, and without one it is the paper closest to the question inside the dates.
-`date_min` and `date_max` bound every mode, and the floor cuts the ranking after scoring, so the retrieval itself is unchanged.
+## Modes
 
-## What the caller cannot set
+| Mode | Starts from | Answers |
+| --- | --- | --- |
+| `survey` | the question, or a paper | a wide net, weighted to what the field cites |
+| `frontier` | the question, or a paper | a wide net, weighted to what the field is doing now |
+| `consensus` | the question, or a paper | what the field's reviews agree on |
+| `ancestry` | a paper | what led to it, which is survey with every forward term at 0 |
+| `evolution` | a paper | what came of it, which is frontier with every ancestor term at 0 |
 
-The pool size, the gate exponent, the era rule, how deep the reader reads, the walk parameters and the
-scoring exponents. Those live in `retrieval_recipes/*.toml`, and `mode` picks one file which gives
-a matched scorer and miner. The caller picks the mode by name, never the numbers.
+Starting from a paper uses its stored vector as the query, so it sits at a cosine of 1 and leads the kept list.
+`arxiv_id` picks the paper, and without one it is the paper closest to the question inside the dates.
+`date_min` and `date_max` bound every mode, and the floor cuts the ranking after scoring, so the retrieval itself does not change.
 
-## Running it
+## What the Caller Cannot Set
+
+The pool size, the gate, the era rule, how deep the reader reads, the walk settings and the exponents all live in `retrieval_recipes/*.toml`.
+The caller picks a mode by name and never sees the numbers.
+
+## Running It
 
 ```sh
 uv run python scripts/serve.py                          # stdio
@@ -51,9 +56,6 @@ uv run python scripts/serve.py --http --role api        # the tools, 6767
 uv run python scripts/serve.py --http --role frontend   # the dashboard, 6969
 ```
 
-Both ports sit in the `[serve]` block of `config.toml`, which `GRAPHIV_CONFIG` can point elsewhere.
-The frontend role builds a second server carrying no tools, so it loads neither the store nor the
-graph and cannot reach the corpus.
-
-The graph export is 400 MB and is loaded once at start, so the first question costs the same as
-the tenth.
+Both ports are in the `[serve]` block of `config.toml`, and `GRAPHIV_CONFIG` can point at another file.
+The frontend role is a second server with no tools, so it never opens the store or the graph and cannot reach the corpus.
+The graph export is about 400 MB and loads once at start, so the first question costs the same as the tenth.

@@ -1,25 +1,27 @@
 # topic_tree_creation
 
-Projects every embedded paper into a 50-dimension space, clusters it into a fixed-depth tree, and names every node. Reads `papers.embed_full` and writes two tables of its own, so nothing here ever rewrites a column of `papers`.
+Sorts every embedded paper into a three-level topic tree and gives every node a label.
+It reads `papers.embed_full` and writes two tables of its own, so it never rewrites a column of `papers`.
 
 ```
-schema.sql                    topic_tree and topic_names, applied once before anything else
-indexes.sql                   both indexes, applied after the bulk loads
-stage0_umap.py                fit the reducer, then rebuild topic_tree through it
-stage1_create_topic_tree.py   cluster the projected vectors into three levels
-stage2_topic_labeling.py      name every node of the tree with an LLM
+schema.sql                   the topic_tree and topic_names tables, applied once before anything else
+indexes.sql                  both indexes, applied after the bulk loads
+stage0_umap.py               fits the reducer, then projects the whole corpus through it
+stage1_create_topic_tree.py  clusters the projected vectors into three levels
+stage2_topic_labeling.py     labels every node of the tree with the LLM, leaves first
 ```
 
-## The stage column
+## The Stage Column
 
 ```
-0  projected, no place in the tree
-1  clustered, level_0 through level_2
+0  projected, not yet placed in the tree
+1  placed, level_0 through level_2 written
 ```
 
-Naming has no stage of its own, since a name belongs to a node and not to a paper. `stage2` refuses to run while any row sits at 0, and rebuilds `topic_names` in full every time, because stage 1 reassigns what a given leaf id means.
+Labeling has no stage, since a label belongs to a node and not to a paper.
+Stage 2 refuses to run while any row is still at 0, and rebuilds `topic_names` in full every time, because stage 1 reassigns what each leaf id means.
 
-## Running it
+## Running It
 
 ```sh
 uv run python scripts/topic_tree_creation/stage0_umap.py
@@ -27,8 +29,12 @@ uv run python scripts/topic_tree_creation/stage1_create_topic_tree.py
 uv run python scripts/topic_tree_creation/stage2_topic_labeling.py
 ```
 
-`stage0` takes `--skip-fit` to project through the model already on disk instead of fitting a new one, which only makes sense when the corpus has not grown since that fit.
+`stage0` takes `--skip-fit` to project through the model already on disk, which only makes sense when the corpus has not grown since that fit.
+It refuses to fit while any paper still sits at papers stage 2, since a fit on part of the corpus looks fine and has the wrong neighborhoods.
 
-Both of the first two stages rewrite the whole table rather than updating it, one `TRUNCATE` and one `COPY`, because a refit moves every vector and reassigns every label. That writes no dead rows and leaves nothing for vacuum, where the same work as an `UPDATE` cost an hour of index maintenance when these columns still lived in `papers`.
+Stages 0 and 1 rewrite their whole table with one `TRUNCATE` and one `COPY` rather than an `UPDATE`, because a refit changes every vector and every label.
+That leaves no dead rows for vacuum, where the same work as an `UPDATE` cost an hour of index maintenance back when these columns lived in `papers`.
 
-Stage 0 needs no service. Stage 2 needs `llama-router` up, and names leaves from the papers nearest their centroid, then parents and grandparents from their children's names. Reasoning is disabled on every call, without which the model spends its whole completion budget on chain of thought and returns nothing.
+Stage 0 needs no service.
+Stage 2 needs `llama-router` running, and labels each leaf from the papers nearest its centroid, then each parent and grandparent from its children's labels.
+Reasoning is turned off on every call, or the model spends its whole budget thinking and returns nothing.

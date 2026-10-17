@@ -1,8 +1,0 @@
-Sample n=30,000, tree leaves in sample = 3,139.
-
-| method | noise bucket | clusters | coherence (lower) | silhouette (higher) |
-|---|--:|--:|--:|--:|
-| bisecting-tree (shipped) | 0.0% | 3,139 | 0.2971 | -0.1129 |
-| k-means (uniform grid) | 0.0% | 3,132 | 0.2607 | -0.0438 |
-| DBSCAN | 0.0% | 1 | 0.4942 | 0.0 |
-| HDBSCAN | 59.0% | 2 | 0.3864 | 0.137 |

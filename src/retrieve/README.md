@@ -1,52 +1,54 @@
 # retrieve
 
-A question into a ranked cohort of papers, with no language model anywhere on the path. One retriever picks a pool by cosine, two expanders append what the best matches cite and what cites them, and one scorer ranks the whole pool by its position in the citation graph.
+BoundedField, the retriever and reranker.
+A question goes in and a ranked pool of papers comes out, with no language model anywhere on the way.
+The math and the benchmarks are in [`docs/retrieval.md`](../../docs/retrieval.md).
 
 ```
-cosine.py   CosineRetriever, the seed
-expand.py   AncestorExpander and FrontierExpander, which only append
-scorer.py   Weights, the transforms and GraphScorer, the only step that ranks
-query.py    PaperQuery, which owns the order and nothing else
+cosine.py   CosineRetriever, which picks the first pool by cosine
+expand.py   AncestorExpander and FrontierExpander, which add one citation hop in each direction
+scorer.py   GraphScorer and its Weights, the only step that ranks
+query.py    PaperQuery, which runs the steps in order
+recipe.py   builds a pipeline out of a recipe file
 ```
 
 ```python
-pipeline = PaperQuery(
-    retriever=CosineRetriever(PG_DEST),
-    rerankers=[AncestorExpander(graph, PG_DEST),
-               FrontierExpander(graph, PG_DEST),
-               GraphScorer(graph, Weights())],
-    limits=[20_000, 20_000, 1000],
-)
-papers = pipeline.do_query(text, emb, retrieve_limit=5000, return_limit=1000, max_date=cutoff)
+from src.retrieve.recipe import build_pipeline, get_seed_limit, read_recipe
+
+recipe = read_recipe("retrieval_recipes/frontier.toml")
+pipeline = build_pipeline(recipe, graph, PG_DEST)
+pool = pipeline.build_pool(question, vector, get_seed_limit(recipe), cap)
+ranked = pipeline.score_pool(question, vector, pool, cap)
 ```
 
-## Why the steps split where they do
+## Why the Steps Split Where They Do
 
-An expander appends and ranks nothing, so the two commute and neither can delete what the other found. That also separates the two questions a result has to answer: turning off an expander changes which papers were reachable at all, and turning off a channel changes how the reachable ones were ordered.
+An expander only adds papers and never ranks them, so the two expanders commute and neither can drop what the other found.
+Turning off an expander changes which papers are reachable, while turning off a term changes how they are ordered, so the two questions never mix.
 
-The scorer is the only step that cuts, and it does it once, because the channels are read together rather than as a chain. Ancestors lead when the answer is a field's own history and co-citation leads when it is what came next, and in a chain whichever ran first would decide what the second was allowed to see.
+The scorer cuts once, with every term read together.
+In a chain, whichever term ran first would decide what the next one was allowed to see.
 
-`GraphScorer` opens no connection. Every step above it fills `title`, `abstract`, `date` and `cosine`, which costs nothing extra because those columns sit on the same heap page as the id, so the scorer reads only the export and numpy.
+`GraphScorer` opens no connection.
+The steps before it fill `title`, `abstract`, `date` and `cosine`, which sit on the same heap page as the id and cost nothing extra, so scoring needs only the graph export and numpy.
 
-## The channels
+## The Terms
 
-All six are walks from the same core, the top papers of the pool by cosine, over the citation graph induced on the pool.
+Every graph term is a walk from the same core, the top of the pool by cosine, over the citations among the pool.
 
 ```
-anc     what the core cites
-fro     what cites the core
-cocite  papers the core's citers also cite
-couple  papers that cite what the core cites
-anc2    what the core's ancestors cite, one step further back
-fro2    what cites the papers that cite the core, one step further forward
-anc_decay  decay ** distance walking backward from the core, zero past the depth
-fro_decay  decay ** distance walking forward from the core, zero past the depth
+anc        what the core cites
+fro        what cites the core
+cocite     what the core's citers also cite
+couple     what cites the same papers as the core
+anc2       anc, one step further back
+fro2       fro, one step further forward
+anc_decay  decay to the power of the hops back from the core
+fro_decay  decay to the power of the hops forward from the core
 ```
 
-`anc` and `fro` are exactly zero for any paper the core does not touch directly, which is every paper more than one hop out. The two decay terms are what let those score at all, since a one-step channel cannot separate a paper two hops out from one the walk never reaches.
+Each term is normalized to `[0, 1]`, so its factor sits on `[1, 2 ** exponent]` and a term a paper scores nothing on leaves it alone.
+The walks go through `compress_long_tail` and the decay terms do not, since compressing a decay curve would only rescale it.
 
-Every channel comes back on `[0, 1]`, so each factor of the score sits on `[1, 2 ** exponent]` and a channel a paper scores nothing on is neutral rather than fatal. The walk channels pass through `compress_long_tail` and the distance channel does not, since a decay curve already spans the range and compressing it would rescale it onto its own maximum.
-
-## Weights
-
-An exponent of zero makes its factor exactly one and drops the term, so an ablation is `replace(weights, couple=0.0)` with no pool rebuild. The exponents are not universal: the hub denominator, recency and `anc2` all change sign between a question about a field's history and one about its frontier, so they belong to a named setting rather than to the code.
+An exponent of 0 drops its term exactly, so an ablation is `replace(weights, couple=0.0)` with no new pool.
+The exponents differ per mode, which is why they live in the recipe files and not in the code.

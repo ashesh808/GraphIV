@@ -943,7 +943,7 @@ function download(full) {
   if (!mine.some((s) => s.key === where.stage)) where.stage = (mine[0] || {}).key;
   const st = mine.find((s) => s.key === where.stage);
   if (full || !$("stagebox") || $("stagebox").dataset.key !== where.stage) {
-    const delta = mine.filter((s) => s.delta || ["eval", "export"].includes(s.table));
+    const delta = mine.filter((s) => !s.alone && (s.delta || ["eval", "export"].includes(s.table)));
     host.innerHTML = `<div class="subbar"><div class="seg">${Object.entries(tables).map(([k, l]) => {
       const ss = (S.stages || []).filter((s) => s.table === k);
       const busy = ss.some((s) => stageStatus(s).led === "run");
@@ -990,7 +990,7 @@ function stagePanel(st) {
   const flags = scriptFlags(st);
   $("stagebox").innerHTML = `<div class="stage">
     <div class="stage-h"><i class="led" id="sled"></i><h2>${esc(st.label)}</h2><span class="state" id="sstate"></span>
-      <div class="btns"><button class="btn" id="sdry">Dry run</button><button class="btn primary" id="srun">Run</button>
+      <div class="btns"><button class="btn" id="sdry">Dry run</button><button class="btn primary" id="srun">${st.alone ? "Publish" : "Run"}</button>
         <button class="btn danger" id="sstop" style="display:none">Stop</button></div></div>
     <div class="cmd">${esc(st.command)}</div>
     <div class="facts" id="sfacts"></div>
@@ -1010,10 +1010,13 @@ function stagePanel(st) {
       if (el.type === "checkbox" && el.checked) args.push(el.dataset.flag);
       if (el.type === "text" && el.value.trim()) args.push(el.dataset.flag, el.value.trim());
     }
-    const ask = st.key === "citations.relabel" ? "Relabel every resolved citation? This resets them all and takes about 11 hours." : `Run ${st.label.toLowerCase()} now?`;
+    const ask = st.key === "citations.relabel" ? "Relabel every resolved citation? This resets them all and takes about 11 hours."
+      : st.alone ? "Publish the newest release to Hugging Face? Every changed file is uploaded and each repo is tagged."
+      : `Run ${st.label.toLowerCase()} now?`;
     if (confirm(ask)) { delete dryText[st.key]; act("/api/run", { stage: st.key, args }); }
   };
-  $("sdry").onclick = () => dry({ stage: st.key }, st.key);
+  // publishing has a real dry run, which asks the hub what would change
+  $("sdry").onclick = () => st.alone ? act("/api/run", { stage: st.key, args: ["--dry-run"] }) : dry({ stage: st.key }, st.key);
 }
 
 function stageLive(st) {
@@ -1023,11 +1026,18 @@ function stageLive(st) {
   const on = status.led === "run";
   $("sstop").style.display = on ? "" : "none";
   $("sstop").onclick = () => confirm("Stop this job? The stage gets SIGINT and a minute to roll back.") && act(`/api/jobs/${status.job.id}/cancel`, {});
-  $("srun").disabled = on;
+  const hub = S.hub || {};
+  $("srun").disabled = on || (st.alone && !hub.token);
   const rate = (S.rates || {})[st.key];
   const last = st.last && (S.jobs || []).find((j) => j.id === st.last.job);
   const lastStep = last && last.steps[st.last.step];
-  $("sfacts").innerHTML = [
+  const repos = hub.repos || [];
+  const shut = repos.filter((r) => !r.write).map((r) => r.id);
+  $("sfacts").innerHTML = (st.alone ? [
+    ["Signed in as", hub.user || "–", hub.note || (hub.role === "fineGrained" ? "a fine-grained token" : `a ${hub.role} token`)],
+    ["Can publish to", hub.token ? `${repos.length - shut.length} of ${repos.length}` : "–", shut.length ? `not ${shut.join(", ")}` : repos.map((r) => r.id).join(", ")],
+    ["Last run", lastStep ? lastStep.status : "–", lastStep ? `${when(lastStep.started)} · ${dur((lastStep.ended || S.now) - lastStep.started)}` : "never from this page"],
+  ] : [
     st.kind === "fetch"
       ? ["Kaggle serves", (S.remote || {}).version ? `v${S.remote.version}` : "–", (S.remote || {}).published ? `published ${when(Date.parse(S.remote.published) / 1000)}` : "not asked yet"]
       : ["Waiting", st.waiting != null ? n(st.waiting) : "–", st.queue ? `queue: ${st.queue}` : "no queue"],
@@ -1036,7 +1046,7 @@ function stageLive(st) {
       ? ["Size", (S.remote || {}).size ? bytes(S.remote.size) : "–", "unzipped, about 1.8 GB to download"]
       : ["Estimate", rate && st.waiting ? dur(st.waiting / rate) : "–", "for what is waiting"],
     ["Last run", lastStep ? lastStep.status : "–", lastStep ? `${when(lastStep.started)} · ${dur((lastStep.ended || S.now) - lastStep.started)}` : "never from this page"],
-  ].map(([k, v, s]) => `<div class="fact"><div class="fact-k">${k}</div><div class="fact-v">${esc(v)}</div><div class="fact-s">${esc(s)}</div></div>`).join("");
+  ]).map(([k, v, s]) => `<div class="fact"><div class="fact-k">${k}</div><div class="fact-v">${esc(v)}</div><div class="fact-s">${esc(s)}</div></div>`).join("");
   $("sprog").innerHTML = on ? progressHtml(status.job, true)
     : `<div class="bar big"><i style="width:${lastStep && lastStep.status === "done" ? 100 : 0}%"></i></div>
        <div class="barline"><span>${lastStep ? `last run ${esc(lastStep.status)}${lastStep.note ? ": " + esc(lastStep.note) : ""}` : "not running"}</span><span>${lastStep && lastStep.code != null ? `exit ${lastStep.code}` : ""}</span></div>`;

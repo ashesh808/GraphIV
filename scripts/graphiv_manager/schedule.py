@@ -33,6 +33,8 @@ QUEUE_EVERY = 300.0
 HEALTH_EVERY = 15.0
 # Kaggle publishes weekly, so asking which version it serves twice an hour is plenty
 REMOTE_EVERY = 1800.0
+# the [export] keys holding the repos the publish stage uploads to
+HUB_REPOS = ("DATA_REPO", "CITATION_REPO", "SURVEY_REPO")
 # a rate from a step shorter than this is mostly startup, not throughput
 RATE_FLOOR = 60.0
 PHASE = re.compile(r"^\[(\w+)\]", re.MULTILINE)
@@ -70,6 +72,7 @@ class Manager:
         self.source = Path(str(self.cfg["source"]["SOURCE_PATH"]))
         self.url = str(self.cfg["source"].get("SOURCE_URL", ""))
         self.remote: dict[str, Any] = {}
+        self.hub: dict[str, Any] = {}
         self.store = Store(state / "jobs")
         self.runner = Runner(
             self.store,
@@ -215,6 +218,7 @@ class Manager:
             "snapshot": shot,
             "check": checked,
             "remote": self.remote,
+            "hub": self.hub,
             "source": self.read_json("source.json"),
             "checked": self.check(staged=False),
             "forecast": stages.forecast(self.counts, held, found, self.rates()) if staged else [],
@@ -304,6 +308,15 @@ class Manager:
         said = await asyncio.to_thread(snapshot.remote, self.url)
         if said:
             self.remote = said
+
+    async def refresh_hub(self) -> None:
+        """
+        Asks Hugging Face who the publish token belongs to and which repos it may push to
+        """
+        export = self.cfg.get("export", {})
+        repos = [str(export[k]) for k in HUB_REPOS if export.get(k)]
+        path = str(self.cfg.get("manager", {}).get("HF_TOKEN_PATH", ""))
+        self.hub = await asyncio.to_thread(probes.hub, path, repos)
 
     async def refresh_counts(self) -> None:
         """
@@ -604,6 +617,7 @@ class Manager:
             if time.time() - asked > REMOTE_EVERY:
                 asked = time.time()
                 asyncio.get_running_loop().create_task(self.refresh_remote())
+                asyncio.get_running_loop().create_task(self.refresh_hub())
             if time.time() - self.checked > HEALTH_EVERY:
                 await self.refresh_health()
             if time.time() - counted > QUEUE_EVERY:

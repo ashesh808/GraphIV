@@ -1,74 +1,71 @@
 # scripts
 
-The runnable entrypoints. Each is single purpose and is never imported by anything else.
+Everything you run.
+Each script does one job, and nothing imports it.
 
-## The build
+## Building the Store
 
-Four task directories. Every stage reads its queue off a `stage` column, does one thing, and
-advances the rows that succeeded, so any of them can be killed and re-run.
+The store is built by four task directories.
+Every stage reads its queue off a `stage` column, does one thing and advances the rows that succeeded, so any stage can be stopped and rerun.
 
 ```
-papers_preprocess/    Kaggle JSON -> the papers table, downloaded, embedded and reviewed
-topic_tree_creation/  papers.embed_full -> the topic_tree and topic_names tables
-citation_preprocess/  rendered HTML -> the citations table, labeled by intent
-citation_labeler/     the teacher prompt and the student checkpoint the labeler loads
+papers_preprocess/    the papers table, from the Kaggle snapshot to embeddings and review scores
+topic_tree_creation/  the topic tree and its labels, from the embeddings
+citation_preprocess/  the citations table, parsed from the html and labeled by intent
+citation_labeler/     trains the intent labeler the citation stage loads
 ```
 
-`papers_preprocess` runs first. Nothing after it depends on anything but `papers.stage`, so
-`topic_tree_creation` and `citation_preprocess` both read papers at stage 3 and write only their
-own tables, which makes their order between themselves free.
+Run `papers_preprocess` first.
+The topic tree and the citations only read papers at stage 3 and write their own tables, so those two can run in either order, or at the same time.
 
-`citation_labeler/` is off the critical path. It writes no table and only leaves a checkpoint,
-which `citation_preprocess/stage1_label_citation.py` picks up.
+`citation_labeler/` sits off the main path.
+It writes no table, only the checkpoint that `citation_preprocess/stage1_label_citation.py` loads.
 
-Each directory carries its own README with the stage list and the queue semantics, and
-`docs/preprocess.md` is the whole build in order.
+Each directory has its own README with its stages, and `docs/preprocess.md` walks through the whole build in order.
 
 ## Flags
 
-Plain argparse, with `config.toml` read from the repo root or `--config_path`.
+Plain argparse.
+Every script reads `config.toml` from the repo root, or another file with `--config_path`.
 
 ```sh
 uv run python scripts/papers_preprocess/stage1_download_pdf.py --limit 1000
 uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 ```
 
-## Measuring the retriever
+## Benchmarks
 
-`evaluate_retrieval/` runs the four benchmarks. Every recipe under `retrieval_recipes/` names
-which components a pipeline holds and what every exponent is, and `config.toml` says which
-recipes each benchmark compares. Recipes sharing a retrieval prefix share one pool, so six of
-them cost one retrieval.
+`evaluate_retrieval/` holds the four benchmarks.
+`config.toml` lists which recipes each one compares, and recipes that share a retrieval prefix share one pool, so six recipes cost one retrieval.
 
 ```sh
 uv run python scripts/evaluate_retrieval/stage0_surveymatch.py
 ```
 
-## The export
+## Export
 
-`export/` writes the full pg_dump that `docs/restore.md` restores, and the Parquet release that gets published, both under `[export] EXPORT_PATH`.
+`export/` writes the full `pg_dump` that `docs/restore.md` restores and the Parquet release we publish, both under `[export] EXPORT_PATH`.
 
 ```sh
 uv run python scripts/export/stage0_dump_store.py
 uv run python scripts/export/stage1_export_parquet.py
 ```
 
-## The manager
+## The Manager
 
-`graphiv_manager/` is one page that fetches the weekly snapshot, stages it, and runs every stage
-above in order, one job at a time, with the dashboard of what each table holds.
+`graphiv_manager/` is the page that keeps the store current.
+It fetches the weekly snapshot and runs every stage above in order, one job at a time.
 
 ```sh
 uv run python scripts/graphiv_manager/main.py
 ```
 
-## The endpoint
+## The Server
 
 ```sh
 uv run python scripts/serve.py                         # stdio
 uv run python scripts/serve.py --http --role api       # the nine tools
-uv run python scripts/serve.py --http --role frontend  # the dashboard, no tools at all
+uv run python scripts/serve.py --http --role frontend  # the dashboard, with no tools at all
 ```
 
-`serve.py` and the manager are the only entrypoints outside the preprocess tasks, the benchmarks and the export.
-The loop belongs to the caller, so nothing here answers a question on its own.
+The agent runs the loop, so nothing here answers a question on its own.

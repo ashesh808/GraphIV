@@ -55,6 +55,8 @@ class Stage:
     unit: str = "rows"
     # the disks it reads or fills, by the names the health check gives them
     disks: tuple[str, ...] = ("State",)
+    # runs only from its own button, never as part of a table or of every stage
+    alone: bool = False
 
     def command(self) -> str:
         """
@@ -284,6 +286,21 @@ STAGES = [
         delta=False,
         disks=("State", "Export"),
     ),
+    Stage(
+        key="export.2",
+        table="export",
+        label="Publish to Hugging Face",
+        script=f"{X}/stage2_publish_hf.py",
+        reads="the newest graphiv-<date>/ under EXPORT_PATH, and the cards in scripts/export/cards",
+        writes="nothing on this machine",
+        fetches="uploads every changed file to the three repos in [export], then tags them",
+        queue="",
+        note="needs [manager] HF_TOKEN_PATH, and Dry run lists the changes without uploading",
+        delta=False,
+        # it writes nothing here, so a full disk is no reason to wait
+        disks=(),
+        alone=True,
+    ),
 ]
 BY_KEY = {s.key: s for s in STAGES}
 TABLES = {
@@ -355,7 +372,7 @@ def of_table(table: str) -> list[str]:
         Their keys in order.
     """
     whole = table in ("eval", "export")
-    return [s.key for s in STAGES if s.table == table and (s.delta or whole)]
+    return [s.key for s in STAGES if s.table == table and (s.delta or whole) and not s.alone]
 
 
 def everything() -> list[str]:
