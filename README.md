@@ -61,7 +61,7 @@ GraphIV ships as an MCP server, which any agent that speaks MCP can drive, plus 
 | Tier | What you get | What it needs |
 |---|---|---|
 | data | the three tables | a Hugging Face login and 6.1 GB of download, see [the dataset card](https://huggingface.co/datasets/kkuroma/GraphIV) |
-| server | the nine MCP tools and the dashboard | Postgres 17 with pgvector holding the 90 GB store, about 1 GB of RAM for the citation graph and a ranking, an embedding endpoint serving nomic-embed-text-v2-moe through llama-server (0.9 GB of VRAM), and any OpenAI-compatible chat endpoint, here Gemma 4 26B A4B in MXFP4 with a 131k context (18.8 GB of VRAM) |
+| server | the ten MCP tools and the dashboard | Postgres 17 with pgvector holding the 90 GB store, about 1 GB of RAM for the citation graph and a ranking, an embedding endpoint serving nomic-embed-text-v2-moe through llama-server (0.9 GB of VRAM), and any OpenAI-compatible chat endpoint, here Gemma 4 26B A4B in MXFP4 with a 131k context (18.8 GB of VRAM) |
 | updates | the rebuild every two weeks | the server tier, plus the manager, the GPU for both labelers (2,012 citations and 214 papers a second) and the embeddings, and the chat endpoint for naming 4,368 topics |
 | build | everything from scratch | the update tier, plus 496 GB of HTML and 5.6 TB of PDF for the full text |
 

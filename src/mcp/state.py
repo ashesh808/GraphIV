@@ -112,6 +112,21 @@ HEAD = 300
 STORE: dict[str, Held] = {}
 
 
+@dataclass
+class Area:
+    """
+    One area a list of papers was split into, kept so a later call names it by id
+    """
+
+    area_id: str
+    area: str
+    why: str
+    arxiv_ids: list[str] = field(default_factory=list)
+
+
+AREAS: dict[str, Area] = {}
+
+
 @dataclass(frozen=True)
 class Serving:
     """
@@ -211,6 +226,33 @@ def keep(held: Held) -> Held:
     return held
 
 
+def keep_area(area: Area) -> Area:
+    """
+    Puts one area where a later call can find it
+
+    Args:
+        area: The area.
+
+    Returns:
+        The area, for chaining.
+    """
+    AREAS[area.area_id] = area
+    return area
+
+
+def get_area(area_id: str) -> Area | None:
+    """
+    One area by its id
+
+    Args:
+        area_id: What an identify_areas call returned.
+
+    Returns:
+        The area, or None when this process never made it.
+    """
+    return AREAS.get(area_id)
+
+
 def get(query_id: str) -> Held | None:
     """
     One ranking by its id
@@ -254,6 +296,7 @@ def overlap(head: list[str], seen: list[str]) -> tuple[float, dict[str, float]]:
 
 def reset() -> None:
     """
-    Forgets every ranking, which is what ends one session
+    Forgets every ranking and every area, which is what ends one session
     """
     STORE.clear()
+    AREAS.clear()

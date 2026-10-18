@@ -7,6 +7,7 @@ An edge is read induced on one set of papers, since a bridge only counts when bo
 from __future__ import annotations
 
 import logging
+import math
 from collections import defaultdict
 from datetime import date
 from typing import Any
@@ -44,6 +45,10 @@ FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
 SEED = """
 SELECT arxiv_id, title, abstract, date, embed_full::vector::real[]
 FROM papers WHERE arxiv_id = %s AND stage >= 3
+"""
+
+VECTORS = """
+SELECT arxiv_id, embed_full::vector::real[] FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
 """
 
 RECORDS = """
@@ -160,6 +165,39 @@ def read_seed(dsn: str, arxiv_id: str) -> tuple[Paper, list[float]] | None:
         arxiv_id=str(a), title=str(t or ""), abstract=str(abstract or ""), date=when, cosine=1.0
     )
     return paper, [float(x) for x in vector]
+
+
+def read_vectors(dsn: str, arxiv_ids: list[str]) -> dict[str, list[float]]:
+    """
+    The stored vectors of several papers
+
+    Args:
+        dsn: libpq connection string.
+        arxiv_ids: The papers.
+
+    Returns:
+        Each embedded paper's vector, keyed by its id.
+    """
+    with psycopg.connect(dsn) as conn:
+        rows = conn.execute(VECTORS, (arxiv_ids,)).fetchall()
+    return {str(a): [float(x) for x in vector] for a, vector in rows}
+
+
+def mean_vector(vectors: list[list[float]]) -> list[float]:
+    """
+    The unit mean of some vectors, which is what a search from a list of papers starts at
+
+    Args:
+        vectors: The vectors.
+
+    Returns:
+        Their normalized mean, empty when there are none.
+    """
+    if not vectors:
+        return []
+    mean = [sum(column) / len(vectors) for column in zip(*vectors, strict=True)]
+    size = math.sqrt(sum(x * x for x in mean)) or 1.0
+    return [x / size for x in mean]
 
 
 def read_successors(

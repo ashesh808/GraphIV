@@ -5,16 +5,17 @@ The agent runs the loop and decides what to search next and when to stop, while 
 
 ```
 refine.py          turns a freeform interest into focused questions, each tagged survey or frontier
-identify_areas.py  splits one question into the areas that need separate searches
-retrieve.py        one area into graded papers, plus an id for the ranking behind them
+identify_areas.py  splits one question, or an author's or a list's papers, into the areas that need separate searches
+retrieve.py        one area, or the field around a list of papers, into graded papers, plus an id for the ranking
 mine.py            runs LeyLine over the papers a search kept
 read_paper.py      a paper's full text at the depth asked for, or a schema the caller invented, filled in
 write_report.py    the document, checked and written to disk
 what_cites.py      who took a position on one paper, and the sentence they used
 search_papers.py   plain cosine, to turn a title into an id
+recall_paper.py    a description of what a paper did or argued into the papers that match it
 find_runs.py       the reports this server already wrote, matched to a new question
 server.py          registers the tools and serves both transports
-state.py           what every tool opens once, and the rankings kept between calls
+state.py           what every tool opens once, and the rankings and areas kept between calls
 effort.py          the quick, standard and deep presets
 dashboard.py       the read-only routes the dashboard reads its runs from
 ```

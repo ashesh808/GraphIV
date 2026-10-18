@@ -17,7 +17,7 @@ from typing import Any
 from src.core.parse_graph_export import GraphExport
 from src.core.schema import Edge, Paper
 from src.mcp.effort import Effort, level
-from src.mcp.state import Handles, get, reset
+from src.mcp.state import Handles, get, get_area, reset
 from src.miner.miner import Mined, Miner
 from src.miner.recipe import read_recipe
 from src.miner.store import read_cosines, read_records
@@ -448,11 +448,43 @@ def as_report(draft: Draft, found: Mined) -> dict[str, Any]:
     }
 
 
+def as_sections(sections: list[dict[str, str] | str] | str | None) -> list[dict[str, str]]:
+    """
+    The caller's sections as titles and bodies, whichever shape they arrived in
+
+    A markdown string is cut at each heading, so one block of prose becomes its sections.
+
+    Args:
+        sections: Dicts with a title and a body, markdown strings, or one markdown string.
+
+    Returns:
+        One title and body per section.
+    """
+    raw = [sections] if isinstance(sections, str) else list(sections or [])
+    out: list[dict[str, str]] = []
+    for one in raw:
+        if isinstance(one, dict):
+            out.append({"title": str(one.get("title", "")), "body": str(one.get("body", ""))})
+            continue
+        for chunk in re.split(r"(?m)^(?=#{1,3} )", str(one)):
+            lines = chunk.strip().splitlines()
+            if not lines:
+                continue
+            heading = lines[0].startswith("#")
+            out.append(
+                {
+                    "title": lines[0].lstrip("#").strip() if heading else "",
+                    "body": "\n".join(lines[1:] if heading else lines).strip(),
+                }
+            )
+    return out
+
+
 def write_report(
     handles: Handles,
     query_ids: list[str],
     title: str = "",
-    sections: list[dict[str, str]] | None = None,
+    sections: list[dict[str, str] | str] | str | None = None,
     effort: str = "standard",
     end: bool = True,
     question: str = "",
@@ -464,7 +496,7 @@ def write_report(
         handles: The shared handles.
         query_ids: The retrievals this report is built from.
         title: What to call it, defaulting to the question.
-        sections: The caller's own prose, each a title and a body.
+        sections: The caller's own prose, as titles and bodies or as markdown.
         effort: quick, standard or deep, which decides how many papers are read in full.
         end: Forget every ranking afterwards, which is what closes a session.
         question: What the report is mined, written and answered against, defaulting to the title.
@@ -476,6 +508,16 @@ def write_report(
     hard = level(effort)
     papers, areas, grades, first, mode, asked, spent = gather(query_ids)
     if not papers:
+        named_areas = [q for q in query_ids if get_area(q) is not None]
+        if named_areas:
+            return json.dumps(
+                {
+                    "error": "these are area_ids, not query_ids: call retrieve with each"
+                    " area_id first"
+                    " and pass the query_id it returns",
+                    "area_ids": named_areas,
+                }
+            )
         return json.dumps({"error": "no ranking under those ids, call retrieve first"})
 
     # each area rewords the question, so the report is held to the one the caller named
@@ -489,7 +531,7 @@ def write_report(
     made, methods = table(handles, question, closest(papers, areas, close), hard.full_text)
     told = [
         Section(title=str(s.get("title", "")), body=str(s.get("body", "")))
-        for s in sections or []
+        for s in as_sections(sections)
         if str(s.get("body", "")).strip()
     ]
     if not told and hard.compose:

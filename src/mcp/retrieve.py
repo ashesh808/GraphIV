@@ -15,10 +15,10 @@ from typing import Any
 
 from src.core.schema import Grade, Paper, Query
 from src.mcp.effort import Effort, level
-from src.mcp.state import Handles, Held, keep, make_id, overlap
+from src.mcp.state import Handles, Held, get_area, keep, make_id, overlap
 from src.miner import era, rank, reader
 from src.miner.recipe import read_recipe as read_miner
-from src.miner.store import read_cosines, read_seed
+from src.miner.store import mean_vector, read_cosines, read_seed, read_vectors
 from src.retrieve.cosine import CosineRetriever
 from src.retrieve.recipe import build_pipeline, get_seed_limit, read_recipe
 
@@ -79,12 +79,14 @@ def retrieve(
     handles: Handles,
     question: str = "",
     arxiv_id: str = "",
-    methods: list[str] | None = None,
+    methods: list[str] | str | None = None,
     mode: str = "survey",
     date_min: str = "",
     date_max: str = "",
     seen: list[str] | None = None,
     effort: str = "standard",
+    area_id: str = "",
+    arxiv_ids: list[str] | None = None,
 ) -> str:
     """
     Everything the mechanical path and the reader know about one area
@@ -99,18 +101,31 @@ def retrieve(
         date_max: The date the corpus is capped at, iso, today when empty.
         seen: Ids of rankings made earlier, against which the overlap is reported.
         effort: quick, standard or deep.
+        area_id: An area identify_areas split a paper list into, the papers the search starts from.
+        arxiv_ids: Papers the search starts from instead, alone or beside the area's.
 
     Returns:
         The kept papers, the grade histogram and the id the ranking is kept under, as json.
     """
+    if isinstance(methods, str):
+        methods = [m.strip() for m in methods.split(",") if m.strip()]
+    area = get_area(area_id) if area_id else None
+    if area_id and area is None:
+        return json.dumps({"error": f"no area under {area_id}, this server never made it"})
+    given = list(dict.fromkeys((area.arxiv_ids if area else []) + list(arxiv_ids or [])))
+    start = mean_vector(list(read_vectors(handles.dsn, given).values())) if given else []
+    if given and not start:
+        return json.dumps({"error": "none of those papers has a vector in this corpus"})
+    question = question or (area.area if area else "")
     clock = time.perf_counter()
     spent: dict[str, float] = {}
     hard: Effort = level(effort)
     floor = date.fromisoformat(date_min) if date_min else None
     cap = date.fromisoformat(date_max) if date_max else date.today()
     if not question and not arxiv_id:
-        return json.dumps({"error": "pass a question, an arxiv_id or both"})
-    seed = find_seed(handles, question, arxiv_id.strip(), mode, floor, cap)
+        return json.dumps({"error": "pass a question, an arxiv_id, an area_id or arxiv_ids"})
+    # a list of papers is searched from its own mean vector, so no single paper seeds it
+    seed = None if start else find_seed(handles, question, arxiv_id.strip(), mode, floor, cap)
     if arxiv_id and seed is None:
         return json.dumps({"error": f"{arxiv_id} has no vector in this corpus"})
     if seed is not None and not question:
@@ -120,7 +135,7 @@ def retrieve(
     mining = read_miner(path)
 
     anchor = f"{question}. {', '.join(methods)}" if methods else question
-    vector = seed[1] if seed is not None else handles.embed(question)
+    vector = start or (seed[1] if seed is not None else handles.embed(question))
     pipeline = build_pipeline(recipe, handles.graph, handles.dsn)
     pool = pipeline.build_pool(question, vector, get_seed_limit(recipe), cap)
     ranked = pipeline.score_pool(question, vector, pool, cap)
@@ -161,7 +176,7 @@ def retrieve(
 
     held = keep(
         Held(
-            query_id=make_id(anchor, mode, date_min, cap.isoformat(), sid),
+            query_id=make_id(anchor, mode, date_min, cap.isoformat(), sid, *sorted(given)),
             question=question,
             anchor=anchor,
             mode=mode,
@@ -207,9 +222,12 @@ def retrieve(
                 "role": grades[p.arxiv_id].role if p.arxiv_id in grades else "",
                 "relevance": grades[p.arxiv_id].relevance if p.arxiv_id in grades else 0,
             }
+            | ({"given": p.arxiv_id in set(given)} if given else {})
             for p in kept
         ],
     }
+    if given:
+        out["given_kept"] = sum(1 for p in kept if p.arxiv_id in set(given))
     LOG.info(
         "%s: pool %d, current %d, kept %d, era %d, new share %.2f",
         held.query_id,

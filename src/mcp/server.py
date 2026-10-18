@@ -19,6 +19,7 @@ from src.mcp import find_runs as finding
 from src.mcp import identify_areas as splitting
 from src.mcp import mine as mining
 from src.mcp import read_paper as reading
+from src.mcp import recall_paper as recalling
 from src.mcp import refine as refining
 from src.mcp import retrieve as retrieving
 from src.mcp import search_papers as searching
@@ -65,28 +66,42 @@ def refine(interest: str) -> str:
 
 
 @tool()
-def identify_areas(question: str, cap: int = 4) -> str:
+def identify_areas(
+    question: str = "",
+    cap: int = 4,
+    author: str = "",
+    arxiv_ids: list[str] | None = None,
+    scope: str = "",
+) -> str:
     """
-    Split one question into the areas that have to be searched separately.
+    Split one question, or one list of papers, into the areas that have to be searched separately.
 
-    Call this when a question spans more than one field, since a question spanning four fields
-    embeds into a region that is none of them. Returns 2 to `cap` areas, each with the method
-    words a paper in it would use and the question that area alone has to answer. Pass each one
-    to retrieve. A question about a single field does not need this.
+    For a question: call this when it spans more than one field, since a question spanning four
+    fields embeds into a region that is none of them. Returns 2 to `cap` areas, each with the
+    method words a paper in it would use and the question that area alone has to answer. Pass each
+    one to retrieve. A question about a single field does not need this.
+
+    For papers: pass `author`, as written on arXiv, or `arxiv_ids` for a reading list, and `scope`
+    when the user named what they care about, such as "knowledge graphs, citation graphs". Returns
+    the areas inside the scope, each with an `area_id`, its papers and their count, plus how many
+    papers fell outside it. Pass the `area_id` to mine to read those papers and to retrieve for the
+    field around them. A common name matches every person who has it, so check the papers listed.
     """
-    return splitting.identify_areas(load(), question, cap)
+    return splitting.identify_areas(load(), question, cap, author, arxiv_ids, scope)
 
 
 @tool()
 def retrieve(
     question: str = "",
     arxiv_id: str = "",
-    methods: list[str] | None = None,
+    methods: list[str] | str | None = None,
     mode: str = "survey",
     date_min: str = "",
     date_max: str = "",
     seen: list[str] | None = None,
     effort: str = "standard",
+    area_id: str = "",
+    arxiv_ids: list[str] | None = None,
 ) -> str:
     """
     Retrieve and read one area, returning the papers worth reading and an id for the ranking.
@@ -106,9 +121,23 @@ def retrieve(
     `query_id` as `seen`: the reply carries `new_share`, which is the share of this ranking
     nothing earlier already found, and a value near zero means you have renamed an area rather
     than opened a new one. Keep the `query_id` and pass it to mine and write_report.
+
+    Pass an `area_id` from identify_areas, or `arxiv_ids`, to search the field around those papers
+    from their own mean vector, with `question` defaulting to the area's name. Most of what comes
+    back was written by others, so each paper says `given` when it is one of the papers passed.
     """
     return retrieving.retrieve(
-        load(), question, arxiv_id, methods, mode, date_min, date_max, seen, effort
+        load(),
+        question,
+        arxiv_id,
+        methods,
+        mode,
+        date_min,
+        date_max,
+        seen,
+        effort,
+        area_id,
+        arxiv_ids,
     )
 
 
@@ -119,36 +148,40 @@ def mine(
     question: str = "",
     mode: str = "survey",
     effort: str = "standard",
+    area_id: str = "",
 ) -> str:
     """
     Read the citation graph around a set of papers for what the field argues about.
 
-    Pass the `query_id` a retrieve call returned, or name papers yourself with `arxiv_ids` and a
-    `question`. Returns the magnets, which are the papers this set takes positions on, with the
-    counts per intent; the lineages, which are dated paths through the graph showing how the field
+    Pass the `query_id` a retrieve call returned, an `area_id` from identify_areas to read an
+    author's or a list's own papers, or name papers yourself with `arxiv_ids` and a `question`.
+    Returns the magnets, which are the papers this set takes positions on, with the counts per
+    intent; the lineages, which are dated paths through the graph showing how the field
     got here; the disputes, which are the sentences in which one paper says another is wrong; the
     successors, which are recent papers citing this set and so need no citations of their own; and
     the connectors, which are papers that bridge two papers in the set without being in it.
     """
-    return mining.mine(load(), query_id, arxiv_ids, question, mode, effort)
+    return mining.mine(load(), query_id, arxiv_ids, question, mode, effort, area_id)
 
 
 @tool()
 def read_paper(
     arxiv_ids: list[str],
-    schema: list[dict[str, Any]] | None = None,
+    schema: list[dict[str, Any]] | dict[str, Any] | None = None,
     question: str = "",
-    want: str = "",
+    want: str | list[str] = "",
 ) -> str:
     """
     Read the full text of papers, at whichever depth you need.
 
     With neither `schema` nor `want`, returns each paper's section list so you can see what it
-    holds. With `want`, returns the text of the sections matching that keyword, such as
-    "limitations" or "results". With `schema`, you invent the fields and this fills them from each
-    paper's own method and results sections: one entry per field with a name, a description and
-    optional `options` to force a closed answer. Use the schema form to compare papers on axes you
-    chose. Anything the paper does not say comes back as "n/a" rather than guessed.
+    holds. With `want`, one or more keywords such as "limitations" or "threat model, defenses",
+    returns the sections whose titles carry any of them, and when no title does, the sentences
+    that carry the most of them. With `schema`, you invent the fields and this fills them from
+    each paper's own method and results sections: a list of entries with a name, a description and
+    optional `options` to force a closed answer, or a mapping of name to description. Use the
+    schema form to compare papers on axes you chose. Anything the paper does not say comes back as
+    "n/a" rather than guessed.
     """
     return reading.read_paper(load(), arxiv_ids, schema, question, want)
 
@@ -157,7 +190,7 @@ def read_paper(
 def write_report(
     query_ids: list[str],
     title: str = "",
-    sections: list[dict[str, str]] | None = None,
+    sections: list[dict[str, str] | str] | str | None = None,
     effort: str = "standard",
     end: bool = True,
     question: str = "",
@@ -171,9 +204,9 @@ def write_report(
     currently is with each paper's role, how it got here as dated lineages, a table comparing the
     methods on axes this question decides, what has just appeared against it, and what is
     contested in the citing authors' own words. Pass your own prose as `sections`, each a title
-    and a body, and it is carried as written. Every arXiv id is then checked against the corpus: a
-    typo is corrected and an id no paper carries is cut out. Setting `end` false keeps the session
-    open for a follow-up.
+    and a body or markdown with headings, and it is carried as written. Every arXiv id is then
+    checked against the corpus: a typo is corrected and an id no paper carries is cut out. Setting
+    `end` false keeps the session open for a follow-up.
     """
     return writing.write_report(load(), query_ids, title, sections, effort, end, question)
 
@@ -199,9 +232,26 @@ def search_papers(text: str, limit: int = 20, before: str = "", after: str = "")
     Plain closeness search over the corpus, with no citation graph and no reader.
 
     Use this to turn a paper you know by name into an id, or to check whether a field is genuinely
-    empty when retrieve came back thin. It is not the main path.
+    empty when retrieve came back thin. To find papers from what they did or argued, use
+    recall_paper instead.
     """
     return searching.search_papers(load(), text, limit, before, after)
+
+
+@tool()
+def recall_paper(
+    description: str, author: str = "", before: str = "", after: str = "", limit: int = 10
+) -> str:
+    """
+    Find particular papers from a description of what they did, found or argued.
+
+    Use this rather than retrieve when the user wants specific papers, such as "papers showing X"
+    or "the paper that claimed Y", since retrieve ranks what a whole field cites and can bury a few
+    recent papers on a narrow claim. A model writes the abstract such a paper would have, the
+    corpus is searched with it and with the description, and a reader picks the matches. Pass a
+    name the user remembers as `author`. Returns the matches first, each with its abstract.
+    """
+    return recalling.recall_paper(load(), description, author, before, after, limit)
 
 
 @tool()

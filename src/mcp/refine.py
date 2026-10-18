@@ -58,11 +58,11 @@ def probe(handles: Handles, text: str, limit: int = PROBE) -> list[str]:
         limit: How many titles to read.
 
     Returns:
-        One line per paper, newest ranked by closeness.
+        One line per paper with its id, ranked by closeness.
     """
     query = Query(text=text, emb=handles.embed(text))
     found = CosineRetriever(handles.dsn).retrieve(query, limit)
-    return [f"- ({p.date.year}) {' '.join(p.title.split())}" for p in found]
+    return [f"- {p.arxiv_id} ({p.date.year}) {' '.join(p.title.split())}" for p in found]
 
 
 def refine(handles: Handles, interest: str) -> str:

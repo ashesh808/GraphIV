@@ -54,7 +54,7 @@ CITATION_REPO = "kkuroma/GraphIV-citation-intent"
 SURVEY_REPO = "kkuroma/GraphIV-survey"
 
 [endpoints]
-EMBED_API = "http://127.0.0.1:11435"
+EMBED_API = "http://127.0.0.1:11434/embedding/nomic-embed-text-v2-moe"
 EMBED_NAME = "nomic-embed-text-v2-moe"
 EMBED_PARALLEL = 1
 EMBED_BATCH = 256

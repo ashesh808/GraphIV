@@ -50,7 +50,7 @@ GRAPHIV_VENV=/tmp/graphiv-venv ./result/bin/graphiv-sync
 | --- | --- | --- |
 | `graphiv-pg` | socket only | the cluster, one postmaster of its own |
 | `graphiv-venv` | | a oneshot running `graphiv-sync` into `venvDir`, which every unit below requires |
-| `graphiv-api` | `serve.API_PORT`, 6767 | the nine tools, the store, the graph export |
+| `graphiv-api` | `serve.API_PORT`, 6767 | the ten tools, the store, the graph export |
 | `graphiv-frontend` | `serve.FRONTEND_PORT`, 6969 | the dashboard, from a second process registering no tools |
 | `graphiv-manager` | `manager.PORT`, 6868 | the snapshot fetch and every preprocess stage, on the GPU |
 | `graphiv-graph` | | a path unit restarting the api when the graph export is rewritten |

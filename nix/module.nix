@@ -335,8 +335,9 @@ in
           };
 
           endpoints = section "The models, all of them served elsewhere." {
-            EMBED_API = opt types.str "http://127.0.0.1:11435" ''
-              A llama-server hosting the embedding model, which must expose /tokenize.
+            EMBED_API = opt types.str "http://127.0.0.1:11434/embedding/nomic-embed-text-v2-moe" ''
+              A llama-server hosting the embedding model, which must expose /tokenize, or a
+              llama-router's path for one embedding model, which loads it on the first call.
             '';
             EMBED_NAME = opt types.str "nomic-embed-text-v2-moe" ''
               The embedding model, which has to be the one the corpus was built with.
