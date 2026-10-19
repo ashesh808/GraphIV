@@ -4,7 +4,7 @@
 [![dataset](https://img.shields.io/badge/dataset-kkuroma%2FGraphIV-6248B8?logo=huggingface&logoColor=white)](https://huggingface.co/datasets/kkuroma/GraphIV)
 [![citation intent](https://img.shields.io/badge/model-citation%20intent-2A8A60?logo=huggingface&logoColor=white)](https://huggingface.co/kkuroma/GraphIV-citation-intent)
 [![survey](https://img.shields.io/badge/model-survey-3060B0?logo=huggingface&logoColor=white)](https://huggingface.co/kkuroma/GraphIV-survey)
-[![license](https://img.shields.io/badge/license-GPLv3-565662)](LICENSE)
+[![license](https://img.shields.io/badge/license-AGPLv3-565662)](LICENSE)
 
 GraphIV ("graph" + arXiv) is an open source, reproducible citation graph of all of arXiv, rebuilt every two weeks on a single PC. Each resolved citation between two arXiv papers is labeled with its intent, each paper carries an embedding and a place in a topic tree of 4,096 topics, and the whole graph is served as an MCP server that turns a question into a grounded literature review.
 
@@ -158,9 +158,11 @@ Thank you to arXiv for use of its open access interoperability. GraphIV is built
 
 | Part | License |
 |---|---|
-| the code in this repository | [GPLv3](LICENSE) |
+| the code in this repository | [AGPLv3](LICENSE) |
 | the dataset, [kkuroma/GraphIV](https://huggingface.co/datasets/kkuroma/GraphIV) | CC BY-NC 4.0, with the arXiv metadata columns CC0 as arXiv releases them |
 | the two labelers | Apache 2.0 |
+
+The code is AGPLv3 from the commit after `c484e9a`, and every commit up to and including `c484e9a` was released under GPLv3.
 
 ## Citation
 

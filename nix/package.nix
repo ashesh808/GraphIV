@@ -72,7 +72,7 @@ symlinkJoin {
   meta = {
     description = "A grounded literature review endpoint over the arXiv citation graph";
     homepage = "https://git.kuroma.dev/kkuroma/graphiv";
-    license = lib.licenses.gpl3Only;
+    license = lib.licenses.agpl3Only;
     mainProgram = "graphiv-serve";
     platforms = lib.platforms.linux;
   };

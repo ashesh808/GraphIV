@@ -243,7 +243,7 @@ def draw(data: dict[str, Any], out: Path) -> None:
     for index, (label, value) in enumerate(
         [
             ("Data", f"{HUB}, CC BY-NC 4.0"),
-            ("Code", f"{REPO}, GPLv3"),
+            ("Code", f"{REPO}, AGPLv3"),
             ("Papers up to", latest),
         ]
     ):
