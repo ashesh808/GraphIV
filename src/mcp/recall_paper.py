@@ -86,6 +86,20 @@ def interleave(first: list[Paper], second: list[Paper]) -> list[Paper]:
     return list(seen.values())
 
 
+def picks_first(picked: list[Paper], pool: list[Paper]) -> list[Paper]:
+    """
+    The reader's picks in its order, then the rest of the pool, each paper once
+
+    Args:
+        picked: What the reader matched.
+        pool: The whole ranking.
+
+    Returns:
+        The reply's order.
+    """
+    return list({p.arxiv_id: p for p in picked + pool}.values())
+
+
 def recall_paper(
     handles: Handles,
     description: str,
@@ -137,7 +151,7 @@ def recall_paper(
         else []
     )
     chosen = {p.arxiv_id for p in picked}
-    ranked = list(dict.fromkeys(picked + pool))
+    ranked = picks_first(picked, pool)
     LOG.info("recalled %d of %d for %r", len(chosen), len(pool), description[:60])
     out: list[dict[str, Any]] = [
         {

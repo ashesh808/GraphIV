@@ -11,7 +11,7 @@ from datetime import date
 
 from src.core.schema import Paper
 from src.mcp.identify_areas import OUTSIDE, merge
-from src.mcp.recall_paper import interleave
+from src.mcp.recall_paper import interleave, picks_first
 from src.miner.store import mean_vector
 
 VECTORS = {"a": [1.0, 0.0], "b": [0.9, 0.1], "c": [0.0, 1.0], "d": [0.05, 1.0]}
@@ -58,3 +58,8 @@ def test_interleave_alternates_and_keeps_the_earlier_place():
     first = [paper("a"), paper("b"), paper("c")]
     second = [paper("x"), paper("a"), paper("y")]
     assert [p.arxiv_id for p in interleave(first, second)] == ["a", "x", "b", "c", "y"]
+
+
+def test_picks_lead_and_no_paper_repeats():
+    pool = [paper("a"), paper("b"), paper("c")]
+    assert [p.arxiv_id for p in picks_first([paper("c"), paper("a")], pool)] == ["c", "a", "b"]
