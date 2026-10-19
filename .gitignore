@@ -40,7 +40,8 @@ CLAUDE.md
 .pg
 
 # Large stores. Schemas are small and reviewable, so they are force-added back.
-data
+/data
+assets/data
 !data/metadata/*.sql
 
 # Research runs submitted through the MCP: regenerable, and the dashboard serves
