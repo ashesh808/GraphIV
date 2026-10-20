@@ -10,13 +10,13 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
-import tomllib
 from dataclasses import dataclass, field
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from src.core.config import load_config
 from src.core.embed import embed
 from src.core.llm import Gemma
 from src.core.parse_graph_export import GraphExport, load_graph_export
@@ -154,7 +154,7 @@ def serving(config_path: str | Path = CONFIG) -> Serving:
     Returns:
         The settings.
     """
-    config: dict[str, Any] = tomllib.loads(Path(config_path).read_text(encoding="utf-8"))
+    config: dict[str, Any] = load_config(config_path)
     block = dict(config["serve"])
     return Serving(
         host=str(block["HOST"]),
@@ -179,7 +179,7 @@ def load(config_path: str | Path = CONFIG) -> Handles:
     Returns:
         The handles.
     """
-    config: dict[str, Any] = tomllib.loads(Path(config_path).read_text(encoding="utf-8"))
+    config: dict[str, Any] = load_config(config_path)
     endpoints = {k: str(v) for k, v in config["endpoints"].items()}
     block = dict(config["serve"])
     settings = serving(config_path)

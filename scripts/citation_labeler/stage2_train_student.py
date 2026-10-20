@@ -12,7 +12,6 @@ import csv
 import random
 import shutil
 import time
-import tomllib
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -23,6 +22,8 @@ from numpy.typing import NDArray
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+from src.core.config import load_config
 
 INTENTS = ("uses", "extends", "compares", "motivates", "background", "critiques")
 INTENT_ID = {name: i for i, name in enumerate(INTENTS)}
@@ -350,9 +351,7 @@ def main() -> None:
     _ = ap.add_argument("--benchmark", type=int, default=0, help="time N rows and exit")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     cl = cfg["citation_labeler"]
     splits: list[float] = [float(x) for x in cl["LABELER_SPLITS"]]
     student = Student(

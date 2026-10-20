@@ -12,7 +12,6 @@ import json
 import re
 import shutil
 import subprocess
-import tomllib
 import zipfile
 from collections.abc import Iterator
 from datetime import date
@@ -21,6 +20,8 @@ from pathlib import Path
 from typing import Any
 
 import psycopg
+
+from src.core.config import load_config
 
 MODERN = re.compile(r"^(\d{2})(\d{2})\.\d{4,5}$")
 LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Za-z-]+)?/(\d{2})(\d{2})\d{3}$")
@@ -321,9 +322,7 @@ def main() -> None:
     _ = ap.add_argument("--dry-run", action="store_true", help="report changes, write nothing")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     fetcher = SourceFetcher(
         source_path=str(cfg["source"]["SOURCE_PATH"]),
         source_url=str(cfg["source"]["SOURCE_URL"]),

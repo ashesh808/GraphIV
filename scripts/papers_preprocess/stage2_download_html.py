@@ -12,13 +12,14 @@ import os
 import re
 import threading
 import time
-import tomllib
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import psycopg
+
+from src.core.config import load_config
 
 MODERN = re.compile(r"^(\d{2})(\d{2})\.\d{4,5}$")
 LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Za-z-]+)?/(\d{2})(\d{2})\d{3}$")
@@ -253,9 +254,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     dl = HTMLDownloader(
         path=str(cfg["dataset"]["HTML_PATH"]),
         base_url=str(cfg["source"]["HTML_BASE_URL"]),

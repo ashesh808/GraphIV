@@ -14,11 +14,12 @@ import signal
 import subprocess
 import sys
 import time
-import tomllib
 from datetime import date
 from pathlib import Path
 
 import psycopg
+
+from src.core.config import load_config
 
 COMPRESS = "zstd:3"
 POLL = 10.0
@@ -142,9 +143,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     root = Path(str(cfg["export"]["EXPORT_PATH"]))
     dump(str(cfg["database"]["PG_DEST"]), root / f"graphiv-{date.today().isoformat()}.dump")
 

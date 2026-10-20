@@ -10,13 +10,14 @@ from __future__ import annotations
 import argparse
 import multiprocessing
 import re
-import tomllib
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
 import psycopg
 from citation_regex import SENTINEL, Index, extract_citations
+
+from src.core.config import load_config
 
 MODERN = re.compile(r"^(\d{2})(\d{2})\.\d{4,5}$")
 LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Za-z-]+)?/(\d{2})(\d{2})\d{3}$")
@@ -313,9 +314,7 @@ def main() -> None:
     _ = ap.add_argument("--limit", type=int, default=0, help="stop after N papers")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     builder = CitationBuilder(html_path=str(cfg["dataset"]["HTML_PATH"]))
     _ = builder.populate_citation_table(
         str(cfg["database"]["PG_DEST"]),

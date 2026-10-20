@@ -5,11 +5,10 @@ Runs PrecisionMatch, which asks how much of an answer is not about the topic at 
 from __future__ import annotations
 
 import argparse
-import tomllib
-from pathlib import Path
 
 from driver import run_benchmark
 
+from src.core.config import load_config
 from src.core.parse_graph_export import load_graph_export
 from src.eval.precision_match import PrecisionMatch
 
@@ -21,7 +20,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
-    settings = tomllib.loads(Path(str(args.config_path)).read_text(encoding="utf-8"))
+    settings = load_config(str(args.config_path))
     block = settings["retriever_eval"]
     graph = load_graph_export(str(settings["dataset"]["GRAPH_PATH"]))  # pyright: ignore[reportAny]
     bench = PrecisionMatch(

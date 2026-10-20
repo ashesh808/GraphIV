@@ -25,6 +25,8 @@ import pyarrow.parquet as pq
 import torch
 from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer
 
+from src.core.config import load_config
+
 # the order stage1_label_citation.py trained with, since a checkpoint stores indices and not names
 INTENTS = ("uses", "extends", "compares", "motivates", "background", "critiques")
 SURVEY = ("other", "survey")
@@ -336,9 +338,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     root = Path(str(cfg["export"]["EXPORT_PATH"]))
     export(cfg, root / f"graphiv-{date.today().isoformat()}")
 

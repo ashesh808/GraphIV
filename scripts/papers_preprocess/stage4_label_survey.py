@@ -16,6 +16,8 @@ import torch
 from torch import nn
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+from src.core.config import load_config
+
 
 class SurveyLabeler:
     """
@@ -122,9 +124,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     sv = cfg["survey"]
     labeler = SurveyLabeler(batch=int(sv["BATCH"]), model_dir=Path(str(sv["MODEL_PATH"])))
     _ = labeler.label(str(cfg["database"]["PG_DEST"]), chunk=int(sv["CHUNK"]))

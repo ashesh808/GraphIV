@@ -12,7 +12,6 @@ import hashlib
 import os
 import re
 import sys
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -21,6 +20,8 @@ import pyarrow.compute as pc
 import pyarrow.parquet as pq
 from huggingface_hub import CommitOperationAdd, CommitOperationDelete, HfApi
 from huggingface_hub.hf_api import RepoFile
+
+from src.core.config import load_config
 
 CARDS = Path(__file__).resolve().parent / "cards"
 RELEASE = re.compile(r"^graphiv-\d{4}-\d{2}-\d{2}$")
@@ -269,7 +270,7 @@ def main() -> None:
     _ = ap.add_argument("--release", default="", help="a graphiv-<date>/ other than the newest")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(Path(str(args.config_path)).read_text(encoding="utf-8"))
+    cfg = load_config(str(args.config_path))
     export = cfg["export"]
     release = Path(args.release) if args.release else newest_release(Path(export["EXPORT_PATH"]))
     api = HfApi(token=token(cfg))

@@ -8,15 +8,15 @@ Every run reclusters the whole corpus, since two independent fits share one inte
 from __future__ import annotations
 
 import argparse
-import tomllib
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 import numpy as np
 import psycopg
 from numpy.typing import NDArray
 from sklearn.cluster import HDBSCAN, MiniBatchKMeans
 from threadpoolctl import threadpool_limits
+
+from src.core.config import load_config
 
 LEVELS = ("level_0", "level_1", "level_2")
 
@@ -159,9 +159,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     tree = TopicTree(
         k=int(cfg["topics"]["TREE_K"]),
         min_cluster_size=int(cfg["topics"]["TREE_MIN_CLUSTER_SIZE"]),

@@ -9,6 +9,7 @@ parse_graph_export.py  the citation graph export, read into flat arrays a query 
 embed.py               the query vector, from the same endpoint the corpus was embedded with
 llm.py                 the local router, with every reply cached by the hash of its prompt
 fetch.py               where a paper's full text sits on disk, fetched from arXiv when it is missing
+config.py              config.toml, with each relative path anchored to the file's own directory
 ```
 
 `Paper` and `Query` are the only shapes that cross a step boundary.

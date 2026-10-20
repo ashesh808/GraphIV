@@ -11,13 +11,14 @@ import argparse
 import queue
 import threading
 import time
-import tomllib
 from pathlib import Path
 from typing import Any
 
 import psycopg
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+from src.core.config import load_config
 
 INTENTS = ("uses", "extends", "compares", "motivates", "background", "critiques")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -215,9 +216,7 @@ def main() -> None:
     _ = ap.add_argument("--relabel", action="store_true", help="redo the whole table")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     cl = cfg["citation_labeler"]
     labeler = CitationLabeler(
         labeler_path=str(cl["LABELER_PATH"]),

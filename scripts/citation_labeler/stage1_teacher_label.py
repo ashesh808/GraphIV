@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import tomllib
 import urllib.error
 import urllib.request
 from collections import Counter
@@ -20,6 +19,8 @@ from typing import Any
 
 import psycopg
 from labels import parse_labels
+
+from src.core.config import load_config
 
 SAMPLE = """
 SELECT source_id, target_id, COALESCE(section, ''), sentence
@@ -170,9 +171,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     cl = cfg["citation_labeler"]
     root = str(cl["LABELER_PATH"])
     teacher = Teacher(

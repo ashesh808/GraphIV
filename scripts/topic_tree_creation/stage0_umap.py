@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import multiprocessing as mp
-import tomllib
 from collections import deque
 from multiprocessing.pool import AsyncResult
 from pathlib import Path
@@ -19,6 +18,8 @@ import joblib
 import numpy as np
 import psycopg
 from numpy.typing import NDArray
+
+from src.core.config import load_config
 
 _MODEL: Any = None  # pyright: ignore[reportExplicitAny]
 
@@ -179,9 +180,7 @@ def main() -> None:
     _ = ap.add_argument("--skip-fit", action="store_true", help="project with the model on disk")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     um = cfg["umap"]
     dsn = str(cfg["database"]["PG_DEST"])
     reducer = Reducer(

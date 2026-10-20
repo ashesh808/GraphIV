@@ -11,10 +11,11 @@ import argparse
 import re
 import subprocess
 import tempfile
-import tomllib
 from pathlib import Path
 
 import psycopg
+
+from src.core.config import load_config
 
 MODERN = re.compile(r"^(\d{2})(\d{2})\.\d{4,5}$")
 LEGACY = re.compile(r"^[a-z-]+(?:\.[A-Za-z-]+)?/(\d{2})(\d{2})\d{3}$")
@@ -222,9 +223,7 @@ def main() -> None:
     _ = ap.add_argument("--config_path", default="config.toml")
     args = ap.parse_args()
 
-    cfg = tomllib.loads(
-        Path(str(args.config_path)).read_text(encoding="utf-8")
-    )  # pyright: ignore[reportAny]
+    cfg = load_config(str(args.config_path))
     dl = PDFDownloader(
         path=str(cfg["dataset"]["PDF_PATH"]),
         base_url=str(cfg["source"]["PDF_BASE_URL"]),

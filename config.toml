@@ -1,11 +1,11 @@
 # GraphIV global configuration. Local configurations live in TBA
 
 [database]
-PG_DEST = "host=/home/kuroma/Documents/projects/nlp/arxivkg/.pg port=5433 dbname=arxivkg"
+PG_DEST = "host=.pg port=5433 dbname=arxivkg"
 
 [source]
 SOURCE_URL = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
-SOURCE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv.json"
+SOURCE_PATH = "data/arxiv.json"
 PDF_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv/arxiv/pdf"
 PDF_LEGACY_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv"
 HTML_BASE_URL = "https://arxiv.org/html"
@@ -21,9 +21,9 @@ HTML_BATCH = 200
 HTML_N_PARALLEL = 16
 
 [dataset]
-PDF_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv/pdfs"
-HTML_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/arxiv/html"
-GRAPH_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_graph_export.npy"
+PDF_PATH = "data/arxiv/pdfs"
+HTML_PATH = "data/arxiv/html"
+GRAPH_PATH = "data/citation_graph_export.npy"
 
 # The daemon: the ports it listens on, and the paths it reads and writes
 # A paper the corpus never had is fetched into HTML_PATH or PDF_PATH, under its own YYMM
@@ -33,21 +33,21 @@ API_PORT = 6767
 FRONTEND_PORT = 6969
 # hosts the streamable-http transport answers to, empty meaning loopback only
 ALLOWED_HOSTS = []
-RECIPE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/retrieval_recipes"
-RUNS_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/runs"
-CACHE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/cache"
+RECIPE_PATH = "retrieval_recipes"
+RUNS_PATH = "data/runs"
+CACHE_PATH = "data/cache"
 FETCH = true
 
 # The manager, one page running every stage below, keeping its jobs and charts in STATE_PATH
 [manager]
 PORT = 6868
-STATE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/manager"
+STATE_PATH = "data/manager"
 # the Hugging Face token the publish stage uploads with, empty for none
 HF_TOKEN_PATH = ""
 
 # What leaves the store: graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release
 [export]
-EXPORT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/export"
+EXPORT_PATH = "data/export"
 # the Hugging Face repos the publish stage uploads to, empty to skip one
 DATA_REPO = "kkuroma/GraphIV"
 CITATION_REPO = "kkuroma/GraphIV-citation-intent"
@@ -65,12 +65,12 @@ LLM_NAME = "Gemma-4-26B-Batched"
 
 # The literature review scorer, whose checkpoint and recipe live in MODEL_PATH
 [survey]
-MODEL_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/survey_detection"
+MODEL_PATH = "data/survey_detection"
 BATCH = 64
 CHUNK = 50000
 
 [umap]
-UMAP_MODEL_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/umap_50.joblib"
+UMAP_MODEL_PATH = "data/umap_50.joblib"
 UMAP_SAMPLE = 400000
 UMAP_SEED = 69420
 UMAP_DIM = 50
@@ -90,7 +90,7 @@ N_TOPIC_LABEL = 10
 TOPIC_BATCH = 8
 
 [citation_labeler]
-LABELER_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/data/citation_labeler"
+LABELER_PATH = "data/citation_labeler"
 LABELER_MODEL = "distilbert/distilbert-base-uncased"
 LABELER_BATCH = 48             # the resident llama models leave under 400MB of the 3090
 LABELER_MAX_SEQ = 256
@@ -114,8 +114,8 @@ SURVEYMATCH_LEVEL = 2
 
 # Retrieval benchmarks, one run directory per metric under OUTPUT_PATH
 [retriever_eval]
-RECIPE_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/retrieval_recipes"
-OUTPUT_PATH = "/home/kuroma/Documents/projects/nlp/arxivkg/experiments/retrieve"
+RECIPE_PATH = "retrieval_recipes"
+OUTPUT_PATH = "experiments/retrieve"
 RETURN_LIMIT = 1000
 BUDGETS = [100, 200, 500, 1000]
 SEED = 0

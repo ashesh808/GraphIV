@@ -14,7 +14,6 @@ import logging
 import re
 import threading
 import time
-import tomllib
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -25,6 +24,7 @@ import snapshot
 import stages
 import stats
 from jobs import ACTIVE, Job, Runner, Step, Store, progress
+from src.core.config import load_config
 
 LOG = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class Manager:
         self.state = state
         self.python = python
         state.mkdir(parents=True, exist_ok=True)
-        self.cfg: dict[str, Any] = tomllib.loads(config.read_text(encoding="utf-8"))
+        self.cfg: dict[str, Any] = load_config(config)
         self.dsn = str(self.cfg["database"]["PG_DEST"])
         self.source = Path(str(self.cfg["source"]["SOURCE_PATH"]))
         self.url = str(self.cfg["source"].get("SOURCE_URL", ""))

@@ -10,7 +10,6 @@ import argparse
 import logging
 import os
 import sys
-import tomllib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -21,6 +20,7 @@ from starlette.applications import Starlette
 
 from routes import routes
 from schedule import Manager
+from src.core.config import load_config
 
 HERE = Path(__file__).resolve().parent
 # how long a stop waits on a stage before uvicorn gives up, which covers a COPY rolling back
@@ -39,7 +39,7 @@ def main() -> None:
     _ = ap.add_argument("--port", type=int, help="[manager] PORT by default")
     args = ap.parse_args()
     config = Path(str(args.config_path)).resolve()
-    said: dict[str, Any] = tomllib.loads(config.read_text(encoding="utf-8"))
+    said: dict[str, Any] = load_config(config)
     state = Path(str(args.state or said["manager"]["STATE_PATH"])).resolve()
     host = str(args.host or said["serve"]["HOST"])
     port = int(args.port or said["manager"]["PORT"])

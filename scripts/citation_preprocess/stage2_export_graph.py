@@ -8,11 +8,12 @@ This is an export rather than a queue stage, so it rewrites the whole file every
 from __future__ import annotations
 
 import argparse
-import tomllib
 from pathlib import Path
 
 import numpy as np
 import psycopg
+
+from src.core.config import load_config
 
 EPOCH = np.datetime64("1970-01-01")
 DAY = np.timedelta64(1, "D")
@@ -29,7 +30,7 @@ def main() -> None:
     args = ap.parse_args()
 
     # 1) Read the config
-    cfg = tomllib.loads(Path(str(args.config_path)).read_text(encoding="utf-8"))
+    cfg = load_config(str(args.config_path))
     dsn = str(cfg["database"]["PG_DEST"])
     out = Path(str(args.out) or str(cfg["dataset"]["GRAPH_PATH"]))
 

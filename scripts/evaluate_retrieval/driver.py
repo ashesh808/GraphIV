@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import logging
 import time
-import tomllib
 from datetime import date
 from pathlib import Path
 from typing import Any
 
+from src.core.config import load_config
 from src.core.embed import embed
 from src.core.parse_graph_export import GraphExport, load_graph_export
 from src.eval.cases import CaseMiner, Sample
@@ -73,7 +73,7 @@ def run_benchmark(bench: Match, config_path: str, mine_args: dict[str, float]) -
         config_path: Where config.toml lives.
         mine_args: The per-metric floors the miner needs.
     """
-    config: dict[str, Any] = tomllib.loads(Path(config_path).read_text(encoding="utf-8"))
+    config: dict[str, Any] = load_config(config_path)
     settings = dict(config["retriever_eval"])
     endpoints, dsn = config["endpoints"], str(config["database"]["PG_DEST"])
     out_root = Path(str(settings["OUTPUT_PATH"])) / bench.name
