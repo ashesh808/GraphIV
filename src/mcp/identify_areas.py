@@ -18,6 +18,7 @@ import psycopg
 from src.core import llm
 from src.mcp.state import Area, Handles, keep_area
 from src.miner.store import mean_vector, read_vectors
+from src.retrieve import people as persons
 
 LOG = logging.getLogger(__name__)
 
@@ -57,8 +58,22 @@ SCOPE = """
 The researcher only cares about: {scope}. Put every paper outside that into one area named
 "{outside}", and group the rest as above."""
 
+NAMES_PROMPT = """Below are groups of research papers, each under the topic a tree placed it in.
+Name each group as a paper title would phrase it, 4 to 12 words, from what its papers are about
+rather than from the topic's own name, and say in one sentence what its papers share.
+
+Return json only, no preamble:
+{{"areas": [{{"group": 1, "area": "...", "why": "..."}}]}}
+
+{body}
+"""
+
+UNPLACED_NAME = "papers the topic tree has not placed yet"
+# the titles each group shows the model, which is enough to name it
+TITLES_PER_GROUP = 12
+
 OUTSIDE = "outside scope"
-# the most papers one split reads, so a name shared by many people is cut to its newest
+# the most papers one split reads
 MAX_PAPERS = 200
 # past this many papers the split reads titles alone, so a whole author's list fits one call
 TITLES_ONLY = 60
@@ -69,12 +84,6 @@ MERGE_FLOOR = 0.60
 # one author's papers all clear that floor, so only a short list is merged
 MERGE_UP_TO = 30
 ID_CHARS = 10
-
-AUTHOR = """
-SELECT arxiv_id FROM papers
-WHERE %s = ANY(surnames) AND authors ILIKE %s AND stage >= 3
-ORDER BY date DESC
-"""
 
 DETAILS = "SELECT arxiv_id, title, abstract, date FROM papers WHERE arxiv_id = ANY(%s)"
 
@@ -94,25 +103,6 @@ def anchor(area: str, methods: list[str]) -> str:
         The line.
     """
     return f"{area}. {', '.join(methods)}" if methods else area
-
-
-def author_ids(dsn: str, name: str) -> list[str]:
-    """
-    Every embedded paper whose author list carries the full name, newest first
-
-    Args:
-        dsn: libpq connection string.
-        name: The author as written on arXiv, first name and surname.
-
-    Returns:
-        The arxiv ids, which mix every person who shares the name.
-    """
-    parts = name.split()
-    if not parts:
-        return []
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(AUTHOR, (parts[-1], f"%{' '.join(parts)}%")).fetchall()
-    return [str(r[0]) for r in rows]
 
 
 def merge(areas: list[dict[str, Any]], vectors: dict[str, list[float]]) -> list[dict[str, Any]]:
@@ -233,35 +223,130 @@ def split_papers(handles: Handles, arxiv_ids: list[str], scope: str) -> dict[str
     }
 
 
+def found_people(handles: Handles, people: list[dict[str, Any]]) -> tuple[list[str], list[Any]]:
+    """
+    The union of what each named person wrote, and what each name matched
+
+    Args:
+        handles: The shared handles.
+        people: Each as {"name": ..., "known": [...]}.
+
+    Returns:
+        The papers, each once, and one entry per person with their counts.
+
+    Raises:
+        ValueError: When a person has no name or no known paper.
+    """
+    found = [persons.find(handles.dsn, p) for p in persons.as_people(people)]
+    union = list(dict.fromkeys(a for f in found for a in f.kept))
+    told = [
+        {
+            "name": f.person.name,
+            "known": list(f.person.known),
+            "matched": f.candidates,
+            "kept": len(f.kept),
+        }
+        for f in found
+    ]
+    return union, told
+
+
+def split_people(handles: Handles, people: list[dict[str, Any]]) -> dict[str, Any]:
+    """
+    People's papers into one area per parent topic, each named from its own titles
+
+    Args:
+        handles: The shared handles.
+        people: Each as {"name": ..., "known": [...]}.
+
+    Returns:
+        The areas with their papers, and what each person's name matched.
+    """
+    try:
+        union, told = found_people(handles, people)
+    except ValueError as error:
+        return {"error": str(error)}
+    if not union:
+        return {"error": "none of the known papers lists its person as an author", "people": told}
+    with psycopg.connect(handles.dsn) as conn:
+        meta = {
+            str(a): (" ".join(str(t or "").split()), str(d))
+            for a, t, _, d in conn.execute(DETAILS, (union,)).fetchall()
+        }
+    groups = sorted(persons.topics(handles.dsn, union).items(), key=lambda kv: -len(kv[1]))
+    tree = persons.topic_names(handles.dsn)
+    body = "\n\n".join(
+        f"Group {i + 1}, topic: {tree.get(key, UNPLACED_NAME)}\n"
+        + "\n".join(f"- {meta[a][0]}" for a in ids[:TITLES_PER_GROUP] if a in meta)
+        for i, (key, ids) in enumerate(groups)
+    )
+    reply = handles.model.ask(NAMES_PROMPT.format(body=body), max_tokens=4000)
+    parsed = llm.parse_json(reply)
+    named: dict[int, dict[str, Any]] = {}
+    listed = parsed.get("areas") if isinstance(parsed, dict) else None
+    for entry in listed if isinstance(listed, list) else []:
+        if isinstance(entry, dict) and isinstance(entry.get("group"), int):
+            named[entry["group"]] = entry
+    out: list[dict[str, Any]] = []
+    for i, (key, ids) in enumerate(groups):
+        entry = named.get(i + 1, {})
+        name = " ".join(str(entry.get("area", "")).split()) or tree.get(key, UNPLACED_NAME)
+        area_key = hashlib.sha1("|".join(["people", name, *sorted(ids)]).encode()).hexdigest()
+        held = keep_area(
+            Area(
+                area_key[:ID_CHARS],
+                name,
+                " ".join(str(entry.get("why", "")).split()),
+                ids,
+                pinned=True,
+            )
+        )
+        out.append(
+            {
+                "area_id": held.area_id,
+                "area": held.area,
+                "topic": tree.get(key, UNPLACED_NAME),
+                "why": held.why,
+                "count": len(ids),
+                "papers": [
+                    {"arxiv_id": a, "title": meta[a][0], "date": meta[a][1]}
+                    for a in ids[:LISTED]
+                    if a in meta
+                ],
+            }
+        )
+    LOG.info("split %d papers of %d people into %d topics", len(union), len(told), len(out))
+    return {"people": told, "papers": len(union), "areas": out}
+
+
 def identify_areas(
     handles: Handles,
     question: str = "",
     cap: int = 4,
-    author: str = "",
+    people: list[dict[str, Any]] | None = None,
     arxiv_ids: list[str] | None = None,
     scope: str = "",
 ) -> str:
     """
-    The areas one question breaks into, or the areas one list of papers covers
+    The areas one question breaks into, the areas people work in, or the areas a paper list covers
 
     Args:
         handles: The shared handles.
         question: What was asked, when the split starts from a question.
         cap: The most areas a question breaks into.
-        author: An author whose papers are split instead, as written on arXiv.
-        arxiv_ids: Papers to split instead, alone or beside the author's.
+        people: Authors whose papers are split by topic, each {"name": ..., "known": [...]}.
+        arxiv_ids: Papers to split instead.
         scope: What the researcher cares about, which a paper list is held to.
 
     Returns:
         The areas as json.
     """
-    if author or arxiv_ids:
-        listed = (author_ids(handles.dsn, author) if author else []) + list(arxiv_ids or [])
-        if not listed:
-            return json.dumps({"error": f"no paper in the corpus lists {author} as an author"})
-        return json.dumps(split_papers(handles, listed, scope), indent=2)
+    if people:
+        return json.dumps(split_people(handles, people), indent=2)
+    if arxiv_ids:
+        return json.dumps(split_papers(handles, list(arxiv_ids), scope), indent=2)
     if not question:
-        return json.dumps({"error": "pass a question, or an author or arxiv_ids to split"})
+        return json.dumps({"error": "pass a question, people, or arxiv_ids to split"})
     reply = handles.model.ask(PROMPT.format(question=question, cap=cap), max_tokens=900)
     parsed = llm.parse_json(reply)
     raw = parsed.get("areas") if isinstance(parsed, dict) else None

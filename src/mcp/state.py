@@ -96,6 +96,8 @@ class Held:
     era: int = 0
     pool: int = 0
     seconds: float = 0.0
+    # a person's own papers, mined without the citation hop so the walk stays on their work
+    pinned: bool = False
 
     @property
     def head(self) -> list[str]:
@@ -122,6 +124,7 @@ class Area:
     area: str
     why: str
     arxiv_ids: list[str] = field(default_factory=list)
+    pinned: bool = False
 
 
 AREAS: dict[str, Area] = {}

@@ -98,8 +98,9 @@ def mine(
         if not papers:
             return json.dumps({"error": "none of those ids is in the corpus"})
 
+    pinned = (held is not None and held.pinned) or (area is not None and area.pinned)
     found = Miner(handles.dsn, handles.graph, read_recipe(handles.recipe(mode))).mine(
-        papers, vector, asked
+        papers, vector, asked, expand=not pinned
     )
     names = found.papers
     out: dict[str, Any] = {

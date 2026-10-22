@@ -5,7 +5,7 @@ The agent runs the loop and decides what to search next and when to stop, while 
 
 ```
 refine.py          turns a freeform interest into focused questions, each tagged survey or frontier
-identify_areas.py  splits one question, or an author's or a list's papers, into the areas that need separate searches
+identify_areas.py  splits one question, a list's papers, or people's papers by topic, into the areas that need separate searches
 retrieve.py        one area, or the field around a list of papers, into graded papers, plus an id for the ranking
 mine.py            runs LeyLine over the papers a search kept
 read_paper.py      a paper's full text at the depth asked for, or a schema the caller invented, filled in

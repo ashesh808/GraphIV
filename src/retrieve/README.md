@@ -10,6 +10,7 @@ expand.py   AncestorExpander and FrontierExpander, which add one citation hop in
 scorer.py   GraphScorer and its Weights, the only step that ranks
 query.py    PaperQuery, which runs the steps in order
 recipe.py   builds a pipeline out of a recipe file
+people.py   one person's papers under a shared name, from a known paper, and their topics
 ```
 
 ```python

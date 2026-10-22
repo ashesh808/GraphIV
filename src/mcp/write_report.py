@@ -525,7 +525,8 @@ def write_report(
     question = " ".join(question.split()) or named or first
     vector = handles.embed(question)
     miner = Miner(handles.dsn, handles.graph, read_recipe(handles.recipe(mode)))
-    mined = miner.mine(papers, vector, asked)
+    pinned = all(held.pinned for q in query_ids if (held := get(q)) is not None)
+    mined = miner.mine(papers, vector, asked, expand=not pinned)
     close = read_cosines(handles.dsn, vector, [p.arxiv_id for p in papers])
     found = trim(focus(miner, mined, papers, close), hard)
     made, methods = table(handles, question, closest(papers, areas, close), hard.full_text)

@@ -15,10 +15,12 @@ from typing import Any
 
 from src.core.schema import Grade, Paper, Query
 from src.mcp.effort import Effort, level
+from src.mcp.identify_areas import found_people
 from src.mcp.state import Handles, Held, get_area, keep, make_id, overlap
 from src.miner import era, rank, reader
 from src.miner.recipe import read_recipe as read_miner
-from src.miner.store import mean_vector, read_cosines, read_seed, read_vectors
+from src.miner.store import mean_vector, read_cosines, read_papers, read_seed, read_vectors
+from src.retrieve import people as persons
 from src.retrieve.cosine import CosineRetriever
 from src.retrieve.recipe import build_pipeline, get_seed_limit, read_recipe
 
@@ -75,6 +77,115 @@ def pick(papers: list[Paper], grades: dict[str, Grade], limit: int) -> list[Pape
     return (central or relevant or papers)[:limit]
 
 
+def pinned_out(
+    handles: Handles,
+    question: str,
+    papers: list[Paper],
+    mode: str,
+    cap: date,
+    grades: dict[str, Grade],
+    told: dict[str, Any],
+) -> str:
+    """
+    Keeps a person's papers as one ranking, in the order given, and says what was kept
+
+    Args:
+        handles: The shared handles.
+        question: What the ranking answers, which never names the person.
+        papers: Their papers, best first.
+        mode: Which recipe the miner runs.
+        cap: The date the run is capped at.
+        grades: What the reader said, empty when nothing was asked.
+        told: Anything else the reply carries.
+
+    Returns:
+        The id the ranking is kept under and its papers, as json.
+    """
+    vector = mean_vector(list(read_vectors(handles.dsn, [p.arxiv_id for p in papers]).values()))
+    held = keep(
+        Held(
+            query_id=make_id(
+                "people", question, mode, cap.isoformat(), *sorted(p.arxiv_id for p in papers)
+            ),
+            question=question,
+            anchor=question,
+            mode=mode,
+            asked=cap,
+            vector=vector,
+            ranked=papers,
+            kept=papers,
+            grades=grades,
+            pinned=True,
+        )
+    )
+    out: dict[str, Any] = {
+        "query_id": held.query_id,
+        "mode": mode,
+        "date_max": cap.isoformat(),
+        "counts": {"kept": len(papers)},
+        **told,
+        "papers": [
+            {"arxiv_id": p.arxiv_id, "date": p.date.isoformat(), "title": " ".join(p.title.split())}
+            | ({"relevance": grades[p.arxiv_id].relevance} if p.arxiv_id in grades else {})
+            for p in papers
+        ],
+    }
+    return json.dumps(out, indent=2)
+
+
+def people_question(
+    handles: Handles,
+    people: list[dict[str, Any]],
+    question: str,
+    mode: str,
+    floor: date | None,
+    cap: date,
+) -> str:
+    """
+    Whether people work on a question, and if they do, all their papers in the topic closest to it
+
+    The topic is the parent topic whose papers sit closest to the question on average, and the
+    reader then decides whether any of them is about the question at all.
+
+    Args:
+        handles: The shared handles.
+        people: Each as {"name": ..., "known": [...]}.
+        question: What was asked, with no person in it.
+        mode: Which recipe the miner runs.
+        floor: The earliest date a paper may carry.
+        cap: The latest date a paper may carry.
+
+    Returns:
+        The kept ranking, or related false with no ranking, as json.
+    """
+    try:
+        union, told = found_people(handles, people)
+    except ValueError as error:
+        return json.dumps({"error": str(error)})
+    vector = handles.embed(question)
+    papers = [
+        p
+        for p in read_papers(handles.dsn, vector, union)
+        if p.date <= cap and (floor is None or p.date >= floor)
+    ]
+    cosines = {p.arxiv_id: p.cosine or 0.0 for p in papers}
+    groups = persons.topics(handles.dsn, list(cosines))
+    best = persons.best_topic(groups, cosines)
+    if best is None:
+        return json.dumps({"error": "none of their papers is inside those dates", "people": told})
+    chosen = set(groups[best])
+    picked = sorted((p for p in papers if p.arxiv_id in chosen), key=lambda p: -(p.cosine or 0.0))
+    grades = reader.grade(handles.model, question, picked)
+    related = any(g.relevance >= 1 for g in grades.values())
+    topic = persons.topic_names(handles.dsn).get(best, "")
+    if not related:
+        return json.dumps(
+            {"related": False, "topic": topic, "people": told, "read": len(picked)}, indent=2
+        )
+    told_back = {"related": True, "topic": topic, "people": told}
+    return pinned_out(handles, question, picked, mode, cap, grades, told_back)
+
+
 def retrieve(
     handles: Handles,
     question: str = "",
@@ -87,6 +198,7 @@ def retrieve(
     effort: str = "standard",
     area_id: str = "",
     arxiv_ids: list[str] | None = None,
+    people: list[dict[str, Any]] | None = None,
 ) -> str:
     """
     Everything the mechanical path and the reader know about one area
@@ -103,6 +215,8 @@ def retrieve(
         effort: quick, standard or deep.
         area_id: An area identify_areas split a paper list into, the papers the search starts from.
         arxiv_ids: Papers the search starts from instead, alone or beside the area's.
+        people: Authors, each {"name": ..., "known": [...]}, whose papers in the topic closest to
+            the question are returned instead of a search, or related false when none fits.
 
     Returns:
         The kept papers, the grade histogram and the id the ranking is kept under, as json.
@@ -112,6 +226,25 @@ def retrieve(
     area = get_area(area_id) if area_id else None
     if area_id and area is None:
         return json.dumps({"error": f"no area under {area_id}, this server never made it"})
+    floor = date.fromisoformat(date_min) if date_min else None
+    cap = date.fromisoformat(date_max) if date_max else date.today()
+    if people:
+        if not question:
+            return json.dumps(
+                {"error": "for people alone call identify_areas, then retrieve each area_id"}
+            )
+        return people_question(handles, people, question, mode, floor, cap)
+    if area is not None and area.pinned:
+        vector = mean_vector(list(read_vectors(handles.dsn, area.arxiv_ids).values()))
+        papers = [
+            p
+            for p in read_papers(handles.dsn, vector, area.arxiv_ids)
+            if p.date <= cap and (floor is None or p.date >= floor)
+        ]
+        if not papers:
+            return json.dumps({"error": "none of that area's papers is inside those dates"})
+        papers.sort(key=lambda p: -(p.cosine or 0.0))
+        return pinned_out(handles, area.area, papers, mode, cap, {}, {"area": area.area})
     given = list(dict.fromkeys((area.arxiv_ids if area else []) + list(arxiv_ids or [])))
     start = mean_vector(list(read_vectors(handles.dsn, given).values())) if given else []
     if given and not start:
@@ -120,8 +253,6 @@ def retrieve(
     clock = time.perf_counter()
     spent: dict[str, float] = {}
     hard: Effort = level(effort)
-    floor = date.fromisoformat(date_min) if date_min else None
-    cap = date.fromisoformat(date_max) if date_max else date.today()
     if not question and not arxiv_id:
         return json.dumps({"error": "pass a question, an arxiv_id, an area_id or arxiv_ids"})
     # a list of papers is searched from its own mean vector, so no single paper seeds it

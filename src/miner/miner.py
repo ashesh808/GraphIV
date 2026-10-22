@@ -112,7 +112,9 @@ class Miner:
             reached.update(int(x) for x in self.graph.get_cited_papers(row))
         return list(dict.fromkeys(arxiv_ids + [self.graph.ids[i].decode() for i in reached]))
 
-    def mine(self, papers: list[Paper], vector: list[float], asked: date) -> Mined:
+    def mine(
+        self, papers: list[Paper], vector: list[float], asked: date, expand: bool = True
+    ) -> Mined:
         """
         Everything this package knows about one list of papers
 
@@ -120,6 +122,8 @@ class Miner:
             papers: The papers to mine, best first.
             vector: The question embedding, which holds every part of the result to what was asked.
             asked: The date the run is capped at.
+            expand: Whether to add what the list cites, off for a person's own papers so the walk
+                stays on their work and only the successors reach outside it.
 
         Returns:
             What was found.
@@ -127,7 +131,8 @@ class Miner:
         if not papers:
             return Mined()
         arxiv_ids = [p.arxiv_id for p in papers]
-        union = self.expand(arxiv_ids[: self.recipe.walk_prefix])
+        head = arxiv_ids[: self.recipe.walk_prefix]
+        union = self.expand(head) if expand else head
         held = {p.arxiv_id: p for p in store.read_papers(self.dsn, vector, union)}
         held |= {p.arxiv_id: p for p in papers}
         edges = store.read_edges(self.dsn, union)

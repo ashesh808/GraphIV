@@ -69,25 +69,32 @@ def refine(interest: str) -> str:
 def identify_areas(
     question: str = "",
     cap: int = 4,
-    author: str = "",
+    people: list[dict[str, Any]] | None = None,
     arxiv_ids: list[str] | None = None,
     scope: str = "",
 ) -> str:
     """
-    Split one question, or one list of papers, into the areas that have to be searched separately.
+    Split one question, people's work, or one list of papers, into areas read separately.
 
     For a question: call this when it spans more than one field, since a question spanning four
     fields embeds into a region that is none of them. Returns 2 to `cap` areas, each with the
     method words a paper in it would use and the question that area alone has to answer. Pass each
     one to retrieve. A question about a single field does not need this.
 
-    For papers: pass `author`, as written on arXiv, or `arxiv_ids` for a reading list, and `scope`
-    when the user named what they care about, such as "knowledge graphs, citation graphs". Returns
-    the areas inside the scope, each with an `area_id`, its papers and their count, plus how many
-    papers fell outside it. Pass the `area_id` to mine to read those papers and to retrieve for the
-    field around them. A common name matches every person who has it, so check the papers listed.
+    For people: pass `people`, each {"name": as written on arXiv, "known": [one arxiv id they
+    wrote, or more]}, which answers what a person or a team works on. arXiv has no author id, so
+    the known paper picks which of the people sharing the name is meant: papers sharing coauthors
+    and references with it are kept. A very common name can still pull in namesakes, so compare
+    `kept` with `matched` and check the papers listed. Returns one area per topic their papers sit
+    in, each with an `area_id`. Pass each `area_id` to retrieve, which keeps their own papers as
+    the ranking, then write_report.
+
+    For papers: pass `arxiv_ids` for a reading list, and `scope` when the user named what they
+    care about, such as "knowledge graphs, citation graphs". Returns the areas inside the scope,
+    each with an `area_id`, its papers and their count, plus how many papers fell outside it. Pass
+    the `area_id` to mine to read those papers and to retrieve for the field around them.
     """
-    return splitting.identify_areas(load(), question, cap, author, arxiv_ids, scope)
+    return splitting.identify_areas(load(), question, cap, people, arxiv_ids, scope)
 
 
 @tool()
@@ -102,6 +109,7 @@ def retrieve(
     effort: str = "standard",
     area_id: str = "",
     arxiv_ids: list[str] | None = None,
+    people: list[dict[str, Any]] | None = None,
 ) -> str:
     """
     Retrieve and read one area, returning the papers worth reading and an id for the ranking.
@@ -125,6 +133,13 @@ def retrieve(
     Pass an `area_id` from identify_areas, or `arxiv_ids`, to search the field around those papers
     from their own mean vector, with `question` defaulting to the area's name. Most of what comes
     back was written by others, so each paper says `given` when it is one of the papers passed.
+    An `area_id` identify_areas made from `people` is not searched: their own papers are the
+    ranking.
+
+    Pass `people`, as identify_areas takes them, with a `question` to ask whether they work on it.
+    Their papers in the topic closest to the question come back as the ranking, or `related`
+    false with no ranking when the reader finds none of them about it. Keep the person out of
+    `question`, since no paper names its own author.
     """
     return retrieving.retrieve(
         load(),
@@ -138,6 +153,7 @@ def retrieve(
         effort,
         area_id,
         arxiv_ids,
+        people,
     )
 
 
