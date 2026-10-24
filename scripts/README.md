@@ -35,11 +35,11 @@ uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 
 ## Benchmarks
 
-`evaluate_retrieval/` holds the four benchmarks.
+`recipe_tuning/` fits BoundedField's recipes on the published benchmarks and scores every recipe on them.
 `config.toml` lists which recipes each one compares, and recipes that share a retrieval prefix share one pool, so six recipes cost one retrieval.
 
 ```sh
-uv run python scripts/evaluate_retrieval/stage0_surveymatch.py
+uv run python scripts/recipe_tuning/stage2_evaluate.py --split test
 ```
 
 ## Export

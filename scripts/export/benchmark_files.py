@@ -1,5 +1,5 @@
 """
-The published benchmark files: the schema, the topic-grouped split, and reading a split back
+The published benchmark files: their schema, and the split assigned per parent topic
 
 A split is assigned per parent topic, so no topic sits on both sides of a train and test comparison
 """
@@ -12,8 +12,7 @@ from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
-
-from src.eval.cases import Sample
+from case_miner import Sample
 
 SPLITS = ("train", "val", "test")
 # the one seed every published version is split with
@@ -22,7 +21,6 @@ FOLDERS = {
     "SurveyMatch": "surveymatch",
     "FrontierMatch": "frontiermatch",
     "ConsensusMatch": "consensusmatch",
-    "PrecisionMatch": "surveymatch",
 }
 HEADLINE_K = {"SurveyMatch": 1000, "FrontierMatch": 1000, "ConsensusMatch": 100}
 
@@ -102,35 +100,3 @@ def write_split(rows: list[dict[str, object]], path: Path) -> None:
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     pq.write_table(pa.Table.from_pylist(rows, schema=SCHEMA), path)
-
-
-def read_cases(root: Path, metric: str, split: str, limit: int = 0) -> list[Sample]:
-    """
-    One split of a published benchmark as the samples a run scores
-
-    Args:
-        root: The benchmark release, graphiv-benchmarks-<cutoff>.
-        metric: SurveyMatch, FrontierMatch, ConsensusMatch or PrecisionMatch.
-        split: train, val or test.
-        limit: The most cases to read, every case when zero.
-
-    Returns:
-        The samples, their query already written.
-    """
-    rows = pq.read_table(root / FOLDERS[metric] / f"{split}.parquet").to_pylist()
-    rows = rows[:limit] if limit else rows
-    return [
-        Sample(
-            metric=metric,
-            sample_id=str(r["case_id"]),
-            anchors=list(r["anchors"]),
-            titles=list(r["anchor_titles"]),
-            abstracts=[],
-            leaf=[int(r["topic_l0"]), int(r["topic_l1"]), int(r["topic_l2"])],
-            cutoff=r["date_max"].isoformat(),
-            key=list(r["citations"]),
-            query=str(r["query_text"]),
-            extra={k: float(r[k]) for k in ("gap_days", "cosine") if r[k] is not None},
-        )
-        for r in rows
-    ]

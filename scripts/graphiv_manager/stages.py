@@ -15,7 +15,7 @@ from jobs import Step
 P = "papers_preprocess"
 T = "topic_tree_creation"
 C = "citation_preprocess"
-E = "evaluate_retrieval"
+E = "recipe_tuning"
 X = "export"
 
 # rows per second measured on this box, replaced by what a finished run here measured
@@ -227,37 +227,30 @@ STAGES = [
     Stage(
         key="eval.0",
         table="eval",
-        label="SurveyMatch",
-        script=f"{E}/stage0_surveymatch.py",
-        reads="one split of surveymatch in graphiv-benchmarks-<cutoff>",
-        writes="experiments/retrieve/SurveyMatch",
+        label="Cache the terms",
+        script=f"{E}/stage0_cache_terms.py",
+        reads="the train and val splits of graphiv-benchmarks-<cutoff>, and the store per pool",
+        writes="one npz per benchmark and split under [recipe_tuning] CACHE_PATH",
+        note="a split already cached is skipped, so a new cutoff is what makes it rerun",
         delta=False,
     ),
     Stage(
         key="eval.1",
         table="eval",
-        label="FrontierMatch",
-        script=f"{E}/stage1_frontiermatch.py",
-        reads="one split of frontiermatch in graphiv-benchmarks-<cutoff>",
-        writes="experiments/retrieve/FrontierMatch",
+        label="Fit the recipes",
+        script=f"{E}/stage1_fit_recipes.py",
+        reads="the cached terms",
+        writes="the weights of the five recipes in retrieval_recipes, and the fit's report",
+        note="a deployed RECIPE_PATH is read only, so there Dry run reports and writes nothing",
         delta=False,
     ),
     Stage(
         key="eval.2",
         table="eval",
-        label="ConsensusMatch",
-        script=f"{E}/stage2_consensusmatch.py",
-        reads="one split of consensusmatch in graphiv-benchmarks-<cutoff>",
-        writes="experiments/retrieve/ConsensusMatch",
-        delta=False,
-    ),
-    Stage(
-        key="eval.3",
-        table="eval",
-        label="PrecisionMatch",
-        script=f"{E}/stage3_precisionmatch.py",
-        reads="one split of surveymatch and the topic tree",
-        writes="experiments/retrieve/PrecisionMatch",
+        label="Evaluate",
+        script=f"{E}/stage2_evaluate.py",
+        reads="one split of every benchmark, [recipe_tuning] SPLIT",
+        writes="experiments/retrieve/<split>/<benchmark>",
         delta=False,
     ),
     Stage(
@@ -320,7 +313,7 @@ TABLES = {
     "papers": "Papers",
     "tree": "Topic tree",
     "citations": "Citations",
-    "eval": "Evaluation",
+    "eval": "Recipe tuning",
     "export": "Export",
 }
 

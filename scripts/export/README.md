@@ -8,6 +8,9 @@ stage0_dump_store.py      graphiv-<date>.dump, the whole store as one pg_dump ar
 stage1_export_parquet.py  graphiv-<date>/, the Parquet release with both classifiers beside it
 stage2_export_benchmarks.py  graphiv-benchmarks-<cutoff>/, the three benchmarks split into train, val and test
 stage3_publish_hf.py      uploads the newest release, the benchmarks and the cards to the four Hugging Face repos
+case_miner.py             mines the benchmark cases out of the store, the same ones for the same seed and cutoff
+query_writer.py           writes each case's question once, cached by its input
+benchmark_files.py        the published schema and the split assigned per parent topic
 cards/<name>/             the README, figures and license of each Hugging Face repo
 ```
 
@@ -37,7 +40,7 @@ The dump stops once its disk falls under 10 GB free, since that disk may also ho
 
 `[benchmarks] CUTOFF` is the version, since a newer paper never adds a reference to a review already published.
 Every case that exists at the cutoff is mined, with no sample cap, and each case's question is written once and frozen in the file.
-The split is assigned per parent topic with the seed 69420 hardcoded in `src/eval/dataset.py`, so no topic sits in two splits.
+The split is assigned per parent topic with the seed 69420 hardcoded in `benchmark_files.py`, so no topic sits in two splits.
 
 ```
 graphiv-benchmarks-<cutoff>/

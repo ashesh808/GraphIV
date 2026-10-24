@@ -15,11 +15,7 @@ from pathlib import Path
 from typing import Any
 
 import psycopg
-
-from src.core.config import load_config
-from src.eval.cases import CaseMiner, Sample
-from src.eval.consensus_match import ConsensusMatch
-from src.eval.dataset import (
+from benchmark_files import (
     FOLDERS,
     HEADLINE_K,
     SPLIT_SEED,
@@ -28,10 +24,10 @@ from src.eval.dataset import (
     get_split_group,
     write_split,
 )
-from src.eval.frontier_match import FrontierMatch
-from src.eval.match import Match
-from src.eval.query_writer import GemmaWriter
-from src.eval.survey_match import SurveyMatch
+from case_miner import CaseMiner, Sample
+from query_writer import GemmaWriter
+
+from src.core.config import load_config
 
 RATIOS = {
     "SurveyMatch": (0.6, 0.2, 0.2),
@@ -83,14 +79,17 @@ def mine(cfg: dict[str, Any], metric: str) -> list[Sample]:
     return miner.mine(metric, **floors[metric])
 
 
-def build_rows(cfg: dict[str, Any], bench: Match, samples: list[Sample]) -> list[dict[str, object]]:
+def build_rows(
+    cfg: dict[str, Any], metric: str, samples: list[Sample], writer: GemmaWriter
+) -> list[dict[str, object]]:
     """
     The published rows of one benchmark, each with its question written and its split assigned
 
     Args:
         cfg: The config.
-        bench: The metric, carrying the question writer.
+        metric: SurveyMatch, FrontierMatch or ConsensusMatch.
         samples: The mined samples.
+        writer: Writes each case's question, cached by its input.
 
     Returns:
         One row per sample, keyed by the schema's columns.
@@ -101,10 +100,10 @@ def build_rows(cfg: dict[str, Any], bench: Match, samples: list[Sample]) -> list
         rows_meta = conn.execute(META, (ids,)).fetchall()
         meta = {str(r[0]): (r[1], float(r[2] or 0.0), str(r[3])) for r in rows_meta}
         names = {(r[0], r[1], r[2]): str(r[3]) for r in conn.execute(NAMES)}
-    splits = assign_splits(samples, RATIOS[bench.name])
+    splits = assign_splits(samples, RATIOS[metric])
     rows: list[dict[str, object]] = []
     for i, (s, split) in enumerate(zip(samples, splits, strict=True), 1):
-        written = bench.build_query(s)
+        written = writer.write(s.titles, s.abstracts)
         l0, l1, l2 = s.leaf
         rows.append(
             {
@@ -119,7 +118,7 @@ def build_rows(cfg: dict[str, Any], bench: Match, samples: list[Sample]) -> list
                 "anchor_survey_probability": [meta[a][1] for a in s.anchors],
                 "citations": s.key,
                 "n_citations": len(s.key),
-                "headline_k": HEADLINE_K[bench.name],
+                "headline_k": HEADLINE_K[metric],
                 "topic_l0": l0,
                 "topic_l1": l1,
                 "topic_l2": l2,
@@ -132,7 +131,7 @@ def build_rows(cfg: dict[str, Any], bench: Match, samples: list[Sample]) -> list
             }
         )
         if i % 500 == 0:
-            print(f"[benchmarks] {bench.name} {i}/{len(samples)} questions written", flush=True)
+            print(f"[benchmarks] {metric} {i}/{len(samples)} questions written", flush=True)
     return rows
 
 
@@ -151,33 +150,27 @@ def main() -> None:
     writer = GemmaWriter(
         str(cfg["endpoints"]["LLM_API"]),
         str(cfg["endpoints"]["LLM_NAME"]),
-        Path(str(cfg["retriever_eval"]["OUTPUT_PATH"])).parent / "queries",
+        Path(str(cfg["recipe_tuning"]["OUTPUT_PATH"])).parent / "queries",
     )
-    budgets = [int(k) for k in cfg["retriever_eval"]["BUDGETS"]]
     counts: dict[str, dict[str, int]] = {}
-    for bench in (
-        SurveyMatch(writer, budgets),
-        FrontierMatch(writer, budgets),
-        ConsensusMatch(writer, budgets),
-    ):
-        samples = mine(cfg, bench.name)
-        print(f"[benchmarks] {bench.name}: {len(samples)} cases at the cutoff {cutoff}", flush=True)
+    for metric in ("SurveyMatch", "FrontierMatch", "ConsensusMatch"):
+        samples = mine(cfg, metric)
+        print(f"[benchmarks] {metric}: {len(samples)} cases at the cutoff {cutoff}", flush=True)
         if args.dry_run:
-            splits = assign_splits(samples, RATIOS[bench.name])
+            splits = assign_splits(samples, RATIOS[metric])
             print(
-                f"[benchmarks] {bench.name}: "
-                + ", ".join(f"{s} {splits.count(s)}" for s in SPLITS),
+                f"[benchmarks] {metric}: " + ", ".join(f"{s} {splits.count(s)}" for s in SPLITS),
                 flush=True,
             )
             continue
-        rows = build_rows(cfg, bench, samples)
-        counts[bench.name] = {s: sum(r["split"] == s for r in rows) for s in SPLITS}
+        rows = build_rows(cfg, metric, samples, writer)
+        counts[metric] = {s: sum(r["split"] == s for r in rows) for s in SPLITS}
         for split in SPLITS:
             write_split(
                 [r for r in rows if r["split"] == split],
-                part / FOLDERS[bench.name] / f"{split}.parquet",
+                part / FOLDERS[metric] / f"{split}.parquet",
             )
-        print(f"[benchmarks] {bench.name}: {counts[bench.name]}", flush=True)
+        print(f"[benchmarks] {metric}: {counts[metric]}", flush=True)
     if args.dry_run:
         return
     manifest = {
