@@ -131,10 +131,12 @@ FRONTIER_WINDOW_DAYS = 730
 CONSENSUS_COSINE = 0.75
 CONSENSUS_MIN_KEY = 5
 
-# Retrieval benchmarks, read from graphiv-benchmarks-<CUTOFF> under EXPORT_PATH, one run directory per metric
-[retriever_eval]
+# Recipe tuning and evaluation on graphiv-benchmarks-<CUTOFF> under EXPORT_PATH, one run directory per split and metric
+[recipe_tuning]
 RECIPE_PATH = "retrieval_recipes"
 OUTPUT_PATH = "experiments/retrieve"
+# each case's pool and terms, cached once per version and split for the fit
+CACHE_PATH = "data/cache/recipe_tuning"
 RETURN_LIMIT = 1000
 BUDGETS = [100, 200, 500, 1000]
 # train to tune on, val to choose, test to report
@@ -145,7 +147,7 @@ MAX_SAMPLES = 0
 PRECISION_LEVEL = 2
 
 # Which recipes each benchmark runs and compares, relative to RECIPE_PATH
-[retriever_eval.recipes]
+[recipe_tuning.recipes]
 SurveyMatch = [
   "survey.toml",
   "anc_only.toml",

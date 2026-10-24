@@ -1,5 +1,5 @@
 """
-What the retrieval benchmarks last scored, read off the runs scripts/evaluate_retrieval wrote
+What the retrieval benchmarks last scored, read off the runs scripts/recipe_tuning wrote
 
 Nothing is cached, since every number comes from experiments/, which the repository keeps
 """
@@ -32,12 +32,12 @@ def recall(config: Path) -> dict[str, dict[str, dict[str, float]]]:
     Mean recall at every cut, for every recipe each benchmark ran
 
     Args:
-        config: The config whose [retriever_eval] names the benchmarks' output.
+        config: The config whose [recipe_tuning] names the benchmarks' output.
 
     Returns:
         Benchmark to recipe to cut to the mean over its cases, PrecisionMatch's being precision.
     """
-    block = tomllib.loads(config.read_text(encoding="utf-8"))["retriever_eval"]
+    block = tomllib.loads(config.read_text(encoding="utf-8"))["recipe_tuning"]
     out: dict[str, dict[str, dict[str, float]]] = {}
     for bench in [*HEADLINE, PRECISION]:
         out[bench] = {}
@@ -55,14 +55,14 @@ def ceiling(config: Path, bench: str, recipe: str) -> float:
     The share of the answer key one recipe's pool holds at all, averaged over the cases
 
     Args:
-        config: The config whose [retriever_eval] names the benchmarks' output.
+        config: The config whose [recipe_tuning] names the benchmarks' output.
         bench: The benchmark.
         recipe: The recipe.
 
     Returns:
         The mean ceiling.
     """
-    block = tomllib.loads(config.read_text(encoding="utf-8"))["retriever_eval"]
+    block = tomllib.loads(config.read_text(encoding="utf-8"))["recipe_tuning"]
     path = Path(block["OUTPUT_PATH"]) / bench / recipe / "scores.jsonl"
     rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
     return sum(row["ceiling"] for row in rows) / len(rows)
@@ -119,12 +119,12 @@ def cases(config: Path) -> dict[str, int]:
     How many cases each benchmark scored
 
     Args:
-        config: The config whose [retriever_eval] names the benchmarks' output.
+        config: The config whose [recipe_tuning] names the benchmarks' output.
 
     Returns:
         Benchmark to its number of cases.
     """
-    block = tomllib.loads(config.read_text(encoding="utf-8"))["retriever_eval"]
+    block = tomllib.loads(config.read_text(encoding="utf-8"))["recipe_tuning"]
     out: dict[str, int] = {}
     for bench in [*HEADLINE, PRECISION]:
         path = Path(block["OUTPUT_PATH"]) / bench / BASELINE / "scores.jsonl"

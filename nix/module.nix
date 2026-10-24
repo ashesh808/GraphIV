@@ -435,7 +435,7 @@ in
             CONSENSUS_MIN_KEY = opt types.int 5 "The smallest ConsensusMatch answer key.";
           };
 
-          retriever_eval = section "The retrieval benchmarks." {
+          recipe_tuning = section "Recipe tuning and evaluation on the published benchmarks." {
             RECIPE_PATH =
               derived types.str "${cfg.package}/share/graphiv/retrieval_recipes"
                 ''"''${package}/share/graphiv/retrieval_recipes"''
@@ -444,8 +444,12 @@ in
               derived types.str "${toString cfg.stateDir}/experiments/retrieve"
                 ''"''${stateDir}/experiments/retrieve"''
                 ''
-                  One directory per metric and recipe.
+                  One directory per split, metric and recipe.
                 '';
+            CACHE_PATH =
+              derived types.str "${toString cfg.stateDir}/cache/recipe_tuning"
+                ''"''${stateDir}/cache/recipe_tuning"''
+                "Each case's pool and terms, cached per version and split for the fit.";
             RETURN_LIMIT = opt types.int 1000 "Papers a query returns.";
             BUDGETS = opt (types.listOf types.int) [ 100 200 500 1000 ] "The cutoffs recall is read at.";
             SPLIT = opt (types.enum [ "train" "val" "test" ]) "val" "The split a run reads.";
@@ -638,7 +642,8 @@ in
             "-${dirOf s.source.SOURCE_PATH}"
             "-${dirOf s.dataset.GRAPH_PATH}"
             "-${dirOf s.umap.UMAP_MODEL_PATH}"
-            "-${dirOf s.retriever_eval.OUTPUT_PATH}"
+            "-${dirOf s.recipe_tuning.OUTPUT_PATH}"
+            "-${s.recipe_tuning.CACHE_PATH}"
           ]
         );
       };

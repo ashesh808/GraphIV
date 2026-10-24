@@ -6,7 +6,7 @@ Existing literature search benchmarks such as LitSearch match a query to one or 
 
 ![The three benchmarks, their splits and their answers](../scripts/export/cards/benchmarks/benchmarks.png)
 
-The code is [`src/eval/`](../src/eval/README.md), exported by [`scripts/export/stage2_export_benchmarks.py`](../scripts/export/README.md) and scored by [`scripts/evaluate_retrieval/`](../scripts/evaluate_retrieval/README.md).
+The cases are mined and exported by [`scripts/export/stage2_export_benchmarks.py`](../scripts/export/README.md), and the recipes are fit and scored on them by [`scripts/recipe_tuning/`](../scripts/recipe_tuning/README.md).
 
 ## Reviews and Their References
 
@@ -62,7 +62,7 @@ These are the counts of the version `2026-10-22`.
 
 ## Scoring
 
-A retriever searches GraphIV with every paper dated after `date_max` and every paper in `anchors` removed, and its score is recall at `headline_k`: the share of `citations` in its top `headline_k`. We run them with `scripts/evaluate_retrieval/` on the split `[retriever_eval] SPLIT` sets, so train is for tuning, val for choosing, and test for reporting.
+A retriever searches GraphIV with every paper dated after `date_max` and every paper in `anchors` removed, and its score is recall at `headline_k`: the share of `citations` in its top `headline_k`. We run them with `scripts/recipe_tuning/` on the split `[recipe_tuning] SPLIT` sets, so train is for tuning, val for choosing, and test for reporting.
 
 PrecisionMatch reuses the SurveyMatch cases with no answer key, and calls a retrieved paper on topic when it shares the case's leaf or another review in that leaf cites it. It is not published, since its judge is the topic tree itself.
 

@@ -20,7 +20,7 @@ HOST = "127.0.0.1"
 [manager]
 HF_TOKEN_PATH = ""
 
-[retriever_eval.recipes]
+[recipe_tuning.recipes]
 SurveyMatch = ["survey.toml"]
 """
 
@@ -47,7 +47,7 @@ def test_an_empty_path_stays_off(tmp_path: Path):
 def test_a_value_that_is_not_a_path_is_kept(tmp_path: Path):
     config = _load(tmp_path)
     assert config["serve"]["HOST"] == "127.0.0.1"
-    assert config["retriever_eval"]["recipes"]["SurveyMatch"] == ["survey.toml"]
+    assert config["recipe_tuning"]["recipes"]["SurveyMatch"] == ["survey.toml"]
 
 
 def test_a_relative_socket_directory_is_anchored(tmp_path: Path):

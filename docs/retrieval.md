@@ -169,7 +169,7 @@ We'll explain what each benchmark entails in the next section.
 
 ## Evaluation
 
-I designed four benchmarks for this study, defined in [benchmarks.md](benchmarks.md), all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`scripts/evaluate_retrieval/`](../scripts/evaluate_retrieval/README.md)
+I designed four benchmarks for this study, defined in [benchmarks.md](benchmarks.md), all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`scripts/recipe_tuning/`](../scripts/recipe_tuning/README.md)
 
 | Benchmark | Number of Papers | Input | Ground truth |
 |---|---|---|---|

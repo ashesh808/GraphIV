@@ -36,7 +36,7 @@ On top of the graph sit two algorithms of my own. BoundedField retrieves and ran
 
 ### Reproduction
 
-Everything in GraphIV is rebuilt from public sources: [arXiv's metadata snapshot on Kaggle](https://www.kaggle.com/datasets/Cornell-University/arxiv), arXiv's own HTML and PDF files, and open weight models. The build is ten stages filling four tables, run in this order, and [`docs/preprocess.md`](docs/preprocess.md) is the runbook with what each stage reads and writes.
+Everything in GraphIV is rebuilt from public sources: [arXiv's metadata snapshot on Kaggle](https://www.kaggle.com/datasets/Cornell-University/arxiv), arXiv's own HTML and PDF files, and open weight models. The build is ten stages filling four tables, run in this order, and [`docs/preprocess.md`](docs/preprocess.md) is the runbook with what each stage reads and writes. To skip the build, [`docs/restore.md`](docs/restore.md) restores the published dump and serves from it.
 
 ```sh
 uv run python scripts/papers_preprocess/stage0_fetch_source_json.py --dry-run   # what a new snapshot adds
@@ -52,7 +52,7 @@ uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 uv run python scripts/citation_preprocess/stage1_label_citation.py
 ```
 
-The two labelers the build loads are trained by [`scripts/citation_labeler/`](scripts/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks, defined in [`docs/benchmarks.md`](docs/benchmarks.md) and published at [GraphIV_benchmarks](https://huggingface.co/datasets/kkuroma/GraphIV_benchmarks), are rerun by [`scripts/evaluate_retrieval/`](scripts/evaluate_retrieval/README.md), which writes every case and every ranking under [`experiments/retrieve/`](experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python assets/run.py`.
+The two labelers the build loads are trained by [`scripts/citation_labeler/`](scripts/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks, defined in [`docs/benchmarks.md`](docs/benchmarks.md) and published at [GraphIV_benchmarks](https://huggingface.co/datasets/kkuroma/GraphIV_benchmarks), are fit and rerun by [`scripts/recipe_tuning/`](scripts/recipe_tuning/README.md), which writes every case and every ranking under [`experiments/retrieve/`](experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python assets/run.py`.
 
 ### Self-hosting
 
@@ -97,7 +97,7 @@ BoundedField takes the 5,000 papers closest to a question, adds what the top 200
 
 ### LeyLine - Magnetic Monte Carlo Trajectory Miner
 
-LeyLine walks the papers a field takes positions on, drawing every step by how much the field argues with the next paper, keeps the paths that recur as lineages, and collects the newest papers extending, critiquing or comparing against the answer, because a ranking built on citations cannot see a paper too new to be cited. Read more at [`docs/leyline.md`](docs/leyline.md).
+LeyLine walks the papers a field takes positions on, drawing every step by how much the field argues with the next paper, keeps the paths that recur as lineages, and collects the newest papers extending, critiquing or comparing against the answer, because a ranking built on citations cannot see a paper too new to be cited. Read more at [`docs/leyline.md`](docs/leyline.md), and the Topic Queries behind its evaluation are in [`docs/supplement.md`](docs/supplement.md).
 
 ![How LeyLine walks toward magnets, the Unseen Newcomers only its successors reach, magnet weight against citations, and one question's lineages](assets/figures/leyline.png)
 
@@ -125,12 +125,12 @@ Five modes pick the recipe: `survey`, `frontier` and `consensus` are each tuned 
 
 | Path | What it holds |
 |---|---|
-| [`src/`](src/README.md) | the library, in layers: [`core`](src/core/README.md), [`retrieve`](src/retrieve/README.md) (BoundedField), [`miner`](src/miner/README.md) (LeyLine), [`report`](src/report/README.md), [`eval`](src/eval/README.md), [`mcp`](src/mcp/README.md) and [`webui`](src/webui/README.md) |
+| [`src/`](src/README.md) | the library, in layers: [`core`](src/core/README.md), [`retrieve`](src/retrieve/README.md) (BoundedField), [`miner`](src/miner/README.md) (LeyLine), [`report`](src/report/README.md), [`mcp`](src/mcp/README.md) and [`webui`](src/webui/README.md) |
 | [`scripts/`](scripts/README.md) | the build stages, the labelers, the benchmarks, the export, the manager and `serve.py` |
 | [`retrieval_recipes/`](retrieval_recipes) | one toml per mode, the only place an exponent or a miner constant lives |
 | [`experiments/`](experiments/findings/README.md) | what the benchmarks last wrote, and the findings of every experiment since deleted |
 | [`assets/`](assets/README.md) | every figure here and on the cards, and the code that draws them |
-| [`docs/`](docs/README.md) | the decision record and the runbooks |
+| [`docs/`](docs/README.md) | the methods, the benchmarks and the runbooks |
 | [`nix/`](nix/README.md) | the package and the NixOS module |
 | [`tests/`](tests/README.md) | the tests of `src` |
 | [`themes/`](themes/README.md) | the palette and the typeface every figure uses |
