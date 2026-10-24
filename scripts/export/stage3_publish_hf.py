@@ -1,8 +1,8 @@
 """
-Publish the newest Parquet release and the cards to the three Hugging Face repos
+Publish the newest Parquet release, the benchmarks and the cards to the four Hugging Face repos
 
 Only a file whose hash differs from the hub's is uploaded, with one commit per table directory
-Each repo is tagged GraphIV-<newest paper date>, the name the dataset card gives a rebuild
+A release repo is tagged GraphIV-<newest paper date>, the benchmark repo GraphIV-benchmarks-<cutoff>
 """
 
 from __future__ import annotations
@@ -40,12 +40,20 @@ class Repo:
     card: str
     tables: tuple[str, ...] = ()
     model: str = ""
+    benchmarks: bool = False
 
 
 REPOS = (
     Repo("DATA_REPO", "dataset", "data", tables=("papers", "citations", "topics")),
     Repo("CITATION_REPO", "model", "citation_labeler", model="citation_intent"),
     Repo("SURVEY_REPO", "model", "survey_labeler", model="survey"),
+    Repo(
+        "BENCHMARK_REPO",
+        "dataset",
+        "benchmarks",
+        tables=("surveymatch", "frontiermatch", "consensusmatch"),
+        benchmarks=True,
+    ),
 )
 
 
@@ -273,6 +281,8 @@ def main() -> None:
     cfg = load_config(str(args.config_path))
     export = cfg["export"]
     release = Path(args.release) if args.release else newest_release(Path(export["EXPORT_PATH"]))
+    cutoff = str(cfg["benchmarks"]["CUTOFF"])
+    bench = Path(export["EXPORT_PATH"]) / f"graphiv-benchmarks-{cutoff}"
     api = HfApi(token=token(cfg))
     tag = release_tag(release)
     print(f"[publish] {release.name} as {tag}, {'dry run' if args.dry_run else 'uploading'}")
@@ -281,7 +291,15 @@ def main() -> None:
         if not repo_id:
             print(f"[publish] [export] {repo.key} is empty, so that repo is skipped", flush=True)
             continue
-        publish(api, repo, repo_id, release, tag, bool(args.dry_run))
+        if repo.benchmarks and not bench.is_dir():
+            print(
+                f"[publish] no {bench.name} under EXPORT_PATH, so {repo_id} is skipped", flush=True
+            )
+            continue
+        if repo.benchmarks:
+            publish(api, repo, repo_id, bench, f"GraphIV-benchmarks-{cutoff}", bool(args.dry_run))
+        else:
+            publish(api, repo, repo_id, release, tag, bool(args.dry_run))
 
 
 if __name__ == "__main__":

@@ -27,9 +27,9 @@ FINE_GRAINED = {
 
 
 def test_publish_stays_out_of_every_batch() -> None:
-    assert "export.2" not in stages.of_table("export")
-    assert "export.2" not in stages.everything()
-    assert stages.of_table("export") == ["export.0", "export.1"]
+    assert "export.3" not in stages.of_table("export")
+    assert "export.3" not in stages.everything()
+    assert stages.of_table("export") == ["export.0", "export.1", "export.2"]
 
 
 def test_a_scoped_token_writes_only_its_repos() -> None:

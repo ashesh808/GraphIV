@@ -34,7 +34,7 @@ HEALTH_EVERY = 15.0
 # Kaggle publishes weekly, so asking which version it serves twice an hour is plenty
 REMOTE_EVERY = 1800.0
 # the [export] keys holding the repos the publish stage uploads to
-HUB_REPOS = ("DATA_REPO", "CITATION_REPO", "SURVEY_REPO")
+HUB_REPOS = ("DATA_REPO", "CITATION_REPO", "SURVEY_REPO", "BENCHMARK_REPO")
 # a rate from a step shorter than this is mostly startup, not throughput
 RATE_FLOOR = 60.0
 PHASE = re.compile(r"^\[(\w+)\]", re.MULTILINE)

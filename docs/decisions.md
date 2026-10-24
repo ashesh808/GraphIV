@@ -512,7 +512,7 @@ was carried over and what was not, with the measurement behind each call.
 ### Measured while porting
 
 1. Splitting one question into areas and merging them back cost recall: 0.763 whole against 0.614
-   split at a budget of 1000, over 3 SurveyMatch cases replayed against the stored run.
+   split at a budget of 1000, over 3 [SurveyMatch](benchmarks.md) cases replayed against the stored run.
 2. The union of the area pools held 0.87 and 0.89 of a survey's bibliography where the single
    pool held 0.64 and 0.69, so the split reaches more and the merge throws it away. Areas
    therefore keep separate pages and are never merged into one ranking.

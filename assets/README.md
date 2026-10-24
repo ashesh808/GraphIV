@@ -4,7 +4,7 @@ This directory contains the code to regenerate figures and visualizations used i
 
 ```
 run.py                draws every figure into figures/, or only the ones specified
-move.py               copies dataset*.png into cards/data, citation-label*.png into cards/citation_labeler and survey-label*.png into cards/survey_labeler, leaving the README's figures in figures/
+move.py               copies dataset*.png into cards/data, benchmarks*.png into cards/benchmarks, citation-label*.png into cards/citation_labeler and survey-label*.png into cards/survey_labeler, leaving the README's figures in figures/
 code/
   style.py            the shared look: theme colors, static font cuts, the run-by-run title
   generate_<name>.py  <name>.png, one script per figure, written to the path run.py gives it
@@ -17,6 +17,8 @@ code/
   benchmark_scores.py the retrieval benchmarks' scores, ceilings and ablation, and the recipes' exponents, for poster.png and bounded-field.png
   leyline_scores.py   the Unseen Newcomers of frontier-system-REPORT.md, for leyline.png
   lineage_chart.py    a run's lineages as subway lanes, drawn on poster.png and leyline.png
+  benchmark_counts.py the exported benchmarks and one worked case each, for benchmarks*.png
+  case_diagram.py     a worked case's references on one timeline, drawn on benchmarks-*.png
   overview.py         the steps, formulas and toy graph that open bounded-field.png and leyline.png
 data/
   fonts/              stores the four weights style.py cuts from themes/fonts on its first run
@@ -35,6 +37,7 @@ direnv exec . uv run python assets/move.py # copies the figures to their suppose
 | figure | source for its numbers |
 | --- | --- |
 | `cards/data/dataset*.png` | `scripts/export/stage1_export_parquet.py` outputs |
+| `cards/benchmarks/benchmarks*.png` | `graphiv-benchmarks-<cutoff>/` under `EXPORT_PATH`, and the store for each worked case's references |
 | `cards/citation_labeler/citation-labeler.png` | scored on `best.pt` on the test split, rebuilt from `teacher_labeled.csv` on the stage's own seed, and on `ground_truth.csv`, plus `dataset.json`'s intent counts |
 | `cards/citation_labeler/citation-labeling-pipeline.png` | the stage0 run's accuracy per generation, `teacher_labeled.csv`, and `logs/student.log` |
 | `cards/survey_labeler/survey-labeler.png` | the database's `survey_probability` for the held-out papers of `is_survey.csv`, plus Semantic Scholar's and OpenAlex's types for them |

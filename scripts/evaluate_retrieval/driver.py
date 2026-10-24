@@ -1,7 +1,7 @@
 """
 The shared half of every benchmark entrypoint, which the four stage scripts call
 
-Mining runs once and every recipe is scored on the same samples, so a comparison is paired
+Every recipe is scored on the same published cases, so a comparison is paired
 Each recipe writes its own directory and the figure above them compares the lot
 """
 
@@ -16,9 +16,9 @@ from typing import Any
 from src.core.config import load_config
 from src.core.embed import embed
 from src.core.parse_graph_export import GraphExport, load_graph_export
-from src.eval.cases import CaseMiner, Sample
+from src.eval.cases import Sample
+from src.eval.dataset import read_cases
 from src.eval.match import Match, Score
-from src.eval.query_writer import GemmaWriter
 from src.eval.report import plot_comparison, write_run
 from src.retrieve.recipe import build_pipeline, get_seed_limit, read_recipe
 
@@ -64,14 +64,13 @@ def get_prefix(recipe: dict[str, Any]) -> str:
     return "|".join(parts)
 
 
-def run_benchmark(bench: Match, config_path: str, mine_args: dict[str, float]) -> None:
+def run_benchmark(bench: Match, config_path: str) -> None:
     """
-    Mines one benchmark's samples, scores every recipe on them and writes the run
+    Reads one split of a published benchmark, scores every recipe on it and writes the run
 
     Args:
-        bench: The metric, which owns the query and the score.
+        bench: The metric, which owns the score.
         config_path: Where config.toml lives.
-        mine_args: The per-metric floors the miner needs.
     """
     config: dict[str, Any] = load_config(config_path)
     settings = dict(config["retriever_eval"])
@@ -83,28 +82,14 @@ def run_benchmark(bench: Match, config_path: str, mine_args: dict[str, float]) -
     names = [str(r) for r in settings["recipes"][bench.name]]
     LOG.info("%s: %d recipes, %s", bench.name, len(names), ", ".join(names))
 
-    miner = CaseMiner(
-        dsn,
-        seed=int(settings["SEED"]),
-        max_samples=int(settings["MAX_SAMPLES"]),
-        sample_rate=float(settings["SAMPLE_RATE"]),
-        survey_threshold=float(settings["SURVEY_THRESHOLD"]),
-        min_references=int(settings["MIN_REFERENCES"]),
-    )
-    samples = miner.mine(bench.name, **mine_args)
+    cutoff = str(config["benchmarks"]["CUTOFF"])
+    root = Path(str(config["export"]["EXPORT_PATH"])) / f"graphiv-benchmarks-{cutoff}"
+    split = str(settings["SPLIT"])
+    samples = read_cases(root, bench.name, split, int(settings["MAX_SAMPLES"]))
     if not samples:
-        LOG.error("%s mined nothing, stopping", bench.name)
+        LOG.error("%s has no %s cases in %s, stopping", bench.name, split, root)
         return
-
-    writer = GemmaWriter(
-        str(endpoints["LLM_API"]),
-        str(endpoints["LLM_NAME"]),
-        Path(str(settings["OUTPUT_PATH"])).parent / "queries",
-    )
-    bench.writer = writer
-    for sample in samples:
-        object.__setattr__(sample, "query", bench.build_query(sample))
-    LOG.info("wrote %d queries", sum(1 for s in samples if s.query))
+    LOG.info("%s: %d %s cases from %s", bench.name, len(samples), split, root.name)
 
     graph = load_graph_export(str(config["dataset"]["GRAPH_PATH"]))
     recipes = [(n, read_recipe(Path(str(settings["RECIPE_PATH"])) / n)) for n in names]
@@ -120,7 +105,10 @@ def run_benchmark(bench: Match, config_path: str, mine_args: dict[str, float]) -
     for name, recipe in recipes:
         label = str(recipe.get("NAME", Path(name).stem))
         write_run(
-            out_root / label, recipe, settings | {"metric": bench.name}, by_recipe.get(label, [])
+            out_root / label,
+            recipe,
+            settings | {"metric": bench.name, "cutoff": cutoff},
+            by_recipe.get(label, []),
         )
 
     plot_comparison(out_root / "performance.png", bench.name, bench.headline, by_recipe)

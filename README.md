@@ -52,7 +52,7 @@ uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
 uv run python scripts/citation_preprocess/stage1_label_citation.py
 ```
 
-The two labelers the build loads are trained by [`scripts/citation_labeler/`](scripts/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks are rerun by [`scripts/evaluate_retrieval/`](scripts/evaluate_retrieval/README.md), which writes every case and every ranking under [`experiments/retrieve/`](experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python assets/run.py`.
+The two labelers the build loads are trained by [`scripts/citation_labeler/`](scripts/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks, defined in [`docs/benchmarks.md`](docs/benchmarks.md) and published at [GraphIV_benchmarks](https://huggingface.co/datasets/kkuroma/GraphIV_benchmarks), are rerun by [`scripts/evaluate_retrieval/`](scripts/evaluate_retrieval/README.md), which writes every case and every ranking under [`experiments/retrieve/`](experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python assets/run.py`.
 
 ### Self-hosting
 

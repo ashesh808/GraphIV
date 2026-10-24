@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
-from stage2_publish_hf import ROOT, Digest, Repo, changes, digest, files, group, release_tag
+from stage3_publish_hf import ROOT, Digest, Repo, changes, digest, files, group, release_tag
 
 TABLES = ("papers", "citations")
 

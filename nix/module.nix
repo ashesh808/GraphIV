@@ -327,11 +327,12 @@ in
 
           export = section "What leaves the store." {
             EXPORT_PATH = derived types.str "${toString cfg.dataDir}/export" ''"''${dataDir}/export"'' ''
-              Where the manager writes graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release.
+              Where the manager writes graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release, and graphiv-benchmarks-<cutoff>/.
             '';
             DATA_REPO = opt types.str "" "The Hugging Face dataset repo the publish stage uploads the release to, empty to skip it.";
             CITATION_REPO = opt types.str "" "The model repo for the citation intent classifier, empty to skip it.";
             SURVEY_REPO = opt types.str "" "The model repo for the survey classifier, empty to skip it.";
+            BENCHMARK_REPO = opt types.str "" "The dataset repo for the benchmarks, empty to skip it.";
           };
 
           endpoints = section "The models, all of them served elsewhere." {
@@ -420,6 +421,20 @@ in
             SURVEYMATCH_LEVEL = opt types.int 2 "The tree level cases group by.";
           };
 
+          benchmarks = section "The published benchmarks, versioned by their cutoff." {
+            CUTOFF = opt types.str "2026-10-22" "The last day a mined review may carry, which names the version.";
+            SURVEYMATCH_FLOOR = opt types.int 100 "Resolved references a SurveyMatch review needs.";
+            FRONTIERMATCH_FLOOR = opt types.int 25 "Resolved references a FrontierMatch review needs.";
+            CONSENSUSMATCH_FLOOR = opt types.int 25 "Resolved references a ConsensusMatch review needs.";
+            SURVEY_THRESHOLD = opt types.float 0.95 "The review score a case needs.";
+            GAP_DAYS = opt types.int 190 "The widest gap between two reviews of one moment.";
+            FRONTIER_COSINE = opt types.float 0.8 "The cosine two FrontierMatch reviews share.";
+            FRONTIER_MIN_KEY = opt types.int 10 "The smallest FrontierMatch answer key.";
+            FRONTIER_WINDOW_DAYS = opt types.int 730 "How early a frontier answer may be published.";
+            CONSENSUS_COSINE = opt types.float 0.75 "The cosine three ConsensusMatch reviews share.";
+            CONSENSUS_MIN_KEY = opt types.int 5 "The smallest ConsensusMatch answer key.";
+          };
+
           retriever_eval = section "The retrieval benchmarks." {
             RECIPE_PATH =
               derived types.str "${cfg.package}/share/graphiv/retrieval_recipes"
@@ -433,17 +448,8 @@ in
                 '';
             RETURN_LIMIT = opt types.int 1000 "Papers a query returns.";
             BUDGETS = opt (types.listOf types.int) [ 100 200 500 1000 ] "The cutoffs recall is read at.";
-            SEED = opt types.int 0 "The seed.";
-            SAMPLE_RATE = opt types.float 1.0 "The hash share a candidate case must fall under.";
-            MAX_SAMPLES = opt types.int 300 "Cases per metric.";
-            SURVEY_THRESHOLD = opt types.float 0.95 "The review score a case needs.";
-            MIN_REFERENCES = opt types.int 25 "Resolved references a case needs.";
-            GAP_DAYS = opt types.int 190 "The widest gap between two reviews of one moment.";
-            FRONTIER_COSINE = opt types.float 0.8 "The cosine two FrontierMatch reviews share.";
-            FRONTIER_MIN_KEY = opt types.int 10 "The smallest FrontierMatch answer key.";
-            FRONTIER_WINDOW_DAYS = opt types.int 730 "How early a frontier answer may be published.";
-            CONSENSUS_COSINE = opt types.float 0.75 "The cosine three ConsensusMatch reviews share.";
-            CONSENSUS_MIN_KEY = opt types.int 5 "The smallest ConsensusMatch answer key.";
+            SPLIT = opt (types.enum [ "train" "val" "test" ]) "val" "The split a run reads.";
+            MAX_SAMPLES = opt types.int 0 "The most cases a run reads from its split, every case at 0.";
             PRECISION_LEVEL = opt types.int 2 "The tree level the PrecisionMatch judge reads.";
             recipes = opt (types.attrsOf (types.listOf types.str)) {
               SurveyMatch = [

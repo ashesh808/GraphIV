@@ -52,6 +52,7 @@ EXPORT_PATH = "data/export"
 DATA_REPO = "kkuroma/GraphIV"
 CITATION_REPO = "kkuroma/GraphIV-citation-intent"
 SURVEY_REPO = "kkuroma/GraphIV-survey"
+BENCHMARK_REPO = "kkuroma/GraphIV_benchmarks"
 
 [endpoints]
 EMBED_API = "http://127.0.0.1:11434/embedding/nomic-embed-text-v2-moe"
@@ -112,19 +113,15 @@ MUTUAL_COSINE_THRESHOLD = 0.65
 SURVEYMATCH_LEVEL = 2
 
 
-# Retrieval benchmarks, one run directory per metric under OUTPUT_PATH
-[retriever_eval]
-RECIPE_PATH = "retrieval_recipes"
-OUTPUT_PATH = "experiments/retrieve"
-RETURN_LIMIT = 1000
-BUDGETS = [100, 200, 500, 1000]
-SEED = 0
-# a candidate is kept when its hash falls under this, before MAX_SAMPLES caps what survives
-SAMPLE_RATE = 1.0
-MAX_SAMPLES = 300
+# The published benchmarks, versioned by CUTOFF, the last day a mined review may carry
+[benchmarks]
+CUTOFF = "2026-10-22"
+# resolved references a review needs, per benchmark
+SURVEYMATCH_FLOOR = 100
+FRONTIERMATCH_FLOOR = 25
+CONSENSUSMATCH_FLOOR = 25
 # the survey classifier floor, where precision is 0.937 against 0.787 at 0.5
 SURVEY_THRESHOLD = 0.95
-MIN_REFERENCES = 25
 # the widest gap between two reviews that still counts as the same moment
 GAP_DAYS = 190
 FRONTIER_COSINE = 0.80
@@ -133,6 +130,17 @@ FRONTIER_MIN_KEY = 10
 FRONTIER_WINDOW_DAYS = 730
 CONSENSUS_COSINE = 0.75
 CONSENSUS_MIN_KEY = 5
+
+# Retrieval benchmarks, read from graphiv-benchmarks-<CUTOFF> under EXPORT_PATH, one run directory per metric
+[retriever_eval]
+RECIPE_PATH = "retrieval_recipes"
+OUTPUT_PATH = "experiments/retrieve"
+RETURN_LIMIT = 1000
+BUDGETS = [100, 200, 500, 1000]
+# train to tune on, val to choose, test to report
+SPLIT = "val"
+# the most cases a run reads from its split, every case at 0
+MAX_SAMPLES = 0
 # the judge, which calls a paper related when it shares the leaf or a reviewer of that leaf cites it
 PRECISION_LEVEL = 2
 

@@ -4,7 +4,7 @@ BoundedField is GraphIV's retriever and reranker.
 
 As we tend towards LLM driven searching and reranking, the cost of retrieval explodes with the depth of the research. BoundedField is designed to be LLM-free and citation graph-aware, leveraging the citation graph to improve the accuracy of retrieval over plain cosine similarity.
 
-By designing a score system based on citation graph proximity, I was able to double the recall score from pure cosine similarity, tested on past literature reviews from arXiv itself. This work also invents several reproducible benchmarks for arXiv citation retrieval itself, using the newly introduced `survey_probability` score.
+By designing a score system based on citation graph proximity, I was able to double the recall score from pure cosine similarity, tested on past literature reviews from arXiv itself. This work also invents several reproducible [benchmarks](benchmarks.md) for arXiv citation retrieval itself, using the newly introduced `survey_probability` score.
 
 P.S. I named it after Fate/Type-Moon's bounded field, a ward drawn around a territory. The retrieval similarly draws the bounds of a research field around a question, bounding each term in $[0,1]$, and runs [LeyLine](leyline.md) inside the field it draws.
 
@@ -151,7 +151,7 @@ There are five modes/recipes defined in this project as follows:
 
 ## Tuning
 
-I tuned the first three modes using their corresponding benchmarks with lattice search. With $11$ terms at $0$ or $1$, this is $2^{11} = 2{,}048$ settings to be tuned. Then coordinate descent optimizes one exponent at a time over $\{0, 0.25, 0.5, 1, 2, 3, 4\}$ and kept a decision only when the benchmark's headline recall rose, at 1,000 for SurveyMatch and FrontierMatch and at 100 for ConsensusMatch, from three starting points: the lattice's best, the previously shipped point, and every term at $1$. The table is from [`frontier-terms-REPORT.md`](../experiments/findings/frontier-terms-REPORT.md).
+I tuned the first three modes using their corresponding [benchmarks](benchmarks.md) with lattice search. With $11$ terms at $0$ or $1$, this is $2^{11} = 2{,}048$ settings to be tuned. Then coordinate descent optimizes one exponent at a time over $\{0, 0.25, 0.5, 1, 2, 3, 4\}$ and kept a decision only when the benchmark's headline recall rose, at 1,000 for SurveyMatch and FrontierMatch and at 100 for ConsensusMatch, from three starting points: the lattice's best, the previously shipped point, and every term at $1$. The table is from [`frontier-terms-REPORT.md`](../experiments/findings/frontier-terms-REPORT.md).
 
 | Benchmark | Initialization | Initial Score | Optimized Score |
 |---|---|---|---|
@@ -169,7 +169,7 @@ We'll explain what each benchmark entails in the next section.
 
 ## Evaluation
 
-I designed four benchmarks for this study, all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`scripts/evaluate_retrieval/`](../scripts/evaluate_retrieval/README.md)
+I designed four benchmarks for this study, defined in [benchmarks.md](benchmarks.md), all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`scripts/evaluate_retrieval/`](../scripts/evaluate_retrieval/README.md)
 
 | Benchmark | Number of Papers | Input | Ground truth |
 |---|---|---|---|

@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import date, timedelta
 from typing import Any
 
 import psycopg
@@ -28,6 +28,7 @@ SELECT p.arxiv_id, p.title, p.abstract, p.date, p.embed_full,
        t.level_0, t.level_1, t.level_2
 FROM papers p JOIN topic_tree t USING (arxiv_id)
 WHERE p.survey_probability >= %s AND p.stage = 4 AND t.stage = 1 AND t.level_2 IS NOT NULL
+  AND p.date <= %s
 """
 REFS = """
 CREATE TEMP TABLE rr AS
@@ -109,6 +110,7 @@ class CaseMiner:
         sample_rate: float = 1.0,
         survey_threshold: float = 0.95,
         min_references: int = 25,
+        max_date: date | None = None,
     ) -> None:
         """
         Holds the settings that decide which samples exist at all
@@ -120,6 +122,7 @@ class CaseMiner:
             sample_rate: The share of candidates considered, applied before the cap.
             survey_threshold: The classifier floor a paper must clear to count as a review.
             min_references: How many resolved references a review needs to be usable.
+            max_date: The last day a review may be published, today when unset.
         """
         self.pg_dest = pg_dest
         self.seed = seed
@@ -127,6 +130,7 @@ class CaseMiner:
         self.sample_rate = sample_rate
         self.survey_threshold = survey_threshold
         self.min_references = min_references
+        self.max_date = max_date or date.today()
 
     def _stage(self, conn: psycopg.Connection) -> None:
         """
@@ -136,7 +140,7 @@ class CaseMiner:
             conn: An open connection.
         """
         _ = conn.execute(STAGE)
-        _ = conn.execute(POOL, (self.survey_threshold,))
+        _ = conn.execute(POOL, (self.survey_threshold, self.max_date))
         _ = conn.execute(REFS)
         _ = conn.execute("CREATE INDEX ON rr (source_id)")
         _ = conn.execute("CREATE INDEX ON sv (arxiv_id)")

@@ -15,7 +15,7 @@ from src.eval.precision_match import PrecisionMatch
 
 def main() -> None:
     """
-    Mines the reviews and judges every recipe the config names
+    Reads the reviews and judges every recipe the config names
     """
     ap = argparse.ArgumentParser()
     _ = ap.add_argument("--config_path", default="config.toml")
@@ -27,9 +27,9 @@ def main() -> None:
         None,
         [int(b) for b in block["BUDGETS"]],
         graph,
-        survey_threshold=float(block["SURVEY_THRESHOLD"]),
+        survey_threshold=float(settings["benchmarks"]["SURVEY_THRESHOLD"]),
     )
-    run_benchmark(bench, str(args.config_path), {})
+    run_benchmark(bench, str(args.config_path))
 
 
 if __name__ == "__main__":
