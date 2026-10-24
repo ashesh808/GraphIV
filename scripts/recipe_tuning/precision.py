@@ -10,11 +10,10 @@ from __future__ import annotations
 import logging
 
 import numpy as np
+from metrics import Match, Sample, Score
 from numpy.typing import NDArray
 
 from src.core.parse_graph_export import GraphExport
-from src.eval.cases import Sample
-from src.eval.match import Match, Score
 
 LOG = logging.getLogger(__name__)
 
@@ -29,7 +28,6 @@ class PrecisionMatch(Match):
 
     def __init__(
         self,
-        writer: object,
         budgets: list[int],
         graph: GraphExport,
         *,
@@ -39,12 +37,11 @@ class PrecisionMatch(Match):
         Holds the graph, since both halves of the judge are graph lookups
 
         Args:
-            writer: Writes the query, or None to fall back to the stripped titles.
             budgets: The rank bands the report breaks the score down by.
             graph: The citation graph export.
             survey_threshold: The floor a paper must clear to count as a reviewer of the leaf.
         """
-        super().__init__(writer, budgets)  # pyright: ignore[reportArgumentType]
+        super().__init__(budgets)
         self.graph = graph
         self.survey_threshold = survey_threshold
 
@@ -81,7 +78,7 @@ class PrecisionMatch(Match):
         answer key and a lower number is the better one.
 
         Args:
-            sample: The mined sample.
+            sample: The published sample.
             ranked: Every candidate the pipeline considered, best first.
             seconds: What the query cost.
 
@@ -102,7 +99,7 @@ class PrecisionMatch(Match):
             sample_id=sample.sample_id,
             anchors=sample.anchors,
             anchor_titles=sample.titles,
-            query=self.build_query(sample),
+            query=sample.query,
             cutoff=sample.cutoff,
             n_key=0,
             n_pool=len(ranked),

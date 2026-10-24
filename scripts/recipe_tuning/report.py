@@ -14,8 +14,7 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
-
-from src.eval.match import Score
+from metrics import Score
 
 LOG = logging.getLogger(__name__)
 

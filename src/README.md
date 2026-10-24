@@ -30,5 +30,5 @@ Changing the score means editing a toml rather than code, and the `[miner]` bloc
 
 Everything else is arithmetic over the citation graph, so a ranking can be reproduced from the query vector alone.
 
-The code from before the rewrite is in git at `d0ff854` and earlier, and `docs/decisions.md` records what was taken from it.
+The code from before the rewrite is in git at `d0ff854` and earlier.
 The preprocessing has no code here: its helper modules sit beside the scripts that use them.

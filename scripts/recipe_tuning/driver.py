@@ -1,5 +1,5 @@
 """
-The shared half of every benchmark entrypoint, which the four stage scripts call
+Reads a published split, pools each case and scores every recipe on it, for the stages to call
 
 Every recipe is scored on the same published cases, so a comparison is paired
 Each recipe writes its own directory and the figure above them compares the lot
@@ -13,13 +13,11 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from src.core.config import load_config
+from metrics import Match, Sample, Score, read_cases
+from report import plot_comparison, write_run
+
 from src.core.embed import embed
-from src.core.parse_graph_export import GraphExport, load_graph_export
-from src.eval.cases import Sample
-from src.eval.dataset import read_cases
-from src.eval.match import Match, Score
-from src.eval.report import plot_comparison, write_run
+from src.core.parse_graph_export import GraphExport
 from src.retrieve.recipe import build_pipeline, get_seed_limit, read_recipe
 
 LOG = logging.getLogger(__name__)
@@ -64,18 +62,33 @@ def get_prefix(recipe: dict[str, Any]) -> str:
     return "|".join(parts)
 
 
-def run_benchmark(bench: Match, config_path: str) -> None:
+def get_release(config: dict[str, Any]) -> Path:
+    """
+    The published benchmark version config.toml names by its cutoff
+
+    Args:
+        config: The parsed config.
+
+    Returns:
+        Its directory under EXPORT_PATH.
+    """
+    cutoff = str(config["benchmarks"]["CUTOFF"])
+    return Path(str(config["export"]["EXPORT_PATH"])) / f"graphiv-benchmarks-{cutoff}"
+
+
+def run_benchmark(bench: Match, config: dict[str, Any], split: str, graph: GraphExport) -> None:
     """
     Reads one split of a published benchmark, scores every recipe on it and writes the run
 
     Args:
         bench: The metric, which owns the score.
-        config_path: Where config.toml lives.
+        config: The parsed config.
+        split: train, val or test.
+        graph: The citation graph export.
     """
-    config: dict[str, Any] = load_config(config_path)
-    settings = dict(config["retriever_eval"])
+    settings = dict(config["recipe_tuning"])
     endpoints, dsn = config["endpoints"], str(config["database"]["PG_DEST"])
-    out_root = Path(str(settings["OUTPUT_PATH"])) / bench.name
+    out_root = Path(str(settings["OUTPUT_PATH"])) / split / bench.name
     setup_logging(out_root / "run.log")
     started = time.perf_counter()
 
@@ -83,15 +96,13 @@ def run_benchmark(bench: Match, config_path: str) -> None:
     LOG.info("%s: %d recipes, %s", bench.name, len(names), ", ".join(names))
 
     cutoff = str(config["benchmarks"]["CUTOFF"])
-    root = Path(str(config["export"]["EXPORT_PATH"])) / f"graphiv-benchmarks-{cutoff}"
-    split = str(settings["SPLIT"])
+    root = get_release(config)
     samples = read_cases(root, bench.name, split, int(settings["MAX_SAMPLES"]))
     if not samples:
         LOG.error("%s has no %s cases in %s, stopping", bench.name, split, root)
         return
     LOG.info("%s: %d %s cases from %s", bench.name, len(samples), split, root.name)
 
-    graph = load_graph_export(str(config["dataset"]["GRAPH_PATH"]))
     recipes = [(n, read_recipe(Path(str(settings["RECIPE_PATH"])) / n)) for n in names]
     groups: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     for name, recipe in recipes:
@@ -107,7 +118,7 @@ def run_benchmark(bench: Match, config_path: str) -> None:
         write_run(
             out_root / label,
             recipe,
-            settings | {"metric": bench.name, "cutoff": cutoff},
+            settings | {"metric": bench.name, "cutoff": cutoff, "split": split},
             by_recipe.get(label, []),
         )
 
