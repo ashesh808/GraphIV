@@ -8,9 +8,9 @@ By designing a score system based on citation graph proximity, I was able to dou
 
 P.S. I named it after Fate/Type-Moon's bounded field, a ward drawn around a territory. The retrieval similarly draws the bounds of a research field around a question, bounding each term in $[0,1]$, and runs [LeyLine](leyline.md) inside the field it draws.
 
-![How BoundedField scores a paper, its recall at top K against embedding search, what each term adds, and its tuned recipes](../assets/figures/bounded-field.png)
+![How BoundedField scores a paper, its recall at top K against embedding search, what each term adds, and its tuned recipes](../research/assets/figures/bounded-field.png)
 
-The code is [`src/retrieve/`](../src/retrieve/README.md), and every number below comes from [`experiments/retrieve/`](../experiments/retrieve) unless it mentions another file.
+The code is [`src/retrieve/`](../src/retrieve/README.md), and every number below comes from [`research/experiments/retrieve/`](../research/experiments/retrieve) unless it mentions another file.
 
 ## Initial retrieval
 
@@ -151,7 +151,7 @@ There are five modes/recipes defined in this project as follows:
 
 ## Tuning
 
-I tuned the first three modes using their corresponding [benchmarks](benchmarks.md) with lattice search. With $11$ terms at $0$ or $1$, this is $2^{11} = 2{,}048$ settings to be tuned. Then coordinate descent optimizes one exponent at a time over $\{0, 0.25, 0.5, 1, 2, 3, 4\}$ and kept a decision only when the benchmark's headline recall rose, at 1,000 for SurveyMatch and FrontierMatch and at 100 for ConsensusMatch, from three starting points: the lattice's best, the previously shipped point, and every term at $1$. The table is from [`frontier-terms-REPORT.md`](../experiments/findings/frontier-terms-REPORT.md).
+I tuned the first three modes using their corresponding [benchmarks](benchmarks.md) with lattice search. With $11$ terms at $0$ or $1$, this is $2^{11} = 2{,}048$ settings to be tuned. Then coordinate descent optimizes one exponent at a time over $\{0, 0.25, 0.5, 1, 2, 3, 4\}$ and kept a decision only when the benchmark's headline recall rose, at 1,000 for SurveyMatch and FrontierMatch and at 100 for ConsensusMatch, from three starting points: the lattice's best, the previously shipped point, and every term at $1$. The table is from [`frontier-terms-REPORT.md`](../research/experiments/findings/frontier-terms-REPORT.md).
 
 | Benchmark | Initialization | Initial Score | Optimized Score |
 |---|---|---|---|
@@ -169,7 +169,7 @@ We'll explain what each benchmark entails in the next section.
 
 ## Evaluation
 
-I designed four benchmarks for this study, defined in [benchmarks.md](benchmarks.md), all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`scripts/recipe_tuning/`](../scripts/recipe_tuning/README.md)
+I designed four benchmarks for this study, defined in [benchmarks.md](benchmarks.md), all of which are LLM-free apart from writing each case's query. The benchmarks use human-written literature reviews (identified with our own survey labeler) as ground truth, measuring our recall with respect to these citations. We can rerun them with [`research/recipe_tuning/`](../research/recipe_tuning/README.md)
 
 | Benchmark | Number of Papers | Input | Ground truth |
 |---|---|---|---|
@@ -210,7 +210,7 @@ For reference, each score has a ceiling, which is the maximum score we could get
 | FrontierMatch | 0.816 | 8,466 | 0.95 |
 | ConsensusMatch | 0.993 | 8,549 | 0.73 |
 
-For scale, two reviews of one topic at cosine 0.80 or more find each other's references at recall 0.265, over 93 pairs ([`survey-agreement-REPORT.md`](../experiments/findings/survey-agreement-REPORT.md)). Two experts on the same topic overlap that little, which is what a review's own references are being recovered against.
+For scale, two reviews of one topic at cosine 0.80 or more find each other's references at recall 0.265, over 93 pairs ([`survey-agreement-REPORT.md`](../research/experiments/findings/survey-agreement-REPORT.md)). Two experts on the same topic overlap that little, which is what a review's own references are being recovered against.
 
 ## After BoundedField
 
@@ -238,7 +238,7 @@ ranked = pipeline.score_pool(question, vector, pool, cap)
 
 ## Discussion and Limitations
 
-- A paper too new to be cited scores exactly zero on `anc`, `anc2`, `cocite` and `hub` since they require at least some citation. BoundedField's top 20 held none of the 557 papers that had no citations then and 20 or more within 18 months ([`frontier-system-REPORT.md`](../experiments/findings/frontier-system-REPORT.md)). LeyLine's successors are the answer to that case.
+- A paper too new to be cited scores exactly zero on `anc`, `anc2`, `cocite` and `hub` since they require at least some citation. BoundedField's top 20 held none of the 557 papers that had no citations then and 20 or more within 18 months ([`frontier-system-REPORT.md`](../research/experiments/findings/frontier-system-REPORT.md)). LeyLine's successors are the answer to that case.
 - A paper that is neither among the 5,000 nearest nor one hop from a core can never be ranked, which is the ceiling as discussed above. Expanding to two hops greatly increases the pool size and ceiling, but taints the pool with more noise.
 - The two special recipes, `ancestry` and `evolution`, are untuned as they are not meant to optimize towards a metric. Ancestry wants `date_max` at the seed's date, and evolution wants `date_min` there.
 - The terms used are classic bibliometrics, co-citation and coupling included. What BoundedField adds is putting them together, a bounded product, the per-mode exponents and the measurement behind them, and using them in a citation graph.

@@ -1,4 +1,4 @@
-# mcp
+# MCP tools
 
 The tools an outside agent calls.
 The agent runs the loop and decides what to search next and when to stop, while the server holds the corpus and the tuned settings and answers one call at a time.
@@ -14,11 +14,12 @@ what_cites.py      who took a position on one paper, and the sentence they used
 search_papers.py   plain cosine, to turn a title into an id
 recall_paper.py    a description of what a paper did or argued into the papers that match it
 find_runs.py       the reports this server already wrote, matched to a new question
-server.py          registers the tools and serves both transports
 state.py           what every tool opens once, and the rankings and areas kept between calls
 effort.py          the quick, standard and deep presets
-dashboard.py       the read-only routes the dashboard reads its runs from
 ```
+
+The application entrypoint, transport registrations, and orchestration boundary live in
+[`apps/api/`](../../apps/api/README.md). Its `dashboard.py` owns the read-only dashboard routes.
 
 ## A Session
 
@@ -52,11 +53,14 @@ The caller picks a mode by name and never sees the numbers.
 ## Running It
 
 ```sh
-uv run python scripts/serve.py                          # stdio
-uv run python scripts/serve.py --http --role api        # the tools, 6767
-uv run python scripts/serve.py --http --role frontend   # the dashboard, 6969
+uv run graphiv-serve                          # stdio
+uv run graphiv-serve --http --role api        # the tools, 6767
+uv run graphiv-serve --http --role frontend   # the dashboard, 6969
 ```
 
-Both ports are in the `[serve]` block of `config.toml`, and `GRAPHIV_CONFIG` can point at another file.
+Both ports are in the `[serve]` block of `configs/runtime.toml`, and `GRAPHIV_CONFIG` can point at another file.
 The frontend role is a second server with no tools, so it never opens the store or the graph and cannot reach the corpus.
 The graph export is about 400 MB and loads once at start, so the first question costs the same as the tenth.
+
+The report dashboard's browser files live in [`legacy/research-webui`](../../legacy/research-webui/README.md).
+Reusable retrieval, mining, and reporting logic lives in [`src`](../README.md).

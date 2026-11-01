@@ -20,11 +20,12 @@ from src.core.config import load_config
 from src.core.embed import embed
 from src.core.llm import Gemma
 from src.core.parse_graph_export import GraphExport, load_graph_export
+from src.core.paths import RUNTIME_CONFIG
 from src.core.schema import Grade, Paper
 
 LOG = logging.getLogger(__name__)
 
-REPO = Path(__file__).resolve().parents[2] / "config.toml"
+REPO = RUNTIME_CONFIG
 CONFIG = Path(os.environ.get("GRAPHIV_CONFIG") or REPO)
 MODES = {
     "survey": "survey.toml",

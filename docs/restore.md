@@ -9,7 +9,7 @@ The serve path needs four things, and nothing outside `./data`.
 
 Download the dump: **link pending**, to be hosted on Hugging Face.
 The current build is `graphiv-2026-09-26.dump`, written by `pg_dump -Fc --compress=zstd:3`.
-The manager's Export tab writes a new one into `data/export`, through `scripts/export/stage0_dump_store.py`.
+The manager's Export tab writes a new one into `data/export`, through `offline/export/stage0_dump_store.py`.
 
 ```bash
 nix develop                    # postgres17 with pgvector, plus the pg-* helpers
@@ -44,7 +44,7 @@ client-side through `/tokenize`. Point `embeddings.api` or `GRAPHIV_EMBED_API` a
 
 ## 3. The LLM endpoint
 
-Any OpenAI-compatible host, named under `[endpoints]` in `config.toml`.
+Any OpenAI-compatible host, named under `[endpoints]` in `configs/runtime.toml`.
 
 | key | role |
 | --- | --- |
@@ -63,7 +63,7 @@ of flat arrays that the server loads once at start instead of hopping the 65 GB 
 after the restore, since nothing serves without it:
 
 ```bash
-uv run python scripts/citation_preprocess/stage2_export_graph.py
+uv run python offline/citation_preprocess/stage2_export_graph.py
 ```
 
 ## Full text
@@ -81,21 +81,21 @@ To build the stores up front, run `stage1_download_pdf.py` and `stage2_download_
 
 ```bash
 uv sync
-uv run python scripts/serve.py                          # MCP over stdio
-uv run python scripts/serve.py --http --role api        # the tools, 6767
-uv run python scripts/serve.py --http --role frontend   # the dashboard, 6969
+uv run graphiv-serve                         # MCP over stdio
+uv run graphiv-serve --http --role api        # the tools, 6767
+uv run graphiv-serve --http --role frontend   # the dashboard, 6969
 ```
 
-Both ports live in the `[serve]` block of `config.toml`, and `GRAPHIV_CONFIG` points at a config
-somewhere else. On NixOS, `nixosModules.default` writes that file and runs both roles as units,
-which `nix/README.md` covers.
+Both ports live in the `[serve]` block of `configs/runtime.toml`, and `GRAPHIV_CONFIG` points at a config
+somewhere else. The retained NixOS module generates its own deployment configuration
+and runs both roles as units; see [`legacy/nix/README.md`](../legacy/nix/README.md).
 
 ```json
 {
   "mcpServers": {
     "graphiv": {
       "command": "uv",
-      "args": ["run", "python", "scripts/serve.py"],
+      "args": ["run", "graphiv-serve"],
       "cwd": "/path/to/GraphIV"
     }
   }
@@ -116,5 +116,5 @@ The effort a caller passes decides the cost. `quick` is retrieve and mine at abo
 seconds over two areas on one RTX 3090, and `deep` lifts every cap. Runs serialize on the one GPU,
 so keep client tool timeouts generous: the librechat wiring uses 7,200,000 ms.
 
-Figures use `themes/theme.json`
+Figures use `research/themes/theme.json`
 ([shunka-shuutou](https://git.kuroma.dev/kkuroma/shunka-shuutou-theme)).

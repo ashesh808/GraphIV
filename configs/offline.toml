@@ -1,0 +1,173 @@
+# Offline pipelines, training, evaluation, and administration. Paths are relative to this file.
+
+[database]
+PG_DEST = "host=../.pg port=5433 dbname=arxivkg"
+
+[source]
+SOURCE_URL = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
+SOURCE_PATH = "../data/arxiv.json"
+PDF_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv/arxiv/pdf"
+PDF_LEGACY_BASE_URL = "https://storage.googleapis.com/arxiv-dataset/arxiv"
+HTML_BASE_URL = "https://arxiv.org/html"
+HTML_FALLBACK_URL = "https://ar5iv.labs.arxiv.org/html"
+
+# aria2c batching against the arXiv bulk mirror on Google Cloud Storage
+[download]
+PDF_BATCH = 500
+PDF_N_PARALLEL = 8
+# permits a second across every worker, and a paper costs two when the first source misses
+HTML_RATE = 8.0
+HTML_BATCH = 200
+HTML_N_PARALLEL = 16
+
+[dataset]
+PDF_PATH = "../data/arxiv/pdfs"
+HTML_PATH = "../data/arxiv/html"
+GRAPH_PATH = "../data/citation_graph_export.npy"
+
+# The daemon: the ports it listens on, and the paths it reads and writes
+# A paper the corpus never had is fetched into HTML_PATH or PDF_PATH, under its own YYMM
+[serve]
+HOST = "127.0.0.1"
+API_PORT = 6767
+FRONTEND_PORT = 6969
+# hosts the streamable-http transport answers to, empty meaning loopback only
+ALLOWED_HOSTS = []
+RECIPE_PATH = "../retrieval_recipes"
+RUNS_PATH = "../data/runs"
+CACHE_PATH = "../data/cache"
+FETCH = true
+
+# The manager, one page running every stage below, keeping its jobs and charts in STATE_PATH
+[manager]
+PORT = 6868
+STATE_PATH = "../data/manager"
+# the Hugging Face token the publish stage uploads with, empty for none
+HF_TOKEN_PATH = ""
+
+# What leaves the store: graphiv-<date>.dump, the full backup, and graphiv-<date>/, the Parquet release
+[export]
+EXPORT_PATH = "../data/export"
+# the Hugging Face repos the publish stage uploads to, empty to skip one
+DATA_REPO = "kkuroma/GraphIV"
+CITATION_REPO = "kkuroma/GraphIV-citation-intent"
+SURVEY_REPO = "kkuroma/GraphIV-survey"
+BENCHMARK_REPO = "kkuroma/GraphIV_benchmarks"
+
+[endpoints]
+EMBED_API = "http://127.0.0.1:11434/embedding/nomic-embed-text-v2-moe"
+EMBED_NAME = "nomic-embed-text-v2-moe"
+EMBED_PARALLEL = 1
+EMBED_BATCH = 256
+EMBED_MAX_SEQ = 512
+EMBED_PREFIX = "search_document: "
+LLM_API = "http://localhost:11434/v1"
+LLM_NAME = "Gemma-4-26B-Batched"
+
+# The literature review scorer, whose checkpoint and recipe live in MODEL_PATH
+[survey]
+MODEL_PATH = "../data/survey_detection"
+BATCH = 64
+CHUNK = 50000
+
+[umap]
+UMAP_MODEL_PATH = "../data/umap_50.joblib"
+UMAP_SAMPLE = 400000
+UMAP_SEED = 69420
+UMAP_DIM = 50
+UMAP_BATCH = 50000
+# transform processes, each loading its own 4.1GB copy of the model
+UMAP_WORKERS = 4
+
+[topics]
+TREE_METHODS = ["kmeans", "kmeans", "kmeans"]
+TREE_K = 16
+TREE_MIN_CLUSTER_SIZE = 60
+TREE_N_PARALLEL = 8
+TREE_BATCH = 50000
+TREE_SEED = 69420
+# Papers shown to the namer, taken nearest the leaf centroid rather than at random
+N_TOPIC_LABEL = 10
+TOPIC_BATCH = 8
+
+[citation_labeler]
+LABELER_PATH = "../data/citation_labeler"
+LABELER_MODEL = "distilbert/distilbert-base-uncased"
+LABELER_BATCH = 48             # the resident llama models leave under 400MB of the 3090
+LABELER_MAX_SEQ = 256
+LABELER_APE_MODEL = "Gemma-4-26B-Batched"
+LABELER_APE_GENERATIONS = 6
+LABELER_APE_PARALLEL = 4
+LABELER_TEACHER_SAMPLE = 10000
+LABELER_SEED = 0
+LABELER_SPLITS = [0.8, 0.1, 0.1]
+LABELER_EPOCHS = 12
+LABELER_TRAIN_BATCH = 64
+LABELER_LR = 2e-5
+
+# Review case selection, grouping by a tree node then keeping one mutually similar set per node
+[surveymatch]
+SURVEY_THRESHOLD = 0.5
+# roughly p95 of the within-node cosine, which leaves the graph sparse enough for an exact clique
+MUTUAL_COSINE_THRESHOLD = 0.65
+SURVEYMATCH_LEVEL = 2
+
+
+# The published benchmarks, versioned by CUTOFF, the last day a mined review may carry
+[benchmarks]
+CUTOFF = "2026-10-22"
+# resolved references a review needs, per benchmark
+SURVEYMATCH_FLOOR = 100
+FRONTIERMATCH_FLOOR = 25
+CONSENSUSMATCH_FLOOR = 25
+# the survey classifier floor, where precision is 0.937 against 0.787 at 0.5
+SURVEY_THRESHOLD = 0.95
+# the widest gap between two reviews that still counts as the same moment
+GAP_DAYS = 190
+FRONTIER_COSINE = 0.80
+FRONTIER_MIN_KEY = 10
+# how far before the earlier review a frontier answer may have been published
+FRONTIER_WINDOW_DAYS = 730
+CONSENSUS_COSINE = 0.75
+CONSENSUS_MIN_KEY = 5
+
+# Recipe tuning and evaluation on graphiv-benchmarks-<CUTOFF> under EXPORT_PATH, one run directory per split and metric
+[recipe_tuning]
+RECIPE_PATH = "../retrieval_recipes"
+OUTPUT_PATH = "../research/experiments/retrieve"
+# each case's pool and terms, cached once per version and split for the fit
+CACHE_PATH = "../data/cache/recipe_tuning"
+RETURN_LIMIT = 1000
+BUDGETS = [100, 200, 500, 1000]
+# train to tune on, val to choose, test to report
+SPLIT = "val"
+# the most cases a run reads from its split, every case at 0
+MAX_SAMPLES = 0
+# the judge, which calls a paper related when it shares the leaf or a reviewer of that leaf cites it
+PRECISION_LEVEL = 2
+
+# Which recipes each benchmark runs and compares, relative to RECIPE_PATH
+[recipe_tuning.recipes]
+SurveyMatch = [
+  "survey.toml",
+  "anc_only.toml",
+  "survey_no_forward.toml",
+  "all_terms.toml",
+  "no_expansion.toml",
+  "cosine_only.toml",
+]
+FrontierMatch = [
+  "frontier.toml",
+  "survey.toml",
+  "frontier_no_forward.toml",
+  "all_terms.toml",
+  "cosine_only.toml",
+]
+ConsensusMatch = [
+  "consensus.toml",
+  "consensus_no_forward.toml",
+  "survey.toml",
+  "all_terms.toml",
+  "cosine_only.toml",
+]
+PrecisionMatch = ["survey.toml", "frontier.toml", "cosine_only.toml"]

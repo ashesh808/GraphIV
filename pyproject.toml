@@ -4,33 +4,46 @@ version = "0.1.0"
 description = "A knowledge graph over all of arXiv, and a grounded literature-review endpoint on top of it"
 requires-python = ">=3.13"
 dependencies = [
-    "cmaes>=0.13.1",
+    "mcp>=1.28.1",
+    "numpy>=2.4.5",
+    "psycopg[binary]>=3.3.4",
+    "pydantic>=2.0",
+    "scipy",
+    "selectolax>=0.4.10",
+    "starlette",
+    "uvicorn",
+]
+
+[project.scripts]
+graphiv-serve = "apps.api.main:main"
+
+[dependency-groups]
+offline = [
     "datasets>=5.0.0",
     "dspy>=3.3.0",
     "einops>=0.8.2",
-    "mcp>=1.28.1",
-    "numpy>=2.4.5",
-    "optuna>=5.0.0",
+    "huggingface-hub",
+    "matplotlib>=3.10.9",
     "peft>=0.19.1",
-    "psycopg[binary]>=3.3.4",
-    "pydantic>=2.0",
+    "pymupdf>=1.27.2.3",
+    "rapidfuzz>=3.14.5",
     "scikit-learn>=1.9.0",
-    "selectolax>=0.4.10",
     "sentence-transformers>=5.6.0",
     "torch>=2.12.0",
+    "transformers>=5.9.0",
     "umap-learn>=0.5.9",
 ]
-
-[dependency-groups]
-dev = [
-    "import-linter>=2.0",
-    "matplotlib>=3.10.9",
+research = [
+    { include-group = "offline" },
+    "cmaes>=0.13.1",
+    "optuna>=5.0.0",
     "openai>=2.38.0",
-    "pymupdf>=1.27.2.3",
+]
+dev = [
+    { include-group = "research" },
+    "import-linter>=2.0",
     "pytest",
     "pytest-cov",
-    "rapidfuzz>=3.14.5",
-    "transformers>=5.9.0",
 ]
 
 [build-system]
@@ -38,7 +51,20 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+only-include = ["src", "apps/api", "apps/__init__.py"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"legacy/research-webui" = "src/_resources/legacy/research-webui"
+"retrieval_recipes" = "src/_resources/retrieval_recipes"
+"configs/runtime.toml" = "src/_resources/configs/runtime.toml"
+
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src", "/apps", "/offline", "/research", "/legacy", "/infra", "/retrieval_recipes",
+    "/tests", "/configs", "/docs", "/pyproject.toml", "/uv.lock", "/.python-version",
+    "/README.md", "/LICENSE",
+]
 
 [tool.black]
 line-length = 100
@@ -48,8 +74,7 @@ target-version = ["py313"]
 # a cache holds data, including upstream code cloned to reproduce a published number
 line-length = 100
 target-version = "py313"
-# the manager imports its own modules flat, so they sort as first party
-src = [".", "scripts/graphiv_manager"]
+src = ["."]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N", "UP", "B", "ANN", "BLE", "D"]
@@ -60,7 +85,9 @@ ignore = ["ANN401", "D100", "D104", "D107", "D200", "D212", "D415"]
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"scripts/**" = ["D"]
+"offline/**" = ["D"]
+"research/recipe_tuning/**" = ["D"]
+"legacy/serve.py" = ["D"]
 "notebooks/**" = ["D", "ANN"]
 "tests/**" = ["D", "ANN"]
 # experiment code embeds prompt text, SQL and browser scripts, where width is content
@@ -69,12 +96,12 @@ convention = "google"
 "scratchpad/**" = ["ALL"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["graphiv"]
+known-first-party = ["src", "apps", "offline", "research"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# the manager and the export are flat script directories rather than packages, as their entrypoints see them
-pythonpath = ["scripts/graphiv_manager", "scripts/export", "scripts/recipe_tuning"]
+# Pipeline helpers retain the same imports as their directly executed stages.
+pythonpath = [".", "offline/export", "research/recipe_tuning"]
 addopts = "-ra -m 'not slow and not gpu'"
 markers = [
     "slow: needs real data or a long run",
@@ -87,32 +114,39 @@ venv = ".venv"
 pythonVersion = "3.13"
 typeCheckingMode = "standard"
 reportMissingTypeStubs = false
-include = ["src", "scripts"]
+include = ["src", "apps/api", "offline", "research/recipe_tuning"]
+extraPaths = ["."]
 exclude = ["scratchpad", "notebooks", "**/__pycache__", ".venv"]
 
 # torch's stub does not re-export its own names, and flash-attn is an optional accelerator
 [[tool.pyright.executionEnvironments]]
-root = "scripts/citation_labeler"
+root = "offline/citation_labeler"
 reportPrivateImportUsage = "none"
 reportMissingImports = "none"
 
 [[tool.pyright.executionEnvironments]]
-root = "scripts/citation_preprocess"
+root = "offline/citation_preprocess"
 reportPrivateImportUsage = "none"
 reportMissingImports = "none"
 
-# src is layered, so a lower module never reaches up into one that depends on it
+# The library is layered and independent of application services and pipeline scripts.
 [tool.importlinter]
-root_packages = ["src"]
+root_packages = ["src", "apps", "offline", "research"]
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
-name = "src is layered"
+name = "the production library is layered"
 type = "layers"
-layers = ["src.mcp", "src.report", "src.miner", "src.retrieve", "src.core"]
+layers = ["src.mcp", "src.report", "src.miner", "src.retrieve", "src.storage", "src.core"]
 
 [[tool.importlinter.contracts]]
-name = "src never imports scripts"
+name = "production code never imports offline or research code"
+type = "forbidden"
+source_modules = ["src", "apps"]
+forbidden_modules = ["offline", "research"]
+
+[[tool.importlinter.contracts]]
+name = "the production library never imports application entrypoints"
 type = "forbidden"
 source_modules = ["src"]
-forbidden_modules = ["scripts"]
+forbidden_modules = ["apps"]

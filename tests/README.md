@@ -1,18 +1,25 @@
 # tests
 
-Tests for the logic in `src`, not for the entrypoints in `scripts`. Every test builds a situation small enough to check by hand, so the suite needs no database, no model and no network and finishes in well under a second.
+Tests for reusable source components, application routes, and offline helpers. Fixtures use small graphs, temporary files, fake stages, and local HTTP servers, so the default suite needs no external database, model, or network service.
 
 ```
 run.py                runs the whole suite, or one subdirectory
-retrieve/conftest.py  an eight paper citation graph written in the format stage2 exports
+core/                 configuration and corpus file access
+retrieve/conftest.py   an eight paper citation graph written in the format stage2 exports
 retrieve/             the graph reader, the score, the expanders and the pipeline
-frontier/             the extends chains, the successor order and the page
-graphiv_manager/      the manager's runner against fake stages, its disk gate, and its fetch against a local server
+miner/                eras, lineages, and successor ordering
+report/               citation grounding
+mcp/                  MCP argument handling, area selection, and past runs
+apps/                 runtime HTTP routes and application boundaries
+offline/manager/      job execution, scheduling, snapshots, benchmarks, and publishing
+export/               dataset publication helpers
+recipe_tuning/        recipe fitting
 ```
 
 ```sh
 uv run python tests/run.py
 uv run python tests/run.py retrieve -v
+uv run pytest tests/mcp tests/apps tests/offline -q
 ```
 
 ## The fixture graph

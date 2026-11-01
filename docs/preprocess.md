@@ -14,7 +14,7 @@ Reproduce the PostGreSQL DB (`papers`, `citations`, `topic_tree` and `topic_name
 | CUDA GPU | not configured | the student trains and infers on it |
 | disk space | `[dataset] PDF_PATH`, `HTML_PATH` | 5.6 TB of PDFs, 87 GB of database |
 
-Everything else defaults in `config.toml`, and every script takes `--config_path`.
+Everything else defaults in `configs/offline.toml`, and every script takes `--config_path`.
 
 ## Reproducing the database
 
@@ -25,8 +25,8 @@ nix develop
 uv sync
 nix run .#pg-start          # applies both schema.sql files, idempotent
 
-P=scripts/papers_preprocess
-T=scripts/topic_tree_creation
+P=offline/papers_preprocess
+T=offline/topic_tree_creation
 uv run python $P/stage0_fetch_source_json.py
 uv run python $P/stage1_download_pdf.py
 uv run python $P/stage2_download_html.py
@@ -38,19 +38,19 @@ uv run python $T/stage1_create_topic_tree.py
 psql -h ./.pg -p 5433 -d arxivkg -f $T/indexes.sql
 uv run python $T/stage2_topic_labeling.py
 
-uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
+uv run python offline/citation_preprocess/stage0_create_citation.py --workers 16
 psql -h ./.pg -p 5433 -d arxivkg -f $P/indexes.sql
-uv run python scripts/citation_preprocess/stage1_label_citation.py
+uv run python offline/citation_preprocess/stage1_label_citation.py
 ```
 
 Indexes go in after the parse and before the labeling, never before a bulk load.
 Every stage is idempotent, so a kill costs only the batch in flight.
 
-`scripts/citation_labeler/` is not in that list.
+`offline/citation_labeler/` is not in that list.
 It writes no table, and stage1 only reads the `best.pt` it leaves behind.
 
 ```sh
-L=scripts/citation_labeler
+L=offline/citation_labeler
 uv run python $L/stage0_ape_prompt.py
 uv run python $L/stage1_teacher_label.py
 uv run python $L/stage2_train_student.py

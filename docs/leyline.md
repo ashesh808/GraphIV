@@ -6,7 +6,7 @@ A ranking, however good, is still a static list, and I think a research needs a 
 
 The name is LeyLine refercing Fate/Type-Moon's comcept of a magical power grid that runs from node to node. Here, the power is the argument each citation made (classified into intents). It runs inside what the field [BoundedField](retrieval.md) draws.
 
-![How LeyLine walks toward magnets, the Unseen Newcomers only its successors reach, magnet weight against citations, and one question's lineages](../assets/figures/leyline.png)
+![How LeyLine walks toward magnets, the Unseen Newcomers only its successors reach, magnet weight against citations, and one question's lineages](../research/assets/figures/leyline.png)
 
 The code is [`src/miner/`](../src/miner/README.md). [`leyline.py`](../src/miner/leyline.py) is the algorithm on a typed graph and knows nothing about papers, so [`tests/miner/test_leyline.py`](../tests/miner/test_leyline.py) runs it on a hand-built graph with no store and no GPU, and [`miner.py`](../src/miner/miner.py) is what feeds it citations.
 
@@ -112,7 +112,7 @@ Two smaller reads come off the same graph.
 
 ## Evaluation
 
-There is no benchmark for a lineage, since no document lists a field's lineages to score against. What can be measured is the cold start, by asking at a date in the past and scoring against what happened after ([`frontier-system-REPORT.md`](../experiments/findings/frontier-system-REPORT.md)). Five Topic Queries ([`supplement.md`](supplement.md#topic-queries)) were asked on 2025-03-01, with the citation graph running to 2026-09-10. An Unseen Newcomer is a paper of the 365 days before the question with no citations at the question date and 20 or more in the 18 months after.
+There is no benchmark for a lineage, since no document lists a field's lineages to score against. What can be measured is the cold start, by asking at a date in the past and scoring against what happened after ([`frontier-system-REPORT.md`](../research/experiments/findings/frontier-system-REPORT.md)). Five Topic Queries ([`supplement.md`](supplement.md#topic-queries)) were asked on 2025-03-01, with the citation graph running to 2026-09-10. An Unseen Newcomer is a paper of the 365 days before the question with no citations at the question date and 20 or more in the 18 months after.
 
 | Topic | Unseen Newcomers | BoundedField's Top 20 | Successor Top 20 | Successor Set |
 |---|---|---|---|---|

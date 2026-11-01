@@ -25,7 +25,17 @@ from src.report import ground
 from src.report.compose import OPEN_PAPERS, answer, compose, digest, name_lines, unanswered
 from src.report.fulltext import FullText, read_open, read_paper
 from src.report.render import Area, Draft, LineName, Section, document, inside
-from src.report.table import Design, Method, design, extract, gaps, merge, render, repair, spread
+from src.report.table import (
+    Design,
+    Method,
+    design,
+    extract,
+    gaps,
+    merge,
+    render,
+    repair,
+    spread,
+)
 
 LOG = logging.getLogger(__name__)
 

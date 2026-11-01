@@ -2,7 +2,7 @@
 Reads the citation graph export into flat arrays a query can slice
 
 Every array is keyed by one row number per paper, so a hop is a slice and never a query
-The export is written by scripts/citation_preprocess/stage2_export_graph.py
+The export is written by offline/citation_preprocess/stage2_export_graph.py
 """
 
 from __future__ import annotations

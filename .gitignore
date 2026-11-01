@@ -1,4 +1,5 @@
 # Python
+.DS_Store
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -41,7 +42,7 @@ CLAUDE.md
 
 # Large stores. Schemas are small and reviewable, so they are force-added back.
 /data
-assets/data
+research/assets/data
 !data/metadata/*.sql
 
 # Research runs submitted through the MCP: regenerable, and the dashboard serves
@@ -52,5 +53,23 @@ output/
 scratchpad/
 
 # temporary ignore
-benchmarks/
-experiments/
+/benchmarks/
+# New experiment runs are local; published historical artifacts remain versioned.
+research/experiments/**/runs/
+
+# Frontend builds and local configuration
+node_modules/
+.next/
+.vercel/
+.env
+.env.*
+!.env.example
+
+# Terraform local state and working directories
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+*_override.tf
+*_override.tf.json

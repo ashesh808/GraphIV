@@ -12,7 +12,7 @@ There are tens of thousands of papers released to arXiv each month, and even a s
 
 On top of the graph sit two algorithms of my own. BoundedField retrieves and ranks papers by where they sit in the citation graph, with no language model in the ranking, and LeyLine mines the lineages that led a field to where it is and the new papers that have already answered them.
 
-![GraphIV's research fields, its automated research pipeline, and BoundedField and LeyLine zoomed in](assets/figures/poster.png)
+![GraphIV's research fields, its automated research pipeline, and BoundedField and LeyLine zoomed in](research/assets/figures/poster.png)
 
 ## Table of contents
 - [Using GraphIV](#using-graphiv)
@@ -39,20 +39,20 @@ On top of the graph sit two algorithms of my own. BoundedField retrieves and ran
 Everything in GraphIV is rebuilt from public sources: [arXiv's metadata snapshot on Kaggle](https://www.kaggle.com/datasets/Cornell-University/arxiv), arXiv's own HTML and PDF files, and open weight models. The build is ten stages filling four tables, run in this order, and [`docs/preprocess.md`](docs/preprocess.md) is the runbook with what each stage reads and writes. To skip the build, [`docs/restore.md`](docs/restore.md) restores the published dump and serves from it.
 
 ```sh
-uv run python scripts/papers_preprocess/stage0_fetch_source_json.py --dry-run   # what a new snapshot adds
-uv run python scripts/papers_preprocess/stage0_fetch_source_json.py --no-fetch
-uv run python scripts/papers_preprocess/stage1_download_pdf.py
-uv run python scripts/papers_preprocess/stage2_download_html.py
-uv run python scripts/papers_preprocess/stage3_embed_papers.py
-uv run python scripts/papers_preprocess/stage4_label_survey.py
-uv run python scripts/topic_tree_creation/stage0_umap.py
-uv run python scripts/topic_tree_creation/stage1_create_topic_tree.py
-uv run python scripts/topic_tree_creation/stage2_topic_labeling.py
-uv run python scripts/citation_preprocess/stage0_create_citation.py --workers 16
-uv run python scripts/citation_preprocess/stage1_label_citation.py
+uv run python offline/papers_preprocess/stage0_fetch_source_json.py --dry-run   # what a new snapshot adds
+uv run python offline/papers_preprocess/stage0_fetch_source_json.py --no-fetch
+uv run python offline/papers_preprocess/stage1_download_pdf.py
+uv run python offline/papers_preprocess/stage2_download_html.py
+uv run python offline/papers_preprocess/stage3_embed_papers.py
+uv run python offline/papers_preprocess/stage4_label_survey.py
+uv run python offline/topic_tree_creation/stage0_umap.py
+uv run python offline/topic_tree_creation/stage1_create_topic_tree.py
+uv run python offline/topic_tree_creation/stage2_topic_labeling.py
+uv run python offline/citation_preprocess/stage0_create_citation.py --workers 16
+uv run python offline/citation_preprocess/stage1_label_citation.py
 ```
 
-The two labelers the build loads are trained by [`scripts/citation_labeler/`](scripts/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks, defined in [`docs/benchmarks.md`](docs/benchmarks.md) and published at [GraphIV_benchmarks](https://huggingface.co/datasets/kkuroma/GraphIV_benchmarks), are fit and rerun by [`scripts/recipe_tuning/`](scripts/recipe_tuning/README.md), which writes every case and every ranking under [`experiments/retrieve/`](experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python assets/run.py`.
+The two labelers the build loads are trained by [`offline/citation_labeler/`](offline/citation_labeler/README.md) and described on their cards, [GraphIV-citation-intent](https://huggingface.co/kkuroma/GraphIV-citation-intent) and [GraphIV-survey](https://huggingface.co/kkuroma/GraphIV-survey). The four retrieval benchmarks, defined in [`docs/benchmarks.md`](docs/benchmarks.md) and published at [GraphIV_benchmarks](https://huggingface.co/datasets/kkuroma/GraphIV_benchmarks), are fit and rerun by [`research/recipe_tuning/`](research/recipe_tuning/README.md), which writes every case and every ranking under [`research/experiments/retrieve/`](research/experiments/retrieve), and every figure on this page and on the cards is redrawn from those files by `direnv exec . uv run python research/assets/run.py`.
 
 ### Self-hosting
 
@@ -68,14 +68,14 @@ GraphIV ships as an MCP server, which any agent that speaks MCP can drive, plus 
 The store holds the citation sentences, which are each paper's own text, so it is not published as a dump, and the server tier needs a build of its own for now.
 
 ```sh
-nix develop                                               # Python 3.13, uv, postgres17 with pgvector
+nix develop                                   # Python 3.13, uv, postgres17 with pgvector
 uv sync
-uv run python scripts/serve.py --http --role api          # the tools, at http://127.0.0.1:6767/mcp
-uv run python scripts/serve.py --http --role frontend     # the dashboard, at http://127.0.0.1:6969
+uv run graphiv-serve --http --role api         # the tools, at http://127.0.0.1:6767/mcp
+uv run graphiv-serve --http --role frontend    # the dashboard, at http://127.0.0.1:6969
 claude mcp add --transport http graphiv http://127.0.0.1:6767/mcp
 ```
 
-On NixOS, `services.graphiv` runs the cluster, the server, the dashboard and the manager as units, and [`nix/README.md`](nix/README.md) is its page. Every path, port and endpoint is a key of [`config.toml`](config.toml).
+The retained NixOS deployment lives in [`legacy/nix/`](legacy/nix/README.md). Runtime paths, ports, and endpoints live in [`configs/runtime.toml`](configs/runtime.toml); preprocessing, training, and evaluation settings live in [`configs/offline.toml`](configs/offline.toml).
 
 ## Components
 
@@ -93,17 +93,17 @@ The release is gated on [kkuroma/GraphIV](https://huggingface.co/datasets/kkurom
 
 BoundedField takes the 5,000 papers closest to a question, adds what the top 200 cite and what cites them, and ranks the pool by a product of cosine, recency and citation-graph terms whose exponents are tuned per mode, because embedding search finds the papers that sound like a question rather than the ones its field cites. Read more at [`docs/retrieval.md`](docs/retrieval.md).
 
-![How BoundedField scores a paper, its recall at top K against embedding search, what each term adds, and its tuned recipes](assets/figures/bounded-field.png)
+![How BoundedField scores a paper, its recall at top K against embedding search, what each term adds, and its tuned recipes](research/assets/figures/bounded-field.png)
 
 ### LeyLine - Magnetic Monte Carlo Trajectory Miner
 
 LeyLine walks the papers a field takes positions on, drawing every step by how much the field argues with the next paper, keeps the paths that recur as lineages, and collects the newest papers extending, critiquing or comparing against the answer, because a ranking built on citations cannot see a paper too new to be cited. Read more at [`docs/leyline.md`](docs/leyline.md), and the Topic Queries behind its evaluation are in [`docs/supplement.md`](docs/supplement.md).
 
-![How LeyLine walks toward magnets, the Unseen Newcomers only its successors reach, magnet weight against citations, and one question's lineages](assets/figures/leyline.png)
+![How LeyLine walks toward magnets, the Unseen Newcomers only its successors reach, magnet weight against citations, and one question's lineages](research/assets/figures/leyline.png)
 
 ### Automated research pipeline
 
-![One question through the six MCP tools, each with what it returned](assets/figures/research-pipeline.png)
+![One question through the six MCP tools, each with what it returned](research/assets/figures/research-pipeline.png)
 
 The agent owns the loop, and the server answers one call at a time while holding the corpus, the tuned constants and the rankings. A two-area standard run measured 139 seconds end to end over MCP, where 59 went to the two `retrieve` calls and 71 to `write_report`.
 
@@ -125,16 +125,21 @@ Five modes pick the recipe: `survey`, `frontier` and `consensus` are each tuned 
 
 | Path | What it holds |
 |---|---|
-| [`src/`](src/README.md) | the library, in layers: [`core`](src/core/README.md), [`retrieve`](src/retrieve/README.md) (BoundedField), [`miner`](src/miner/README.md) (LeyLine), [`report`](src/report/README.md), [`mcp`](src/mcp/README.md) and [`webui`](src/webui/README.md) |
-| [`scripts/`](scripts/README.md) | the build stages, the labelers, the benchmarks, the export, the manager and `serve.py` |
+| [`apps/`](apps/README.md) | the [API application](apps/api/README.md) and the [reserved Next.js web application](apps/web/README.md) |
+| [`src/`](src/README.md) | reusable Python components: shared [`core`](src/core/README.md), [`retrieve`](src/retrieve/README.md) (BoundedField), [`miner`](src/miner/README.md) (LeyLine), [`report`](src/report/README.md), and [`mcp`](src/mcp/README.md) tool implementations; storage and evidence interfaces have their own packages |
+| [`offline/`](offline/README.md) | preprocessing, model training, index building, exports, and the [administration manager](offline/manager/README.md) |
+| [`research/recipe_tuning/`](research/recipe_tuning/README.md) | benchmark evaluation and recipe fitting |
 | [`retrieval_recipes/`](retrieval_recipes) | one toml per mode, the only place an exponent or a miner constant lives |
-| [`experiments/`](experiments/findings/README.md) | what the benchmarks last wrote, and the findings of every experiment since deleted |
-| [`assets/`](assets/README.md) | every figure here and on the cards, and the code that draws them |
+| [`research/experiments/`](research/experiments/findings/README.md) | what the benchmarks last wrote, and the findings of every experiment since deleted |
+| [`research/assets/`](research/assets/README.md) | every figure here and on the cards, and the code that draws them |
 | [`docs/`](docs/README.md) | the methods, the benchmarks and the runbooks |
-| [`nix/`](nix/README.md) | the package and the NixOS module |
-| [`tests/`](tests/README.md) | the tests of `src` |
-| [`themes/`](themes/README.md) | the palette and the typeface every figure uses |
-| [`config.toml`](config.toml) | every path, endpoint and stage default |
+| [`infra/azure/`](infra/azure/README.md) | the reserved location for Azure infrastructure definitions |
+| [`legacy/`](legacy/README.md) | the existing [research dashboard](legacy/research-webui/README.md), [Nix deployment](legacy/nix/README.md), and compatibility launcher |
+| [`tests/`](tests/README.md) | tests for reusable components, application routes, and offline jobs |
+| [`research/themes/`](research/themes/README.md) | the palette and the typeface every figure uses |
+| [`configs/`](configs/README.md) | separate runtime and offline settings, with paths relative to each configuration file |
+
+`apps/api` owns transport and the future orchestration entrypoint, and imports the algorithms and MCP tools from `src`. Offline jobs and research utilities use the same components. The runtime wheel includes the API, reusable source, recipes, runtime configuration, and existing dashboard assets. Offline and research code stays in the checkout, with training and evaluation dependencies in separate dependency groups. The Next.js and Azure Terraform directories establish where future work belongs.
 
 ## Future Directions
 

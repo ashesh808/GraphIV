@@ -13,8 +13,8 @@ import math
 from pathlib import Path
 from typing import Any
 
-from src.mcp.dashboard import read_one, read_runs
 from src.mcp.state import Handles
+from src.storage.runs import read_one, read_runs
 
 LOG = logging.getLogger(__name__)
 
