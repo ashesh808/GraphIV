@@ -1,0 +1,5 @@
+# Use a separately provisioned Terraform state account, not this stack's application-data account.
+resource_group_name  = "your-terraform-state-resource-group"
+storage_account_name = "yourstateaccount"
+container_name       = "tfstate"
+key                  = "graphiv/dev/azure.tfstate"

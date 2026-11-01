@@ -1,0 +1,10 @@
+project_name      = "graphiv"
+git_repo          = "ashesh808/GraphIV"
+production_branch = "main"
+# Merge the frontend into this branch first, or select the branch containing apps/web.
+
+# Replace this placeholder with the backend_url output from infra/azure.
+backend_url = "https://graphiv-api.example.com"
+
+# Optional: use the authorized Vercel team slug or ID instead of the default scope.
+# team = null

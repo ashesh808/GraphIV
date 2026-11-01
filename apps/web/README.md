@@ -7,7 +7,7 @@ and light/dark themes. Research submission and workflow orchestration remain fut
 
 ## Run locally
 
-Use Node.js 22.6 or newer. Start the Python read service from the repository root:
+Use Node.js 22.x (22.6 or newer). Start the Python read service from the repository root:
 
 ```sh
 uv run graphiv-serve --http --role frontend

@@ -72,6 +72,10 @@ node_modules/
 *.tfstate
 *.tfstate.*
 *.tfplan
+tfplan
+*.tfvars
+*.tfvars.json
+backend.hcl
 crash.log
 *_override.tf
 *_override.tf.json

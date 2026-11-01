@@ -77,7 +77,9 @@ claude mcp add --transport http graphiv http://127.0.0.1:6767/mcp
 
 The retained NixOS deployment lives in [`legacy/nix/`](legacy/nix/README.md). Runtime paths, ports, and endpoints live in [`configs/runtime.toml`](configs/runtime.toml); preprocessing, training, and evaluation settings live in [`configs/offline.toml`](configs/offline.toml).
 
-The Next.js interface in [`apps/web`](apps/web/README.md) provides library search, report reading, paper inspection, and citation graphs. With Node.js 22.6 or newer, start `uv run graphiv-serve --http --role frontend` from the repository root, then in another terminal:
+The cloud configuration has separate [`Azure`](infra/azure/README.md) and [`Vercel`](infra/vercel/README.md) Terraform roots. Azure can bootstrap storage, identity, registry, and supporting services without starting an API. Activating its Container App requires a compatible Blob-backed image; the current PostgreSQL/local-file runtime does not implement that contract. The Azure `backend_url` output then configures the Vercel frontend. See [`infra/`](infra/README.md) for the unexecuted deployment procedure and current limitations.
+
+The Next.js interface in [`apps/web`](apps/web/README.md) provides library search, report reading, paper inspection, and citation graphs. With Node.js 22.x (22.6 or newer), start `uv run graphiv-serve --http --role frontend` from the repository root, then in another terminal:
 
 ```sh
 cd apps/web
@@ -143,13 +145,13 @@ Five modes pick the recipe: `survey`, `frontier` and `consensus` are each tuned 
 | [`research/experiments/`](research/experiments/findings/README.md) | what the benchmarks last wrote, and the findings of every experiment since deleted |
 | [`research/assets/`](research/assets/README.md) | every figure here and on the cards, and the code that draws them |
 | [`docs/`](docs/README.md) | the methods, the benchmarks and the runbooks |
-| [`infra/azure/`](infra/azure/README.md) | the reserved location for Azure infrastructure definitions |
+| [`infra/`](infra/README.md) | independent Azure backend/storage and Vercel frontend Terraform roots |
 | [`legacy/`](legacy/README.md) | the existing [research dashboard](legacy/research-webui/README.md), [Nix deployment](legacy/nix/README.md), and compatibility launcher |
 | [`tests/`](tests/README.md) | tests for reusable components, application routes, and offline jobs |
 | [`research/themes/`](research/themes/README.md) | the palette and the typeface every figure uses |
 | [`configs/`](configs/README.md) | separate runtime and offline settings, with paths relative to each configuration file |
 
-`apps/api` owns transport and the future orchestration entrypoint, and imports the algorithms and MCP tools from `src`. The separate Next.js app in `apps/web` reads saved runs through the API's read-only endpoints. Offline jobs and research utilities use the same reusable components. The runtime wheel includes the API, reusable source, recipes, runtime configuration, and existing dashboard assets. Offline and research code stays in the checkout, with training and evaluation dependencies in separate dependency groups. The Azure Terraform directory remains reserved for future infrastructure definitions.
+`apps/api` owns transport and the future orchestration entrypoint, and imports the algorithms and MCP tools from `src`. The separate Next.js app in `apps/web` reads saved runs through the API's read-only endpoints. Offline jobs and research utilities use the same reusable components. The runtime wheel includes the API, reusable source, recipes, runtime configuration, and existing dashboard assets. Offline and research code stays in the checkout, with training and evaluation dependencies in separate dependency groups. Terraform defines the hosting resources; Blob adapters, authenticated external-client configuration, and the new orchestrator still need implementation before this runtime can use the cloud architecture.
 
 ## Future Directions
 
