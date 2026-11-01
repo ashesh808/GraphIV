@@ -61,6 +61,7 @@ research/experiments/**/runs/
 # Frontend builds and local configuration
 node_modules/
 .next/
+*.tsbuildinfo
 .vercel/
 .env
 .env.*

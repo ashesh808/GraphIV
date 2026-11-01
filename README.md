@@ -77,6 +77,16 @@ claude mcp add --transport http graphiv http://127.0.0.1:6767/mcp
 
 The retained NixOS deployment lives in [`legacy/nix/`](legacy/nix/README.md). Runtime paths, ports, and endpoints live in [`configs/runtime.toml`](configs/runtime.toml); preprocessing, training, and evaluation settings live in [`configs/offline.toml`](configs/offline.toml).
 
+The Next.js interface in [`apps/web`](apps/web/README.md) provides library search, report reading, paper inspection, and citation graphs. With Node.js 22.6 or newer, start `uv run graphiv-serve --http --role frontend` from the repository root, then in another terminal:
+
+```sh
+cd apps/web
+npm install
+npm run dev
+```
+
+Open `http://127.0.0.1:3000`. The web server uses `GRAPHIV_API_URL` to read the Python service, defaulting to `http://127.0.0.1:6969`. An unavailable implicit default shows clearly labelled examples; an explicitly configured backend shows connection errors. The web app reads saved research; it does not submit new research jobs.
+
 ## Components
 
 ### GraphIV's data
@@ -125,7 +135,7 @@ Five modes pick the recipe: `survey`, `frontier` and `consensus` are each tuned 
 
 | Path | What it holds |
 |---|---|
-| [`apps/`](apps/README.md) | the [API application](apps/api/README.md) and the [reserved Next.js web application](apps/web/README.md) |
+| [`apps/`](apps/README.md) | the [API application](apps/api/README.md) and the [Next.js reading workspace](apps/web/README.md) |
 | [`src/`](src/README.md) | reusable Python components: shared [`core`](src/core/README.md), [`retrieve`](src/retrieve/README.md) (BoundedField), [`miner`](src/miner/README.md) (LeyLine), [`report`](src/report/README.md), and [`mcp`](src/mcp/README.md) tool implementations; storage and evidence interfaces have their own packages |
 | [`offline/`](offline/README.md) | preprocessing, model training, index building, exports, and the [administration manager](offline/manager/README.md) |
 | [`research/recipe_tuning/`](research/recipe_tuning/README.md) | benchmark evaluation and recipe fitting |
@@ -139,7 +149,7 @@ Five modes pick the recipe: `survey`, `frontier` and `consensus` are each tuned 
 | [`research/themes/`](research/themes/README.md) | the palette and the typeface every figure uses |
 | [`configs/`](configs/README.md) | separate runtime and offline settings, with paths relative to each configuration file |
 
-`apps/api` owns transport and the future orchestration entrypoint, and imports the algorithms and MCP tools from `src`. Offline jobs and research utilities use the same components. The runtime wheel includes the API, reusable source, recipes, runtime configuration, and existing dashboard assets. Offline and research code stays in the checkout, with training and evaluation dependencies in separate dependency groups. The Next.js and Azure Terraform directories establish where future work belongs.
+`apps/api` owns transport and the future orchestration entrypoint, and imports the algorithms and MCP tools from `src`. The separate Next.js app in `apps/web` reads saved runs through the API's read-only endpoints. Offline jobs and research utilities use the same reusable components. The runtime wheel includes the API, reusable source, recipes, runtime configuration, and existing dashboard assets. Offline and research code stays in the checkout, with training and evaluation dependencies in separate dependency groups. The Azure Terraform directory remains reserved for future infrastructure definitions.
 
 ## Future Directions
 

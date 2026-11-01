@@ -1,6 +1,29 @@
 {
   "name": "@graphiv/web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Next.js frontend scaffold; implementation pending the application architecture"
+  "type": "module",
+  "description": "A focused reading workspace for GraphIV research reports",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --conditions=react-server --experimental-strip-types --test tests/*.test.ts"
+  },
+  "engines": { "node": ">=22.6.0" },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19",
+    "typescript": "^5.9.3"
+  }
 }
