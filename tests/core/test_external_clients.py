@@ -95,3 +95,20 @@ def test_embedding_credentials_endpoint_and_normalization(monkeypatch, base):
     assert embedding.embed(
         base, "model", "citation graphs", api_key="embed-test-key", timeout=17
     ) == [0.6, 0.8]
+
+
+def test_embedding_empty_query_prefix_sends_unprefixed_input(monkeypatch):
+    def send(request, timeout):
+        assert json.loads(request.data) == {
+            "model": "openai/text-embedding-3-small",
+            "input": ["citation graphs"],
+        }
+        return io.BytesIO(b'{"data":[{"embedding":[3,4]}]}')
+
+    monkeypatch.setattr("urllib.request.urlopen", send)
+    assert embedding.embed(
+        "https://ai-gateway.vercel.sh/v1",
+        "openai/text-embedding-3-small",
+        "citation graphs",
+        query_prefix="",
+    ) == [0.6, 0.8]

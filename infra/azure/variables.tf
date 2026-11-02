@@ -66,6 +66,30 @@ variable "allow_report_reads" {
   nullable    = false
 }
 
+variable "corpus_backend" {
+  description = "Research corpus backend: immutable Azure snapshots or an existing external PostgreSQL database. Reports remain in Blob storage in both modes."
+  type        = string
+  default     = "azure"
+  nullable    = false
+
+  validation {
+    condition     = contains(["azure", "postgres"], var.corpus_backend)
+    error_message = "corpus_backend must be azure or postgres."
+  }
+}
+
+variable "postgres_dsn_secret_name" {
+  description = "Optional Key Vault secret name containing the external PostgreSQL DSN. Required when activating a postgres corpus; populate its value outside Terraform."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.postgres_dsn_secret_name == null ? true : can(regex("^[A-Za-z0-9-]{1,127}$", var.postgres_dsn_secret_name))
+    error_message = "postgres_dsn_secret_name must be null or a valid Key Vault secret name."
+  }
+}
+
 variable "publisher_principal_id" {
   description = "Optional Entra object ID of an offline publishing pipeline; grants Blob Data Contributor on vectors, graphs and metadata, excluding reports."
   type        = string
@@ -122,7 +146,7 @@ variable "api_environment" {
     condition = alltrue([
       for name in keys(var.api_environment) :
       can(regex("^[A-Z_][A-Z0-9_]*$", name)) &&
-      !contains(["AZURE_CLIENT_ID", "PYTHONUNBUFFERED", "GRAPHIV_STORAGE_ACCOUNT_URL", "GRAPHIV_VECTOR_CONTAINER", "GRAPHIV_GRAPH_CONTAINER", "GRAPHIV_METADATA_CONTAINER", "GRAPHIV_REPORTS_CONTAINER", "GRAPHIV_CACHE_PATH", "GRAPHIV_LLM_API_URL", "GRAPHIV_LLM_MODEL", "GRAPHIV_LLM_API_KEY", "GRAPHIV_EMBED_API_URL", "GRAPHIV_EMBED_MODEL", "GRAPHIV_EMBED_API_KEY", "GRAPHIV_RUNTIME", "GRAPHIV_STORAGE_BACKEND", "GRAPHIV_API_TOKEN", "GRAPHIV_REQUIRE_AUTH", "GRAPHIV_ALLOWED_HOSTS", "GRAPHIV_ARXIV_BASE_URL"], name)
+      !contains(["AZURE_CLIENT_ID", "PYTHONUNBUFFERED", "GRAPHIV_STORAGE_ACCOUNT_URL", "GRAPHIV_VECTOR_CONTAINER", "GRAPHIV_GRAPH_CONTAINER", "GRAPHIV_METADATA_CONTAINER", "GRAPHIV_REPORTS_CONTAINER", "GRAPHIV_REPORT_STORAGE_BACKEND", "GRAPHIV_CACHE_PATH", "GRAPHIV_LLM_API_URL", "GRAPHIV_LLM_MODEL", "GRAPHIV_LLM_API_KEY", "GRAPHIV_EMBED_API_URL", "GRAPHIV_EMBED_MODEL", "GRAPHIV_EMBED_API_KEY", "GRAPHIV_RUNTIME", "GRAPHIV_STORAGE_BACKEND", "GRAPHIV_POSTGRES_DSN", "GRAPHIV_API_TOKEN", "GRAPHIV_REQUIRE_AUTH", "GRAPHIV_ALLOWED_HOSTS", "GRAPHIV_ARXIV_BASE_URL"], name)
     ])
     error_message = "Environment variable names must be uppercase identifiers and must not replace reserved infrastructure/credential settings."
   }

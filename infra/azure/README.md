@@ -28,6 +28,39 @@ snapshots through the same corpus interface. Report reads and writes persist to 
 See [storage and snapshot publishing](../../docs/storage.md). Retrieval and LeyLine
 algorithms are shared unchanged between adapters.
 
+## Existing PostgreSQL corpus
+
+`corpus_backend` defaults to `azure`, preserving the snapshot-based deployment.
+Set it to `postgres` to use an existing PostgreSQL corpus while report reads and
+writes continue using Blob storage. This root does not provision a PostgreSQL
+server, load its tables, or establish network access to an external database.
+
+Populate a DSN in Key Vault outside Terraform, using the same file-based secret
+workflow described below. Set `postgres_dsn_secret_name` to that secret's name.
+When the PostgreSQL mode is selected, the API receives `GRAPHIV_POSTGRES_DSN` through
+a managed-identity Key Vault reference; the DSN value is never a Terraform input
+or output. API activation requires the secret name, but infrastructure-only
+bootstrap with `api_image_tag = null` can omit it.
+
+```hcl
+corpus_backend          = "postgres"
+postgres_dsn_secret_name = "graphiv-postgres-dsn"
+api_environment = {
+  GRAPHIV_GRAPH_PATH = "/mnt/graphiv/citation_graph_export.npy"
+}
+```
+
+The PostgreSQL database must contain the expected corpus schema, be reachable
+from the Container App, and use the connection security appropriate to that service.
+`GRAPHIV_GRAPH_PATH` must name a GraphExport file already present in the image or
+a mounted filesystem. Setting this path does not download a Blob or create a mount;
+PostgreSQL mode does not run the Azure snapshot downloader. Without the graph and
+database, the app remains live but research readiness stays false.
+
+Report storage still follows the Azure runtime's Blob default. Plaintext DSN and
+report-backend overrides are rejected in `api_environment`. The existing Key Vault
+Secrets User grant permits the PostgreSQL secret reference, with no new role grants.
+
 ## Prerequisites and state
 
 Use Terraform 1.12 or newer and authenticate with Azure CLI or the provider's `ARM_*`
@@ -165,7 +198,9 @@ this root does not create a private network endpoint.
 
 | Environment variable | Meaning |
 | --- | --- |
-| `GRAPHIV_RUNTIME`, `GRAPHIV_STORAGE_BACKEND` | `azure`; activates managed identity and snapshot adapters |
+| `GRAPHIV_RUNTIME` | `azure`; activates managed identity and Blob report defaults |
+| `GRAPHIV_STORAGE_BACKEND` | `corpus_backend`: Azure snapshots or an existing PostgreSQL corpus |
+| `GRAPHIV_POSTGRES_DSN` | Optional PostgreSQL DSN from Key Vault, injected only in PostgreSQL mode |
 | `GRAPHIV_API_TOKEN` | Key Vault-backed bearer token shared with the Next.js server |
 | `GRAPHIV_EMBED_API_URL`, `GRAPHIV_EMBED_MODEL` | Independent embedding endpoint and snapshot-compatible model |
 | `GRAPHIV_EMBED_API_KEY` | Optional independent embedding credential from Key Vault |

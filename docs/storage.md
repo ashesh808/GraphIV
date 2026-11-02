@@ -177,8 +177,20 @@ local callers.
 | `GRAPHIV_CACHE_PATH` | Writable temporary cache root; Azure defaults to `/var/lib/graphiv/cache` |
 | `GRAPHIV_LLM_API_URL`, `GRAPHIV_LLM_MODEL` | Explicit external language-model configuration |
 | `GRAPHIV_EMBED_API_URL`, `GRAPHIV_EMBED_MODEL` | Explicit external embedding configuration matching the snapshot |
+| `GRAPHIV_EMBED_QUERY_PREFIX` | Query preprocessing; legacy default is `search_query: `, use an empty value for unprefixed OpenAI embeddings |
 | `GRAPHIV_LLM_API_KEY`, `GRAPHIV_EMBED_API_KEY` | Optional model credentials supplied through deployment secrets |
 | `GRAPHIV_API_TOKEN` | Bearer token protecting the deployed API |
+
+For Vercel AI Gateway, use `https://ai-gateway.vercel.sh/v1` for both model APIs.
+The deployment uses `google/gemini-3.1-flash-lite` for language tasks and
+`openai/text-embedding-3-small` for embeddings, with an empty query prefix. The
+Gateway credential stays in Key Vault and is referenced by the two independent
+client settings. The Next.js server receives only its backend bearer token.
+
+The OpenAI embedding model returns 1,536 dimensions by default. It cannot query
+the legacy Nomic vector corpus. Publish vectors built with the selected model
+and consistent document/query preprocessing; existing PostgreSQL/Nomic settings
+remain valid locally. No production papers are embedded automatically by deployment.
 
 `DefaultAzureCredential` obtains tokens for the configured managed identity. Storage account
 keys are not required. `AZURE_STORAGE_CONNECTION_STRING` is accepted only for a loopback

@@ -1,7 +1,7 @@
 """
 The query vector, from the endpoint the documents were encoded with
 
-Documents carry a prompt prefix, so a query missing its own lands elsewhere in the space
+Use the query prefix expected by the model and the document encoding pipeline
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ def embed(
     model: str,
     text: str,
     *,
+    query_prefix: str = QUERY_PREFIX,
     api_key: str | None = None,
     headers: Mapping[str, str] | None = None,
     timeout: float = TIMEOUT,
@@ -32,6 +33,7 @@ def embed(
         api: The embedding server's base url.
         model: Which model to ask.
         text: The question.
+        query_prefix: Model-specific query prefix; empty for unprefixed input.
         api_key: Optional bearer credential.
         headers: Additional provider-specific request headers.
         timeout: Request timeout in seconds.
@@ -65,7 +67,7 @@ def embed(
         request_headers["Authorization"] = f"Bearer {api_key}"
     request = urllib.request.Request(
         url,
-        data=json.dumps({"model": model, "input": [f"{QUERY_PREFIX}{text}"]}).encode(),
+        data=json.dumps({"model": model, "input": [f"{query_prefix}{text}"]}).encode(),
         headers=request_headers,
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:

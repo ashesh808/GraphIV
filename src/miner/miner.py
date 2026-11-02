@@ -18,6 +18,7 @@ from src.core.schema import Edge, Lineage, Magnet, Paper
 from src.miner import store
 from src.miner.leyline import LeyLine
 from src.miner.recipe import Recipe
+from src.storage.corpus import CorpusSource
 
 LOG = logging.getLogger(__name__)
 
@@ -81,12 +82,12 @@ class Miner:
     The whole package behind one call, holding the store, the graph and one mode's constants
     """
 
-    def __init__(self, dsn: str, graph: GraphExport, recipe: Recipe) -> None:
+    def __init__(self, dsn: CorpusSource, graph: GraphExport, recipe: Recipe) -> None:
         """
         Holds what every call needs, none of which changes between calls
 
         Args:
-            dsn: libpq connection string.
+            dsn: A libpq connection string or corpus adapter.
             graph: The citation graph export.
             recipe: The miner block of the mode being run.
         """

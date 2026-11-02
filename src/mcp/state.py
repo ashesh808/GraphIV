@@ -72,6 +72,8 @@ class Handles:
         options = {}
         if self.endpoints.get("EMBED_API_KEY"):
             options["api_key"] = self.endpoints["EMBED_API_KEY"]
+        if "EMBED_QUERY_PREFIX" in self.endpoints:
+            options["query_prefix"] = self.endpoints["EMBED_QUERY_PREFIX"]
         return embed(self.endpoints["EMBED_API"], self.endpoints["EMBED_NAME"], text, **options)
 
     def recipe(self, mode: str) -> Path:

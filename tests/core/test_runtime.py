@@ -113,3 +113,14 @@ def test_query_embedding_uses_its_own_credential(monkeypatch):
         ("https://embed.example/v1", "corpus-model", "question"),
         {"api_key": "embedding-only"},
     )]
+
+
+def test_explicit_empty_query_prefix_reaches_the_embedding_client(monkeypatch):
+    seen = []
+    monkeypatch.setattr(state, "embed", lambda *args, **kwargs: seen.append(kwargs))
+    handles = SimpleNamespace(endpoints={
+        "EMBED_API": "https://ai-gateway.vercel.sh/v1",
+        "EMBED_NAME": "openai/text-embedding-3-small", "EMBED_QUERY_PREFIX": "",
+    })
+    state.Handles.embed(handles, "question")
+    assert seen == [{"query_prefix": ""}]

@@ -3,8 +3,20 @@ project_name    = "graphiv"
 environment     = "dev"
 location        = "westus2"
 
-# First apply provisions infrastructure without starting an missing image.
+# First apply provisions infrastructure without starting a missing image.
 api_image_tag = null
+
+# Default corpus: immutable snapshots in Azure Blob storage.
+corpus_backend = "azure"
+
+# Optional existing PostgreSQL corpus. No PostgreSQL server is created here.
+# corpus_backend = "postgres"
+# postgres_dsn_secret_name = "graphiv-postgres-dsn"
+# api_environment = {
+#   GRAPHIV_GRAPH_PATH = "/mnt/graphiv/citation_graph_export.npy"
+# }
+# The graph path must already exist in the image or mounted filesystem.
+# Setting it does not download a graph or create a volume mount.
 
 # After publishing a tested image and populating graphiv-api-token in Key Vault:
 # api_image_tag = "git-0123456789ab"
@@ -23,3 +35,13 @@ allow_report_reads = false
 
 api_resources = { cpu = 1, memory = "2Gi" }
 tags          = { owner = "research" }
+
+# Vercel AI Gateway alternative (populate this named Key Vault secret separately):
+# llm_api_url = "https://ai-gateway.vercel.sh/v1"
+# llm_model = "google/gemini-3.1-flash-lite"
+# llm_api_key_secret_name = "vercel-ai-gateway-key"
+# embedding_api_url = "https://ai-gateway.vercel.sh/v1"
+# embedding_model = "openai/text-embedding-3-small"
+# embedding_api_key_secret_name = "vercel-ai-gateway-key"
+# api_environment = { GRAPHIV_EMBED_QUERY_PREFIX = "" }
+# The corpus must use matching OpenAI embeddings; legacy Nomic vectors are incompatible.

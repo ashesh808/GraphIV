@@ -11,7 +11,7 @@ locals {
     GRAPHIV_REPORTS_CONTAINER   = local.containers.reports
     GRAPHIV_CACHE_PATH          = "/var/lib/graphiv/cache"
     GRAPHIV_RUNTIME             = "azure"
-    GRAPHIV_STORAGE_BACKEND     = "azure"
+    GRAPHIV_STORAGE_BACKEND     = var.corpus_backend
     GRAPHIV_ALLOWED_HOSTS       = "${local.api_name}.${azapi_resource.environment.output.properties.defaultDomain}"
     GRAPHIV_ARXIV_BASE_URL      = "https://arxiv.org"
     }, { for name, value in {
@@ -30,11 +30,21 @@ locals {
     var.embedding_api_key_secret_name == null ? {} : {
       "embedding-api-key" = { env = "GRAPHIV_EMBED_API_KEY", name = var.embedding_api_key_secret_name }
     },
+    var.corpus_backend == "postgres" && var.postgres_dsn_secret_name != null ? {
+      "postgres-dsn" = { env = "GRAPHIV_POSTGRES_DSN", name = var.postgres_dsn_secret_name }
+    } : {},
   )
 }
 
 resource "azurerm_container_app" "api" {
   count = local.api_enabled ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = var.corpus_backend != "postgres" || var.postgres_dsn_secret_name != null
+      error_message = "Set postgres_dsn_secret_name before activating the API with corpus_backend = postgres. The DSN value must stay in Key Vault."
+    }
+  }
 
   name                         = local.api_name
   resource_group_name          = azurerm_resource_group.main.name

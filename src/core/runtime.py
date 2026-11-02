@@ -40,6 +40,9 @@ def runtime_config(path: str | Path) -> dict[str, Any]:
             endpoints[key] = os.environ.get(env, "")
     for prefix in ("LLM", "EMBED"):
         endpoints[f"{prefix}_API_KEY"] = os.environ.get(f"GRAPHIV_{prefix}_API_KEY", "")
+    endpoints["EMBED_QUERY_PREFIX"] = os.environ.get(
+        "GRAPHIV_EMBED_QUERY_PREFIX", endpoints.get("EMBED_QUERY_PREFIX", "search_query: ")
+    )
     database = config.setdefault("database", {})
     if "GRAPHIV_POSTGRES_DSN" in os.environ:
         database["PG_DEST"] = os.environ["GRAPHIV_POSTGRES_DSN"]

@@ -148,11 +148,20 @@ override_resource {
 }
 
 variables {
-  environment            = "dev"
-  allow_report_reads     = false
-  publisher_principal_id = null
-  subscription_id        = "11111111-1111-4111-8111-111111111111"
-  api_image_tag          = null
+  environment                   = "dev"
+  allow_report_reads            = false
+  publisher_principal_id        = null
+  subscription_id               = "11111111-1111-4111-8111-111111111111"
+  api_image_tag                 = null
+  corpus_backend                = "azure"
+  postgres_dsn_secret_name      = null
+  llm_api_url                   = null
+  llm_model                     = null
+  llm_api_key_secret_name       = null
+  embedding_api_url             = null
+  embedding_model               = null
+  embedding_api_key_secret_name = null
+  api_environment               = {}
 }
 
 run "default_provisions_private_storage_without_starting_an_image" {
@@ -432,4 +441,89 @@ run "invalid_subscription_uuid_is_rejected" {
   command = plan
   variables { subscription_id = "------------------------------------" }
   expect_failures = [var.subscription_id]
+}
+
+run "azure_corpus_does_not_inject_an_unused_postgres_secret" {
+  command = plan
+  variables {
+    api_image_tag            = "runtime-verified"
+    postgres_dsn_secret_name = "unused-postgres-dsn"
+  }
+  assert {
+    condition = (
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == "GRAPHIV_STORAGE_BACKEND"]) == "azure" &&
+      length([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "postgres-dsn"]) == 0 &&
+      length([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_POSTGRES_DSN"]) == 0 &&
+      length([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_REPORT_STORAGE_BACKEND"]) == 0
+    )
+    error_message = "The Azure default must not add PostgreSQL credentials or change the existing implicit Blob report-storage setting."
+  }
+}
+
+run "postgres_corpus_uses_a_managed_identity_secret_reference" {
+  command = plan
+  variables {
+    api_image_tag            = "runtime-verified"
+    corpus_backend           = "postgres"
+    postgres_dsn_secret_name = "graphiv-postgres-dsn"
+    api_environment          = { GRAPHIV_GRAPH_PATH = "/mnt/graphiv/citation_graph_export.npy" }
+  }
+  assert {
+    condition = (
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == "GRAPHIV_STORAGE_BACKEND"]) == "postgres" &&
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == "GRAPHIV_RUNTIME"]) == "azure" &&
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == "GRAPHIV_GRAPH_PATH"]) == "/mnt/graphiv/citation_graph_export.npy" &&
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_POSTGRES_DSN"]).secret_name == "postgres-dsn" &&
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_POSTGRES_DSN"]).value == null &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "postgres-dsn"]).key_vault_secret_id == "${azurerm_key_vault.api.vault_uri}secrets/graphiv-postgres-dsn" &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "postgres-dsn"]).identity == azurerm_user_assigned_identity.api.id &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "postgres-dsn"]).value == null &&
+      length([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_REPORT_STORAGE_BACKEND"]) == 0
+    )
+    error_message = "PostgreSQL mode must use the existing external graph path and a Key Vault DSN reference, retaining Azure report-storage defaults."
+  }
+}
+
+run "postgres_bootstrap_can_omit_the_dsn_before_api_activation" {
+  command = plan
+  variables {
+    corpus_backend = "postgres"
+  }
+  assert {
+    condition     = length(azurerm_container_app.api) == 0
+    error_message = "Infrastructure-only bootstrap must remain possible before PostgreSQL credentials exist."
+  }
+}
+
+run "postgres_api_activation_requires_a_dsn_secret_name" {
+  command = plan
+  variables {
+    corpus_backend = "postgres"
+    api_image_tag  = "runtime-verified"
+  }
+  expect_failures = [azurerm_container_app.api]
+}
+
+run "plaintext_postgres_dsn_override_is_rejected" {
+  command = plan
+  variables { api_environment = { GRAPHIV_POSTGRES_DSN = "must-not-enter-terraform" } }
+  expect_failures = [var.api_environment]
+}
+
+run "report_backend_override_is_rejected" {
+  command = plan
+  variables { api_environment = { GRAPHIV_REPORT_STORAGE_BACKEND = "local" } }
+  expect_failures = [var.api_environment]
+}
+
+run "unsupported_corpus_backend_is_rejected" {
+  command = plan
+  variables { corpus_backend = "sqlite" }
+  expect_failures = [var.corpus_backend]
+}
+
+run "postgres_secret_name_cannot_be_a_uri" {
+  command = plan
+  variables { postgres_dsn_secret_name = "https://vault.example/secrets/pg" }
+  expect_failures = [var.postgres_dsn_secret_name]
 }
