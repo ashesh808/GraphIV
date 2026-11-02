@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "actual_full_corpus": true,
+  "two_real_browser_research_queries": true,
+  "independent_http_corpus_and_blob_verification": true,
+  "browser_interaction_verified": true,
+  "source_content_review_passed": true,
+  "runtime_image": "graphiv-api:published-corpus-v5",
+  "runtime_revision": "ca-graphiv-prod-api--0000007",
+  "image_digest": "sha256:4e785ecdc36e33161afccc422ca54dfbe4284d56c1f831f7e13fb77f3bda336f",
+  "source_commit": "afd0470",
+  "receipts_sha256": {
+    "verification.json": "89c57e4296cd9bd68cb385eef58313f2bd0514dccc4d202c95478d076f0a12b4",
+    "browser-verification.json": "18bcde51acf44c62ddd58a9bd33070e71147f0e1e0575bb5a83b92a8997587cc",
+    "content-review.json": "8fbce6f2873ee8295499ecf39cfa981dc94960690d4c2837345b7fb99c071c1e",
+    "source-review-publication.json": "78422212995788c7212c836e754fdb0e76b098f8a739c9488038df7d6d147230",
+    "readiness.json": "1846fda461b401d6c5e32b3ade4d026054e8c3a136237963f0310fa79e1f8170",
+    "runtime-memory.json": "67d5f9e7f935b84b2d0c774375cc7b3da85770fa77dec0311464025c621e5b36"
+  }
+}

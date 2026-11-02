@@ -1,0 +1,31 @@
+{
+  "published_at": "2026-11-02T20:15:25.666046+00:00",
+  "slug": "2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+  "prior_generation": "5e5bdc7f61474d459617183494c3f8fa",
+  "generation": "44b06107e20f4b8b84df00515ff9a751",
+  "payloads_sha256_verified": 4,
+  "payload_sha256": {
+    "report.md": "a5dfcf8c5356dde2b358083626c35f20a5bf6a9358f9b5a89b56aa5ac74b6969",
+    "report.json": "598c165fc02a24313f95698ab228c253c6332583e56b5a45e661736d999f5e73",
+    "papers.json": "63a7990f02b0c65667afb8c35a2afa6753e49bc90681e2c4efdcc87faf34a847",
+    "graph.json": "f1f126bed0265aa0dbede00573438a34589fefc5482d9e4112dfabe34407b4cc"
+  },
+  "research_execution_metrics_unchanged": true,
+  "source_review": {
+    "reviewed_at": "2026-11-02T20:11:13.624085+00:00",
+    "method": "Independent full-abstract review followed by Gemini3.1FlashLite source-checked precision corrections",
+    "corrected_source_ids": [
+      "2408.15237",
+      "2212.14052"
+    ],
+    "research_execution_metrics_unchanged": true,
+    "prior_payload_sha256": {
+      "report.md": "6b69dde7c2b28e915256b8a2a24c500c0a1c92d5d11a94e75d8ca777d2733d37",
+      "report.json": "20d7c72f5b4b874ab81c9fabc109f6423db890999dcea51bb5ee23983f919127",
+      "papers.json": "63a7990f02b0c65667afb8c35a2afa6753e49bc90681e2c4efdcc87faf34a847",
+      "graph.json": "f1f126bed0265aa0dbede00573438a34589fefc5482d9e4112dfabe34407b4cc"
+    },
+    "model_repair_seconds": 3.747,
+    "independent_precision_review_completed_at": "2026-11-02T20:13:53.592641+00:00"
+  }
+}

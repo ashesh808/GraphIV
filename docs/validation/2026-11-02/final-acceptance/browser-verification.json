@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-11-02T20:25:21.253226+00:00",
+  "frontend": "https://graphiv.vercel.app",
+  "browser": "Chrome",
+  "source_commit": "afd0470",
+  "backend_revision": "ca-graphiv-prod-api--0000007",
+  "cases": [
+    {
+      "job_id": "ebf886de85e049feb31a44d883abf744",
+      "question": "How do linear attention mechanisms and selective state-space models compare for efficient long-context language modeling, and which research lineages connect them?",
+      "mode": "survey",
+      "effort": "standard",
+      "submitted_from_visible_form": true,
+      "submission_http_status": 202,
+      "report_ready_visible": true,
+      "completed_report_opened": true,
+      "papers_view_verified": true,
+      "graph_view_verified": true,
+      "evidence_unavailability_note_visible": true,
+      "report_url": "https://graphiv.vercel.app/runs/2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+      "exported_papers": 121,
+      "graph_connections": 1317
+    },
+    {
+      "job_id": "2b4b553342514933963a2279aeac35af",
+      "question": "What methods improve evidence grounding and citation faithfulness in retrieval-augmented generation, and which follow-up papers extend those methods?",
+      "mode": "survey",
+      "effort": "standard",
+      "submitted_from_visible_form": true,
+      "submission_http_status": 202,
+      "report_ready_visible": true,
+      "completed_report_opened": true,
+      "papers_view_verified": true,
+      "graph_view_verified": true,
+      "evidence_unavailability_note_visible": true,
+      "report_url": "https://graphiv.vercel.app/runs/2026-11-02-what-methods-improve-evidence-grounding-and-cita",
+      "exported_papers": 121,
+      "graph_connections": 1279
+    }
+  ],
+  "observed_recovery": "Second progress poll encountered a transient network/proxy failure; Check progress recovered the completed job without another research submission.",
+  "source_review": "Both actual reports reviewed against full original abstracts. Two precision corrections in the first report were model-repaired and independently reviewed, then published atomically; the second required no correction.",
+  "no_example_or_mocked_services": true
+}

@@ -1,0 +1,86 @@
+{
+  "slug": "2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+  "review": {
+    "reviewed_at": "2026-11-02T20:11:13.624085+00:00",
+    "method": "Independent full-abstract review followed by Gemini3.1FlashLite source-checked precision corrections",
+    "corrected_source_ids": [
+      "2408.15237",
+      "2212.14052"
+    ],
+    "research_execution_metrics_unchanged": true,
+    "prior_payload_sha256": {
+      "report.md": "6b69dde7c2b28e915256b8a2a24c500c0a1c92d5d11a94e75d8ca777d2733d37",
+      "report.json": "20d7c72f5b4b874ab81c9fabc109f6423db890999dcea51bb5ee23983f919127",
+      "papers.json": "63a7990f02b0c65667afb8c35a2afa6753e49bc90681e2c4efdcc87faf34a847",
+      "graph.json": "f1f126bed0265aa0dbede00573438a34589fefc5482d9e4112dfabe34407b4cc"
+    },
+    "model_repair_seconds": 3.747,
+    "independent_precision_review_completed_at": "2026-11-02T20:13:53.592641+00:00"
+  },
+  "corrections": [
+    {
+      "source_id": "2408.15237",
+      "source_kind": "published abstract; not a citation sentence",
+      "before": "Distilling large Transformers into linear RNNs by reusing linear projection weights from attention layers allows for the creation of hybrid models that incorporate a quarter of the attention layers and achieve performance comparable to the original Transformer (arXiv:2408.15237).",
+      "after": "Distilling large Transformers into linear RNNs by reusing linear projection weights from attention layers allows for the creation of hybrid models that incorporate a quarter of the attention layers, achieving performance comparable to the original Transformer in chat benchmarks (arXiv:2408.15237). The distilled hybrid model outperforms open-source hybrid Mamba models trained from scratch with trillions of tokens in both chat and general benchmarks (arXiv:2408.15237). A distilled model based on Llama3-8B-Instruct achieves a 29.61 length-controlled win rate on AlpacaEval 2 against GPT-4 and 7.35 on MT-Bench (arXiv:2408.15237).",
+      "support": [
+        {
+          "text": "Distilling large Transformers into linear RNNs by reusing linear projection weights from attention layers allows for the creation of hybrid models that incorporate a quarter of the attention layers, achieving performance comparable to the original Transformer in chat benchmarks (arXiv:2408.15237).",
+          "paragraph": 0,
+          "sources": [
+            {
+              "id": "2408.15237",
+              "quote": "We demonstrate that it is feasible to distill large Transformers into linear RNNs by reusing the linear projection weights from attention layers with academic GPU resources. The resulting hybrid model, which incorporates a quarter of the attention layers, achieves performance comparable to the original Transformer in chat benchmarks"
+            }
+          ]
+        },
+        {
+          "text": "The distilled hybrid model outperforms open-source hybrid Mamba models trained from scratch with trillions of tokens in both chat and general benchmarks (arXiv:2408.15237).",
+          "paragraph": 0,
+          "sources": [
+            {
+              "id": "2408.15237",
+              "quote": "The resulting hybrid model, which incorporates a quarter of the attention layers, achieves performance comparable to the original Transformer in chat benchmarks and outperforms open-source hybrid Mamba models trained from scratch with trillions of tokens in both chat benchmarks and general benchmarks."
+            }
+          ]
+        },
+        {
+          "text": "A distilled model based on Llama3-8B-Instruct achieves a 29.61 length-controlled win rate on AlpacaEval 2 against GPT-4 and 7.35 on MT-Bench (arXiv:2408.15237).",
+          "paragraph": 0,
+          "sources": [
+            {
+              "id": "2408.15237",
+              "quote": "Our top-performing model, distilled from Llama3-8B-Instruct, achieves a 29.61 length-controlled win rate on AlpacaEval 2 against GPT-4 and 7.35 on MT-Bench, surpassing the best 8B scale instruction-tuned linear RNN model."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "2212.14052",
+      "source_kind": "published abstract; not a citation sentence",
+      "before": "State space models (SSMs) scale nearly linearly in sequence length but have underperformed attention in language modeling due to hardware utilization issues arXiv:2212.14052.",
+      "after": "The H3 paper reports that earlier SSMs underperformed attention in language modeling and studies their expressivity gap; separately, it attributes their slower execution relative to Transformers to poor hardware utilization arXiv:2212.14052.",
+      "support": [
+        {
+          "text": "State space models (SSMs) underperform attention in language modeling due to an expressivity gap, while their slower execution compared to Transformers is attributed to poor hardware utilization arXiv:2212.14052.",
+          "paragraph": 0,
+          "sources": [
+            {
+              "id": "2212.14052",
+              "quote": "State space models (SSMs) have demonstrated state-of-the-art sequence modeling performance in some modalities, but underperform attention in language modeling. Moreover, despite scaling nearly linearly in sequence length instead of quadratically, SSMs are still slower than Transformers due to poor hardware utilization."
+            }
+          ]
+        }
+      ],
+      "model_proposal": "State space models (SSMs) underperform attention in language modeling due to an expressivity gap, while their slower execution compared to Transformers is attributed to poor hardware utilization arXiv:2212.14052.",
+      "review_note": "Independent reviewer separated reported quality and expressivity observations from the separately stated execution-speed cause."
+    }
+  ],
+  "after_payload_sha256": {
+    "report.md": "a5dfcf8c5356dde2b358083626c35f20a5bf6a9358f9b5a89b56aa5ac74b6969",
+    "report.json": "598c165fc02a24313f95698ab228c253c6332583e56b5a45e661736d999f5e73",
+    "papers.json": "63a7990f02b0c65667afb8c35a2afa6753e49bc90681e2c4efdcc87faf34a847",
+    "graph.json": "f1f126bed0265aa0dbede00573438a34589fefc5482d9e4112dfabe34407b4cc"
+  }
+}

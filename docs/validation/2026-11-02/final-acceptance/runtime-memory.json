@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-11-02T20:21:17.268383+00:00",
+  "cgroup_version": 1,
+  "raw": {
+    "memory.limit_in_bytes": "8589934592",
+    "memory.max_usage_in_bytes": "6453018624",
+    "memory.usage_in_bytes": "5662445568",
+    "memory.failcnt": "0",
+    "memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 0"
+  },
+  "process_rss": "5314356 kB",
+  "process_lifetime_hwm": "5337432 kB",
+  "note": "Cgroup maximum and process HWM are revision-lifetime values, not per-job peaks. Per-job100ms sampled peaks are retained in the final verification receipt."
+}

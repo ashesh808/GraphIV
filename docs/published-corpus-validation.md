@@ -1,6 +1,22 @@
 # Published corpus rollout and validation
 
-Status as of 2026-11-02 19:34 UTC: **full corpus active; both v4 research jobs passed data, lineage, memory and Blob-integrity checks; report-prose acceptance remains pending**. Independent review found unsupported comparative claims caused by truncated abstracts and overly prescriptive composition prompts. The v5 writer now uses full abstracts and source-excerpt checks and is warming the same corpus. Two fresh v5 browser runs and final narrative review are required. No demonstration reports, empty datasets or mocked services count as acceptance.
+Status as of 2026-11-02: **accepted: the full published corpus is research-ready, both real browser questions completed, and their reviewed reports persist in Azure Blob Storage**. Validation used the actual 3,165,827papers and 74,764,672citation occurrences, with no example corpus or mocked services. The [combined acceptance record](validation/2026-11-02/final-acceptance/acceptance-summary.json) links independent corpus/Blob verification, browser interaction and content review. Source code is `afd0470`; the running API is v5/revision `0000007`.
+
+## Live results
+
+Both questions were entered at [graphiv.vercel.app](https://graphiv.vercel.app), using Survey/Standard, and opened from the completed-job link.
+
+| Actual report | Retrieval pool / kept papers | Mined citation occurrences | Mined lineages / successors | Research processing time | Sampled process / container peak |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [Linear attention and selective SSMs](https://graphiv.vercel.app/runs/2026-11-02-how-do-linear-attention-mechanisms-and-selective) |14,926/40|23,094|491/413|376.740s(6m17s)|5.088/6.010GiB|
+| [RAG grounding and citation faithfulness](https://graphiv.vercel.app/runs/2026-11-02-what-methods-improve-evidence-grounding-and-cita) |9,824/40|25,233|493/1,036|461.142s(7m41s)|5.091/5.668GiB|
+
+Each report exports 121actual papers, displays 5lineages and 25follow-up papers, and provides paper details and a citation map. The maps show 1,317and 1,279distinct source/target/intent connections respectively; these display counts differ from preserved occurrence-level mining counts. The independent verifier matched all 121paper records per report to the deployed corpus and SHA-verified all 4payloads plus their commit markers in Blob. [Raw measurements and hashes](validation/2026-11-02/final-acceptance/verification.json), [browser proof](validation/2026-11-02/final-acceptance/browser-verification.json), [live report screenshot](validation/2026-11-02/final-acceptance/report.png), [graph screenshot](validation/2026-11-02/final-acceptance/graph.png).
+
+The second question waited 367.419s in the existing serial queue; its submit-to-complete interval was 828.562s(13m49s). Processing times exclude queue time and acceptance review. Memory peaks are sampled every 100ms and include the loaded corpus and Nomic encoder; container samples also include filesystem cache. The [revision memory counters](validation/2026-11-02/final-acceptance/runtime-memory.json) record an 8GiB limit, 6.010GiB lifetime container peak, zero memory-limit charge failures and zero OOM kills. These are warm-runtime runs with persistent model/corpus caches and some prior real grading/full-text cache entries; the full retrieval/mining pipeline executed again for both questions.
+
+Independent content review checked all 28and 39cited abstracts respectively. The first report received two documented precision corrections after generation, using the same model plus reviewer confirmation; the second required none. The first report's [versioned publication receipt](validation/2026-11-02/final-acceptance/source-review-publication.json) and [correction record](validation/2026-11-02/final-acceptance/source-review-corrections.json) preserve that distinction. Research metrics were unchanged, and final verification was rerun against the actual published versions. Neither report invents missing citation quotations; citation paths explicitly do not establish methodological ancestry or influence.
+
 
 ## Source and access
 
@@ -64,7 +80,7 @@ At `nprobe = 128`, individual retrieval calls ranged from 4.6738 to 278.9837 sec
 
 The same run re-encoded 16 sampled published documents with the pinned original Nomic encoder and `search_document: Title: <title>\nAbstract: <abstract>` formatting, then compared them to their stored original vectors. Minimum cosine was **0.9994056364**, mean cosine was **0.9998808114**, exceeding the required 0.999 for all 16 samples. This establishes compatibility for the tested sample; it is not a re-encoding audit of every published document. The model revision, code revision, sample IDs, and individual cosines are retained in `document_space` in the receipt.
 
-The quality run took 2,024.87 seconds, including the exact baseline and document checks. Cold-start latency has **not** been validly measured: the local monotonic interval overlapped Mac sleep and is excluded. No 120-second cold-start claim is supported.
+The quality run took 2,024.87 seconds, including the exact baseline and document checks. The initial v3 warmup timer overlapped Mac sleep and is excluded; no 120-second startup claim is supported. The later v5 cached-revision warmup is recorded separately below.
 
 ## Activation
 
@@ -109,7 +125,7 @@ Replacing the revision ended the old process-local jobs. The verifier, which reu
 
 Before corpus activation, a real production-browser submission reached the Azure API and displayed its research-not-ready response; it created no report. The initial preflight command likewise exited FAILED before submitting jobs because `/health/ready` returned 503. After activation, the two browser jobs described above were accepted but did not complete before revision replacement. Their incomplete attempts and failed verification are not successful report evidence. V4 then completed both canonical browser questions and passed the independent structural and Blob checks. Its generated prose was rejected during manual source review, so those passes do not complete the overall acceptance criteria.
 
-Encoder-only probes, the full-corpus quality gate, and real research jobs are separate measurements. The document-vector and cgroup measurements above supersede the earlier lack of full-corpus evidence, while completed research-job measurements are still required.
+Encoder-only probes, the full-corpus quality gate, and real research jobs are separate measurements. The document-vector and cgroup measurements above supersede the earlier lack of full-corpus evidence, and final v5 research-job measurements are recorded above.
 
 ## Report-source grounding correction
 
@@ -117,21 +133,16 @@ The [v4 structural receipts](validation/2026-11-02/v4-structural-validation/veri
 
 V5 supplies complete original abstracts, removes those forced conclusions, and repairs generated sentences against cited original sources. Local checks require a verbatim supporting excerpt from each exact cited source; invalid replacements are dropped and the old draft is never a fallback. The model evaluates semantic support, so excerpt matching is not a formal proof of entailment. Internal abstract excerpts are not reconstructed citation sentences and are not rendered as citation quotations. Section headings use source metadata, and path descriptions explicitly qualify citation connectivity. BoundedField, LeyLine, the corpus and their scoring formulas remain unchanged.
 
-The [real Gateway smoke](validation/2026-11-02/v5-source-grounding/gateway-smoke.json) corrected two observed contradictions and regenerated a full RAG section against complete original abstracts using the same Gemini3.1FlashLite model. Source-guard and integration tests passed;474selected Python tests passed overall. Final acceptance still requires the two fresh browser jobs and manual review of their actual output.
+The [real Gateway smoke](validation/2026-11-02/v5-source-grounding/gateway-smoke.json) corrected two observed contradictions and regenerated a full RAG section against complete original abstracts using the same Gemini 3.1 Flash Lite model. Source-guard and integration tests passed;474 selected Python tests passed overall. Both fresh v5 browser jobs and manual source review are now complete; the accepted versions and limits are recorded above.
 
-V5 also aligns the preparation and runtime snapshot-cache keys. The same full artifact checksums remain required, but an accidental duplicate24.7GB verification pass is removed. A regression reproduces two loads before the correction and one afterward. Cold-start improvement must be measured rather than assumed.
+V5 also aligns the preparation and runtime snapshot cache keys. The same full artifact checksums remain required, but an accidental duplicate 24.7GB verification pass is removed. A regression reproduces two loads before the correction and one afterward. The [v5 warmup observations](validation/2026-11-02/final-acceptance/revision-warmup.json) span 783.72seconds(13m04s) from the first 503to the first 200, with 30-second polling and a populated persistent cache. This is an observed revision-warmup interval, not an empty-cache startup guarantee.
 
-## Required real research acceptance
+## Acceptance scope and remaining degraded features
 
-| Research question | Papers / citations / lineages / successors | Latency / peak memory | Result |
-| --- | --- | --- | --- |
-| Linear attention versus selective state-space models, including their research lineages | Pending fresh report verification | Pending fresh job measurements | Initial mining attempt superseded; fresh v5 job pending |
-| Evidence grounding and citation faithfulness in retrieval-augmented generation, including follow-up papers | Pending fresh report verification | Pending fresh job measurements | Initial queued attempt superseded; fresh v5 job pending |
+- Full-corpus research readiness, both actual BoundedField runs, positive precomputed-label LeyLine mining, completed reports, browser submission/progress/retry/open/paper/graph flows, and independent Blob persistence checks passed. The HTTP verifier intentionally leaves its own `browser_interaction_verified` false; the separate browser record establishes that check.
+- Citation sentences are not published. Citation quotations and sentence-based dispute analysis are omitted, and no JIT citation extraction or intent classification was implemented. Intent labels/confidence remain precomputed predictions.
+- Scientific prose is constrained to supplied abstracts; questions require explicit source sections. Source-excerpt membership and model checking are not formal semantic proofs or full-text experimental replication. The acceptance review and its two precision corrections are disclosed above. Minor generated heading/spacing choices remain presentation limitations.
+- Runtime is one Python backend with a bounded serial research queue. Processing time and queue wait are reported separately. A transient progress-network failure during the second case recovered through the existing Check progress control; the backend job continued and no duplicate submission was made.
+- Revision initialization remains expensive: the recorded v5 warmup interval was 13m04s with caches already populated. The historical-date quality case took 278.98s. No general latency guarantee is inferred from these two warm research runs.
 
-Remaining acceptance steps:
-
-1. Require research readiness on v5, then submit and complete both distinct questions as fresh jobs from [graphiv.vercel.app](https://graphiv.vercel.app). Observe progress, open their completed reports, and inspect actual papers, authors, research lineages, follow-up papers, graph intent predictions/confidence, and the missing-citation-sentence qualification.
-2. Validate those fresh jobs with `offline.index_build.verify_deployment --verify-blob`, reusing their new job IDs rather than submitting duplicates or using the superseded IDs. Require full source provenance, nonempty retrieval, mined/persisted lineages and successors, measured latency/memory, five saved report artifacts, no fabricated citation sentences, and paper metadata matching the deployed corpus. Independently verify persisted Blob payload hashes.
-3. Record browser interaction separately from HTTP/artifact verification, and fill the pending table with the real counts, job measurements, report links, and receipts. Reload the library and reopen both saved reports to verify the reading path after completion.
-
-The offline package [README](../offline/index_build/README.md) contains build, quality, publication, and acceptance commands. The existing activation and quality receipts establish only their respective checks; replace the pending research acceptance rows after the actual jobs and report checks succeed.
+The [offline README](../offline/index_build/README.md) contains reproducible build, quality, activation and real-deployment verification commands. The initial slow attempts and v4 prose-rejection records remain audit history; the final acceptance summary identifies the successful v5 jobs and reviewed Blob generations.
