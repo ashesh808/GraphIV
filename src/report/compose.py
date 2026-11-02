@@ -8,6 +8,7 @@ The digest is a node table plus an adjacency list grouped by intent, which is wh
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 from src.core import llm
@@ -15,10 +16,10 @@ from src.core.schema import Grade, Paper
 from src.miner.miner import Mined
 from src.report.render import LineName, Section, inside
 from src.report.table import Design, Method, render
+from src.report.verify import repair_text
 
 LOG = logging.getLogger(__name__)
 
-ABSTRACT_CHARS = 420
 SENTENCE_CHARS = 240
 MAX_SECTIONS = 6
 MIN_SECTIONS = 3
@@ -31,8 +32,15 @@ CLOSE_TOKENS = 900
 ANSWER_TOKENS = 900
 NAME_TOKENS = 900
 OPEN_TOKENS = 700
-OPEN_CHARS = 1600
 OPEN_PAPERS = 10
+
+SOURCE_RULES = """Use only the supplied source text, with no outside knowledge.
+Attribute each factual claim to the paper that actually states it. Distinguish background
+motivation from the proposed method's limitations. Do not invent costs or negative caveats.
+Report comparisons in their stated evaluation scope; do not infer a global best approach,
+necessity, consensus, or universal limitation from different papers' evaluations. Citation
+connectivity and predicted intent labels do not prove methodological ancestry or influence.
+When the evidence is limited, keep the account short and say what is not established."""
 
 OUTLINE = """A researcher asked this.
 
@@ -46,13 +54,14 @@ Plan the sections of a literature review answering that question.
 
 Rules:
 - Between {low} and {high} sections, ordered so a reader who knows nothing can follow.
-- A section is a claim about the field, not a category. "Rule-based forecasters trade accuracy
-  for an audit trail" is a section. "Rule-based methods" is not.
+- A section addresses a specific part of the question supported by the sources. Do not force
+  a claim about a trade-off, limitation, or progression when the sources do not establish it.
 - Keep every title under 12 words and every point to one short sentence.
 - Give each section the arXiv ids it has to discuss, from the list above and nowhere else.
 - Every id appears in at most one section, and a section lists at most {per} ids, the ones it
   cannot be written without.
-- The last section is what is unresolved, drawn from the disputes and the open questions above.
+- Include unresolved issues only when a supplied source explicitly identifies them as such.
+{source_rules}
 
 Reply with json only, no preamble:
 {{"sections": [{{"title": "...", "ids": ["2401.00001"], "point": "one sentence"}}]}}
@@ -73,13 +82,14 @@ It must discuss these papers: {ids}
 Rules:
 - Start with "## {title}" and write prose. No bullet lists and no headings below this one.
 - Cite every paper you name as arXiv:<id> inline, using only ids from the evidence above.
-- Say what each paper did, then what it cost, then what the next one changed about it. A
-  sentence that could be written without having read the paper does not belong.
+- Describe what each cited source actually reports. Include a cost, limitation, or improvement
+  only when explicitly supported; do not invent one to complete a narrative progression.
 - Where the evidence carries a disagreement, name both sides and say what the argument is about.
 - Never invent a number. Quote only numbers the evidence above states.
 - Never reconstruct or invent citation quotations. Intent labels are model predictions,
   not verbatim statements; describe a labeled relation as a prediction when no text is supplied.
-- 250 to 400 words. Do not summarize the section at its end.
+- Aim for 120 to 220 words, using fewer when the evidence is thin. No filler or final summary.
+{source_rules}
 """
 
 UNANSWERED = """A researcher asked this.
@@ -94,7 +104,8 @@ the authors' own words.
 Name what this area has not answered yet.
 
 Rules:
-- Between 3 and 6 questions, each one sentence, each something a paper above says is open.
+- At most 6 questions, each one sentence, each explicitly stated as open in a source above.
+  Return fewer or none when the supplied sections do not support more questions.
 - Name the paper that said it as its arXiv id, in brackets at the end.
 - Never invent a limitation. If two papers name the same one, say so once and cite both.
 - Order them by how often the papers above raise them, most raised first.
@@ -113,11 +124,12 @@ These are the sections that follow, with the papers each one covers.
 
 {digest}
 
-Write two paragraphs, 160 to 240 words, starting with "## {title}".
+Write one or two short paragraphs, at most 160 words, starting with "## {title}".
 The first says what this field is trying to do and what makes it hard.
-The second says how the answer has moved, naming the papers the lineages run through as
-arXiv:<id>, and ends by saying what the sections below settle.
+The second describes the supported approaches as arXiv:<id>, and what remains uncertain.
+Do not treat a graph path as proof of how methods evolved or say the review settles the field.
 Cite only ids from the evidence. Never invent a number.
+{source_rules}
 """
 
 ANSWER = """A researcher asked this.
@@ -136,6 +148,8 @@ Rules:
 - Name the approach that carries the answer rather than listing every approach.
 - Cite at most two papers, as arXiv:<id>, using only ids from above.
 - Never invent a number, and where the evidence leaves the question open, say that instead.
+- Do not declare a best method or that an architecture is necessary without a directly
+  supported comparison at that scope. Preserve source-specific evaluation qualifications.
 - No heading, no label and no preamble, only the sentence.
 """
 
@@ -149,11 +163,13 @@ How the papers on it cite each other: {cites}.
 
 Names already given to other paths through this field: {taken}.
 
-Say what thread of work runs through this path.
+Suggest a tentative common topic for these citation-connected papers.
 
 Rules:
 - The name is at most six plain words a researcher would use, with no arXiv id.
-- The description is one or two sentences on what changed from the first paper to the last.
+- The description is one source-supported sentence about a common topic. Do not claim that
+  one paper caused, inspired, extended, or improved another merely because they are connected.
+- Citation-intent counts are model predictions, not evidence of methodological influence.
 - The name differs from every name already given, by saying what sets this path apart.
 
 Reply with json only, no preamble:
@@ -183,7 +199,7 @@ def digest(
     Returns:
         The digest.
     """
-    parts = [f"QUESTION: {question}", "", "NODES, the papers this review may cite"]
+    parts = [f"QUESTION: {question}", "", SOURCE_RULES, "", "ORIGINAL ABSTRACTS"]
     if found is not None and found.edges and not any(edge.sentence for edge in found.edges):
         parts += [
             "",
@@ -192,17 +208,20 @@ def digest(
             "Do not invent or reconstruct wording attributed to a citing paper. "
             "Omit sentence-based dispute claims; summarize the supplied metadata and abstracts.",
         ]
-    for paper in papers:
+    for paper in source_papers(papers, found):
         role = grades[paper.arxiv_id].role if paper.arxiv_id in grades else "ungraded"
         name = " ".join(paper.title.split())
         parts.append(
             f"- {paper.arxiv_id} ({paper.date.isoformat()}) [{role}] {name}"
-            f"\n  {paper.abstract[:ABSTRACT_CHARS]}"
+            f"\n  {paper.abstract}"
         )
     if found is not None:
         held = found.papers
         if found.lineages:
-            parts += ["", "LINEAGES, paths the citation walk reproduced, oldest first"]
+            parts += [
+                "",
+                "CITATION-CONNECTED PATHS, oldest first; not proof of methodological ancestry",
+            ]
             for spot, line in enumerate(found.lineages, 1):
                 names = " -> ".join(
                     f"{n} ({held[n].date.year}) {' '.join(held[n].title.split())[:50]}"
@@ -211,7 +230,7 @@ def digest(
                 )
                 parts.append(f"- line {spot}: {names}")
         if found.magnets:
-            parts += ["", "ARGUED WITH, the papers this set takes positions on"]
+            parts += ["", "CITATION-INTENT COUNTS, predicted relations to these papers"]
             for magnet in found.magnets[:12]:
                 if magnet.node not in held:
                     continue
@@ -227,7 +246,7 @@ def digest(
                 said = edge.sentence[:SENTENCE_CHARS]
                 parts.append(f"- on {edge.target} {name}, {edge.intent}: {said}")
         if found.successors:
-            parts += ["", "JUST APPEARED, papers citing this set that are too new to be cited"]
+            parts += ["", "RECENT CITING PAPERS, selected by predicted citation-intent labels"]
             for one in found.successors[:10]:
                 intents = ", ".join(sorted(set(one.targets.values())))
                 parts.append(
@@ -237,6 +256,33 @@ def digest(
     if design is not None and methods:
         parts += ["", "THE METHODS SIDE BY SIDE", render(design, methods)]
     return "\n".join(parts)
+
+
+def source_papers(papers: list[Paper], found: Mined | None = None) -> list[Paper]:
+    """The kept papers and displayed lineage papers, with original abstracts, once each."""
+    held = {paper.arxiv_id: paper for paper in papers}
+    if found is not None:
+        named = {node for line in found.lineages for node in line.nodes}
+        named |= {magnet.node for magnet in found.magnets[:12]}
+        for ident in sorted(named):
+            if ident in found.papers:
+                held.setdefault(ident, found.papers[ident])
+        for successor in found.successors[:10]:
+            held.setdefault(successor.paper.arxiv_id, successor.paper)
+    return list(held.values())
+
+
+def sources(papers: list[Paper]) -> dict[str, str]:
+    """Only original abstracts can substantiate the generated scientific prose."""
+    return {paper.arxiv_id: paper.abstract for paper in papers if paper.abstract.strip()}
+
+
+def source_label(paper: Paper, limit: int = 90) -> str:
+    """A neutral label copied from source metadata, rather than an unaudited model claim."""
+    title = " ".join(paper.title.split()) or paper.arxiv_id
+    if len(title) <= limit:
+        return title
+    return title[:limit].rsplit(" ", 1)[0] + "…"
 
 
 def unanswered(model: llm.Gemma, question: str, sections: list[tuple[str, str, str]]) -> list[str]:
@@ -253,13 +299,23 @@ def unanswered(model: llm.Gemma, question: str, sections: list[tuple[str, str, s
     """
     if not sections:
         return []
-    body = "\n\n".join(f"[{a}] {t}\n{b[:OPEN_CHARS]}" for a, t, b in sections)
+    body = "\n\n".join(f"[{a}] {t}\n{b}" for a, t, b in sections)
     parsed = llm.parse_json(
         model.ask(UNANSWERED.format(question=question, sections=body), max_tokens=OPEN_TOKENS)
     )
     raw = parsed.get("open") if isinstance(parsed, dict) else None
     entries = raw if isinstance(raw, list) else []
-    out = [" ".join(str(one).split()) for one in entries if str(one).strip()]
+    candidates = [" ".join(str(one).split()) for one in entries if str(one).strip()]
+    originals: dict[str, str] = {}
+    for ident, title, text in sections:
+        originals[ident] = originals.get(ident, "") + f"\n{title}\n{text}"
+    repaired = repair_text(
+        model,
+        "\n\n".join(candidates),
+        originals,
+        kind="open questions; give each supported question its own paragraph",
+    )
+    out = [one.strip() for one in repaired.split("\n\n") if "?" in one]
     LOG.info("found %d open questions over %d sections", len(out), len(sections))
     return out[:6]
 
@@ -286,6 +342,7 @@ def outline(
         low=MIN_SECTIONS,
         high=MAX_SECTIONS,
         per=SECTION_IDS,
+        source_rules=SOURCE_RULES,
     )
     parsed = llm.parse_json(model.ask(prompt, max_tokens=OUTLINE_TOKENS))
     entries = parsed.get("sections") if isinstance(parsed, dict) else None
@@ -329,26 +386,49 @@ def compose(
         The sections, the opening first, empty when the outline did not parse.
     """
     body = digest(question, papers, grades, found, design, methods)
-    plan = outline(model, question, asked, body)
+    originals = sources(source_papers(papers, found))
+    plan = [
+        (title, supported, point)
+        for title, ids, point in outline(model, question, asked, body)
+        if (supported := [ident for ident in ids if ident in originals])
+    ]
     if not plan:
         return []
     prompts = [
-        SECTION.format(question=question, digest=body, title=t, point=p, ids=", ".join(ids))
+        SECTION.format(
+            question=question, digest=body, title=t, point=p, ids=", ".join(ids),
+            source_rules=SOURCE_RULES,
+        )
         for t, ids, p in plan
     ]
     written = model.ask_many(prompts, max_tokens=SECTION_TOKENS)
     listing = "\n".join(f"- {t}: {p} ({', '.join(ids)})" for t, ids, p in plan)
     opening = model.ask(
-        CLOSE.format(question=question, outline=listing, digest=body, title="What this is about"),
+        CLOSE.format(
+            question=question, outline=listing, digest=body, title="What this is about",
+            source_rules=SOURCE_RULES,
+        ),
         max_tokens=CLOSE_TOKENS,
     )
     out = [Section(title="What this is about", body=strip_heading(opening, "What this is about"))]
-    for (title, _, _), text in zip(plan, written, strict=True):
+    metadata = {paper.arxiv_id: paper for paper in source_papers(papers, found)}
+    for (title, ids, _), text in zip(plan, written, strict=True):
         body_text = strip_heading(text, title)
         if body_text:
-            out.append(Section(title=title, body=body_text))
-    LOG.info("composed %d sections", len(out))
-    return [one for one in out if one.body]
+            # An outline title may itself assert an unsupported best method or limitation.
+            # Retain a neutral source label; only the repaired body makes scientific claims.
+            out.append(Section(title=f"Evidence: {source_label(metadata[ids[0]])}", body=body_text))
+    drafts = [(one.title, one.body) for one in out if one.body]
+    # Gemma.ask_many also uses eight workers. Repair sections independently against the
+    # complete original abstracts, never against the other generated sections.
+    def checked(item: tuple[str, str]) -> Section:
+        title, text = item
+        return Section(title=title, body=repair_text(model, text, originals))
+
+    with ThreadPoolExecutor(max_workers=llm.PARALLEL) as pool:
+        repaired = list(pool.map(checked, drafts))
+    LOG.info("composed %d source-repaired sections", sum(bool(one.body) for one in repaired))
+    return [one for one in repaired if one.body]
 
 
 def strip_heading(text: str, title: str) -> str:
@@ -370,7 +450,10 @@ def strip_heading(text: str, title: str) -> str:
     return body.strip()
 
 
-def answer(model: llm.Gemma, question: str, asked: date, evidence: str) -> str:
+def answer(
+    model: llm.Gemma, question: str, asked: date, evidence: str,
+    *, papers: list[Paper] | None = None,
+) -> str:
     """
     The question answered in one sentence, which the document opens on
 
@@ -379,6 +462,7 @@ def answer(model: llm.Gemma, question: str, asked: date, evidence: str) -> str:
         question: What was asked.
         asked: The date the run is capped at.
         evidence: The written sections when there are any, the digest otherwise.
+        papers: Original sources required to retain a source-checked answer.
 
     Returns:
         The sentence, empty when the model returned nothing.
@@ -387,7 +471,11 @@ def answer(model: llm.Gemma, question: str, asked: date, evidence: str) -> str:
         ANSWER.format(question=question, asked=asked.isoformat(), evidence=evidence),
         max_tokens=ANSWER_TOKENS,
     )
-    return " ".join(reply.split())
+    return " ".join(
+        repair_text(
+            model, reply, sources(papers or []), kind="one-sentence answer of at most 35 words"
+        ).split()
+    )
 
 
 def name_line(
@@ -408,7 +496,8 @@ def name_line(
     """
     held = found.papers
     listing = "\n".join(
-        f"- ({held[n].date.year}) {' '.join(held[n].title.split())}" for n in nodes if n in held
+        f"- arXiv:{n} ({held[n].date.year}) {' '.join(held[n].title.split())}\n"
+        f"  {held[n].abstract}" for n in nodes if n in held
     )
     counted = inside(nodes, found.edges)
     cites = ", ".join(f"{n} {intent}" for intent, n in counted.items()) or "none recorded"
@@ -425,9 +514,18 @@ def name_line(
     )
     if not isinstance(parsed, dict):
         return LineName()
+    description = repair_text(
+        model,
+        str(parsed.get("description", "")),
+        sources([held[node] for node in nodes if node in held]),
+        kind="tentative topic of a citation-connected path, not a claim of ancestry or influence",
+    )
+    qualifier = "Citation connectivity does not establish methodological ancestry or influence."
+    endpoints = [held[node] for node in nodes if node in held]
+    label = " / ".join(source_label(paper, 30) for paper in endpoints[::max(len(endpoints) - 1, 1)])
     return LineName(
-        name=" ".join(str(parsed.get("name", "")).split()),
-        description=" ".join(str(parsed.get("description", "")).split()),
+        name=f"Citation path: {label}" if label else "Citation-connected path",
+        description=f"{description} {qualifier}".strip(),
     )
 
 

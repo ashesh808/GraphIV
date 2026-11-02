@@ -22,7 +22,15 @@ from src.miner.miner import Mined, Miner
 from src.miner.recipe import read_recipe
 from src.miner.store import read_cosines, read_records
 from src.report import ground
-from src.report.compose import OPEN_PAPERS, answer, compose, digest, name_lines, unanswered
+from src.report.compose import (
+    OPEN_PAPERS,
+    answer,
+    compose,
+    digest,
+    name_lines,
+    source_papers,
+    unanswered,
+)
 from src.report.fulltext import FullText, read_open, read_paper
 from src.report.render import Area, Draft, LineName, Section, document, inside
 from src.report.table import (
@@ -583,7 +591,12 @@ def write_report(
     allowed = {p.arxiv_id for p in papers} | set(found.papers)
     short = ground.check(
         handles.dsn,
-        ground.mark(answer(handles.model, question, asked, evidence[:EVIDENCE_CHARS])),
+        ground.mark(
+            answer(
+                handles.model, question, asked, evidence[:EVIDENCE_CHARS],
+                papers=source_papers(papers, found),
+            )
+        ),
         allowed,
     ).text
     told = [

@@ -1,0 +1,17 @@
+{
+  "overall_acceptance": "not accepted; report prose required correction",
+  "structural_verifier": "passed both real jobs, original-corpus metadata and all four persisted payload SHA256 checks for each",
+  "citation_sentences": "all empty; no invented citation quotations",
+  "report_one_issues": [
+    "Unsupported Griffin scaling limitation",
+    "Unsupported Samba windowing limitation",
+    "Unqualified global-best/necessity claims",
+    "Formal SSM/attention connection attributed to original Mamba instead of SSD/Mamba-2"
+  ],
+  "report_two_issues": [
+    "In-Context RALM falsely described as requiring architecture modification although its full abstract explicitly leaves architecture unchanged",
+    "Iter-RetGen background retrieval limitation misattributed to its proposed method"
+  ],
+  "root_cause": "Full abstracts were truncated at420characters; prompts forced costs, limitations and methodological progression beyond the available evidence.",
+  "correction": "Full original abstracts, scoped prompts, replacement-only source-excerpt/citation validation, neutral source-title headings and citation-path ancestry qualification. Fresh end-to-end validation remains required."
+}

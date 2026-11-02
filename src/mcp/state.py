@@ -309,7 +309,7 @@ def prepare_runtime() -> None:
             config = runtime_config(CONFIG)
             _ = report_store()
             if config["storage"]["BACKEND"] == "azure":
-                _ = _snapshot()
+                _ = _snapshot(CONFIG)
             missing = _configuration_reasons(config)
             if missing:
                 _PREPARATION.update(complete=False, reason="; ".join(missing))

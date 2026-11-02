@@ -1,0 +1,779 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-02T18:57:11.174094+00:00",
+  "api_origin": "https://ca-graphiv-prod-api.ashyriver-afb6b236.westus2.azurecontainerapps.io",
+  "vercel_origin": "https://graphiv.vercel.app",
+  "cases": [
+    {
+      "question": "How do linear attention mechanisms and selective state-space models compare for efficient long-context language modeling, and which research lineages connect them?",
+      "mode": "survey",
+      "effort": "standard",
+      "stages": [
+        {
+          "status": "running",
+          "stage": "retrieving",
+          "elapsed_seconds": 0.627
+        },
+        {
+          "status": "running",
+          "stage": "mining",
+          "elapsed_seconds": 271.643
+        },
+        {
+          "status": "running",
+          "stage": "reading_papers",
+          "elapsed_seconds": 352.07
+        },
+        {
+          "status": "running",
+          "stage": "composing_report",
+          "elapsed_seconds": 387.198
+        },
+        {
+          "status": "complete",
+          "stage": "complete",
+          "elapsed_seconds": 427.352
+        }
+      ],
+      "submitted_by_verifier": false,
+      "job_id": "78a1a71962a049639845593b3f519ca4",
+      "job_result": {
+        "slug": "2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+        "papers": 40,
+        "answer": "Linear attention and selective SSMs converge through shared recurrent state evolution, with hybrid architectures like Hymba (arXiv:2411.13676) and DeltaNet-based models (arXiv:2510.26692) best balancing efficient linear-time inference with high-fidelity associative recall.",
+        "url": "/api/runs/2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+        "retrieval_counts": {
+          "pool": 14926,
+          "current": 12183,
+          "read": 200,
+          "kept": 40,
+          "seconds": 324.6
+        },
+        "mining_counts": {
+          "papers": 40,
+          "union": 633,
+          "edges": 23094,
+          "magnets": 531,
+          "lineages": 491,
+          "successors": 413
+        },
+        "timings": {
+          "retrieve and read": 324.6,
+          "mine and write": 153.3
+        },
+        "degraded_features": [
+          "citation_quotations",
+          "sentence_based_disputes"
+        ],
+        "metrics": {
+          "elapsed_seconds": 482.389,
+          "peak_rss_bytes": 5439504384,
+          "peak_container_bytes": 7631511552,
+          "sample_interval_seconds": 0.1
+        }
+      },
+      "job_timestamps": {
+        "created_at": "2026-11-02T18:56:15.092456+00:00",
+        "started_at": "2026-11-02T18:56:15.092995+00:00",
+        "finished_at": "2026-11-02T19:04:17.483227+00:00"
+      },
+      "slug": "2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+      "report_url": "https://graphiv.vercel.app/runs/2026-11-02-how-do-linear-attention-mechanisms-and-selective",
+      "corpus_validation": {
+        "endpoint": "/api/corpus/validate",
+        "verified_records": 121,
+        "sha256": "ff95d063423e3593aff946b18837dd83f531fe2cde6c5bcf2d78b5c3982a5c15"
+      },
+      "counts": {
+        "pool": 14926,
+        "kept": 40,
+        "edges": 23094,
+        "lineages": 491,
+        "successors": 413
+      },
+      "paper_records": 121,
+      "author_records": 121,
+      "cited_ids": [
+        "1706.03762",
+        "1904.09751",
+        "2005.11401",
+        "2005.14165",
+        "2006.03236",
+        "2009.06732",
+        "2011.04006",
+        "2112.11446",
+        "2201.03533",
+        "2203.14343",
+        "2204.02311",
+        "2205.01068",
+        "2209.10655",
+        "2212.00768",
+        "2212.14052",
+        "2302.06646",
+        "2302.13971",
+        "2303.08774",
+        "2304.11062",
+        "2307.11888",
+        "2310.16450",
+        "2312.00752",
+        "2312.04927",
+        "2401.01325",
+        "2401.04658",
+        "2402.01032",
+        "2402.04248",
+        "2402.04347",
+        "2402.04617",
+        "2402.10644",
+        "2402.17463",
+        "2402.18668",
+        "2402.19427",
+        "2403.19887",
+        "2404.05892",
+        "2404.07143",
+        "2404.07904",
+        "2404.15574",
+        "2405.04434",
+        "2405.04517",
+        "2405.16712",
+        "2405.17381",
+        "2405.17394",
+        "2405.21060",
+        "2406.06484",
+        "2406.07522",
+        "2406.07887",
+        "2407.04620",
+        "2407.14207",
+        "2408.10189",
+        "2408.15237",
+        "2409.07146",
+        "2410.10254",
+        "2410.16179",
+        "2411.12537",
+        "2411.13676",
+        "2412.06464",
+        "2501.00663",
+        "2501.12352",
+        "2502.10297",
+        "2502.11089",
+        "2502.13189",
+        "2502.13685",
+        "2503.14456",
+        "2506.04761",
+        "2506.05233",
+        "2510.26692",
+        "2601.22156",
+        "2603.09221",
+        "2603.22333",
+        "2604.03444",
+        "2604.21100",
+        "2605.05066",
+        "2605.05838",
+        "2605.08301",
+        "2605.08587",
+        "2605.13473",
+        "2605.22791",
+        "2606.01294",
+        "2606.09862",
+        "2606.16429",
+        "2606.20097",
+        "2606.30562",
+        "2607.11614",
+        "2607.25357",
+        "2608.12435",
+        "2608.15533",
+        "2609.07816",
+        "2609.24797",
+        "2609.25802",
+        "2609.36259",
+        "2609.36529",
+        "2609.39034",
+        "2609.39661"
+      ],
+      "identifier_validation": "matched IDs, paper titles, abstracts and authors to the deployed corpus read endpoint",
+      "graph_nodes": 121,
+      "graph_edges": 1317,
+      "rendered_lineages": 5,
+      "rendered_successors": 25,
+      "retrieval_counts": {
+        "pool": 14926,
+        "current": 12183,
+        "read": 200,
+        "kept": 40,
+        "seconds": 324.6
+      },
+      "mining_counts": {
+        "papers": 40,
+        "union": 633,
+        "edges": 23094,
+        "magnets": 531,
+        "lineages": 491,
+        "successors": 413
+      },
+      "timings": {
+        "retrieve and read": 324.6,
+        "mine and write": 153.3
+      },
+      "metrics": {
+        "elapsed_seconds": 482.389,
+        "peak_rss_bytes": 5439504384,
+        "peak_container_bytes": 7631511552,
+        "sample_interval_seconds": 0.1
+      },
+      "degraded_features": [
+        "citation_quotations",
+        "sentence_based_disputes"
+      ],
+      "artifact_sha256": {
+        "report.md": "505a7adb3942790523d279687929f4838c7505a4cf22b5c72a642afb71d17c57",
+        "run.json": "df514036e12b4de8160131c80079707e4dc0206152c55c34a2cdf2e8b47ba7f4",
+        "papers.json": "875228e4ca8f3c4563d2800c66baa35e87e582d2c9df33b5366937082aeb43d2",
+        "graph.json": "f1f126bed0265aa0dbede00573438a34589fefc5482d9e4112dfabe34407b4cc",
+        "report.json": "8c480022aee579b05833be1ac1d6abbf18c3e12ed2b80ac033e3cc2efc25833f"
+      },
+      "frontend_report": {
+        "status": 200,
+        "bytes": 973021,
+        "sha256": "5eaa7015877ed8e5892444fbca358d7b922fe93f41f661f5b30a314d317525bd"
+      },
+      "blob": {
+        "verified": true,
+        "container": "reports",
+        "marker": "2026-11-02-how-do-linear-attention-mechanisms-and-selective/run.json",
+        "generation": "75323cddc25a4e4295860bbff0d5a57b",
+        "payloads_sha256_verified": 4,
+        "active_manifest_matches": true
+      },
+      "persisted_http_verified": true,
+      "status": "passed"
+    },
+    {
+      "question": "What methods improve evidence grounding and citation faithfulness in retrieval-augmented generation, and which follow-up papers extend those methods?",
+      "mode": "survey",
+      "effort": "standard",
+      "stages": [
+        {
+          "status": "running",
+          "stage": "retrieving",
+          "elapsed_seconds": 435.442
+        },
+        {
+          "status": "running",
+          "stage": "mining",
+          "elapsed_seconds": 741.592
+        },
+        {
+          "status": "running",
+          "stage": "reading_papers",
+          "elapsed_seconds": 892.303
+        },
+        {
+          "status": "running",
+          "stage": "composing_report",
+          "elapsed_seconds": 932.468
+        },
+        {
+          "status": "complete",
+          "stage": "complete",
+          "elapsed_seconds": 972.631
+        }
+      ],
+      "submitted_by_verifier": false,
+      "job_id": "5a72cbe12b374e61a065d0ae20f1e9a2",
+      "job_result": {
+        "slug": "2026-11-02-what-methods-improve-evidence-grounding-and-cita",
+        "papers": 40,
+        "answer": "Evidence grounding and citation faithfulness are improved through self-reflective, agentic frameworks and structured knowledge representations, with methods like Self-RAG (arXiv:2310.11511) and LongCite (arXiv:2409.02897) effectively refining retrieval, reasoning, and source attribution processes.",
+        "url": "/api/runs/2026-11-02-what-methods-improve-evidence-grounding-and-cita",
+        "retrieval_counts": {
+          "pool": 9824,
+          "current": 8373,
+          "read": 200,
+          "kept": 40,
+          "seconds": 314.9
+        },
+        "mining_counts": {
+          "papers": 40,
+          "union": 685,
+          "edges": 25233,
+          "magnets": 551,
+          "lineages": 493,
+          "successors": 1036
+        },
+        "timings": {
+          "retrieve and read": 314.9,
+          "mine and write": 225.8
+        },
+        "degraded_features": [
+          "citation_quotations",
+          "sentence_based_disputes"
+        ],
+        "metrics": {
+          "elapsed_seconds": 545.266,
+          "peak_rss_bytes": 5452156928,
+          "peak_container_bytes": 6278488064,
+          "sample_interval_seconds": 0.1
+        }
+      },
+      "job_timestamps": {
+        "created_at": "2026-11-02T18:56:26.071754+00:00",
+        "started_at": "2026-11-02T19:04:17.483263+00:00",
+        "finished_at": "2026-11-02T19:13:22.749821+00:00"
+      },
+      "slug": "2026-11-02-what-methods-improve-evidence-grounding-and-cita",
+      "report_url": "https://graphiv.vercel.app/runs/2026-11-02-what-methods-improve-evidence-grounding-and-cita",
+      "corpus_validation": {
+        "endpoint": "/api/corpus/validate",
+        "verified_records": 121,
+        "sha256": "9da32759ec80478b87762919391b39356faaa1af30dc3c8a770f3ca71209b834"
+      },
+      "counts": {
+        "pool": 9824,
+        "kept": 40,
+        "edges": 25233,
+        "lineages": 493,
+        "successors": 1036
+      },
+      "paper_records": 121,
+      "author_records": 121,
+      "cited_ids": [
+        "1906.00300",
+        "1911.10470",
+        "2004.04906",
+        "2004.10645",
+        "2005.11401",
+        "2007.01282",
+        "2112.09924",
+        "2201.08239",
+        "2209.10063",
+        "2210.03350",
+        "2210.08726",
+        "2212.10509",
+        "2212.10511",
+        "2212.14024",
+        "2301.00234",
+        "2301.12652",
+        "2302.00083",
+        "2303.07678",
+        "2303.12570",
+        "2303.18223",
+        "2304.09848",
+        "2304.13007",
+        "2304.14732",
+        "2305.06983",
+        "2305.14251",
+        "2305.14283",
+        "2305.14627",
+        "2305.15225",
+        "2305.15294",
+        "2307.03172",
+        "2307.06908",
+        "2309.11495",
+        "2310.01352",
+        "2310.01558",
+        "2310.04408",
+        "2310.11511",
+        "2311.08377",
+        "2311.09210",
+        "2311.09476",
+        "2312.06648",
+        "2312.15907",
+        "2401.14887",
+        "2401.15391",
+        "2401.15884",
+        "2401.18059",
+        "2402.04315",
+        "2403.03187",
+        "2403.10131",
+        "2403.14403",
+        "2404.00610",
+        "2404.10198",
+        "2404.16130",
+        "2405.14831",
+        "2406.12534",
+        "2406.13629",
+        "2407.02485",
+        "2409.02897",
+        "2409.05591",
+        "2410.01428",
+        "2410.05779",
+        "2410.07176",
+        "2501.00879",
+        "2501.05366",
+        "2502.14802",
+        "2503.05592",
+        "2503.09516",
+        "2603.13853",
+        "2603.14828",
+        "2604.15148",
+        "2605.27164",
+        "2605.27432",
+        "2605.28093",
+        "2605.31010",
+        "2606.00610",
+        "2606.18075",
+        "2606.18381",
+        "2606.30133",
+        "2607.24663",
+        "2607.27652",
+        "2608.03675",
+        "2608.12335",
+        "2608.13708",
+        "2608.16515",
+        "2608.22479",
+        "2608.23965",
+        "2608.29753",
+        "2609.10239",
+        "2609.32327",
+        "2609.34127",
+        "2609.37469",
+        "2609.37661"
+      ],
+      "identifier_validation": "matched IDs, paper titles, abstracts and authors to the deployed corpus read endpoint",
+      "graph_nodes": 121,
+      "graph_edges": 1279,
+      "rendered_lineages": 5,
+      "rendered_successors": 25,
+      "retrieval_counts": {
+        "pool": 9824,
+        "current": 8373,
+        "read": 200,
+        "kept": 40,
+        "seconds": 314.9
+      },
+      "mining_counts": {
+        "papers": 40,
+        "union": 685,
+        "edges": 25233,
+        "magnets": 551,
+        "lineages": 493,
+        "successors": 1036
+      },
+      "timings": {
+        "retrieve and read": 314.9,
+        "mine and write": 225.8
+      },
+      "metrics": {
+        "elapsed_seconds": 545.266,
+        "peak_rss_bytes": 5452156928,
+        "peak_container_bytes": 6278488064,
+        "sample_interval_seconds": 0.1
+      },
+      "degraded_features": [
+        "citation_quotations",
+        "sentence_based_disputes"
+      ],
+      "artifact_sha256": {
+        "report.md": "b2aa65ca7b7247e537fdf8588eacb5291652f650d28e17d05ea104e09576cc5b",
+        "run.json": "5f71ebe719105b920ec4079d36b14cec643709cd2194850902976be857a77402",
+        "papers.json": "e42e83da60d9978113bf02fa7c968f10a9d6ddf4472b987d7a45375f136ea539",
+        "graph.json": "2140f987c32c7e2e197c5fa6a8bf0f45862e0b09173a6007872d1603c70413d3",
+        "report.json": "763f6b63e1a7c7c400be9e0be0341375d212dcfca15e0c7658518a06d41e4e87"
+      },
+      "frontend_report": {
+        "status": 200,
+        "bytes": 950277,
+        "sha256": "1a6a1e77d86631f79faeff0755e4be8b75cb692c444f7f41317e8b394ed8e039"
+      },
+      "blob": {
+        "verified": true,
+        "container": "reports",
+        "marker": "2026-11-02-what-methods-improve-evidence-grounding-and-cita/run.json",
+        "generation": "2614663189244a1caa13cdadac90ca51",
+        "payloads_sha256_verified": 4,
+        "active_manifest_matches": true
+      },
+      "persisted_http_verified": true,
+      "status": "passed"
+    }
+  ],
+  "independent_blob_requested": true,
+  "browser_interaction_verified": false,
+  "job_mode": "existing IDs",
+  "readiness": {
+    "ready": true,
+    "storage": "azure",
+    "reasons": [],
+    "corpus": {
+      "snapshot_id": "graphiv-2026-10-01-nomic-sq8",
+      "source": {
+        "repository": "kkuroma/GraphIV",
+        "revision": "GraphIV-2026-10-01",
+        "commit": "cc781313c13b9cbd08110c97eb84b7e1a62180e1",
+        "format": "parquet",
+        "files": [
+          {
+            "path": "papers/papers-00000.parquet",
+            "size": 865934175,
+            "rows": 500000,
+            "sha256": "04710cb87ad91d21decaf16c5e6674a08f50b2136c3d358e360fee2030524d72"
+          },
+          {
+            "path": "papers/papers-00001.parquet",
+            "size": 888335450,
+            "rows": 500000,
+            "sha256": "6785199c225938b30e2010b5e76236dbafc771264a00738c03b41b492882a073"
+          },
+          {
+            "path": "papers/papers-00002.parquet",
+            "size": 910169306,
+            "rows": 500000,
+            "sha256": "b1d134a9ee655cca2cf164b7bcc617ae61e9e34cb0cf28e33c01f6870e537316"
+          },
+          {
+            "path": "papers/papers-00003.parquet",
+            "size": 928768492,
+            "rows": 500000,
+            "sha256": "73d0d7edacba293693996972e6be975d74cdca025466f808f70917dca87a1812"
+          },
+          {
+            "path": "papers/papers-00004.parquet",
+            "size": 899737612,
+            "rows": 500000,
+            "sha256": "a4a109efe8ae1b032be4ad9a8181247badeaeff450decc4662bd40db9e56b1ac"
+          },
+          {
+            "path": "papers/papers-00005.parquet",
+            "size": 902765554,
+            "rows": 500000,
+            "sha256": "d0832a81953d3482a6944dd01899ed823593361d2e573629119f6b34b58b5b52"
+          },
+          {
+            "path": "papers/papers-00006.parquet",
+            "size": 268161467,
+            "rows": 165827,
+            "sha256": "da90f107051e1ac6a029bc730eb5202672cbf240ca62272eb204f4e39f71ca95"
+          },
+          {
+            "path": "citations/citations-00000.parquet",
+            "size": 217818354,
+            "rows": 20000000,
+            "sha256": "78f450718844a1b5f14062da9a2cae2a06c5cae539706e2810a73f410c0e4f4e"
+          },
+          {
+            "path": "citations/citations-00001.parquet",
+            "size": 212712975,
+            "rows": 20000000,
+            "sha256": "ef77fc090441e20089a1cea7cf5e85130d7d9e6f568066166fca626f13a3704a"
+          },
+          {
+            "path": "citations/citations-00002.parquet",
+            "size": 210183969,
+            "rows": 20000000,
+            "sha256": "ecb4d7d71ec1f8f3090388bea9792bc3a0102046d835f3882d071edecf898131"
+          },
+          {
+            "path": "citations/citations-00003.parquet",
+            "size": 155798201,
+            "rows": 14764672,
+            "sha256": "3ad1dcb92d1f1e4f74c5cf39b4d750b4775aa193c5651de3c6114013c9424d95"
+          },
+          {
+            "path": "topics/topics-00000.parquet",
+            "size": 26050024,
+            "rows": 3165827,
+            "sha256": "ccdd7057d23930570412c4eb881e7fed939508e1b158d454832d773bbb4d2526"
+          }
+        ],
+        "rows": {
+          "papers": 3165827,
+          "citations": 74764672,
+          "topics": 3165827
+        },
+        "embedding_dtype": "float16",
+        "citation_sentences": "not published; no JIT extraction performed"
+      },
+      "embedding": {
+        "dimension": 768,
+        "model": "nomic-embed-text-v2-moe"
+      },
+      "counts": {
+        "papers": 3165827,
+        "embedded": 3165827,
+        "edges": 38931148,
+        "citations": 74764672,
+        "topics": 3165827,
+        "topic_names": 4368
+      },
+      "capabilities": {
+        "precomputed_intents": true,
+        "intent_confidence": true,
+        "citation_sentences": false
+      },
+      "index": {
+        "kind": "ivfsq8",
+        "dimension": 768,
+        "vectors": 3165827,
+        "vector_dtype": "float16",
+        "nlist": 1024,
+        "nprobe": 128,
+        "training_vectors": 65536,
+        "training_seconds": 498.881,
+        "add_seconds": 318.034,
+        "index_bytes": 2459842000,
+        "rerank_oversample": 4
+      }
+    }
+  },
+  "frontend_home": {
+    "status": 200,
+    "bytes": 16299,
+    "sha256": "eea7b06ae480b101a672971a37f4a413ff0ff04a7c01675f1afa688916b758bf"
+  },
+  "corpus": {
+    "version": 1,
+    "snapshot_id": "graphiv-2026-10-01-nomic-sq8",
+    "embedding": {
+      "dimension": 768,
+      "model": "nomic-embed-text-v2-moe"
+    },
+    "artifacts": {
+      "vectors": {
+        "container": "vector-indexes",
+        "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/index.faiss",
+        "sha256": "0bb98e8cb020f283a6b452fec043d237f7a0955f5b3a74e251cd35aef2008dd2"
+      },
+      "metadata": {
+        "container": "metadata",
+        "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/metadata.sqlite",
+        "sha256": "1eed88cf8a0bbd79d5b6a1325cc0932e951eff7bc268ac63b5a0f02134b6e16c"
+      },
+      "graph": {
+        "container": "citation-graphs",
+        "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/graph.npz",
+        "sha256": "06fd6df673736b3ef4f1fc17951032528a89307c51d232c4d8ffd0358dbd4c30"
+      }
+    },
+    "counts": {
+      "papers": 3165827,
+      "embedded": 3165827,
+      "edges": 38931148,
+      "citations": 74764672,
+      "topics": 3165827,
+      "topic_names": 4368
+    },
+    "quality": {
+      "citation_occurrences": 74764672,
+      "precomputed_intent_rows": 74764672,
+      "confidence_rows": 74764672,
+      "citation_sentence_rows": 0,
+      "unresolved_targets": 0
+    },
+    "index": {
+      "kind": "ivfsq8",
+      "dimension": 768,
+      "vectors": 3165827,
+      "vector_dtype": "float16",
+      "nlist": 1024,
+      "nprobe": 128,
+      "training_vectors": 65536,
+      "training_seconds": 498.881,
+      "add_seconds": 318.034,
+      "index_bytes": 2459842000,
+      "rerank_oversample": 4
+    },
+    "build": {
+      "index_kind": "ivfsq8",
+      "nlist": 1024,
+      "nprobe": 128,
+      "train_size": 65536,
+      "seed": 0,
+      "vector_dtype": "float16"
+    },
+    "storage": {
+      "vector_dtype": "float16"
+    },
+    "capabilities": {
+      "precomputed_intents": true,
+      "intent_confidence": true,
+      "citation_sentences": false
+    },
+    "source": {
+      "repository": "kkuroma/GraphIV",
+      "revision": "GraphIV-2026-10-01",
+      "commit": "cc781313c13b9cbd08110c97eb84b7e1a62180e1",
+      "format": "parquet",
+      "files": [
+        {
+          "path": "papers/papers-00000.parquet",
+          "size": 865934175,
+          "rows": 500000,
+          "sha256": "04710cb87ad91d21decaf16c5e6674a08f50b2136c3d358e360fee2030524d72"
+        },
+        {
+          "path": "papers/papers-00001.parquet",
+          "size": 888335450,
+          "rows": 500000,
+          "sha256": "6785199c225938b30e2010b5e76236dbafc771264a00738c03b41b492882a073"
+        },
+        {
+          "path": "papers/papers-00002.parquet",
+          "size": 910169306,
+          "rows": 500000,
+          "sha256": "b1d134a9ee655cca2cf164b7bcc617ae61e9e34cb0cf28e33c01f6870e537316"
+        },
+        {
+          "path": "papers/papers-00003.parquet",
+          "size": 928768492,
+          "rows": 500000,
+          "sha256": "73d0d7edacba293693996972e6be975d74cdca025466f808f70917dca87a1812"
+        },
+        {
+          "path": "papers/papers-00004.parquet",
+          "size": 899737612,
+          "rows": 500000,
+          "sha256": "a4a109efe8ae1b032be4ad9a8181247badeaeff450decc4662bd40db9e56b1ac"
+        },
+        {
+          "path": "papers/papers-00005.parquet",
+          "size": 902765554,
+          "rows": 500000,
+          "sha256": "d0832a81953d3482a6944dd01899ed823593361d2e573629119f6b34b58b5b52"
+        },
+        {
+          "path": "papers/papers-00006.parquet",
+          "size": 268161467,
+          "rows": 165827,
+          "sha256": "da90f107051e1ac6a029bc730eb5202672cbf240ca62272eb204f4e39f71ca95"
+        },
+        {
+          "path": "citations/citations-00000.parquet",
+          "size": 217818354,
+          "rows": 20000000,
+          "sha256": "78f450718844a1b5f14062da9a2cae2a06c5cae539706e2810a73f410c0e4f4e"
+        },
+        {
+          "path": "citations/citations-00001.parquet",
+          "size": 212712975,
+          "rows": 20000000,
+          "sha256": "ef77fc090441e20089a1cea7cf5e85130d7d9e6f568066166fca626f13a3704a"
+        },
+        {
+          "path": "citations/citations-00002.parquet",
+          "size": 210183969,
+          "rows": 20000000,
+          "sha256": "ecb4d7d71ec1f8f3090388bea9792bc3a0102046d835f3882d071edecf898131"
+        },
+        {
+          "path": "citations/citations-00003.parquet",
+          "size": 155798201,
+          "rows": 14764672,
+          "sha256": "3ad1dcb92d1f1e4f74c5cf39b4d750b4775aa193c5651de3c6114013c9424d95"
+        },
+        {
+          "path": "topics/topics-00000.parquet",
+          "size": 26050024,
+          "rows": 3165827,
+          "sha256": "ccdd7057d23930570412c4eb881e7fed939508e1b158d454832d773bbb4d2526"
+        }
+      ],
+      "rows": {
+        "papers": 3165827,
+        "citations": 74764672,
+        "topics": 3165827
+      },
+      "embedding_dtype": "float16",
+      "citation_sentences": "not published; no JIT extraction performed"
+    }
+  },
+  "elapsed_seconds": 978.941
+}

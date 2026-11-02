@@ -8,6 +8,7 @@ import pytest
 from src.core.paths import RUNTIME_CONFIG
 from src.core.runtime import runtime_config
 from src.mcp import state
+from src.storage.artifacts import ArtifactManifest, Snapshot
 from src.storage.blobs import BlobNotFoundError
 
 
@@ -76,7 +77,8 @@ def test_missing_manifest_does_not_crash_http_preparation(monkeypatch):
     monkeypatch.setattr(state, "report_store", lambda: object())
     monkeypatch.setattr(state, "_PREPARATION", {"complete": False, "reason": ""})
 
-    def missing():
+    def missing(config_path):
+        assert config_path == state.CONFIG
         raise BlobNotFoundError("private provider error")
 
     monkeypatch.setattr(state, "_snapshot", missing)
@@ -85,6 +87,79 @@ def test_missing_manifest_does_not_crash_http_preparation(monkeypatch):
     assert status["ready"] is False
     assert "Corpus manifest or a referenced artifact has not been published" in status["reasons"]
     assert "private provider error" not in str(status)
+
+
+def test_preparation_and_load_share_one_verified_snapshot(monkeypatch, tmp_path):
+    from src.storage import sqlite
+
+    cached = (state._snapshot, state.load, state.serving)
+    for function in cached:
+        function.cache_clear()
+    monkeypatch.setattr(state, "_PREPARATION", {"complete": False, "reason": ""})
+    monkeypatch.setenv("GRAPHIV_RUNTIME", "azure")
+    monkeypatch.setenv("GRAPHIV_CACHE_PATH", str(tmp_path / "cache"))
+    monkeypatch.setenv("GRAPHIV_LLM_API_URL", "https://llm.example/v1")
+    monkeypatch.setenv("GRAPHIV_LLM_MODEL", "report-model")
+    monkeypatch.setenv("GRAPHIV_EMBED_BACKEND", "remote")
+    monkeypatch.setenv("GRAPHIV_EMBED_API_URL", "https://embed.example/v1")
+    monkeypatch.setenv("GRAPHIV_EMBED_MODEL", "snapshot-model")
+    monkeypatch.setenv("GRAPHIV_METADATA_CONTAINER", "metadata")
+    monkeypatch.setenv("GRAPHIV_MANIFEST_BLOB", "manifest.json")
+    service = object()
+    corpus = object()
+    reports = object()
+    manifest = {"snapshot_id": "verified-corpus", "capabilities": {"citation_sentences": False}}
+    snapshot = Snapshot(
+        root=tmp_path,
+        database=tmp_path / "metadata.sqlite",
+        index=tmp_path / "index.faiss",
+        graph=tmp_path / "graph.npz",
+        embedding_dimension=768,
+        embedding_model="snapshot-model",
+        manifest=ArtifactManifest("verified-corpus", 768, "snapshot-model", {}, manifest),
+    )
+    verified = []
+    opened = []
+    graphs = []
+
+    def verify_snapshot(*args):
+        verified.append(args)
+        return snapshot
+
+    def open_corpus(*args, **kwargs):
+        opened.append((args, kwargs))
+        return corpus
+
+    def open_graph(path):
+        graphs.append(path)
+        return SimpleNamespace(n_papers=2)
+
+    monkeypatch.setattr(state, "_blob_service", lambda: service)
+    monkeypatch.setattr(state, "load_snapshot", verify_snapshot)
+    monkeypatch.setattr(state, "report_store", lambda *_args: reports)
+    monkeypatch.setattr(state, "load_graph_export", open_graph)
+    monkeypatch.setattr(state, "Gemma", lambda *_args, **_kwargs: object())
+    monkeypatch.setattr(sqlite, "SQLiteCorpus", open_corpus)
+    try:
+        state.prepare_runtime()
+        handles = state.load()
+        assert state.runtime_status()["ready"] is True
+        assert verified == [
+            (service, "metadata", "manifest.json", tmp_path / "cache" / "snapshots")
+        ]
+        assert state._snapshot.cache_info().misses == 1
+        assert state._snapshot.cache_info().hits == 1
+        assert opened == [
+            ((snapshot.database, snapshot.index), {"embedding_dimension": 768})
+        ]
+        assert graphs == [str(snapshot.graph)]
+        assert handles.dsn is corpus
+        assert handles.report_store is reports
+        assert handles.corpus_info is manifest
+        assert handles.citation_sentences is False
+    finally:
+        for function in cached:
+            function.cache_clear()
 
 
 def test_preparation_failure_never_exposes_a_dsn_or_secret(monkeypatch):

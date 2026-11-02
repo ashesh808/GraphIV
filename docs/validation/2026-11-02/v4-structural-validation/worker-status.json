@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "pid": 59,
+  "exit_code": 0,
+  "started_at": "2026-11-02T18:57:08.852893+00:00",
+  "output": "/var/lib/graphiv/build/acceptance/2026-11-02/attempt-20261102T185708832156Z-59",
+  "input_blob": "validation/acceptance-input-2026-11-02.json",
+  "verifier_sha256": "b25025b0107edb64f6ee03901b96b6112b3df68fe23f2c04a868c59908897212",
+  "receipt_prefix": "validation/acceptance/2026-11-02/attempt-20261102T185708832156Z-59",
+  "job_mode": "existing IDs only",
+  "browser_interaction_verified": false,
+  "job_ids": [
+    "78a1a71962a049639845593b3f519ca4",
+    "5a72cbe12b374e61a065d0ae20f1e9a2"
+  ],
+  "input_sha256": "cc1ec1b5c082d434fcd3926d15f0967fedf9f3d3b95add5036d5567986dde38a",
+  "verification_status": "passed",
+  "finished_at": "2026-11-02T19:13:30.286544+00:00",
+  "receipts": [
+    {
+      "blob": "validation/acceptance/2026-11-02/attempt-20261102T185708832156Z-59/verification.json",
+      "sha256": "4014fc9a5828d72647ad7c836bf036a3453777b00f307fea5baedb89e25ff03c"
+    },
+    {
+      "blob": "validation/acceptance/2026-11-02/attempt-20261102T185708832156Z-59/verification.md",
+      "sha256": "0a0d146a5d4f6f99a4532677b92645ac2d70c4cabb5d1fd9863a9cdbca1a4a7e"
+    },
+    {
+      "blob": "validation/acceptance/2026-11-02/attempt-20261102T185708832156Z-59/worker.log",
+      "sha256": "58e44d7a97dd8a589929bc74f82acf915202a2051b42f281d381604daa6af517"
+    }
+  ],
+  "receipt_publication": "complete"
+}
