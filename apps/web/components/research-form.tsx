@@ -135,7 +135,7 @@ export function ResearchForm() {
   const statusTitle = !job ? "Checking your research" : { queued: "Research queued", running: "Research in progress", complete: "Report ready", failed: "Research could not be completed" }[job.status];
 
   return <section className="research-composer" aria-labelledby="research-title">
-    <div className="composer-heading"><h2 id="research-title">Ask a research question</h2><p>Start with a focused question. Follow the evidence into a report.</p></div>
+    <div className="composer-heading"><h2 id="research-title">Ask a research question</h2></div>
     <form onSubmit={submit} className="research-form">
       <label htmlFor="research-question" className="sr-only">Research question</label>
       <textarea ref={questionField} id="research-question" name="question" rows={2} maxLength={4_000} required disabled={busy} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="What does the evidence say about…" aria-describedby={submitError ? "research-submit-error" : "research-mode-description"} />

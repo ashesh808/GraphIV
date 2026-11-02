@@ -60,7 +60,7 @@ export function Library({ result }: { result: LibraryResult }) {
   return (
     <main id="main-content" className="library-page">
       <div className="library-heading">
-        <div><h1>Research library<span className="title-period">.</span></h1><p>Reports and the papers behind them.</p></div>
+        <div><h1>Research library<span className="title-period">.</span></h1><p>Every citation checked against the arXiv corpus</p></div>
         <span className="library-total"><Icon name="book" width="16" height="16" />{result.runs.length} {result.runs.length === 1 ? "report" : "reports"}</span>
       </div>
 
@@ -90,7 +90,7 @@ export function Library({ result }: { result: LibraryResult }) {
         </Link>)}
         {!shown.length && <div className="library-empty"><Icon name={query || mode !== "all" ? "search" : "book"} width="28" height="28" /><h2>{result.status === "error" ? "The library is unavailable" : query || mode !== "all" ? "No matching reports" : "Your library starts here"}</h2><p>{result.status === "error" ? "Retry the connection above to load your reports." : query || mode !== "all" ? "Try another question or show all research modes." : "Reports saved by GraphIV will appear here, together with their papers and citations."}</p>{(query || mode !== "all") && <button className="button-secondary" onClick={clearFilters}>Clear filters</button>}</div>}
       </div>
-      <footer className="library-footer"><span role="status" aria-live="polite">{shown.length} of {result.runs.length} reports{query ? ` matching “${query}”` : ""}</span><span className="library-footer-note">Original research settings preserved.<span className="footer-node" aria-hidden="true" /></span></footer>
+      <footer className="library-footer"><span role="status" aria-live="polite">{shown.length} of {result.runs.length} reports{query ? ` matching “${query}”` : ""}</span></footer>
     </main>
   );
 }
