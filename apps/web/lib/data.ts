@@ -1,5 +1,6 @@
 import "server-only";
 
+import { backendRequest as request, BackendConnectionError } from "./backend.ts";
 import { exampleReports, exampleSummaries } from "./demo.ts";
 import type {
   GraphEdge,
@@ -12,8 +13,6 @@ import type {
   RunSummary,
 } from "./types";
 
-const DEFAULT_API = "http://127.0.0.1:6969";
-const TIMEOUT_MS = 3_000;
 const EXAMPLE_MESSAGE = "Showing example reports. Connect a research library to see your saved runs.";
 const ERROR_MESSAGE = "The research library is unavailable. Please try again.";
 
@@ -138,44 +137,31 @@ export function normalizeRun(value: unknown, slug: string): RunDetail | null {
   const ids = new Set(nodes.map((node) => node.arxiv_id));
   const edges: GraphEdge[] = array(graph.edges).map((value) => {
     const edge = record(value);
-    return { source: text(edge.source), target: text(edge.target), intent: text(edge.intent), sentence: text(edge.sentence), walked: edge.walked === true };
+    const intentScore = nullableNumber(edge.intent_score);
+    return {
+      source: text(edge.source), target: text(edge.target), intent: text(edge.intent),
+      ...(intentScore !== null && intentScore >= 0 && intentScore <= 1 ? { intentScore } : {}),
+      sentence: text(edge.sentence), walked: edge.walked === true,
+    };
   }).filter((edge) => ids.has(edge.source) && ids.has(edge.target));
+  const rawSections = record(raw.sections);
+  const degradedFeatures = strings(raw.degraded_features ?? rawSections.degraded_features);
+  const availability = record(raw.evidence_availability ?? rawSections.evidence_availability);
+  const evidenceNote = text(raw.evidence_note).trim() || text(rawSections.evidence_note).trim() ||
+    (availability.citation_sentences === false
+      ? "Citation sentences were unavailable for this report. Citation quotations and sentence-based dispute analysis are omitted."
+      : "");
   return {
     ...summary, papers, paperCount: papers.length || array(raw.papers).length,
     sections: normalizeSections(raw.sections), graph: { nodes, edges },
     report: text(raw.report), cited: strings(raw.cited), counts: numericRecord(raw.counts), seconds: numericRecord(raw.seconds),
+    ...(evidenceNote ? { evidenceNote } : {}),
+    ...(degradedFeatures.length ? { degradedFeatures } : {}),
   };
 }
 
-function apiConfiguration(): string {
-  const configured = process.env.GRAPHIV_API_URL?.trim();
-  const url = new URL(configured || DEFAULT_API);
-  if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) {
-    throw new Error("Unsupported library server configuration");
-  }
-  url.search = "";
-  url.hash = "";
-  return url.href.replace(/\/$/, "");
-}
-
-class ConnectionError extends Error {}
-
-async function request(path: string): Promise<Response> {
-  const base = apiConfiguration();
-  const token = process.env.GRAPHIV_API_TOKEN?.trim();
-  try {
-    return await fetch(`${base}${path}`, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-      headers: { Accept: "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-    });
-  } catch {
-    throw new ConnectionError("The research library could not be reached");
-  }
-}
-
 function allowExamples(error: unknown): boolean {
-  return !process.env.GRAPHIV_API_URL?.trim() && !process.env.GRAPHIV_API_TOKEN?.trim() && error instanceof ConnectionError;
+  return !process.env.GRAPHIV_API_URL?.trim() && !process.env.GRAPHIV_API_TOKEN?.trim() && error instanceof BackendConnectionError;
 }
 
 export async function loadLibrary(): Promise<LibraryResult> {

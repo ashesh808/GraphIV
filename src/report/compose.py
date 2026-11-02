@@ -77,6 +77,8 @@ Rules:
   sentence that could be written without having read the paper does not belong.
 - Where the evidence carries a disagreement, name both sides and say what the argument is about.
 - Never invent a number. Quote only numbers the evidence above states.
+- Never reconstruct or invent citation quotations. Intent labels are model predictions,
+  not verbatim statements; describe a labeled relation as a prediction when no text is supplied.
 - 250 to 400 words. Do not summarize the section at its end.
 """
 
@@ -182,6 +184,14 @@ def digest(
         The digest.
     """
     parts = [f"QUESTION: {question}", "", "NODES, the papers this review may cite"]
+    if found is not None and found.edges and not any(edge.sentence for edge in found.edges):
+        parts += [
+            "",
+            "EVIDENCE LIMITATION: Citation sentences are unavailable in this corpus. "
+            "The citation relations below are precomputed intent classifications, not quotations. "
+            "Do not invent or reconstruct wording attributed to a citing paper. "
+            "Omit sentence-based dispute claims; summarize the supplied metadata and abstracts.",
+        ]
     for paper in papers:
         role = grades[paper.arxiv_id].role if paper.arxiv_id in grades else "ungraded"
         name = " ".join(paper.title.split())

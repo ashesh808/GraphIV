@@ -11,6 +11,7 @@ ENV UV_PYTHON_DOWNLOADS=never \
     PATH=/app/.venv/bin:$PATH
 
 COPY pyproject.toml uv.lock README.md LICENSE ./
+RUN uv sync --frozen --no-dev --no-install-project --extra nomic
 COPY src ./src
 COPY apps/__init__.py ./apps/__init__.py
 COPY apps/api ./apps/api
@@ -18,7 +19,7 @@ COPY legacy/research-webui ./legacy/research-webui
 COPY retrieval_recipes ./retrieval_recipes
 COPY configs/runtime.toml ./configs/runtime.toml
 
-RUN uv sync --frozen --no-dev --no-editable
+RUN uv sync --frozen --no-dev --no-editable --extra nomic
 
 EXPOSE 8000
 CMD ["graphiv-serve", "--http", "--role", "both", "--host", "0.0.0.0", "--port", "8000"]

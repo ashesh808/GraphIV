@@ -100,6 +100,7 @@ class Edge(BaseModel):
     target: str
     intent: str
     sentence: str = ""
+    intent_score: float | None = Field(default=None, ge=0, le=1)
 
 
 class Grade(BaseModel):

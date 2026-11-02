@@ -45,3 +45,13 @@ output "backend_url" {
 output "mcp_url" {
   value = local.api_enabled ? "https://${azurerm_container_app.api[0].ingress[0].fqdn}/mcp" : null
 }
+
+output "runtime_cache_share_name" {
+  description = "Optional persistent corpus/model cache share; reports remain in Blob storage."
+  value       = var.runtime_cache_share ? azurerm_storage_share.runtime_cache[0].name : null
+}
+
+output "index_builder_job_name" {
+  description = "Optional manually triggered offline job. Creating the job does not start an execution."
+  value       = local.index_builder_enabled ? azurerm_container_app_job.index_builder[0].name : null
+}

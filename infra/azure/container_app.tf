@@ -1,7 +1,9 @@
 locals {
   api_enabled = var.api_image_tag != null
 
-  api_environment = merge(var.api_environment, {
+  api_environment = merge(var.runtime_cache_share ? {
+    HF_HOME = "/var/lib/graphiv/huggingface"
+    } : {}, var.api_environment, {
     AZURE_CLIENT_ID             = azurerm_user_assigned_identity.api.client_id
     PYTHONUNBUFFERED            = "1"
     GRAPHIV_STORAGE_ACCOUNT_URL = azurerm_storage_account.data.primary_blob_endpoint
@@ -148,7 +150,8 @@ resource "azurerm_container_app" "api" {
 
     volume {
       name         = "cache"
-      storage_type = "EmptyDir"
+      storage_type = var.runtime_cache_share ? "AzureFile" : "EmptyDir"
+      storage_name = var.runtime_cache_share ? azapi_resource.cache_storage[0].name : null
     }
   }
 
@@ -159,5 +162,6 @@ resource "azurerm_container_app" "api" {
     azurerm_role_assignment.report_writer,
     azurerm_role_assignment.report_reader,
     azurerm_role_assignment.secret_reader,
+    azapi_resource.cache_storage,
   ]
 }

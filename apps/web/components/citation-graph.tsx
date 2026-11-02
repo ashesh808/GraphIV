@@ -2,6 +2,7 @@
 
 import { useId, useMemo, useState } from "react";
 import type { GraphEdge, GraphNode } from "../lib/types";
+import { formatIntentConfidence } from "../lib/format";
 
 const WIDTH = 1080;
 const LEFT = 72;
@@ -210,7 +211,7 @@ export function CitationGraph({
                     <button type="button" onClick={() => onSelectId(edge.source)}>{title(edge.source)}</button>
                     <span className="report-relation-direction">cites <span aria-hidden="true">→</span></span>
                     <button type="button" onClick={() => onSelectId(edge.target)}>{title(edge.target)}</button>
-                    {edge.intent && <span className="report-relation-intent">{edge.intent.replaceAll("_", " ")}</span>}
+                    {edge.intent && <><span className="report-relation-intent">{edge.intent.replaceAll("_", " ")}</span>{edge.intentScore !== undefined && <span className="report-relation-confidence">{formatIntentConfidence(edge.intentScore)}</span>}</>}
                   </div>
                   {edge.sentence && <p className="report-relation-sentence">“{edge.sentence}”</p>}
                 </li>

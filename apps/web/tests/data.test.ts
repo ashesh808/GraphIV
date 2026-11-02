@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test, { type TestContext } from "node:test";
 
 import { loadLibrary, loadRun, normalizeRun, normalizeSummary, validSlug } from "../lib/data.ts";
+import { formatIntentConfidence } from "../lib/format.ts";
 
 function isolateApi(t: TestContext, url?: string): void {
   const previousFetch = globalThis.fetch;
@@ -168,4 +169,53 @@ test("normalization preserves open questions and discards dangling graph edges",
   assert.equal(report.papers[0].authors, "A. Reader, B. Researcher");
   assert.equal(report.graph.edges.length, 1);
   assert.equal(report.graph.edges[0].target, "paper-b");
+});
+
+test("saved structured reports retain their evidence qualification and missing features", () => {
+  const note = "Citation sentences are unavailable. Intent labels are precomputed predictions.";
+  const report = normalizeRun({
+    question: "Real saved report",
+    degraded_features: ["citation_quotations", "sentence_based_disputes", 12],
+    sections: { answer: "A structured answer", evidence_note: note },
+  }, "qualified-report");
+  assert.equal(report?.evidenceNote, note);
+  assert.deepEqual(report?.degradedFeatures, ["citation_quotations", "sentence_based_disputes"]);
+  assert.equal(report?.sections.answer, "A structured answer");
+});
+
+test("explicit missing-citation metadata qualifies a report without inventing legacy limitations", () => {
+  const unavailable = normalizeRun({ question: "Snapshot report", evidence_availability: { citation_sentences: false } }, "snapshot-report");
+  assert.match(unavailable?.evidenceNote || "", /Citation quotations and sentence-based dispute analysis are omitted/);
+  const legacy = normalizeRun({ question: "Legacy report" }, "legacy");
+  assert.equal(legacy?.evidenceNote, undefined);
+  assert.equal(legacy?.degradedFeatures, undefined);
+  const malformed = normalizeRun({ question: "Legacy metadata", evidence_note: {}, evidence_availability: { citation_sentences: "false" } }, "legacy");
+  assert.equal(malformed?.evidenceNote, undefined);
+});
+
+test("graph intent confidence preserves valid boundaries and omits missing or invalid scores", () => {
+  for (const score of [0, 0.846, 1]) {
+    const run = normalizeRun({ question: "Scored graph", graph: {
+      nodes: [{ arxiv_id: "a" }, { arxiv_id: "b" }],
+      edges: [{ source: "a", target: "b", intent: "uses", intent_score: score }],
+    } }, "scored-graph");
+    assert.equal(run?.graph.edges[0].intentScore, score);
+    assert.equal(run?.graph.edges[0].sentence, "");
+  }
+  for (const score of [undefined, null, "0.8", -0.1, 1.1, Infinity, NaN, {}, true]) {
+    const run = normalizeRun({ question: "Unscored graph", graph: {
+      nodes: [{ arxiv_id: "a" }, { arxiv_id: "b" }],
+      edges: [{ source: "a", target: "b", intent: "uses", intent_score: score }],
+    } }, "unscored-graph");
+    assert.equal(run?.graph.edges[0].intentScore, undefined);
+    assert.equal(run?.graph.edges[0].intent, "uses");
+    assert.equal(run?.graph.edges[0].sentence, "");
+  }
+});
+
+test("intent confidence display explicitly qualifies a precomputed prediction", () => {
+  assert.equal(formatIntentConfidence(0.846), "84.6% confidence · precomputed prediction");
+  assert.equal(formatIntentConfidence(0), "0% confidence · precomputed prediction");
+  assert.equal(formatIntentConfidence(1), "100% confidence · precomputed prediction");
+  for (const score of [undefined, NaN, Infinity, -0.1, 1.1]) assert.equal(formatIntentConfidence(score), "");
 });

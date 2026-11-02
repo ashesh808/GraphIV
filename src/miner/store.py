@@ -44,7 +44,23 @@ def read_edges(dsn: CorpusSource, arxiv_ids: list[str]) -> list[Edge]:
     """
     if not arxiv_ids:
         return []
-    rows = open_corpus(dsn).edges(arxiv_ids)
+    corpus = open_corpus(dsn)
+    scored = getattr(corpus, "edge_records", None)
+    if callable(scored):
+        records = cast(
+            list[tuple[str, str, str | None, str | None, float | None]], scored(arxiv_ids)
+        )
+        return [
+            Edge(
+                source=str(source),
+                target=str(target),
+                intent=str(intent or "background"),
+                sentence=str(sentence or ""),
+                intent_score=float(score) if score is not None else None,
+            )
+            for source, target, intent, sentence, score in records
+        ]
+    rows = corpus.edges(arxiv_ids)
     return [
         Edge(source=str(s), target=str(t), intent=str(i or "background"), sentence=str(sent or ""))
         for s, t, i, sent in rows

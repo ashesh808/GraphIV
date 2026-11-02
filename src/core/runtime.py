@@ -27,14 +27,16 @@ def runtime_config(path: str | Path) -> dict[str, Any]:
         raise ValueError("GRAPHIV_STORAGE_BACKEND must be postgres, sqlite, or azure")
     storage["REPORT_BACKEND"] = os.environ.get(
         "GRAPHIV_REPORT_STORAGE_BACKEND",
-        "azure" if cloud else storage.get("REPORT_BACKEND", "local")
+        "azure" if cloud else storage.get("REPORT_BACKEND", "local"),
     ).lower()
     if storage["REPORT_BACKEND"] not in {"local", "azure"}:
         raise ValueError("GRAPHIV_REPORT_STORAGE_BACKEND must be local or azure")
     endpoints = config.setdefault("endpoints", {})
     for env, key in (
-        ("GRAPHIV_LLM_API_URL", "LLM_API"), ("GRAPHIV_LLM_MODEL", "LLM_NAME"),
-        ("GRAPHIV_EMBED_API_URL", "EMBED_API"), ("GRAPHIV_EMBED_MODEL", "EMBED_NAME"),
+        ("GRAPHIV_LLM_API_URL", "LLM_API"),
+        ("GRAPHIV_LLM_MODEL", "LLM_NAME"),
+        ("GRAPHIV_EMBED_API_URL", "EMBED_API"),
+        ("GRAPHIV_EMBED_MODEL", "EMBED_NAME"),
     ):
         if cloud or env in os.environ:
             endpoints[key] = os.environ.get(env, "")
@@ -43,6 +45,12 @@ def runtime_config(path: str | Path) -> dict[str, Any]:
     endpoints["EMBED_QUERY_PREFIX"] = os.environ.get(
         "GRAPHIV_EMBED_QUERY_PREFIX", endpoints.get("EMBED_QUERY_PREFIX", "search_query: ")
     )
+    endpoints["EMBED_BACKEND"] = os.environ.get("GRAPHIV_EMBED_BACKEND", "remote")
+    if endpoints["EMBED_BACKEND"] not in {"remote", "local_nomic"}:
+        raise ValueError("GRAPHIV_EMBED_BACKEND must be remote or local_nomic")
+    if endpoints["EMBED_BACKEND"] == "local_nomic":
+        endpoints["EMBED_NAME"] = "nomic-embed-text-v2-moe"
+        endpoints["EMBED_QUERY_PREFIX"] = "search_query: "
     database = config.setdefault("database", {})
     if "GRAPHIV_POSTGRES_DSN" in os.environ:
         database["PG_DEST"] = os.environ["GRAPHIV_POSTGRES_DSN"]

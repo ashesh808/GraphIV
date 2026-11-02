@@ -43,6 +43,20 @@ SLUG = re.compile(r"[^a-z0-9]+")
 SAMPLES = 20
 # what the answer is asked from, since the whole review runs past the context a reply needs
 EVIDENCE_CHARS = 24000
+
+MISSING_CITATION_TEXT = (
+    "Citation sentences are unavailable in this published snapshot. Citation-intent "
+    "labels and confidence scores are precomputed model predictions. Citation quotations "
+    "and sentence-based dispute analysis are omitted; no citation text was extracted or generated."
+)
+
+
+def _progress(handles: Handles, stage: str) -> None:
+    callback = getattr(handles, "progress", None)
+    if callback is not None:
+        callback(stage)
+
+
 SENTENCE_CHARS = 300
 # a successor sits at least as close to the question as all but the farthest tenth of what was kept
 FLOOR_SHARE = 0.1
@@ -241,7 +255,9 @@ def as_papers(
                 "cosine": (
                     round(held.cosine, 4)
                     if held is not None and held.cosine
-                    else round(closeness[arxiv_id], 4) if arxiv_id in closeness else None
+                    else round(closeness[arxiv_id], 4)
+                    if arxiv_id in closeness
+                    else None
                 ),
                 "magnet": round(weight[arxiv_id], 3) if arxiv_id in weight else None,
                 "retrieved": arxiv_id in kept,
@@ -301,6 +317,7 @@ def as_graph(found: Mined, papers: list[dict[str, Any]], graph: GraphExport) -> 
             "source": e.source,
             "target": e.target,
             "intent": e.intent,
+            "intent_score": e.intent_score,
             "sentence": e.sentence[:SENTENCE_CHARS],
             "walked": (e.source, e.target) in walked,
         }
@@ -340,7 +357,7 @@ def open_questions(handles: Handles, areas: list[Area], papers: list[Paper], dep
     _ = held
 
 
-def between(nodes: list[str], edges: list[Edge]) -> list[dict[str, str]]:
+def between(nodes: list[str], edges: list[Edge]) -> list[dict[str, Any]]:
     """
     The citations among one line's papers, once per citing pair and intent
 
@@ -352,7 +369,7 @@ def between(nodes: list[str], edges: list[Edge]) -> list[dict[str, str]]:
         One entry per pair and intent, carrying the first sentence found for it.
     """
     held = set(nodes)
-    out: dict[tuple[str, str, str], dict[str, str]] = {}
+    out: dict[tuple[str, str, str], dict[str, Any]] = {}
     for e in edges:
         key = (e.source, e.target, e.intent)
         if e.source in held and e.target in held and key not in out:
@@ -360,6 +377,7 @@ def between(nodes: list[str], edges: list[Edge]) -> list[dict[str, str]]:
                 "source": e.source,
                 "target": e.target,
                 "intent": e.intent,
+                "intent_score": e.intent_score,
                 "sentence": e.sentence[:SENTENCE_CHARS],
             }
     return list(out.values())
@@ -515,6 +533,7 @@ def write_report(
         The markdown, where it was written and what the guard had to change, as json.
     """
     clock = time.perf_counter()
+    _progress(handles, "mining")
     hard = level(effort)
     papers, areas, grades, first, mode, asked, spent = gather(query_ids)
     if not papers:
@@ -539,6 +558,7 @@ def write_report(
     mined = miner.mine(papers, vector, asked, expand=not pinned)
     close = read_cosines(handles.dsn, vector, [p.arxiv_id for p in papers])
     found = trim(focus(miner, mined, papers, close), hard)
+    _progress(handles, "reading_papers")
     made, methods = table(handles, question, closest(papers, areas, close), hard.full_text)
     told = [
         Section(title=str(s.get("title", "")), body=str(s.get("body", "")))
@@ -546,6 +566,7 @@ def write_report(
         if str(s.get("body", "")).strip()
     ]
     if not told and hard.compose:
+        _progress(handles, "composing_report")
         told = compose(handles.model, question, asked, papers, grades, found, made, methods)
     if hard.compose:
         open_questions(handles, areas, papers, OPEN_PAPERS)
@@ -587,6 +608,9 @@ def write_report(
 
     checked = ground.check(handles.dsn, text, allowed)
     body = ground.linkify(checked.text)
+    citation_sentences = getattr(handles, "citation_sentences", True)
+    if not citation_sentences:
+        body += f"\n## Evidence availability\n\n{MISSING_CITATION_TEXT}\n"
     discussed = ground.read_ids("\n\n".join([short] + [one.body for one in told]))
 
     where = handles.runs / slug(draft.question, asked)
@@ -597,9 +621,15 @@ def write_report(
     _ = (where / "graph.json").write_text(
         json.dumps(as_graph(found, rows, handles.graph), indent=2), encoding="utf-8"
     )
-    _ = (where / "report.json").write_text(
-        json.dumps(as_report(draft, found), indent=2), encoding="utf-8"
-    )
+    features = {"citation_sentences": citation_sentences, "jit_intent_mapping": False}
+    degraded = [] if citation_sentences else ["citation_quotations", "sentence_based_disputes"]
+    payload = as_report(draft, found) | {
+        "evidence_availability": features,
+        "degraded_features": degraded,
+        "evidence_note": "" if citation_sentences else MISSING_CITATION_TEXT,
+    }
+    _ = (where / "report.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    metric_callback = getattr(handles, "execution_metrics", None)
     _ = (where / "run.json").write_text(
         json.dumps(
             {
@@ -617,6 +647,10 @@ def write_report(
                 "seconds": draft.seconds,
                 "corrected": checked.fixed,
                 "cut": checked.cut,
+                "corpus": getattr(handles, "corpus_info", {}),
+                "evidence_availability": features,
+                "degraded_features": degraded,
+                "execution_metrics": metric_callback() if metric_callback else {},
             },
             indent=2,
         ),
@@ -624,6 +658,7 @@ def write_report(
     )
     report_store = getattr(handles, "report_store", None)
     if report_store is not None:
+        _progress(handles, "publishing_report")
         report_store.save_directory(where)
     if end:
         reset()
@@ -636,6 +671,9 @@ def write_report(
             "corrected": checked.fixed,
             "cut": checked.cut,
             "report": body,
+            "counts": mined.counts,
+            "seconds": draft.seconds,
+            "degraded_features": degraded,
         },
         indent=2,
     )

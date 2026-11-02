@@ -11,6 +11,7 @@ import hashlib
 import logging
 import os
 import threading
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date
 from functools import lru_cache
@@ -58,6 +59,11 @@ class Handles:
     runs: Path
     fetch: bool = False
     report_store: ReportStore | None = None
+    query_encoder: Any = None
+    corpus_info: dict[str, Any] = field(default_factory=dict)
+    citation_sentences: bool = True
+    progress: Callable[[str], None] | None = None
+    execution_metrics: Callable[[], dict[str, Any]] | None = None
 
     def embed(self, text: str) -> list[float]:
         """
@@ -69,6 +75,9 @@ class Handles:
         Returns:
             The unit normalized vector.
         """
+        encoder = getattr(self, "query_encoder", None)
+        if encoder is not None:
+            return encoder.embed(text)
         options = {}
         if self.endpoints.get("EMBED_API_KEY"):
             options["api_key"] = self.endpoints["EMBED_API_KEY"]
@@ -201,6 +210,7 @@ def load(config_path: str | Path = CONFIG) -> Handles:
     backend = config["storage"]["BACKEND"]
     dsn: CorpusSource = str(config["database"]["PG_DEST"])
     graph_path = config["dataset"]["GRAPH_PATH"]
+    corpus_info: dict[str, Any] = {}
     if backend in {"sqlite", "azure"}:
         from src.storage.sqlite import SQLiteCorpus
 
@@ -208,12 +218,16 @@ def load(config_path: str | Path = CONFIG) -> Handles:
         database = snapshot.database if snapshot else Path(config["storage"]["METADATA_PATH"])
         index = snapshot.index if snapshot else config["storage"].get("INDEX_PATH")
         dsn = SQLiteCorpus(
-            database, Path(index) if index else None,
+            database,
+            Path(index) if index else None,
             embedding_dimension=snapshot.embedding_dimension if snapshot else None,
         )
         if snapshot:
             graph_path = snapshot.graph
-            if snapshot.embedding_model and endpoints["EMBED_NAME"] != snapshot.embedding_model:
+            corpus_info = snapshot.manifest.raw
+            actual_model = endpoints["EMBED_NAME"].removeprefix("nomic-ai/")
+            snapshot_model = snapshot.embedding_model.removeprefix("nomic-ai/")
+            if snapshot_model and actual_model != snapshot_model:
                 raise ValueError("Embedding model must match the published corpus snapshot")
     graph = load_graph_export(str(graph_path))
     options: dict[str, Any] = {}
@@ -221,6 +235,17 @@ def load(config_path: str | Path = CONFIG) -> Handles:
         options.update(reasoning_effort=None, raise_on_error=True)
     if endpoints.get("LLM_API_KEY"):
         options["api_key"] = endpoints["LLM_API_KEY"]
+    query_encoder = None
+    if endpoints.get("EMBED_BACKEND") == "local_nomic":
+        from src.core.query_encoder import NomicQueryEncoder
+
+        cache = Path(
+            os.environ.get("GRAPHIV_NOMIC_CACHE", str(Path(block["CACHE_PATH"]).parent / "nomic"))
+        )
+        query_encoder = NomicQueryEncoder(
+            cache=cache, threads=int(os.environ.get("GRAPHIV_NOMIC_THREADS", "4"))
+        )
+        query_encoder.load()
     handles = Handles(
         dsn=dsn,
         endpoints=endpoints,
@@ -234,6 +259,11 @@ def load(config_path: str | Path = CONFIG) -> Handles:
         runs=settings.runs,
         fetch=settings.fetch,
         report_store=report_store(config_path),
+        query_encoder=query_encoder,
+        corpus_info=corpus_info,
+        citation_sentences=bool(
+            corpus_info.get("capabilities", {}).get("citation_sentences", True)
+        ),
     )
     LOG.info("loaded %d papers", graph.n_papers)
     return handles
@@ -250,7 +280,8 @@ def report_store(config_path: str | Path = CONFIG) -> ReportStore:
     config = runtime_config(config_path)
     if config["storage"]["REPORT_BACKEND"] == "azure":
         return BlobReportStore(
-            _blob_service(), os.environ.get("GRAPHIV_REPORTS_CONTAINER", "reports"),
+            _blob_service(),
+            os.environ.get("GRAPHIV_REPORTS_CONTAINER", "reports"),
             Path(config["serve"]["RUNS_PATH"]),
         )
     return LocalReportStore(Path(config["serve"]["RUNS_PATH"]))
@@ -260,7 +291,8 @@ def report_store(config_path: str | Path = CONFIG) -> ReportStore:
 def _snapshot(config_path: str | Path = CONFIG) -> Snapshot:
     config = runtime_config(config_path)
     return load_snapshot(
-        _blob_service(), os.environ.get("GRAPHIV_METADATA_CONTAINER", "metadata"),
+        _blob_service(),
+        os.environ.get("GRAPHIV_METADATA_CONTAINER", "metadata"),
         os.environ.get("GRAPHIV_MANIFEST_BLOB", "manifest.json"),
         Path(config["storage"]["CACHE_PATH"]),
     )
@@ -307,7 +339,10 @@ def _configuration_reasons(config: dict[str, Any]) -> list[str]:
     if config["storage"]["BACKEND"] == "postgres" and not config["database"].get("PG_DEST"):
         reasons.append("PostgreSQL DSN is not configured")
     for prefix, label in (("LLM", "LLM"), ("EMBED", "Embedding")):
-        if not config["endpoints"].get(f"{prefix}_API"):
+        local_embedding = (
+            prefix == "EMBED" and config["endpoints"].get("EMBED_BACKEND") == "local_nomic"
+        )
+        if not local_embedding and not config["endpoints"].get(f"{prefix}_API"):
             reasons.append(f"{label} endpoint is not configured")
         if not config["endpoints"].get(f"{prefix}_NAME"):
             reasons.append(f"{label} model is not configured")
@@ -322,7 +357,15 @@ def runtime_status() -> dict[str, Any]:
         reason = str(_PREPARATION["reason"])
         if reason not in reasons:
             reasons.append(reason)
-    return {"ready": not reasons, "storage": config["storage"]["BACKEND"], "reasons": reasons}
+    status = {"ready": not reasons, "storage": config["storage"]["BACKEND"], "reasons": reasons}
+    if _PREPARATION["complete"] and load.cache_info().currsize:
+        manifest = load().corpus_info
+        status["corpus"] = {
+            key: manifest[key]
+            for key in ("snapshot_id", "source", "embedding", "counts", "capabilities", "index")
+            if key in manifest
+        }
+    return status
 
 
 def make_id(*parts: str) -> str:

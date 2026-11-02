@@ -12,8 +12,8 @@ The environment is managed by `azapi_resource.environment` using ARM API
 `2026-07-01`, explicitly setting `environmentMode = "WorkloadProfiles"` and the
 `Consumption` workload profile. AzureRM 5.12 does not expose that mode field.
 AzAPI 2.13's embedded schema does not yet include this published API version, so
-embedded validation is disabled only for the managed-environment resource; mock
-tests assert the required mode and profile fields.
+embedded validation is disabled for the managed-environment and optional preview
+storage-definition resources; mock tests assert their required fields.
 Express mode cannot use the Key Vault secret references required here; see the
 [Express limitations](https://learn.microsoft.com/en-us/azure/container-apps/express-overview#not-supported)
 and [managed-environment API schema](https://learn.microsoft.com/en-us/azure/templates/microsoft.app/2026-07-01/managedenvironments).
@@ -165,6 +165,87 @@ The API can serve the report library before corpus/model configuration is comple
    from Vercel and expose the web app's read endpoints. The default command uses
    `--role both` to serve MCP and library routes; `api` alone omits the library.
 
+## Persistent corpus cache
+
+`runtime_cache_share = false` preserves the original `EmptyDir` mount and creates
+no additional storage or identities. Set it to `true` for a corpus that cannot fit
+the replica's temporary disk. This adds an SMB share named `runtime-cache` in the
+existing Storage Account, with a 100GiB quota, mounted at `/var/lib/graphiv` in the
+API and optional builder. Files survive replica replacement. Reports continue to
+persist independently in Blob storage; the share holds rebuildable artifacts and
+model caches. Removing the share through Terraform also removes its cached files.
+
+The mount uses a separate user-assigned **environment** identity and the
+**Storage File Data SMB MI Admin** role at Storage Account scope. The API identity's
+Blob permissions remain unchanged. Account-key authentication stays disabled.
+The configuration enables only the nested `smbOAuthSettings.isSmbOAuthEnabled`
+property through AzAPI and uses the `2026-03-02-preview` environment-storage API's
+`azureFile.identity` field. Microsoft documents this managed-identity mount path
+as preview. See [Container Apps SMB mount requirements](https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts?pivots=aca-arm#azure-files-volume)
+and the [preview storage schema](https://learn.microsoft.com/en-us/azure/templates/microsoft.app/2026-03-02-preview/managedenvironments/storages).
+
+Before activation, verify that the account's existing SMB security settings allow
+Kerberos; enabling SMB OAuth does not change that policy. Allow RBAC grants to
+propagate before mounting. This root preserves the existing SMB policy instead
+of replacing it; see [Azure Files identity prerequisites](https://learn.microsoft.com/en-us/azure/storage/files/files-managed-identities#prerequisites).
+
+Persistent disk does not increase RAM. A full float32 3.2-million-by-768 flat index
+alone needs about 9.2GiB before process overhead and cannot fit an 8GiB Consumption
+replica. Use a tested compact index and measured runtime resources for a full
+corpus. With the share enabled, `HF_HOME` defaults to `/var/lib/graphiv/huggingface`
+for model downloads; `api_environment` can explicitly override that location.
+
+## Manual corpus build
+
+`index_builder_image_tag` defaults to null. Set it only after publishing a tested
+offline image as `graphiv-index-builder:<tag>` to this stack's registry, and enable
+`runtime_cache_share`. Terraform creates a manually triggered Container Apps Job
+in the existing environment; it does not execute the job. No VM, schedule, or new
+runtime service is created.
+
+The job uses 4CPU/8Gi, one replica per execution, no retries, and an 86400-second
+timeout. Its default command runs `offline.index_build.run_hf` against the pinned
+`GraphIV-2026-10-01` revision, with work under `/var/lib/graphiv/build`, builds an
+`ivfsq8` snapshot, then publishes its immutable artifacts and manifest without
+changing the active runtime manifest. Confirm the command against the tested
+image before starting it; `index_builder_command` can override the arguments.
+See the [offline builder](../../offline/index_build/README.md).
+
+For a gated or private HF source, populate a read token in Key Vault using the
+file-based workflow above, then set `hf_token_secret_name` to its name. The job
+receives `HF_TOKEN` through a managed-identity Key Vault reference; Terraform never
+reads its value. Public sources can omit it. The separate builder identity receives
+ACR pull, Blob Data Contributor only on the three input-artifact containers, and
+Key Vault Secrets User only on the selected HF secret. It receives no reports,
+API-token, or model-key grant. The shared filesystem mount uses the environment's
+cache identity, not the builder identity.
+
+After reviewing and applying the job configuration, explicitly start one execution:
+
+```sh
+az containerapp job start \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw index_builder_job_name)"
+az containerapp job execution list \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw index_builder_job_name)" \
+  --output table
+```
+
+Start only one build execution at a time; replica parallelism does not prevent an
+operator from starting another execution. Check the build's source counts,
+artifact checksums, and completion result, then run the actual-corpus quality
+benchmark against the built snapshot on the shared cache. The benchmark module
+can be streamed into the existing API container; no extra infrastructure or
+service is required. Keep the published snapshot inactive until the measured
+recall, latency, and memory checks pass. After that review, explicitly rerun the
+builder for the same verified snapshot with `--publish --activate`; it reuses the
+existing local snapshot and updates the active manifest only on that explicit
+request. Default builds never activate an unbenchmarked ANN configuration.
+Setting `index_builder_image_tag = null` removes the job and its dedicated grants;
+keep `runtime_cache_share = true` to retain the cache. Job behavior is defined by
+the [Container Apps Jobs model](https://learn.microsoft.com/en-us/azure/container-apps/jobs).
+
 ## Permissions
 
 The API identity receives the following scoped grants from [`identity.tf`](identity.tf):
@@ -219,9 +300,10 @@ this root does not create a private network endpoint.
 The image authenticates to Blob through the
 [user-assigned managed identity](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity),
 downloads verified indexes/metadata, authenticates external model calls, and uploads
-completed report artifacts to Blob. The mounted `/var/lib/graphiv` volume is replica-scoped
-`EmptyDir`, suitable for a rebuildable index cache, not persistent reports. Its contents
-disappear when the replica is replaced; see
+completed report artifacts to Blob. The mounted `/var/lib/graphiv` volume defaults to
+replica-scoped `EmptyDir`; its contents disappear when the replica is replaced.
+The optional `runtime_cache_share` makes those cache files persistent through an
+identity-authenticated Azure Files mount. Reports remain in Blob in either case; see
 [Container Apps storage lifetimes](https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts).
 
 Ingress is public HTTPS on port 8000. Every route except `/health/live` and

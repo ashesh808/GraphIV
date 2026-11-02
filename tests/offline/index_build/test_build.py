@@ -80,7 +80,14 @@ def test_builder_outputs_are_consumed_by_the_actual_runtime_loaders(tmp_path: Pa
     assert manifest.snapshot_id == "test-corpus-v1"
     assert manifest.embedding_dimension == 2
     assert manifest.embedding_model == "fixture-model"
-    assert manifest.raw["counts"] == {"papers": 4, "embedded": 3, "edges": 2}
+    assert manifest.raw["counts"] == {
+        "papers": 4,
+        "embedded": 3,
+        "edges": 2,
+        "citations": 6,
+        "topics": 1,
+        "topic_names": 1,
+    }
     for role, reference in manifest.artifacts.items():
         assert reference.sha256 == file_sha256(destination / ARTIFACT_FILENAMES[role])
         assert reference.blob == f"snapshots/test-corpus-v1/{ARTIFACT_FILENAMES[role]}"

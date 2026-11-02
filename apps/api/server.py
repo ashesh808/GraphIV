@@ -471,6 +471,48 @@ def build_http_app(
                 job if job else {"error": "No such research job"}, status_code=200 if job else 404
             )
 
+        @engine.custom_route("/api/corpus/validate", methods=["POST"])
+        async def validate_corpus_ids(request: Request) -> JSONResponse:
+            if not readiness()["ready"]:
+                return JSONResponse({"error": "Research runtime is not ready"}, status_code=503)
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 131072:
+                    return JSONResponse({"error": "Too many paper identifiers"}, status_code=413)
+            try:
+                parsed = json.loads(body)
+                ids = parsed.get("ids") if isinstance(parsed, dict) else None
+                if (
+                    not isinstance(ids, list)
+                    or not 1 <= len(ids) <= 1000
+                    or any(not isinstance(item, str) or not 1 <= len(item) <= 80 for item in ids)
+                ):
+                    raise ValueError("Pass 1–1000 paper identifiers")
+            except (ValueError, UnicodeError):
+                return JSONResponse({"error": "Pass 1–1000 paper identifiers"}, status_code=422)
+
+            def records() -> list[dict[str, Any]]:
+                from src.storage.corpus import open_corpus
+
+                return [
+                    {
+                        "arxiv_id": row[0],
+                        "title": row[1],
+                        "abstract": row[2],
+                        "date": row[3].isoformat() if row[3] else None,
+                        "primary_category": row[4],
+                        "authors": row[5],
+                    }
+                    for row in open_corpus(load().dsn).records(list(dict.fromkeys(ids)))
+                ]
+
+            found = await asyncio.to_thread(records)
+            known = {row["arxiv_id"] for row in found}
+            return JSONResponse(
+                {"papers": found, "missing": [item for item in ids if item not in known]}
+            )
+
     app = engine.streamable_http_app()
     original_lifespan = app.router.lifespan_context
 

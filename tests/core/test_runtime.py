@@ -104,23 +104,54 @@ def test_preparation_failure_never_exposes_a_dsn_or_secret(monkeypatch):
 def test_query_embedding_uses_its_own_credential(monkeypatch):
     seen = []
     monkeypatch.setattr(state, "embed", lambda *args, **kwargs: seen.append((args, kwargs)))
-    handles = SimpleNamespace(endpoints={
-        "EMBED_API": "https://embed.example/v1", "EMBED_NAME": "corpus-model",
-        "EMBED_API_KEY": "embedding-only", "LLM_API_KEY": "llm-only",
-    })
+    handles = SimpleNamespace(
+        endpoints={
+            "EMBED_API": "https://embed.example/v1",
+            "EMBED_NAME": "corpus-model",
+            "EMBED_API_KEY": "embedding-only",
+            "LLM_API_KEY": "llm-only",
+        }
+    )
     state.Handles.embed(handles, "question")
-    assert seen == [(
-        ("https://embed.example/v1", "corpus-model", "question"),
-        {"api_key": "embedding-only"},
-    )]
+    assert seen == [
+        (
+            ("https://embed.example/v1", "corpus-model", "question"),
+            {"api_key": "embedding-only"},
+        )
+    ]
 
 
 def test_explicit_empty_query_prefix_reaches_the_embedding_client(monkeypatch):
     seen = []
     monkeypatch.setattr(state, "embed", lambda *args, **kwargs: seen.append(kwargs))
-    handles = SimpleNamespace(endpoints={
-        "EMBED_API": "https://ai-gateway.vercel.sh/v1",
-        "EMBED_NAME": "openai/text-embedding-3-small", "EMBED_QUERY_PREFIX": "",
-    })
+    handles = SimpleNamespace(
+        endpoints={
+            "EMBED_API": "https://ai-gateway.vercel.sh/v1",
+            "EMBED_NAME": "openai/text-embedding-3-small",
+            "EMBED_QUERY_PREFIX": "",
+        }
+    )
     state.Handles.embed(handles, "question")
     assert seen == [{"query_prefix": ""}]
+
+
+def test_local_nomic_enforces_published_query_space_without_remote_embedding_endpoint(monkeypatch):
+    monkeypatch.setenv("GRAPHIV_RUNTIME", "azure")
+    monkeypatch.setenv("GRAPHIV_EMBED_BACKEND", "local_nomic")
+    monkeypatch.setenv("GRAPHIV_EMBED_MODEL", "openai/text-embedding-3-small")
+    monkeypatch.setenv("GRAPHIV_EMBED_QUERY_PREFIX", "")
+    config = runtime_config(RUNTIME_CONFIG)
+    assert config["endpoints"]["EMBED_NAME"] == "nomic-embed-text-v2-moe"
+    assert config["endpoints"]["EMBED_QUERY_PREFIX"] == "search_query: "
+    assert "Embedding endpoint is not configured" not in state._configuration_reasons(config)
+
+
+def test_local_nomic_query_uses_encoder_without_calling_remote_embedding_service(monkeypatch):
+    class Encoder:
+        def embed(self, text):
+            assert text == "question"
+            return [0.25] * 768
+
+    monkeypatch.setattr(state, "embed", lambda *_args, **_kwargs: pytest.fail("remote fallback"))
+    handles = SimpleNamespace(query_encoder=Encoder())
+    assert state.Handles.embed(handles, "question") == [0.25] * 768

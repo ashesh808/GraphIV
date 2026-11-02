@@ -1,6 +1,7 @@
 -- GraphIV immutable corpus metadata, schema version 1.
--- Dates are ISO YYYY-MM-DD strings. Vector blobs are little-endian float32,
--- retaining the original PostgreSQL halfvec values before FAISS normalization.
+-- Dates are ISO YYYY-MM-DD strings. Vector blobs are little-endian float32
+-- unless corpus_metadata.vector_dtype explicitly declares float16. Published
+-- GraphIV embeddings/PostgreSQL halfvec values are losslessly stored as float16.
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE corpus_metadata (
@@ -8,7 +9,8 @@ CREATE TABLE corpus_metadata (
     value TEXT NOT NULL
 );
 INSERT INTO corpus_metadata VALUES ('schema_version', '1');
--- Builders also write embedding_dimension and embedding_model when available.
+-- Builders also write embedding_dimension/model, vector_dtype, and FAISS
+-- candidate-index settings faiss_index_kind/nlist/nprobe/oversample.
 
 CREATE TABLE papers (
     arxiv_id TEXT PRIMARY KEY,
@@ -26,7 +28,7 @@ CREATE INDEX papers_stage_date ON papers(stage, date);
 
 -- Every FAISS result label must resolve through this table. A plain IndexFlatIP
 -- uses sequential labels 0..ntotal-1. The index stores L2-normalized vectors and
--- uses inner product; papers.embed_full remains available for exact cosines.
+-- uses inner product; papers.embed_full remains available for exact reranking.
 CREATE TABLE vector_ids (
     faiss_id INTEGER PRIMARY KEY CHECK (faiss_id >= 0),
     arxiv_id TEXT NOT NULL UNIQUE REFERENCES papers(arxiv_id)

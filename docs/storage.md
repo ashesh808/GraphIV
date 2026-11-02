@@ -24,8 +24,10 @@ read operations for retrieval, mining, author/topic lookup, grounding, and paper
 The ranking recipes and research algorithms are shared by both implementations.
 
 The SQLite contract is [`src/storage/schema.sql`](../src/storage/schema.sql), version 1.
-`papers.embed_full` retains the original vectors as little-endian float32 bytes; the FAISS
-index uses normalized vectors with inner-product distance. Every FAISS integer label maps
+`papers.embed_full` retains the original vectors as little-endian float32 bytes unless
+`corpus_metadata.vector_dtype` explicitly declares float16. The published release's float16
+vectors are retained losslessly. The FAISS index uses normalized vectors with inner-product
+distance. Every FAISS integer label maps
 to a paper through `vector_ids(faiss_id, arxiv_id)`. The adapter validates the index metric
 and dimensions. A separate ID-map file is not required.
 
@@ -101,25 +103,29 @@ separate from the application identity's read access to vector indexes.
 
 ## Capacity planning
 
-The builder currently produces an uncompressed `IndexFlatIP`. For `N` vectors of dimension
-`d`, the vector payload alone needs approximately **`4 × N × d` bytes of index RAM**.
-Budget additional memory for the loaded citation graph, SQLite page cache and query results,
-FAISS overhead, and the Python application. The SQLite export also stores each original
-float32 vector, adding approximately `4 × N × d` bytes on disk before paper metadata,
-citations, indexes, and database overhead. Artifact downloads and their temporary staging
-directories need disk space in addition to these working sets.
+The generic builder defaults to exact `IndexFlatIP`; the published HF workflow explicitly
+selects an IVF/SQ8 candidate index. For `N` vectors of dimension `d`, flat vectors alone need
+approximately **`4 × N × d` bytes of index RAM**. SQ8 codes need roughly `N × d` bytes plus
+IDs, centroids, list capacity and other FAISS overhead. SQLite preserves the original vectors:
+`2 × N × d` disk bytes for the published float16 source, or `4 × N × d` for generic float32
+imports, before metadata, citations, indexes and database overhead. Runtime ANN candidates
+are reranked against these original vectors. Compression changes candidate recall and
+requires the actual-corpus benchmark before activation.
 
-The current Azure default of **1 CPU and 2 GiB** is suitable for bringing up the empty API
-and its health/configuration surfaces. It is not a capacity claim for a full arXiv corpus.
-The dataset has not been supplied, so no production memory or disk requirement can be
-asserted from the deployment alone.
+The initial Azure **1 CPU and 2 GiB** deployment brought up the empty API. The full-release
+builder uses **4 CPU and 8 GiB**, without Torch or the query model. Its training sample is
+bounded, its SQLite page cache is 128 MiB, Arrow decoding is sequential and batched, and its
+graph arrays use disk-backed memory maps with SQLite pair deduplication. At the declared
+release size, SQ8's vector-code payload is about 2.3 GiB; FAISS allocation capacity and
+training work add to its peak. This is a structural estimate, not a completed full-build
+memory measurement.
 
-Measure the actual exported index, metadata, and graph sizes, then measure resident memory
-after loading that snapshot before selecting application resources. A larger workload
-profile may be needed. A persistent cache can avoid repeated large downloads but does not
-reduce the RAM required by a flat FAISS index. A compressed index is a separate engineering
-choice requiring compatibility, retrieval-quality, and performance checks; the current
-builder does not silently substitute one to fit the default container size.
+The research API additionally holds the query model, loaded citation arrays and ID dictionary,
+SQLite query results, and algorithm working arrays. Measure actual build/runtime RSS and
+container peaks, disk use, index recall, and report results within Consumption's 8 GiB ceiling.
+Successful empty health checks and the standalone model forward do not establish full-corpus
+fit. A persistent cache avoids repeated downloads and supplies working disk; it does not
+increase RAM. Full-source access remains necessary to validate these resource estimates.
 
 ## Report publication and reads
 

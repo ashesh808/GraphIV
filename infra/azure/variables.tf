@@ -129,6 +129,55 @@ variable "api_resources" {
   }
 }
 
+variable "runtime_cache_share" {
+  description = "Mount a 100GiB managed-identity Azure Files share at /var/lib/graphiv for corpus/model caches and offline builds. False preserves EmptyDir and creates no share or cache identity."
+  type        = bool
+  default     = false
+  nullable    = false
+}
+
+variable "index_builder_image_tag" {
+  description = "Optional published graphiv-index-builder image tag in this stack's ACR. Creates a manual job only; Terraform never starts a build. Requires runtime_cache_share."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.index_builder_image_tag == null ? true : can(regex("^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$", var.index_builder_image_tag))
+    error_message = "index_builder_image_tag must be null or a valid container image tag."
+  }
+}
+
+variable "index_builder_command" {
+  description = "Command for the manually triggered offline image. Defaults to publishing an inactive snapshot; add --activate only after actual-corpus quality checks pass. Pin the HF revision and snapshot ID; no credentials belong in arguments."
+  type        = list(string)
+  default = [
+    "python", "-m", "offline.index_build.run_hf",
+    "--workdir", "/var/lib/graphiv/build",
+    "--revision", "GraphIV-2026-10-01",
+    "--snapshot-id", "graphiv-2026-10-01-nomic-sq8",
+    "--index-kind", "ivfsq8", "--publish",
+  ]
+  nullable = false
+
+  validation {
+    condition     = length(var.index_builder_command) > 0 && alltrue([for value in var.index_builder_command : length(value) > 0])
+    error_message = "index_builder_command must contain a nonempty executable and nonempty arguments."
+  }
+}
+
+variable "hf_token_secret_name" {
+  description = "Optional Key Vault secret name containing an HF read token for the builder job. Populate outside Terraform; only a managed-identity secret reference is stored."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.hf_token_secret_name == null ? true : can(regex("^[A-Za-z0-9-]{1,127}$", var.hf_token_secret_name))
+    error_message = "hf_token_secret_name must be null or a valid Key Vault secret name."
+  }
+}
+
 variable "api_command" {
   description = "Command for a compatible API image. Both mounts MCP and the HTTP library consumed by Next.js. Set null to use the image's own entrypoint/CMD."
   type        = list(string)

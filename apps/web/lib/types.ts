@@ -43,6 +43,7 @@ export interface GraphEdge {
   source: string;
   target: string;
   intent: string;
+  intentScore?: number;
   sentence: string;
   walked: boolean;
 }
@@ -81,6 +82,8 @@ export interface RunDetail extends Omit<RunSummary, "papers"> {
   cited: string[];
   counts: Record<string, number>;
   seconds: Record<string, number>;
+  evidenceNote?: string;
+  degradedFeatures?: string[];
 }
 
 export interface LibraryResult {

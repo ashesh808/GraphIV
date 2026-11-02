@@ -20,7 +20,29 @@ dependencies = [
 [project.scripts]
 graphiv-serve = "apps.api.main:main"
 
+[project.optional-dependencies]
+nomic = [
+    "torch==2.12.0",
+    "transformers==5.9.0",
+    "accelerate==1.14.0",
+    "einops==0.8.2",
+    "safetensors==0.7.0",
+    "huggingface-hub==1.17.0",
+]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", extra = "nomic", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [dependency-groups]
+index-build = [
+    "pyarrow",
+    "huggingface-hub==1.17.0",
+]
 offline = [
     "datasets>=5.0.0",
     "dspy>=3.3.0",

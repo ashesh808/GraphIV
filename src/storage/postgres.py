@@ -151,6 +151,17 @@ class PostgresCorpus:
         """Read every labeled occurrence induced on the paper set."""
         return self._rows(EDGES, (arxiv_ids, arxiv_ids))
 
+    def edge_records(
+        self, arxiv_ids: list[str]
+    ) -> list[tuple[str, str, str | None, str | None, float | None]]:
+        """Read each labeled occurrence and its original classifier confidence."""
+        return self._rows(
+            "SELECT source_id,target_id,intent,sentence,intent_score FROM citations "
+            "WHERE stage=1 AND source_id=ANY(%s) AND target_id=ANY(%s) "
+            "AND target_id IS NOT NULL",
+            (arxiv_ids, arxiv_ids),
+        )
+
     def cosines(self, vector: list[float], arxiv_ids: list[str]) -> list[tuple[str, float]]:
         """Read the original halfvec cosine expressions."""
         return self._rows(COSINES, (vector_literal(vector), arxiv_ids))

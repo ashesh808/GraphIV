@@ -22,6 +22,9 @@ from typing import Any, LiteralString
 import numpy as np
 import psycopg
 
+from offline.index_build.graph import write_graph
+from offline.index_build.indexes import build_index
+from offline.index_build.parquet import ParquetSource
 from src.core.config import load_config
 from src.core.parse_graph_export import load_graph_export
 from src.core.paths import OFFLINE_CONFIG
@@ -87,19 +90,16 @@ def _day(value: Any) -> str | None:
 def _insert_papers(
     connection: sqlite3.Connection,
     records: Iterable[dict[str, Any]],
-    index_path: Path,
     dimension: int | None,
+    vector_dtype: str,
 ) -> tuple[int, int, int]:
-    import faiss
-
-    index: Any = None
-    vectors: list[np.ndarray] = []
+    dtype = "<f2" if vector_dtype == "float16" else "<f4"
     count = 0
     embedded = 0
     for record in records:
         arxiv_id = _identifier(record.get("arxiv_id", record.get("id")))
         raw = record.get("embed_full", record.get("embedding"))
-        vector = np.asarray(raw, dtype="<f4") if raw is not None else None
+        vector = np.asarray(raw, dtype=dtype) if raw is not None else None
         if vector is not None:
             if vector.ndim != 1 or not len(vector) or not np.all(np.isfinite(vector)):
                 raise ValueError(f"Paper {arxiv_id} needs a finite one-dimensional vector")
@@ -142,25 +142,12 @@ def _insert_papers(
         )
         count += 1
         if stage >= 3 and vector is not None:
-            if not float(np.linalg.norm(vector)):
+            if not float(np.linalg.norm(vector.astype(np.float32))):
                 raise ValueError(f"Embedded paper {arxiv_id} has a zero vector")
-            if index is None:
-                index = faiss.IndexFlatIP(len(vector))
             connection.execute("INSERT INTO vector_ids VALUES (?,?)", (embedded, arxiv_id))
-            vectors.append(vector)
             embedded += 1
-            if len(vectors) == BATCH:
-                batch = np.ascontiguousarray(np.stack(vectors), dtype="float32")
-                faiss.normalize_L2(batch)
-                index.add(batch)
-                vectors.clear()
-    if index is None or dimension is None:
+    if not embedded or dimension is None:
         raise ValueError("A snapshot requires at least one real embedded paper")
-    if vectors:
-        batch = np.ascontiguousarray(np.stack(vectors), dtype="float32")
-        faiss.normalize_L2(batch)
-        index.add(batch)
-    faiss.write_index(index, str(index_path))
     return count, embedded, dimension
 
 
@@ -211,67 +198,66 @@ def _insert_topics(
 
 
 def _write_graph(connection: sqlite3.Connection, path: Path) -> int:
-    rows = connection.execute(
-        "SELECT arxiv_id,date,stage,coalesce(survey_probability,-1) FROM papers ORDER BY arxiv_id"
-    ).fetchall()
-    index = {row[0]: number for number, row in enumerate(rows)}
-    epoch = np.datetime64("1970-01-01")
-    day = np.timedelta64(1, "D")
-    arrays: dict[str, np.ndarray] = {
-        "ids": np.array([row[0].encode() for row in rows], dtype="S"),
-        "day": np.array(
-            [
-                -(1 << 30) if row[1] is None else (np.datetime64(row[1]) - epoch) // day
-                for row in rows
-            ],
-            np.int32,
-        ),
-        "stage": np.array([row[2] for row in rows], np.int8),
-        "survey": np.array([row[3] for row in rows], np.float32),
-    }
-    sources: list[np.ndarray] = []
-    targets: list[np.ndarray] = []
-    cursor = connection.execute(
-        "SELECT source_id,target_id FROM citations WHERE target_id IS NOT NULL"
-    )
-    while chunk := cursor.fetchmany(EDGE_CHUNK):
-        sources.append(np.array([index.get(source, -1) for source, _ in chunk], np.int32))
-        targets.append(np.array([index.get(target, -1) for _, target in chunk], np.int32))
-    source = np.concatenate(sources) if sources else np.empty(0, np.int32)
-    target = np.concatenate(targets) if targets else np.empty(0, np.int32)
-    keep = (source >= 0) & (target >= 0)
-    pairs = np.unique(source[keep].astype(np.int64) * len(rows) + target[keep])
-    source = (pairs // len(rows)).astype(np.int32)
-    target = (pairs % len(rows)).astype(np.int32)
-    levels = np.full((len(rows), 3), -1, np.int8)
-    for arxiv_id, l0, l1, l2 in connection.execute(
-        "SELECT arxiv_id,level_0,level_1,level_2 FROM topic_tree "
-        "WHERE stage=1 AND level_2 IS NOT NULL"
-    ):
-        if any(value is None or not -128 <= value <= 127 for value in (l0, l1, l2)):
-            raise ValueError("Topic levels must fit the GraphExport int8 representation")
-        levels[index[arxiv_id]] = l0, l1, l2
-    arrays["level"] = levels
-    for name, row, column in (("cites", target, source), ("refs", source, target)):
-        order = np.argsort(row, kind="stable")
-        pointer = np.zeros(len(rows) + 1, np.int32)
-        pointer[1:] = np.cumsum(np.bincount(row, minlength=len(rows)))
-        arrays[f"{name}_ptr"] = pointer
-        arrays[f"{name}_idx"] = column[order]
-    with path.open("wb") as handle:
-        np.savez(
-            handle,
-            ids=arrays["ids"],
-            day=arrays["day"],
-            stage=arrays["stage"],
-            survey=arrays["survey"],
-            level=arrays["level"],
-            cites_ptr=arrays["cites_ptr"],
-            cites_idx=arrays["cites_idx"],
-            refs_ptr=arrays["refs_ptr"],
-            refs_idx=arrays["refs_idx"],
+    return write_graph(connection, path)
+
+
+def _bulk_settings(connection: sqlite3.Connection) -> list[str]:
+    connection.execute("PRAGMA journal_mode=OFF")
+    connection.execute("PRAGMA synchronous=OFF")
+    connection.execute("PRAGMA temp_store=FILE")
+    connection.execute("PRAGMA cache_size=-131072")
+    connection.execute("PRAGMA mmap_size=0")
+    deferred = [
+        row[0]
+        for row in connection.execute(
+            "SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name='citations' "
+            "AND sql IS NOT NULL"
         )
-    return len(source)
+    ]
+    for (name,) in connection.execute(
+        "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='citations' "
+        "AND sql IS NOT NULL"
+    ).fetchall():
+        connection.execute(f'DROP INDEX "{name}"')
+    trigger = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='trigger' AND name='papers_surnames_insert'"
+    ).fetchone()
+    if trigger:
+        deferred.append(trigger[0])
+        connection.execute("DROP TRIGGER papers_surnames_insert")
+    return deferred
+
+
+def _finish_indexes(connection: sqlite3.Connection, deferred: list[str]) -> None:
+    connection.execute(
+        "INSERT OR IGNORE INTO paper_surnames(surname,arxiv_id) "
+        "SELECT value,p.arxiv_id FROM papers p,json_each(p.surnames) "
+        "ORDER BY value,p.arxiv_id"
+    )
+    for statement in deferred:
+        connection.execute(statement)
+
+
+def _counts(connection: sqlite3.Connection) -> tuple[dict[str, int], dict[str, int]]:
+    citations, labelled, confidence, sentences, unresolved = connection.execute(
+        "SELECT count(*),coalesce(sum(stage=1 AND intent IS NOT NULL),0),"
+        "coalesce(sum(intent_score IS NOT NULL),0),"
+        "coalesce(sum(sentence IS NOT NULL AND sentence!=''),0),"
+        "coalesce(sum(target_id IS NULL),0) FROM citations"
+    ).fetchone()
+    counts = {
+        "citations": citations,
+        "topics": connection.execute("SELECT count(*) FROM topic_tree").fetchone()[0],
+        "topic_names": connection.execute("SELECT count(*) FROM topic_names").fetchone()[0],
+    }
+    quality = {
+        "citation_occurrences": citations,
+        "precomputed_intent_rows": labelled,
+        "confidence_rows": confidence,
+        "citation_sentence_rows": sentences,
+        "unresolved_targets": unresolved,
+    }
+    return counts, quality
 
 
 def build_snapshot(
@@ -287,6 +273,15 @@ def build_snapshot(
     vector_container: str = "vector-indexes",
     metadata_container: str = "metadata",
     graph_container: str = "citation-graphs",
+    vector_dtype: str = "float32",
+    index_kind: str = "flat",
+    nlist: int = 1024,
+    nprobe: int = 128,
+    train_size: int = 65536,
+    seed: int = 0,
+    provenance: dict[str, Any] | None = None,
+    capabilities: dict[str, bool] | None = None,
+    expected_counts: dict[str, int] | None = None,
 ) -> Path:
     """Atomically publish locally built, validated artifacts and their SHA-256 manifest.
 
@@ -294,6 +289,8 @@ def build_snapshot(
     separate, explicit operation in publish.py.
     """
     validate_segment(snapshot_id)
+    if vector_dtype not in {"float16", "float32"}:
+        raise ValueError("vector_dtype must be float16 or float32")
     for container in (vector_container, metadata_container, graph_container):
         validate_container(container)
     if not embedding_model.strip():
@@ -312,15 +309,40 @@ def build_snapshot(
         database = staging / ARTIFACT_FILENAMES["metadata"]
         with closing(sqlite3.connect(database)) as connection:
             connection.executescript(SCHEMA.read_text())
+            deferred = _bulk_settings(connection)
             with connection:
                 count, embedded, dimension = _insert_papers(
-                    connection, papers, staging / ARTIFACT_FILENAMES["vectors"], embedding_dimension
+                    connection, papers, embedding_dimension, vector_dtype
                 )
                 _insert_citations(connection, citations)
                 _insert_topics(connection, topics, topic_names)
+                _finish_indexes(connection, deferred)
                 connection.executemany(
                     "INSERT INTO corpus_metadata VALUES (?,?)",
-                    [("embedding_dimension", str(dimension)), ("embedding_model", embedding_model)],
+                    [
+                        ("embedding_dimension", str(dimension)),
+                        ("embedding_model", embedding_model),
+                        ("vector_dtype", vector_dtype),
+                    ],
+                )
+                source_counts, quality = _counts(connection)
+                if expected_counts is not None:
+                    actual = {
+                        "papers": count,
+                        "citations": source_counts["citations"],
+                        "topics": source_counts["topics"],
+                    }
+                    if actual != expected_counts:
+                        raise ValueError("Imported rows do not match the complete source counts")
+                index_metrics = build_index(
+                    connection,
+                    staging / ARTIFACT_FILENAMES["vectors"],
+                    dimension,
+                    index_kind=index_kind,
+                    nlist=nlist,
+                    nprobe=nprobe,
+                    train_size=train_size,
+                    seed=seed,
                 )
                 edges = _write_graph(connection, staging / ARTIFACT_FILENAMES["graph"])
         # Use the actual runtime loaders before a directory can become visible.
@@ -347,7 +369,25 @@ def build_snapshot(
                 }
                 for role, filename in ARTIFACT_FILENAMES.items()
             },
-            "counts": {"papers": count, "embedded": embedded, "edges": edges},
+            "counts": {"papers": count, "embedded": embedded, "edges": edges, **source_counts},
+            "quality": quality,
+            "index": index_metrics,
+            "build": {
+                "index_kind": index_kind,
+                "nlist": nlist,
+                "nprobe": nprobe,
+                "train_size": train_size,
+                "seed": seed,
+                "vector_dtype": vector_dtype,
+            },
+            "storage": {"vector_dtype": vector_dtype},
+            "capabilities": capabilities
+            or {
+                "precomputed_intents": quality["precomputed_intent_rows"] > 0,
+                "intent_confidence": quality["confidence_rows"] > 0,
+                "citation_sentences": quality["citation_sentence_rows"] > 0,
+            },
+            **({"source": provenance} if provenance is not None else {}),
         }
         body = (json.dumps(manifest, indent=2) + "\n").encode()
         parse_manifest(body)
@@ -362,6 +402,9 @@ def main() -> None:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument(
         "--papers", type=Path, help="paper JSONL with real embed_full/embedding arrays"
+    )
+    source.add_argument(
+        "--parquet-root", type=Path, help="complete local published Parquet snapshot"
     )
     source.add_argument(
         "--postgres", action="store_true", help="read the configured PostgreSQL corpus"
@@ -379,6 +422,16 @@ def main() -> None:
     parser.add_argument("--vector-container", default="vector-indexes")
     parser.add_argument("--metadata-container", default="metadata")
     parser.add_argument("--graph-container", default="citation-graphs")
+    parser.add_argument("--vector-dtype", choices=["float16", "float32"])
+    parser.add_argument("--index-kind", choices=["flat", "ivfsq8"], default="flat")
+    parser.add_argument("--nlist", type=int, default=1024)
+    parser.add_argument("--nprobe", type=int, default=128)
+    parser.add_argument("--train-size", type=int, default=65536)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--source-repository", default="kkuroma/GraphIV")
+    parser.add_argument("--source-revision", default="GraphIV-2026-10-01")
+    parser.add_argument("--source-commit", default="")
+    parser.add_argument("--source-manifest", type=Path)
     args = parser.parse_args()
     options = {
         "snapshot_id": args.snapshot_id,
@@ -387,8 +440,38 @@ def main() -> None:
         "vector_container": args.vector_container,
         "metadata_container": args.metadata_container,
         "graph_container": args.graph_container,
+        "vector_dtype": args.vector_dtype or ("float16" if args.parquet_root else "float32"),
+        "index_kind": args.index_kind,
+        "nlist": args.nlist,
+        "nprobe": args.nprobe,
+        "train_size": args.train_size,
+        "seed": args.seed,
     }
-    if args.postgres:
+    if args.parquet_root:
+        parquet = ParquetSource(
+            args.parquet_root,
+            repository=args.source_repository,
+            revision=args.source_revision,
+            commit=args.source_commit,
+            source_manifest=args.source_manifest,
+        )
+        manifest = build_snapshot(
+            parquet.paper_rows(),
+            parquet.citation_rows(),
+            args.output,
+            topics=parquet.topic_rows(),
+            topic_names=parquet.topic_name_rows(),
+            provenance=parquet.provenance(),
+            expected_counts=parquet.expected_rows,
+            capabilities={
+                "precomputed_intents": True,
+                "intent_confidence": True,
+                "citation_sentences": False,
+            },
+            **options,
+        )
+        parquet.verify_counts()
+    elif args.postgres:
         dsn = os.environ.get("GRAPHIV_POSTGRES_DSN") or str(
             load_config(args.config_path)["database"]["PG_DEST"]
         )

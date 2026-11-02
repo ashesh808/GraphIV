@@ -1,0 +1,16 @@
+**
+!pyproject.toml
+!uv.lock
+!src
+!src/**
+!offline
+!offline/__init__.py
+!offline/index_build
+!offline/index_build/**
+!configs
+!configs/**
+**/__pycache__
+**/*.pyc
+**/.DS_Store
+**/.env
+**/.env.*

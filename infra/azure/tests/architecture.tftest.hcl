@@ -153,6 +153,9 @@ variables {
   publisher_principal_id        = null
   subscription_id               = "11111111-1111-4111-8111-111111111111"
   api_image_tag                 = null
+  runtime_cache_share           = false
+  index_builder_image_tag       = null
+  hf_token_secret_name          = null
   corpus_backend                = "azure"
   postgres_dsn_secret_name      = null
   llm_api_url                   = null
@@ -162,6 +165,220 @@ variables {
   embedding_model               = null
   embedding_api_key_secret_name = null
   api_environment               = {}
+}
+
+run "default_cache_and_builder_are_absent" {
+  command = plan
+  variables { api_image_tag = "runtime-verified" }
+
+  assert {
+    condition = (
+      length(azurerm_storage_share.runtime_cache) == 0 &&
+      length(azapi_update_resource.cache_smb_oauth) == 0 &&
+      length(azapi_resource.cache_storage) == 0 &&
+      length(azurerm_user_assigned_identity.cache) == 0 &&
+      length(azurerm_role_assignment.cache_mount) == 0 &&
+      length(azapi_resource.environment.identity) == 0 &&
+      one(azurerm_container_app.api[0].template[0].volume).storage_type == "EmptyDir" &&
+      one(azurerm_container_app.api[0].template[0].volume).storage_name == null &&
+      length(azurerm_container_app_job.index_builder) == 0 &&
+      length(azurerm_user_assigned_identity.index_builder) == 0 &&
+      length(azurerm_role_assignment.index_builder_publish) == 0 &&
+      length(azurerm_role_assignment.index_builder_pull) == 0 &&
+      length(azurerm_role_assignment.index_builder_hf_token) == 0 &&
+      output.runtime_cache_share_name == null && output.index_builder_job_name == null
+    )
+    error_message = "Defaults must retain EmptyDir without creating persistent storage, identities, grants, or a builder job."
+  }
+}
+
+run "persistent_cache_uses_environment_identity_without_account_keys" {
+  command = plan
+  variables {
+    api_image_tag       = "runtime-verified"
+    runtime_cache_share = true
+  }
+
+  override_resource {
+    override_during = plan
+    target          = azurerm_user_assigned_identity.cache[0]
+    values = {
+      id           = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-graphiv-dev-cache"
+      principal_id = "66666666-6666-4666-8666-666666666666"
+    }
+  }
+
+  assert {
+    condition = (
+      azurerm_storage_share.runtime_cache[0].storage_account_id == azurerm_storage_account.data.id &&
+      azurerm_storage_share.runtime_cache[0].quota == 100 &&
+      azurerm_storage_share.runtime_cache[0].enabled_protocol == "SMB" &&
+      !azurerm_storage_account.data.shared_access_key_enabled &&
+      one(azapi_resource.environment.identity).type == "UserAssigned" &&
+      one(azapi_resource.environment.identity).identity_ids == tolist([azurerm_user_assigned_identity.cache[0].id]) &&
+      azurerm_role_assignment.cache_mount[0].scope == azurerm_storage_account.data.id &&
+      azurerm_role_assignment.cache_mount[0].role_definition_name == "Storage File Data SMB MI Admin" &&
+      azurerm_role_assignment.cache_mount[0].principal_id == azurerm_user_assigned_identity.cache[0].principal_id &&
+      azurerm_role_assignment.cache_mount[0].principal_id != azurerm_user_assigned_identity.api.principal_id
+    )
+    error_message = "The 100GiB SMB share must use a distinct environment mount identity and preserve disabled shared keys."
+  }
+
+  assert {
+    condition = (
+      azapi_update_resource.cache_smb_oauth[0].body.properties.azureFilesIdentityBasedAuthentication.smbOAuthSettings.isSmbOAuthEnabled &&
+      toset(keys(azapi_update_resource.cache_smb_oauth[0].body.properties.azureFilesIdentityBasedAuthentication)) == toset(["smbOAuthSettings"]) &&
+      azapi_resource.cache_storage[0].type == "Microsoft.App/managedEnvironments/storages@2026-03-02-preview" &&
+      azapi_resource.cache_storage[0].parent_id == azapi_resource.environment.id &&
+      azapi_resource.cache_storage[0].body.properties.azureFile.accountName == azurerm_storage_account.data.name &&
+      azapi_resource.cache_storage[0].body.properties.azureFile.shareName == azurerm_storage_share.runtime_cache[0].name &&
+      azapi_resource.cache_storage[0].body.properties.azureFile.identity == azurerm_user_assigned_identity.cache[0].id &&
+      azapi_resource.cache_storage[0].body.properties.azureFile.accessMode == "ReadWrite" &&
+      toset(keys(azapi_resource.cache_storage[0].body.properties.azureFile)) == toset(["accountName", "shareName", "identity", "accessMode"])
+    )
+    error_message = "SMB OAuth must update only its nested property; mount configuration must contain the environment identity and no account keys."
+  }
+
+  assert {
+    condition = (
+      one(azurerm_container_app.api[0].template[0].volume).storage_type == "AzureFile" &&
+      one(azurerm_container_app.api[0].template[0].volume).storage_name == azapi_resource.cache_storage[0].name &&
+      one(azurerm_container_app.api[0].template[0].container[0].volume_mounts).path == "/var/lib/graphiv" &&
+      one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == "HF_HOME"]) == "/var/lib/graphiv/huggingface" &&
+      output.runtime_cache_share_name == "runtime-cache"
+    )
+    error_message = "Opting in must attach the persistent share at the existing runtime cache mount."
+  }
+}
+
+run "manual_builder_has_separate_identity_and_scoped_publish_access" {
+  command = plan
+  variables {
+    runtime_cache_share     = true
+    index_builder_image_tag = "builder-verified"
+    hf_token_secret_name    = "hf-read-token"
+  }
+
+  override_resource {
+    override_during = plan
+    target          = azurerm_user_assigned_identity.index_builder[0]
+    values = {
+      id           = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-graphiv-dev-index-builder"
+      principal_id = "77777777-7777-4777-8777-777777777777"
+      client_id    = "88888888-8888-4888-8888-888888888888"
+    }
+  }
+
+  assert {
+    condition = (
+      length(azurerm_container_app_job.index_builder) == 1 &&
+      azurerm_container_app_job.index_builder[0].replica_timeout_in_seconds == 86400 &&
+      azurerm_container_app_job.index_builder[0].replica_retry_limit == 0 &&
+      one(azurerm_container_app_job.index_builder[0].manual_trigger_config).parallelism == 1 &&
+      one(azurerm_container_app_job.index_builder[0].manual_trigger_config).replica_completion_count == 1 &&
+      length(azurerm_container_app_job.index_builder[0].event_trigger_config) == 0 &&
+      length(azurerm_container_app_job.index_builder[0].schedule_trigger_config) == 0 &&
+      azurerm_container_app_job.index_builder[0].template[0].container[0].cpu == 4 &&
+      azurerm_container_app_job.index_builder[0].template[0].container[0].memory == "8Gi" &&
+      azurerm_container_app_job.index_builder[0].template[0].container[0].image == "${azurerm_container_registry.images.login_server}/graphiv-index-builder:builder-verified" &&
+      azurerm_container_app_job.index_builder[0].template[0].container[0].command == var.index_builder_command &&
+      contains(azurerm_container_app_job.index_builder[0].template[0].container[0].command, "--publish") &&
+      !contains(azurerm_container_app_job.index_builder[0].template[0].container[0].command, "--activate") &&
+      one(azurerm_container_app_job.index_builder[0].template[0].volume).storage_type == "AzureFile" &&
+      one(azurerm_container_app_job.index_builder[0].template[0].volume).storage_name == azapi_resource.cache_storage[0].name &&
+      one(azurerm_container_app_job.index_builder[0].template[0].container[0].volume_mounts).path == "/var/lib/graphiv"
+    )
+    error_message = "The optional builder must remain a manual, single-replica, no-retry 4CPU/8Gi job with a 24h limit and the persistent cache mount; default publication must leave the snapshot inactive."
+  }
+
+  assert {
+    condition = (
+      one(azurerm_container_app_job.index_builder[0].identity).identity_ids == toset([azurerm_user_assigned_identity.index_builder[0].id]) &&
+      one(azurerm_container_app_job.index_builder[0].registry).identity == azurerm_user_assigned_identity.index_builder[0].id &&
+      azurerm_role_assignment.index_builder_pull[0].scope == azurerm_container_registry.images.id &&
+      azurerm_role_assignment.index_builder_pull[0].role_definition_name == "AcrPull" &&
+      toset(keys(azurerm_role_assignment.index_builder_publish)) == toset(["vectors", "graphs", "metadata"]) &&
+      alltrue([for purpose, grant in azurerm_role_assignment.index_builder_publish :
+        grant.scope == azurerm_storage_container.data[purpose].id &&
+        grant.scope != azurerm_storage_container.data["reports"].id &&
+        grant.role_definition_name == "Storage Blob Data Contributor" &&
+        grant.principal_id == azurerm_user_assigned_identity.index_builder[0].principal_id &&
+        grant.principal_id != azurerm_user_assigned_identity.api.principal_id
+      ]) &&
+      one([for env in azurerm_container_app_job.index_builder[0].template[0].container[0].env : env.value if env.name == "AZURE_CLIENT_ID"]) == azurerm_user_assigned_identity.index_builder[0].client_id &&
+      length([for env in azurerm_container_app_job.index_builder[0].template[0].container[0].env : env if env.name == "GRAPHIV_REPORTS_CONTAINER" || env.name == "GRAPHIV_API_TOKEN" || env.name == "GRAPHIV_LLM_API_KEY"]) == 0
+    )
+    error_message = "The builder must use its own identity and container-scoped publishing grants, with no reports or runtime credential access."
+  }
+
+  assert {
+    condition = (
+      one(azurerm_container_app_job.index_builder[0].secret).key_vault_secret_id == "${azurerm_key_vault.api.vault_uri}secrets/hf-read-token" &&
+      one(azurerm_container_app_job.index_builder[0].secret).identity == azurerm_user_assigned_identity.index_builder[0].id &&
+      one(azurerm_container_app_job.index_builder[0].secret).value == null &&
+      one([for env in azurerm_container_app_job.index_builder[0].template[0].container[0].env : env if env.name == "HF_TOKEN"]).secret_name == "hf-token" &&
+      azurerm_role_assignment.index_builder_hf_token[0].scope == "${azurerm_key_vault.api.id}/secrets/hf-read-token" &&
+      azurerm_role_assignment.index_builder_hf_token[0].role_definition_name == "Key Vault Secrets User"
+    )
+    error_message = "The optional HF token must use only a Key Vault reference and a secret-scoped reader grant."
+  }
+}
+
+run "public_dataset_builder_can_omit_an_hf_secret" {
+  command = plan
+  variables {
+    runtime_cache_share     = true
+    index_builder_image_tag = "builder-verified"
+  }
+  assert {
+    condition = (
+      length(azurerm_container_app_job.index_builder[0].secret) == 0 &&
+      length(azurerm_role_assignment.index_builder_hf_token) == 0 &&
+      length([for env in azurerm_container_app_job.index_builder[0].template[0].container[0].env : env if env.name == "HF_TOKEN"]) == 0
+    )
+    error_message = "Public-dataset builds must not create unresolved secret references or vault grants."
+  }
+}
+
+run "activation_requires_an_explicit_reviewed_command_override" {
+  command = plan
+  variables {
+    runtime_cache_share     = true
+    index_builder_image_tag = "builder-verified"
+    index_builder_command = [
+      "python", "-m", "offline.index_build.run_hf",
+      "--workdir", "/var/lib/graphiv/build",
+      "--revision", "GraphIV-2026-10-01",
+      "--snapshot-id", "quality-reviewed-snapshot",
+      "--index-kind", "ivfsq8", "--publish", "--activate",
+    ]
+  }
+  assert {
+    condition = (
+      azurerm_container_app_job.index_builder[0].template[0].container[0].command == var.index_builder_command &&
+      contains(azurerm_container_app_job.index_builder[0].template[0].container[0].command, "--activate") &&
+      length(azurerm_container_app_job.index_builder[0].schedule_trigger_config) == 0
+    )
+    error_message = "After an operator reviews actual-corpus quality, explicit activation arguments must reach the existing manual job without creating a scheduled service."
+  }
+}
+
+run "builder_requires_persistent_cache" {
+  command = plan
+  variables { index_builder_image_tag = "builder-verified" }
+  expect_failures = [azurerm_container_app_job.index_builder]
+}
+
+run "builder_hf_secret_must_be_a_name_not_a_url" {
+  command = plan
+  variables { hf_token_secret_name = "https://vault.example/secrets/token" }
+  expect_failures = [var.hf_token_secret_name]
+}
+
+run "builder_image_tag_cannot_inject_another_registry" {
+  command = plan
+  variables { index_builder_image_tag = "other.example/image:latest" }
+  expect_failures = [var.index_builder_image_tag]
 }
 
 run "default_provisions_private_storage_without_starting_an_image" {

@@ -35,3 +35,9 @@ export function formatDuration(seconds: number): string {
   const rounded = Math.round(seconds);
   return rounded < 60 ? `${rounded}s` : `${Math.floor(rounded / 60)}m ${rounded % 60}s`;
 }
+
+export function formatIntentConfidence(score?: number): string {
+  if (score === undefined || !Number.isFinite(score) || score < 0 || score > 1) return "";
+  const percentage = new Intl.NumberFormat("en", { style: "percent", maximumFractionDigits: 1 }).format(score);
+  return `${percentage} confidence · precomputed prediction`;
+}

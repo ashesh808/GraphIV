@@ -6,6 +6,7 @@ import type { Paper, RunDetail } from "../lib/types";
 import { CitationGraph } from "./citation-graph";
 import { arxivUrl, Markdown, normalizePaperId } from "./markdown";
 import { PaperList } from "./paper-list";
+import { EvidenceNote } from "./evidence-note";
 
 type View = "report" | "papers" | "graph";
 const VIEWS: View[] = ["report", "papers", "graph"];
@@ -18,7 +19,8 @@ function dateLabel(value: string): string {
 }
 
 function markdownDocument(run: RunDetail, source: "live" | "example"): string {
-  if (run.report.trim()) return run.report;
+  if (run.report.trim()) return run.evidenceNote && !run.report.includes(run.evidenceNote)
+    ? `${run.report}\n\n## Evidence availability\n\n${run.evidenceNote}\n` : run.report;
   const { sections } = run;
   const questions = [...new Set([...sections.open_questions, ...sections.areas.flatMap((area) => area.unanswered)].filter(Boolean))];
   const cell = (value: string) => value.replaceAll("|", "\\|").replaceAll("\n", " ");
@@ -32,6 +34,7 @@ function markdownDocument(run: RunDetail, source: "live" | "example"): string {
     `# ${run.question}`,
     source === "example" ? "> Example report. This is illustrative content, not a completed research run." : "",
     `${dateLabel(run.asked)} · ${run.mode || "Mode not recorded"} · ${run.effort || "Effort not recorded"}`,
+    run.evidenceNote ? `## Evidence availability\n\n${run.evidenceNote}` : "",
     sections.answer,
     sections.opening,
     ...sections.claims.map((claim) => `## ${claim.title}\n\n${claim.body}`),
@@ -193,6 +196,8 @@ export function ReportWorkspace({ run, source }: { run: RunDetail; source: "live
           <strong>Example report.</strong> This preview uses illustrative content and connections.
         </p>
       )}
+
+      <EvidenceNote note={run.evidenceNote} />
 
       <div className="report-tabs" role="tablist" aria-label="Research report views">
         {VIEWS.map((item, index) => (

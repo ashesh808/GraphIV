@@ -105,6 +105,14 @@ resource "azapi_resource" "environment" {
   # The published 2026-07-01 ARM schema adds the environmentMode field we need.
   schema_validation_enabled = false
 
+  dynamic "identity" {
+    for_each = var.runtime_cache_share ? [true] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = [azurerm_user_assigned_identity.cache[0].id]
+    }
+  }
+
   # AzureRM 5.12 has no environmentMode argument. Explicitly select the full
   # Workload Profiles mode: Express environments reject Key Vault references.
   body = {

@@ -268,8 +268,8 @@ def fresh(draft: Draft) -> str:
     lines = [
         "## What has just appeared against it",
         "",
-        "Each of these cites one of the papers above and says it extends, disputes or benchmarks",
-        "against it, so none of them needs a citation of its own to be found.",
+        "Precomputed citation-intent labels identify these papers as extending, critiquing,",
+        "or comparing with the papers above. The labels are predictions, not quotations.",
         "",
     ]
     for one in draft.mined.successors:

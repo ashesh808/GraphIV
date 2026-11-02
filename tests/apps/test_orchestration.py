@@ -192,12 +192,15 @@ def test_coordinator_uses_existing_tools_and_preserves_mcp_state(monkeypatch, tm
         result = run_research(
             ResearchRequest(question="How do citation graphs help?", mode="frontier", effort="deep")
         )
-        assert result == {
+        assert {key: result[key] for key in ("slug", "papers", "answer", "url")} == {
             "slug": "saved-run",
             "papers": 7,
             "answer": "Evidence",
             "url": "/api/runs/saved-run",
         }
+        assert result["metrics"]["peak_rss_bytes"] > 0
+        assert result["metrics"]["elapsed_seconds"] >= 0
+        assert "report" not in result
         assert state.STORE["existing-mcp-ranking"] is previous
     finally:
         state.reset()

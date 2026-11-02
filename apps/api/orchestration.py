@@ -15,6 +15,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from apps.api.metrics import ExecutionMetrics
+
 RUNTIME_LOCK = threading.RLock()
 
 
@@ -54,16 +56,32 @@ def _result(raw: str) -> dict[str, Any]:
     return value
 
 
-def run_research(request: ResearchRequest) -> dict[str, Any]:
+def run_research(
+    request: ResearchRequest, *, progress: Callable[[str], None] | None = None
+) -> dict[str, Any]:
     """Retrieve one question, then mine and write it through the existing report tool."""
     from src.mcp import retrieve, state, write_report
 
+    measurement = ExecutionMetrics()
+    measurement.start()
     with RUNTIME_LOCK:
         # Preserve rankings held by existing MCP callers while this job owns the process.
         previous_rankings, previous_areas = state.STORE.copy(), state.AREAS.copy()
         state.reset()
+        handles = None
+        previous_progress = None
+        previous_metrics = None
+        hooks_installed = False
         try:
             handles = state.load()
+            previous_progress = getattr(handles, "progress", None)
+            previous_metrics = getattr(handles, "execution_metrics", None)
+            if hasattr(handles, "progress") and hasattr(handles, "execution_metrics"):
+                handles.progress = progress
+                handles.execution_metrics = measurement.snapshot
+                hooks_installed = True
+            if progress:
+                progress("retrieving")
             retrieved = _result(
                 retrieve.retrieve(
                     handles,
@@ -90,8 +108,17 @@ def run_research(request: ResearchRequest) -> dict[str, Any]:
                 "papers": written.get("papers", 0),
                 "answer": written.get("answer", ""),
                 "url": f"/api/runs/{slug}",
+                "retrieval_counts": retrieved.get("counts", {}),
+                "mining_counts": written.get("counts", {}),
+                "timings": written.get("seconds", {}),
+                "degraded_features": written.get("degraded_features", []),
+                "metrics": measurement.snapshot(),
             }
         finally:
+            measurement.close()
+            if handles is not None and hooks_installed:
+                handles.progress = previous_progress
+                handles.execution_metrics = previous_metrics
             state.reset()
             state.STORE.update(previous_rankings)
             state.AREAS.update(previous_areas)
@@ -109,6 +136,9 @@ class Job:
     created_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     result: dict[str, Any] | None = None
     error: str | None = None
+    stage: str = "queued"
+    started_at: str | None = None
+    finished_at: str | None = None
 
 
 class Coordinator:
@@ -158,17 +188,31 @@ class Coordinator:
     def _run(self, job_id: str, request: ResearchRequest) -> None:
         with self._lock:
             self.jobs[job_id].status = "running"
+            self.jobs[job_id].stage = "starting"
+            self.jobs[job_id].started_at = datetime.now(UTC).isoformat()
         try:
             with RUNTIME_LOCK:
-                result = self.runner(request)
+                result = (
+                    run_research(request, progress=lambda stage: self._progress(job_id, stage))
+                    if self.runner is run_research
+                    else self.runner(request)
+                )
         except Exception as error:  # noqa: BLE001 - record worker failures instead of losing jobs
             with self._lock:
                 self.jobs[job_id].status = "failed"
                 self.jobs[job_id].error = safe_error(error)
+                self.jobs[job_id].stage = "failed"
+                self.jobs[job_id].finished_at = datetime.now(UTC).isoformat()
         else:
             with self._lock:
                 self.jobs[job_id].status = "complete"
                 self.jobs[job_id].result = result
+                self.jobs[job_id].stage = "complete"
+                self.jobs[job_id].finished_at = datetime.now(UTC).isoformat()
+
+    def _progress(self, job_id: str, stage: str) -> None:
+        with self._lock:
+            self.jobs[job_id].stage = stage
 
     def get(self, job_id: str) -> dict[str, Any] | None:
         """Return a detached status snapshot."""

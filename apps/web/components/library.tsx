@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import type { LibraryResult } from "@/lib/types";
 import { ConnectionNote } from "./connection-note";
 import { Icon } from "./icon";
+import { ResearchForm } from "./research-form";
 
 const modeNames: Record<string, string> = { survey: "Survey", frontier: "Frontier", consensus: "Consensus", ancestry: "Ancestry", evolution: "Evolution" };
 
@@ -64,6 +65,8 @@ export function Library({ result }: { result: LibraryResult }) {
       </div>
 
       <ConnectionNote status={result.status} message={result.message} />
+
+      <ResearchForm />
 
       <div className="library-controls">
         <div className="library-search">

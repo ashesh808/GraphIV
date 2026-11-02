@@ -36,6 +36,20 @@ allow_report_reads = false
 api_resources = { cpu = 1, memory = "2Gi" }
 tags          = { owner = "research" }
 
+# Optional persistent corpus/model cache, using the existing account with no account keys.
+# Creates a 100GiB-quota SMB share and mounts it at /var/lib/graphiv.
+runtime_cache_share = false
+
+# Optional manual offline job; creation never starts an execution.
+# First publish a tested graphiv-index-builder:<tag> image into the same registry.
+# Requires runtime_cache_share = true. Populate the HF read token outside Terraform.
+# index_builder_image_tag = "builder-tested"
+# hf_token_secret_name = "hf-read-token"
+# Default command pins GraphIV-2026-10-01 and publishes an INACTIVE IVFSQ8 snapshot.
+# Run actual-corpus quality benchmarks before explicitly adding --activate to a
+# rerun of the same verified snapshot. The active runtime manifest stays unchanged
+# until that explicit activation. No extra service is needed for the benchmark.
+
 # Vercel AI Gateway alternative (populate this named Key Vault secret separately):
 # llm_api_url = "https://ai-gateway.vercel.sh/v1"
 # llm_model = "google/gemini-3.1-flash-lite"
