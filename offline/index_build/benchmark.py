@@ -57,7 +57,8 @@ def exact_neighbors(
     vectors = np.stack([_unit(query["embedding"], dimension) for query in queries])
     dtype = np.dtype("<f2" if corpus.vector_dtype == "float16" else "<f4")
     held: list[list[tuple[str, float]]] = [[] for _ in queries]
-    with closing(sqlite3.connect(f"{corpus.database.as_uri()}?mode=ro", uri=True)) as connection:
+    uri = f"{corpus.database.as_uri()}?mode=ro&immutable=1"
+    with closing(sqlite3.connect(uri, uri=True)) as connection:
         cursor = connection.execute(
             "SELECT arxiv_id,date,embed_full FROM papers WHERE stage>=3 AND embed_full IS NOT NULL"
         )
@@ -136,9 +137,8 @@ def evaluate_index(
                     len(identifiers & expected) / len(expected) if expected else float(not found)
                 )
                 dtype = np.dtype("<f2" if corpus.vector_dtype == "float16" else "<f4")
-                with closing(
-                    sqlite3.connect(f"{corpus.database.as_uri()}?mode=ro", uri=True)
-                ) as connection:
+                uri = f"{corpus.database.as_uri()}?mode=ro&immutable=1"
+                with closing(sqlite3.connect(uri, uri=True)) as connection:
                     raw = dict(
                         connection.execute(
                             "SELECT arxiv_id,embed_full FROM papers "
@@ -217,7 +217,8 @@ def validate_document_space(
         raise ValueError(
             "Document validation needs a positive sample count and valid cosine threshold"
         )
-    with closing(sqlite3.connect(f"{corpus.database.as_uri()}?mode=ro", uri=True)) as connection:
+    uri = f"{corpus.database.as_uri()}?mode=ro&immutable=1"
+    with closing(sqlite3.connect(uri, uri=True)) as connection:
         total = connection.execute("SELECT count(*) FROM vector_ids").fetchone()[0]
         if total == 0:
             raise ValueError("Document validation requires actual published paper vectors")

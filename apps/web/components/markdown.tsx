@@ -3,14 +3,8 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Paper } from "../lib/types";
-
-export function normalizePaperId(value: string): string {
-  return value.replace(/v\d+$/i, "").toLowerCase();
-}
-
-export function arxivUrl(id: string): string {
-  return `https://arxiv.org/abs/${id.split("/").map(encodeURIComponent).join("/")}`;
-}
+import { normalizePaperId } from "../lib/format";
+export { arxivUrl, normalizePaperId } from "../lib/format";
 
 function paperFromLink(href: string, papers: Paper[]): Paper | undefined {
   try {

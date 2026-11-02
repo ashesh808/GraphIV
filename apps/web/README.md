@@ -5,7 +5,9 @@ a question with a research mode and depth, follow queued/running progress, and o
 completed report. The library refreshes when a run finishes and supports search,
 mode filtering, and sorting, with those choices stored in the URL. Each report opens
 on Report, Papers, and Graph tabs, with a shared paper inspector, Markdown download,
-and light/dark themes. Runs continue on the backend when you leave the page; the current
+and light/dark themes. Saved research lineages and follow-up papers appear in the Report
+view, with dated paper links and precomputed intent labels identified as predictions.
+Runs continue on the backend when you leave the page; the current
 browser tab remembers its latest job. Failed status checks can be retried without
 submitting the question again. There is no cancellation control because the backend
 does not offer cancellation.

@@ -55,6 +55,14 @@ export interface ReportArea {
   unanswered: string[];
 }
 
+export interface ReportSuccessor {
+  arxiv_id: string;
+  date: string;
+  title: string;
+  reach: number | null;
+  intents: string[];
+}
+
 export interface ReportSections {
   answer: string;
   opening: string;
@@ -71,6 +79,7 @@ export interface ReportSections {
     description: string;
     papers: { arxiv_id: string; date: string; title: string }[];
   }[];
+  successors?: ReportSuccessor[];
 }
 
 export interface RunDetail extends Omit<RunSummary, "papers"> {

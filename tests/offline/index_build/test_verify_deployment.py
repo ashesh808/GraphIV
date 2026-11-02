@@ -15,7 +15,9 @@ from offline.index_build.verify_deployment import (
     job_counts,
     origin,
     report_identifiers,
+    require_job_identity,
     require_ready,
+    validate_job_ids,
     validate_provenance,
     verify_deployment,
 )
@@ -140,3 +142,49 @@ def test_duplicate_questions_are_rejected_before_creating_receipts(tmp_path: Pat
             questions=["Same question", "Same question"],
         )
     assert not (tmp_path / "receipt").exists()
+
+
+@pytest.mark.parametrize(
+    "identifiers",
+    [
+        [],
+        ["a" * 32],
+        ["a" * 32] * 2,
+        ["a" * 32, "b" * 32, "c" * 32],
+        ["a" * 32, "../other"],
+        ["a" * 32, "not-a-generated-job-id"],
+    ],
+)
+def test_existing_job_id_guards_run_before_any_receipt_or_http(tmp_path: Path, identifiers):
+    with pytest.raises(ValueError, match="two distinct"):
+        verify_deployment(
+            "https://api.example.com",
+            "https://web.example.com",
+            tmp_path / "receipt",
+            job_ids=identifiers,
+        )
+    assert not (tmp_path / "receipt").exists()
+
+
+def test_existing_job_mode_requires_exactly_two_distinct_server_ids():
+    assert validate_job_ids(None) is None
+    assert validate_job_ids(["a" * 32, "b" * 32]) == ["a" * 32, "b" * 32]
+
+
+@pytest.mark.parametrize("field", ["id", "question", "mode", "effort"])
+def test_existing_job_identity_rejects_each_mismatched_input(field):
+    expected = {
+        "id": "a" * 32,
+        "question": "Exact question?",
+        "mode": "survey",
+        "effort": "standard",
+    }
+    observed = dict(expected, **{field: "different"})
+    with pytest.raises(VerificationError, match=f"job {field} does not match"):
+        require_job_identity(
+            observed,
+            job_id=expected["id"],
+            question=expected["question"],
+            mode=expected["mode"],
+            effort=expected["effort"],
+        )

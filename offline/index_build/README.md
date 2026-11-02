@@ -280,6 +280,14 @@ supported research inputs. `--timeout` bounds job polling across both cases;
 comes only from `VERCEL_AUTOMATION_BYPASS_SECRET` and is sent only to the frontend.
 API bearer credentials are sent only to the API origin; redirects are refused.
 
+To verify the two real jobs already submitted through the browser, add `--job-id`
+twice, in question order. Exactly two distinct server-generated IDs are required.
+Every polled job must match its exact question, mode, and effort; the verifier then
+checks the same completed reports, corpus records, metrics, and persistence without
+submitting additional research. Keep the supplied/default question text and settings
+identical to the browser submissions. Existing IDs do not automatically establish
+interactive browser verification; that observation remains a separate recorded check.
+
 `verification.json`, `verification.md`, and downloaded report/corpus-record files
 are written to a new output directory. A failure produces an explicitly failed
 receipt and exit status 1. There is no fixture or offline-success mode. No passing

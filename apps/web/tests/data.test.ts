@@ -219,3 +219,31 @@ test("intent confidence display explicitly qualifies a precomputed prediction", 
   assert.equal(formatIntentConfidence(1), "100% confidence · precomputed prediction");
   for (const score of [undefined, NaN, Infinity, -0.1, 1.1]) assert.equal(formatIntentConfidence(score), "");
 });
+
+test("report paths retain dated lineages and actual successor reach/intents without citation text", () => {
+  const run = normalizeRun({ question: "Saved research paths", sections: {
+    lineages: [{ name: "A research lineage", description: "Its saved description", papers: [null, { arxiv_id: "1706.03762", date: "2017-06-12", title: "A source paper" }] }, null],
+    successors: [null, { arxiv_id: "2501.00001", date: "2025-01-02", title: "A follow-up", reach: 2, intents: ["extends", " critiques ", 7, ""], sentence: "Do not turn this into a quotation" }],
+  } }, "saved-paths");
+  assert.deepEqual(run?.sections.lineages, [{ name: "A research lineage", description: "Its saved description", papers: [{ arxiv_id: "1706.03762", date: "2017-06-12", title: "A source paper" }] }]);
+  assert.deepEqual(run?.sections.successors, [{ arxiv_id: "2501.00001", date: "2025-01-02", title: "A follow-up", reach: 2, intents: ["extends", "critiques"] }]);
+});
+
+test("old and malformed report paths do not invent papers, reach, or intent labels", () => {
+  const legacy = normalizeRun({ question: "Older report" }, "older-report");
+  assert.deepEqual(legacy?.sections.lineages, []);
+  assert.deepEqual(legacy?.sections.successors, []);
+  const malformed = normalizeRun({ question: "Malformed paths", sections: {
+    lineages: [null, 42, { papers: ["invalid", { arxiv_id: " " }] }],
+    successors: [false, {}, { arxiv_id: 7 }, { arxiv_id: " " }],
+  } }, "malformed-paths");
+  assert.deepEqual(malformed?.sections.lineages, []);
+  assert.deepEqual(malformed?.sections.successors, []);
+  for (const reach of [undefined, null, -1, 2.5, Infinity, "2"]) {
+    const run = normalizeRun({ question: "Missing reach", sections: { successors: [{ arxiv_id: "2501.00001", reach, intents: "extends" }] } }, "missing-reach");
+    assert.equal(run?.sections.successors?.[0].reach, null);
+    assert.deepEqual(run?.sections.successors?.[0].intents, []);
+  }
+  const zero = normalizeRun({ question: "Recorded zero", sections: { successors: [{ arxiv_id: "2501.00001", reach: 0 }] } }, "recorded-zero");
+  assert.equal(zero?.sections.successors?.[0].reach, 0);
+});

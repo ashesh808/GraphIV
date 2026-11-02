@@ -165,7 +165,7 @@ class SQLiteCorpus:
                 raise ValueError("FAISS labels must reference embedded paper records")
 
     def _rows(self, query: str, parameters: tuple[Any, ...] = ()) -> list[Any]:
-        uri = f"{self.database.as_uri()}?mode=ro"
+        uri = f"{self.database.as_uri()}?mode=ro&immutable=1"
         with closing(sqlite3.connect(uri, uri=True)) as connection:
             _ = connection.execute("PRAGMA query_only = ON")
             connection.create_function("pg_ilike", 2, _ilike, deterministic=True)
@@ -274,7 +274,7 @@ class SQLiteCorpus:
         self, query: NDArray[np.float64], cutoff: str | None, blocked: list[str], limit: int
     ) -> list[ScoredPaperRow]:
         heap: list[tuple[float, int, ScoredPaperRow]] = []
-        uri = f"{self.database.as_uri()}?mode=ro"
+        uri = f"{self.database.as_uri()}?mode=ro&immutable=1"
         with closing(sqlite3.connect(uri, uri=True)) as connection:
             _ = connection.execute("PRAGMA query_only = ON")
             cursor = connection.execute(

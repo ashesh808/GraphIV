@@ -303,7 +303,7 @@ _PREPARATION: dict[str, Any] = {"complete": False, "reason": "Corpus preparation
 
 
 def prepare_runtime() -> None:
-    """Download and validate deployment artifacts in the background, without model requests."""
+    """Validate the corpus and warm the configured query encoder in the background."""
     with _PREPARE_LOCK:
         try:
             config = runtime_config(CONFIG)

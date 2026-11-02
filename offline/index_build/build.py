@@ -260,6 +260,16 @@ def _counts(connection: sqlite3.Connection) -> tuple[dict[str, int], dict[str, i
     return counts, quality
 
 
+def _connect_build_database(database: Path) -> sqlite3.Connection:
+    """Keep locking for private builds on shares without POSIX advisory locks."""
+    vfs = os.environ.get("GRAPHIV_SQLITE_WRITE_VFS", "")
+    if vfs not in {"", "unix-dotfile"}:
+        raise ValueError("GRAPHIV_SQLITE_WRITE_VFS must be empty or unix-dotfile")
+    if vfs:
+        return sqlite3.connect(database.as_uri() + "?mode=rwc&vfs=unix-dotfile", uri=True)
+    return sqlite3.connect(database)
+
+
 def build_snapshot(
     papers: Iterable[dict[str, Any]],
     citations: Iterable[dict[str, Any]],
@@ -307,7 +317,7 @@ def build_snapshot(
         staging = Path(temporary) / "complete"
         staging.mkdir()
         database = staging / ARTIFACT_FILENAMES["metadata"]
-        with closing(sqlite3.connect(database)) as connection:
+        with closing(_connect_build_database(database)) as connection:
             connection.executescript(SCHEMA.read_text())
             deferred = _bulk_settings(connection)
             with connection:

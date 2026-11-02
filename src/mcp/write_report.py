@@ -224,13 +224,16 @@ def as_papers(
     Returns:
         One row per paper, the kept ones first.
     """
+    successors = {successor.paper.arxiv_id: successor.paper for successor in found.successors}
     named = {m.node for m in found.magnets} | set(found.connectors)
     named |= {n for line in found.lineages for n in line.nodes}
+    named |= set(successors)
     every = list(dict.fromkeys([p.arxiv_id for p in papers] + sorted(named)))
     records = read_records(handles.dsn, every)
     kept = {p.arxiv_id: p for p in papers}
     # a paper the walk reached was never retrieved, so its closeness comes off the mining pass
     closeness = {a: p.cosine for a, p in found.papers.items() if p.cosine is not None}
+    closeness.update({a: p.cosine for a, p in successors.items() if p.cosine is not None})
     weight = {m.node: m.weight for m in found.magnets}
     out: list[dict[str, Any]] = []
     for arxiv_id in every:
@@ -250,7 +253,11 @@ def as_papers(
                 "category": record["category"],
                 "topic": record["topic"],
                 "topic_id": record["topic_id"],
-                "role": grade.role if grade is not None else "",
+                "role": grade.role
+                if grade is not None
+                else "successor"
+                if arxiv_id in successors
+                else "",
                 "relevance": grade.relevance if grade is not None else None,
                 "cosine": (
                     round(held.cosine, 4)

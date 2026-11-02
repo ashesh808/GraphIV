@@ -1,7 +1,8 @@
 """Run real HTTP research jobs and retain independently checkable deployment evidence.
 
 This command intentionally has no demo, fixture, dry-run-success, or offline-pass mode.
-Invoking it submits two real research jobs after deployment readiness is established.
+By default it submits two real jobs after readiness is established. Supplying two
+existing job IDs verifies their actual results without submitting replacement work.
 """
 
 from __future__ import annotations
@@ -254,6 +255,37 @@ def job_counts(result: dict[str, Any]) -> dict[str, int]:
     }
 
 
+def validate_job_ids(value: list[str] | None) -> list[str] | None:
+    """Require exactly two distinct server-generated IDs before any HTTP request."""
+    if value is None:
+        return None
+    if (
+        len(value) != 2
+        or any(
+            not isinstance(item, str) or not re.fullmatch(r"[a-f0-9]{32}", item) for item in value
+        )
+        or value[0] == value[1]
+    ):
+        raise ValueError("Pass exactly two distinct 32-character research job IDs")
+    return value
+
+
+def require_job_identity(
+    job: dict[str, Any], *, job_id: str, question: str, mode: str, effort: str
+) -> None:
+    """Bind every observed job state to its expected ID and exact research inputs."""
+    for key, expected in (
+        ("id", job_id),
+        ("question", question),
+        ("mode", mode),
+        ("effort", effort),
+    ):
+        if job.get(key) != expected:
+            raise VerificationError(
+                f"Research job {key} does not match the requested acceptance case"
+            )
+
+
 def _sentences(value: Any) -> list[str]:
     if isinstance(value, list):
         return [text for item in value for text in _sentences(item)]
@@ -268,7 +300,7 @@ def _sentences(value: Any) -> list[str]:
 def _database_records(database: Path, ids: set[str]) -> dict[str, dict[str, Any]]:
     if not database.is_file():
         raise VerificationError("The supplied corpus database does not exist")
-    uri = database.resolve().as_uri() + "?mode=ro"
+    uri = database.resolve().as_uri() + "?mode=ro&immutable=1"
     with sqlite3.connect(uri, uri=True) as connection:
         connection.execute("PRAGMA query_only=ON")
         records = connection.execute(
@@ -554,6 +586,8 @@ def _markdown(evidence: dict[str, Any]) -> str:
         f"API: {evidence['api_origin']}",
         f"Frontend: {evidence['vercel_origin']}",
         "",
+        f"Research jobs: {evidence['job_mode']}",
+        "",
         "This record contains real HTTP job observations. Browser interaction and scientific "
         "report-quality review remain separate checks.",
         "",
@@ -632,6 +666,7 @@ def verify_deployment(
     output: Path,
     *,
     questions: list[str] | None = None,
+    job_ids: list[str] | None = None,
     mode: str = "survey",
     effort: str = "standard",
     timeout: float = 3600,
@@ -640,7 +675,7 @@ def verify_deployment(
     verify_blob_storage: bool = False,
     corpus_database: Path | None = None,
 ) -> dict[str, Any]:
-    """Submit actual work only after health/provenance preflight and retain failed evidence too."""
+    """Verify actual research after readiness, submitting only when existing IDs are absent."""
     chosen = list(questions or QUESTIONS)
     if (
         len(chosen) != 2
@@ -650,6 +685,7 @@ def verify_deployment(
         raise ValueError("Pass exactly two nonblank questions of at most 4000 characters each")
     if min(timeout, request_timeout, poll_interval) <= 0 or poll_interval > 60:
         raise ValueError("Timeouts must be positive and polling must not exceed 60 seconds")
+    existing = validate_job_ids(job_ids)
     api_origin, vercel_origin = origin(api_origin), origin(vercel_origin)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -664,6 +700,7 @@ def verify_deployment(
         "cases": [],
         "independent_blob_requested": verify_blob_storage,
         "browser_interaction_verified": False,
+        "job_mode": "existing IDs" if existing is not None else "submitted by this verifier",
     }
     try:
         client = Http(
@@ -676,22 +713,37 @@ def verify_deployment(
             evidence["corpus"] = validate_provenance(preflight)
         evidence["frontend_home"] = _page(client, "/")
         service = blob_service_from_environment() if verify_blob_storage else None
-        for question in chosen:
-            case: dict[str, Any] = {"question": question, "stages": []}
+        for index, question in enumerate(chosen):
+            case: dict[str, Any] = {
+                "question": question,
+                "mode": mode,
+                "effort": effort,
+                "stages": [],
+                "submitted_by_verifier": existing is None,
+            }
             evidence["cases"].append(case)
-            submitted = _object(
-                client.json(
-                    "/api/research",
-                    payload={"question": question, "mode": mode, "effort": effort},
-                    expected=202,
-                ),
-                "Submitted job",
-            )
-            job_id = validate_segment(submitted.get("id"))
+            if existing is not None:
+                job_id = existing[index]
+            else:
+                submitted = _object(
+                    client.json(
+                        "/api/research",
+                        payload={"question": question, "mode": mode, "effort": effort},
+                        expected=202,
+                    ),
+                    "Submitted job",
+                )
+                job_id = validate_segment(submitted.get("id"))
+                require_job_identity(
+                    submitted, job_id=job_id, question=question, mode=mode, effort=effort
+                )
             case["job_id"] = job_id
             previous = None
             while True:
                 job = _object(client.json(f"/api/jobs/{quote(job_id, safe='')}"), "Research job")
+                require_job_identity(
+                    job, job_id=job_id, question=question, mode=mode, effort=effort
+                )
                 state = (job.get("status"), job.get("stage"))
                 if state != previous:
                     observation = {
@@ -790,6 +842,12 @@ def main() -> None:
     parser.add_argument("--vercel-origin", required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--question", action="append", dest="questions")
+    parser.add_argument(
+        "--job-id",
+        action="append",
+        dest="job_ids",
+        help="existing real job ID; pass twice in the same order as the two questions",
+    )
     parser.add_argument(
         "--mode",
         choices=["survey", "frontier", "consensus", "ancestry", "evolution"],

@@ -155,7 +155,7 @@ export function ResearchForm() {
       <div className="progress-copy">
         <p className="progress-title" role="status" aria-live="polite">{statusTitle}</p>
         {job && <p className="progress-question">{job.question}</p>}
-        <p className="progress-detail" aria-live="polite" aria-atomic="true">{!job ? "Checking the last job saved in this browser tab." : job.status === "complete" ? `${job.result?.papers ?? 0} papers · ${job.mode} · ${job.effort} depth` : job.status === "failed" ? job.error || "The run stopped before a report could be saved. Try the question again." : job.status === "queued" ? "Waiting for the current run to finish. You can leave this page and check back." : `${job.stage ? stageDescriptions[job.stage] : "Retrieving papers, examining their connections, and writing the report."} You can leave this page and check back.`}</p>
+        <p className="progress-detail" aria-live="polite" aria-atomic="true">{!job ? "Checking the last job saved in this browser tab." : job.status === "complete" ? `${job.result?.papers ?? 0} retrieved papers · ${job.mode} · ${job.effort} depth` : job.status === "failed" ? job.error || "The run stopped before a report could be saved. Try the question again." : job.status === "queued" ? "Waiting for the current run to finish. You can leave this page and check back." : `${job.stage ? stageDescriptions[job.stage] : "Retrieving papers, examining their connections, and writing the report."} You can leave this page and check back.`}</p>
         {pollError && <p className="research-error" role="alert">{pollError}</p>}
       </div>
       <div className="progress-actions">

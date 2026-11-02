@@ -65,7 +65,11 @@ CITATIONS = [
 ]
 
 
-def test_builder_outputs_are_consumed_by_the_actual_runtime_loaders(tmp_path: Path) -> None:
+@pytest.mark.parametrize("write_vfs", ["", "unix-dotfile"])
+def test_builder_outputs_are_consumed_by_the_actual_runtime_loaders(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, write_vfs: str
+) -> None:
+    monkeypatch.setenv("GRAPHIV_SQLITE_WRITE_VFS", write_vfs)
     destination = tmp_path / "snapshot"
     manifest_path = build_snapshot(
         iter(PAPERS),

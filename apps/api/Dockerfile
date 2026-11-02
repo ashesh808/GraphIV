@@ -8,6 +8,8 @@ ENV UV_PYTHON_DOWNLOADS=never \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GRAPHIV_CONFIG=/app/configs/runtime.toml \
+    OMP_NUM_THREADS=4 \
+    OPENBLAS_NUM_THREADS=4 \
     PATH=/app/.venv/bin:$PATH
 
 COPY pyproject.toml uv.lock README.md LICENSE ./

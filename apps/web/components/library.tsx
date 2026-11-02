@@ -83,7 +83,7 @@ export function Library({ result }: { result: LibraryResult }) {
 
       <div className="research-list" aria-label="Research reports">
         {shown.map((run, index) => <Link className="research-row" href={`/runs/${encodeURIComponent(run.slug)}`} key={run.slug}>
-          <div className="research-question"><span className="row-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><div><h2>{run.question}</h2>{run.summary && <p className="row-summary">{run.summary}</p>}<div className="row-meta"><span>{run.papers} {run.papers === 1 ? "paper" : "papers"}</span><span className="meta-divider" aria-hidden="true" /><span>{run.effort ? `${run.effort[0].toUpperCase()}${run.effort.slice(1)} depth` : "Research report"}</span></div></div></div>
+          <div className="research-question"><span className="row-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><div><h2>{run.question}</h2>{run.summary && <p className="row-summary">{run.summary}</p>}<div className="row-meta"><span>{run.papers} retrieved {run.papers === 1 ? "paper" : "papers"}</span><span className="meta-divider" aria-hidden="true" /><span>{run.effort ? `${run.effort[0].toUpperCase()}${run.effort.slice(1)} depth` : "Research report"}</span></div></div></div>
           <div className="row-mode"><span className={`mode-label mode-${run.mode}`}>{modeNames[run.mode] || run.mode || "Unspecified"}</span></div>
           <time className="row-date" dateTime={run.asked || undefined}>{dateLabel(run.asked)}</time>
           <span className="row-arrow"><Icon name="arrow" width="18" height="18" /></span>

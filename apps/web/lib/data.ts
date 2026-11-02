@@ -111,10 +111,19 @@ function normalizeSections(value: unknown): ReportSections {
         name: text(line.name), description: text(line.description),
         papers: array(line.papers).map((value) => {
           const paper = record(value);
-          return { arxiv_id: text(paper.arxiv_id), date: text(paper.date), title: text(paper.title) };
+          return { arxiv_id: text(paper.arxiv_id).trim(), date: text(paper.date), title: text(paper.title) };
         }).filter((paper) => paper.arxiv_id),
       };
-    }),
+    }).filter((line) => line.name || line.description || line.papers.length),
+    successors: array(raw.successors).map((value) => {
+      const successor = record(value);
+      const reach = nullableNumber(successor.reach);
+      return {
+        arxiv_id: text(successor.arxiv_id).trim(), date: text(successor.date), title: text(successor.title),
+        reach: reach !== null && Number.isInteger(reach) && reach >= 0 ? reach : null,
+        intents: strings(successor.intents).map((intent) => intent.trim()).filter(Boolean),
+      };
+    }).filter((successor) => successor.arxiv_id),
   };
 }
 

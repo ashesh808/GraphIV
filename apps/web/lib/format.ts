@@ -1,4 +1,12 @@
 /** Display helpers shared by the library and report reader. */
+export function normalizePaperId(value: string): string {
+  return value.replace(/v\d+$/i, "").toLowerCase();
+}
+
+export function arxivUrl(id: string): string {
+  return `https://arxiv.org/abs/${id.split("/").map(encodeURIComponent).join("/")}`;
+}
+
 export function cleanTitle(value: string): string {
   return value
     .replace(/\$([^$]*)\$/g, "$1")

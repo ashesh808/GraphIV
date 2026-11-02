@@ -7,6 +7,7 @@ import { CitationGraph } from "./citation-graph";
 import { arxivUrl, Markdown, normalizePaperId } from "./markdown";
 import { PaperList } from "./paper-list";
 import { EvidenceNote } from "./evidence-note";
+import { ResearchPaths } from "./research-paths";
 
 type View = "report" | "papers" | "graph";
 const VIEWS: View[] = ["report", "papers", "graph"];
@@ -41,6 +42,7 @@ function markdownDocument(run: RunDetail, source: "live" | "example"): string {
     methodTable ? `## Methods\n\n${methodTable}` : "",
     ...sections.areas.map((area) => `## ${area.question || "Research area"}\n\n${area.papers.map((id) => `- [${id}](${arxivUrl(id)})`).join("\n")}`),
     ...sections.lineages.map((lineage) => `## ${lineage.name || "Research thread"}\n\n${lineage.description}\n\n${lineage.papers.map((paper) => `- [${paper.title || paper.arxiv_id}](${arxivUrl(paper.arxiv_id)})`).join("\n")}`),
+    sections.successors?.length ? `## Follow-up papers\n\nPrecomputed citation-intent labels are predictions, not quotations.\n\n${sections.successors.map((paper) => `- ${paper.date} [${paper.title || paper.arxiv_id}](${arxivUrl(paper.arxiv_id)})${paper.intents.length ? ` (${paper.intents.join(", ")})` : ""}`).join("\n")}` : "",
     questions.length ? `## Open questions\n\n${questions.map((question) => `- ${question}`).join("\n")}` : "",
     run.papers.length ? `## Papers\n\n${run.papers.map((paper) => `- [${paper.title || paper.arxiv_id}](${arxivUrl(paper.arxiv_id)})`).join("\n")}` : "",
   ];
@@ -229,6 +231,8 @@ export function ReportWorkspace({ run, source }: { run: RunDetail; source: "live
             {sections.claims.some((claim) => claim.body) && <a href="#report-findings">Findings</a>}
             {hasMethods && <a href="#report-methods">Methods</a>}
             {sections.areas.length > 0 && <a href="#report-areas">Research areas</a>}
+            {sections.lineages.length > 0 && <a href="#report-lineages">Research lineages</a>}
+            {Boolean(sections.successors?.length) && <a href="#report-successors">Follow-up papers</a>}
             {openQuestions.length > 0 && <a href="#report-open-questions">Open questions</a>}
             <div className="report-contents-note">
               <span className="report-note-mark" aria-hidden="true">↗</span>
@@ -300,6 +304,8 @@ export function ReportWorkspace({ run, source }: { run: RunDetail; source: "live
                 </div>
               </section>
             )}
+
+            <ResearchPaths lineages={sections.lineages} successors={sections.successors} papers={run.papers} onSelectId={selectId} renderMarkdown={markdown} />
 
             {openQuestions.length > 0 && (
               <section id="report-open-questions" className="report-prose-section">
