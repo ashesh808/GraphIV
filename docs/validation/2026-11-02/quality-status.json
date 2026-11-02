@@ -1,0 +1,156 @@
+{
+  "status": "passed",
+  "pid": 81,
+  "snapshot": "/var/lib/graphiv/build/snapshots/graphiv-2026-10-01-nomic-sq8",
+  "started_utc": "2026-11-02T16:10:34.715302+00:00",
+  "api_before": {
+    "ready": false,
+    "storage": "azure",
+    "reasons": [
+      "Corpus manifest or a referenced artifact has not been published"
+    ]
+  },
+  "cgroup_before": {
+    "layout": "v1",
+    "root": "/sys/fs/cgroup",
+    "paths": {
+      "current": "/sys/fs/cgroup/memory/memory.usage_in_bytes",
+      "peak": "/sys/fs/cgroup/memory/memory.max_usage_in_bytes",
+      "limit": "/sys/fs/cgroup/memory/memory.limit_in_bytes",
+      "events": "/sys/fs/cgroup/memory/memory.oom_control",
+      "failcnt": "/sys/fs/cgroup/memory/memory.failcnt",
+      "stat": "/sys/fs/cgroup/memory/memory.stat",
+      "kernel": "/sys/fs/cgroup/memory/memory.kmem.usage_in_bytes"
+    },
+    "raw": {
+      "memory/memory.usage_in_bytes": "117469184",
+      "memory/memory.max_usage_in_bytes": "165179392",
+      "memory/memory.limit_in_bytes": "8589934592",
+      "memory/memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 0",
+      "memory/memory.failcnt": "0",
+      "memory/memory.stat": "cache 139264\nrss 113606656\nrss_huge 0\nshmem 0\nmapped_file 0\ndirty 20480\nwriteback 0\nworkingset_refault_anon 0\nworkingset_refault_file 0\nswap 0\npgpgin 96148\npgpgout 68378\npgfault 101168\npgmajfault 0\ninactive_anon 0\nactive_anon 113606656\ninactive_file 139264\nactive_file 0\nunevictable 0\nhierarchical_memory_limit 8589934592\nhierarchical_memsw_limit 9223372036854771712\ntotal_cache 139264\ntotal_rss 113606656\ntotal_rss_huge 0\ntotal_shmem 0\ntotal_mapped_file 0\ntotal_dirty 20480\ntotal_writeback 0\ntotal_workingset_refault_anon 0\ntotal_workingset_refault_file 0\ntotal_swap 0\ntotal_pgpgin 96148\ntotal_pgpgout 68378\ntotal_pgfault 101168\ntotal_pgmajfault 0\ntotal_inactive_anon 0\ntotal_active_anon 113606656\ntotal_inactive_file 139264\ntotal_active_file 0\ntotal_unevictable 0",
+      "memory/memory.kmem.usage_in_bytes": "3526656"
+    },
+    "memory.current": 117469184,
+    "memory.peak": 165179392,
+    "memory.max": 8589934592,
+    "memory.events": {
+      "oom_kill_disable": 0,
+      "under_oom": 0,
+      "oom_kill": 0,
+      "failcnt": 0
+    },
+    "memory.stat": {
+      "anon": 113606656,
+      "file": 139264,
+      "file_mapped": 0,
+      "inactive_file": 139264,
+      "shmem": 0,
+      "kernel": 3526656
+    }
+  },
+  "model_cache": "/var/lib/graphiv/cache/nomic",
+  "query_count": 13,
+  "document_samples": 16,
+  "exit_code": 0,
+  "execution": {
+    "finished_utc": "2026-11-02T16:44:19.546829+00:00",
+    "elapsed_seconds": 2024.87,
+    "process_peak_rss_bytes_after_documents": 4507381760,
+    "cgroup_before": {
+      "layout": "v1",
+      "root": "/sys/fs/cgroup",
+      "paths": {
+        "current": "/sys/fs/cgroup/memory/memory.usage_in_bytes",
+        "peak": "/sys/fs/cgroup/memory/memory.max_usage_in_bytes",
+        "limit": "/sys/fs/cgroup/memory/memory.limit_in_bytes",
+        "events": "/sys/fs/cgroup/memory/memory.oom_control",
+        "failcnt": "/sys/fs/cgroup/memory/memory.failcnt",
+        "stat": "/sys/fs/cgroup/memory/memory.stat",
+        "kernel": "/sys/fs/cgroup/memory/memory.kmem.usage_in_bytes"
+      },
+      "raw": {
+        "memory/memory.usage_in_bytes": "117469184",
+        "memory/memory.max_usage_in_bytes": "165179392",
+        "memory/memory.limit_in_bytes": "8589934592",
+        "memory/memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 0",
+        "memory/memory.failcnt": "0",
+        "memory/memory.stat": "cache 139264\nrss 113606656\nrss_huge 0\nshmem 0\nmapped_file 0\ndirty 20480\nwriteback 0\nworkingset_refault_anon 0\nworkingset_refault_file 0\nswap 0\npgpgin 96148\npgpgout 68378\npgfault 101168\npgmajfault 0\ninactive_anon 0\nactive_anon 113606656\ninactive_file 139264\nactive_file 0\nunevictable 0\nhierarchical_memory_limit 8589934592\nhierarchical_memsw_limit 9223372036854771712\ntotal_cache 139264\ntotal_rss 113606656\ntotal_rss_huge 0\ntotal_shmem 0\ntotal_mapped_file 0\ntotal_dirty 20480\ntotal_writeback 0\ntotal_workingset_refault_anon 0\ntotal_workingset_refault_file 0\ntotal_swap 0\ntotal_pgpgin 96148\ntotal_pgpgout 68378\ntotal_pgfault 101168\ntotal_pgmajfault 0\ntotal_inactive_anon 0\ntotal_active_anon 113606656\ntotal_inactive_file 139264\ntotal_active_file 0\ntotal_unevictable 0",
+        "memory/memory.kmem.usage_in_bytes": "3526656"
+      },
+      "memory.current": 117469184,
+      "memory.peak": 165179392,
+      "memory.max": 8589934592,
+      "memory.events": {
+        "oom_kill_disable": 0,
+        "under_oom": 0,
+        "oom_kill": 0,
+        "failcnt": 0
+      },
+      "memory.stat": {
+        "anon": 113606656,
+        "file": 139264,
+        "file_mapped": 0,
+        "inactive_file": 139264,
+        "shmem": 0,
+        "kernel": 3526656
+      }
+    },
+    "cgroup_after": {
+      "layout": "v1",
+      "root": "/sys/fs/cgroup",
+      "paths": {
+        "current": "/sys/fs/cgroup/memory/memory.usage_in_bytes",
+        "peak": "/sys/fs/cgroup/memory/memory.max_usage_in_bytes",
+        "limit": "/sys/fs/cgroup/memory/memory.limit_in_bytes",
+        "events": "/sys/fs/cgroup/memory/memory.oom_control",
+        "failcnt": "/sys/fs/cgroup/memory/memory.failcnt",
+        "stat": "/sys/fs/cgroup/memory/memory.stat",
+        "kernel": "/sys/fs/cgroup/memory/memory.kmem.usage_in_bytes"
+      },
+      "raw": {
+        "memory/memory.usage_in_bytes": "5312409600",
+        "memory/memory.max_usage_in_bytes": "7485149184",
+        "memory/memory.limit_in_bytes": "8589934592",
+        "memory/memory.oom_control": "oom_kill_disable 0\nunder_oom 0\noom_kill 0",
+        "memory/memory.failcnt": "0",
+        "memory/memory.stat": "cache 4100952064\nrss 1155817472\nrss_huge 23068672\nshmem 0\nmapped_file 1220608\ndirty 12288\nwriteback 0\nworkingset_refault_anon 0\nworkingset_refault_file 3401819\nswap 0\npgpgin 15640035\npgpgout 14362265\npgfault 1101179\npgmajfault 499\ninactive_anon 8192\nactive_anon 1155809280\ninactive_file 2189938688\nactive_file 1911013376\nunevictable 0\nhierarchical_memory_limit 8589934592\nhierarchical_memsw_limit 9223372036854771712\ntotal_cache 4100952064\ntotal_rss 1155817472\ntotal_rss_huge 23068672\ntotal_shmem 0\ntotal_mapped_file 1220608\ntotal_dirty 12288\ntotal_writeback 0\ntotal_workingset_refault_anon 0\ntotal_workingset_refault_file 3401819\ntotal_swap 0\ntotal_pgpgin 15640035\ntotal_pgpgout 14362265\ntotal_pgfault 1101179\ntotal_pgmajfault 499\ntotal_inactive_anon 8192\ntotal_active_anon 1155809280\ntotal_inactive_file 2189938688\ntotal_active_file 1911013376\ntotal_unevictable 0",
+        "memory/memory.kmem.usage_in_bytes": "55107584"
+      },
+      "memory.current": 5312409600,
+      "memory.peak": 7485149184,
+      "memory.max": 8589934592,
+      "memory.events": {
+        "oom_kill_disable": 0,
+        "under_oom": 0,
+        "oom_kill": 0,
+        "failcnt": 0
+      },
+      "memory.stat": {
+        "anon": 1155817472,
+        "file": 4100952064,
+        "file_mapped": 1220608,
+        "inactive_file": 2189938688,
+        "shmem": 0,
+        "kernel": 55107584
+      }
+    },
+    "sampled_memory": {
+      "peak_current_bytes": 7481561088,
+      "peak_anon_bytes": 3289214976,
+      "peak_file_bytes": 5421195264
+    },
+    "benchmark_source_sha256": "e73ff9471d1535d5054d334a77debd8568b40cf88d32d61532f42bee600f5358",
+    "validation_queries_sha256": "feaf62345fd4601fefa601cf7b1dcb4a44436f6c4e53b65392bdda8848b1b6a8",
+    "validation_queries_commit": "a9a6ab0dee7bf27b8324f6640006f6337c052637",
+    "expected_nprobe": 128,
+    "memory_event_deltas": {
+      "oom_kill": 0,
+      "oom": null,
+      "failcnt": 0,
+      "max": null,
+      "high": null
+    }
+  },
+  "receipt": "/var/lib/graphiv/build/quality/graphiv-2026-10-01-nomic-sq8/20261102T160911Z-e73ff947/quality-receipt.json"
+}

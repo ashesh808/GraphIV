@@ -1,0 +1,37 @@
+{
+  "observed_at": "2026-11-02T18:31:37.314856+00:00",
+  "source": "Actual Azure console JSON output from read-only SQLite queries against the complete immutable corpus; copied into this receipt.",
+  "snapshot_id": "graphiv-2026-10-01-nomic-sq8",
+  "metadata_sha256": "1eed88cf8a0bbd79d5b6a1325cc0932e951eff7bc268ac63b5a0f02134b6e16c",
+  "probe_script_sha256": "9fda860a538a77fb62582abb4c18eae0fcf68df63c65d8368831d4043e813af2",
+  "head_ids": [
+    "2006.16236",
+    "2312.00752",
+    "2405.21060"
+  ],
+  "expanded_union_count": 33,
+  "expanded_source_query": {
+    "status": "complete",
+    "seconds": 1.708,
+    "rows": 461,
+    "missing_sentences": 461,
+    "ordered_rows_sha256": "c92cbe5880f2bbf5474e88d8819f0d9b5b27a9775bbffbdb4a89809b32e6f363",
+    "index": "citations_source"
+  },
+  "three_head_default_query": {
+    "status": "interrupted",
+    "seconds": 30.213,
+    "deadline_seconds": 30,
+    "rows": null,
+    "index": "citations_target",
+    "note": "No completed result or row count is claimed."
+  },
+  "three_head_source_query": {
+    "status": "complete",
+    "seconds": 0.0,
+    "rows": 0,
+    "ordered_rows_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "index": "citations_source"
+  },
+  "note": "Probe overlapped the initial research job. These are induced-edge access timings, not complete research-job latency. Exact original target-index occurrence ordering is preserved by ORDER BY target_id,intent,citation_id; parity is tested separately."
+}

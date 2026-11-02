@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
 from offline.index_build.verify_deployment import (
+    COMMIT,
+    REPOSITORY,
+    REVISION,
+    SOURCE_COUNTS,
     VerificationError,
     _database_records,
     _sentences,
@@ -17,8 +22,10 @@ from offline.index_build.verify_deployment import (
     report_identifiers,
     require_job_identity,
     require_ready,
+    require_summary_match,
     validate_job_ids,
     validate_provenance,
+    validate_readiness_corpus,
     verify_deployment,
 )
 
@@ -188,3 +195,64 @@ def test_existing_job_identity_rejects_each_mismatched_input(field):
             mode=expected["mode"],
             effort=expected["effort"],
         )
+
+
+def readiness_summary():
+    """Summary parser input that cannot pass full artifact provenance validation."""
+    return {
+        "snapshot_id": "published-release",
+        "source": {"repository": REPOSITORY, "revision": REVISION, "commit": COMMIT},
+        "embedding": {"model": "nomic-embed-text-v2-moe", "dimension": 768},
+        "counts": {**SOURCE_COUNTS, "embedded": SOURCE_COUNTS["papers"]},
+        "capabilities": {
+            "precomputed_intents": True,
+            "intent_confidence": True,
+            "citation_sentences": False,
+        },
+        "index": {"kind": "ivfsq8", "nprobe": 128},
+    }
+
+
+def test_readiness_summary_is_kept_without_inventing_full_manifest_fields():
+    summary = readiness_summary()
+    original = deepcopy(summary)
+    assert validate_readiness_corpus(summary) is summary
+    assert summary == original
+    assert "version" not in summary and "artifacts" not in summary
+    with pytest.raises(ValueError, match="Unsupported artifact manifest version"):
+        validate_provenance(summary)
+
+
+@pytest.mark.parametrize("field", ["source", "embedding", "counts", "capabilities"])
+def test_readiness_known_identity_and_counts_guards_reject_wrong_summary(field):
+    summary = readiness_summary()
+    changed = {
+        "source": {"repository": "other/release", "revision": REVISION, "commit": COMMIT},
+        "embedding": {"model": "different-model", "dimension": 1536},
+        "counts": {**summary["counts"], "citations": SOURCE_COUNTS["citations"] - 1},
+        "capabilities": {**summary["capabilities"], "citation_sentences": True},
+    }
+    summary[field] = changed[field]
+    with pytest.raises(VerificationError):
+        validate_readiness_corpus(summary)
+
+
+@pytest.mark.parametrize(
+    "field", ["snapshot_id", "source", "embedding", "counts", "capabilities", "index"]
+)
+def test_each_provided_summary_field_must_equal_validated_run_manifest(field):
+    summary = readiness_summary()
+    # Isolate field equality; real callers validate the complete run manifest first.
+    run_manifest = deepcopy(summary)
+    run_manifest[field] = "different persisted value"
+    with pytest.raises(VerificationError, match=f"corpus {field} disagrees"):
+        require_summary_match(summary, run_manifest)
+
+
+def test_summary_match_checks_unknown_provided_fields_and_allows_extra_manifest_fields():
+    summary = readiness_summary()
+    run_manifest = {**deepcopy(summary), "additional_full_manifest_field": {"retained": True}}
+    require_summary_match(summary, run_manifest)
+    summary["additional_summary_field"] = "must also match"
+    with pytest.raises(VerificationError, match="additional_summary_field disagrees"):
+        require_summary_match(summary, run_manifest)

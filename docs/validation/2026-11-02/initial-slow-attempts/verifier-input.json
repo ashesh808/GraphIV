@@ -1,0 +1,17 @@
+{
+  "api_origin": "https://ca-graphiv-prod-api.ashyriver-afb6b236.westus2.azurecontainerapps.io",
+  "vercel_origin": "https://graphiv.vercel.app",
+  "questions": [
+    "How do linear attention mechanisms and selective state-space models compare for efficient long-context language modeling, and which research lineages connect them?",
+    "What methods improve evidence grounding and citation faithfulness in retrieval-augmented generation, and which follow-up papers extend those methods?"
+  ],
+  "mode": "survey",
+  "effort": "standard",
+  "job_ids": [
+    "7b9e8fe3ddc0446883560cf0cc12f970",
+    "d7017486257442b2b5f502724f54ab60"
+  ],
+  "timeout": 3600,
+  "request_timeout": 30,
+  "poll_interval": 5
+}

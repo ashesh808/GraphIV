@@ -181,6 +181,27 @@ Artifacts publish to manifest-defined paths; the immutable
 `snapshots/<id>/manifest.json` is committed last, then the active manifest alias is
 updated if requested. See [storage configuration](../../src/storage/README.md).
 
+For a snapshot already published completely, the activation helper avoids rereading
+the large local artifacts. Supply the actual passing benchmark receipt, its reviewed
+manifest SHA, and the expected snapshot ID:
+
+```sh
+uv run --no-dev python -m offline.index_build.activate \
+  --quality-receipt /path/to/quality-receipt.json \
+  --manifest-sha256 "$GRAPHIV_EXPECTED_MANIFEST_SHA" \
+  --snapshot-id graphiv-2026-10-01-nomic-sq8 \
+  --out /tmp/graphiv-activation-review
+```
+
+This defaults to a review without cloud writes. It checks the published immutable
+manifest, full release identity/counts, quality gates, and all three producer hash/size
+properties; `--producer-sizes` optionally supplies a JSON map keyed by `vectors`,
+`metadata`, and `graph`. The previous alias bytes and rollback details are saved locally.
+After reviewing the real receipt and publication completion, use the same inputs with
+`--execute` and a new empty `--out` directory to overwrite only the active alias and
+verify its readback. The restarted application independently downloads and checksums
+the actual artifact bytes before research becomes ready.
+
 The separate offline image includes PyArrow and HF downloading without Torch:
 
 ```sh
@@ -189,6 +210,13 @@ docker run --rm --env HF_TOKEN \
   --mount type=bind,src=/mnt/graphiv-build,dst=/var/lib/graphiv/build \
   graphiv-index-builder --workdir /var/lib/graphiv/build
 ```
+
+The container uses SQLite's `unix-dotfile` locking for its unique private staging
+database because this Azure Files mount does not provide compatible POSIX advisory
+locks. Set `GRAPHIV_SQLITE_WRITE_VFS=unix-dotfile` when invoking the builder directly
+on the same share; leave it unset for ordinary local filesystems. Completed runtime
+snapshots are immutable, checksum-verified, and opened with `mode=ro&immutable=1`.
+Never modify those files beneath an active reader; publish a new snapshot ID instead.
 
 Use a work directory with sufficient space. For Azure publication, configure the
 storage environment above and an identity with artifact-container write access;

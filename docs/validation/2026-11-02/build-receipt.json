@@ -1,0 +1,25 @@
+{
+  "execution": "job-graphiv-prod-index-builder-rqlcetd",
+  "execution_status": "Succeeded",
+  "complete_event": {
+    "event": "complete",
+    "elapsed_seconds": 5589.898,
+    "peak_rss_bytes": 3960127488,
+    "disk_free_bytes": 74240557056,
+    "counts": {
+      "papers": 3165827,
+      "embedded": 3165827,
+      "edges": 38931148,
+      "citations": 74764672,
+      "topics": 3165827,
+      "topic_names": 4368
+    }
+  },
+  "observed_metric_maxima": {
+    "UsageNanoCores": 988932940.0,
+    "UsageBytes": 7360626688.0,
+    "RxBytes": 2968948612.0,
+    "TxBytes": 1033158645.0
+  },
+  "metric_note": "Maximum of recorded Azure Monitor samples; process RSS is reported separately in complete_event."
+}

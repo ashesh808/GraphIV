@@ -31,6 +31,12 @@ distance. Every FAISS integer label maps
 to a paper through `vector_ids(faiss_id, arxiv_id)`. The adapter validates the index metric
 and dimensions. A separate ID-map file is not required.
 
+Completed SQLite snapshots open with `mode=ro&immutable=1`, so readers do not
+request advisory locks from the share. These files are never changed while open.
+The private cloud builder uses SQLite's `unix-dotfile` writer lock, selected by
+`GRAPHIV_SQLITE_WRITE_VFS`, to retain writer serialization on this mount. Source
+and report storage continue to use the existing Azure Blob abstraction.
+
 For local snapshot reads, set `BACKEND = "sqlite"`, `METADATA_PATH`, and `INDEX_PATH` in
 [`configs/runtime.toml`](../configs/runtime.toml), plus `[dataset] GRAPH_PATH`.
 Paths ending in `_PATH` are relative to that configuration file. The environment overrides

@@ -1,0 +1,97 @@
+{
+  "commit": "cc781313c13b9cbd08110c97eb84b7e1a62180e1",
+  "method": "bounded Parquet footer statistics only",
+  "tables": {
+    "citations": {
+      "source_id": {
+        "values": 74764672,
+        "nulls": 0,
+        "min": "0704.0001",
+        "max": "supr-con/9609004",
+        "groups_without_statistics": 0
+      },
+      "target_id": {
+        "values": 74764672,
+        "nulls": 0,
+        "min": "0704.0001",
+        "max": "supr-con/9609004",
+        "groups_without_statistics": 0
+      },
+      "intent": {
+        "values": 74764672,
+        "nulls": 0,
+        "min": "background",
+        "max": "uses",
+        "groups_without_statistics": 0
+      },
+      "intent_score": {
+        "values": 74764672,
+        "nulls": 0,
+        "min": 0.20780238509178162,
+        "max": 0.9986236095428467,
+        "groups_without_statistics": 0
+      }
+    },
+    "papers": {
+      "arxiv_id": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": "0704.0001",
+        "max": "supr-con/9609004",
+        "groups_without_statistics": 0
+      },
+      "date": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": "1986-04-25",
+        "max": "2026-10-01",
+        "groups_without_statistics": 0
+      },
+      "survey_probability": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": 0.0002780309587251395,
+        "max": 0.999312162399292,
+        "groups_without_statistics": 0
+      },
+      "embedding.list.element": {
+        "values": 2431355136,
+        "nulls": 0,
+        "min": "b'\\x00\\xb2'",
+        "max": "b'\\xf82'",
+        "groups_without_statistics": 0
+      }
+    },
+    "topics": {
+      "arxiv_id": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": "0704.0001",
+        "max": "supr-con/9609004",
+        "groups_without_statistics": 0
+      },
+      "level_0": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": 0,
+        "max": 15,
+        "groups_without_statistics": 0
+      },
+      "level_1": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": 0,
+        "max": 15,
+        "groups_without_statistics": 0
+      },
+      "level_2": {
+        "values": 3165827,
+        "nulls": 0,
+        "min": 0,
+        "max": 15,
+        "groups_without_statistics": 0
+      }
+    }
+  },
+  "range_bytes_read": 1841027
+}

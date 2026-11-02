@@ -241,6 +241,56 @@ def validate_provenance(value: Any) -> dict[str, Any]:
     return manifest.raw
 
 
+def validate_readiness_corpus(value: Any) -> dict[str, Any]:
+    """Check available safe summary fields without inventing artifact-manifest fields."""
+    summary = _object(value, "Readiness corpus summary")
+    if "snapshot_id" in summary:
+        validate_segment(summary["snapshot_id"])
+    if "source" in summary:
+        source = _object(summary["source"], "Readiness source provenance")
+        if (source.get("repository"), source.get("revision"), source.get("commit")) != (
+            REPOSITORY,
+            REVISION,
+            COMMIT,
+        ):
+            raise VerificationError("Readiness source is not the pinned published release")
+    if "embedding" in summary:
+        embedding = _object(summary["embedding"], "Readiness embedding identity")
+        if embedding.get("dimension") != 768 or embedding.get("model") != "nomic-embed-text-v2-moe":
+            raise VerificationError(
+                "Readiness embedding identity does not match the published source"
+            )
+    if "counts" in summary:
+        counts = _object(summary["counts"], "Readiness corpus counts")
+        if any(counts.get(key) != count for key, count in SOURCE_COUNTS.items()):
+            raise VerificationError(
+                "Readiness corpus counts do not match the full published release"
+            )
+        if counts.get("embedded") != SOURCE_COUNTS["papers"]:
+            raise VerificationError("Readiness does not identify all published paper vectors")
+    if "capabilities" in summary:
+        capabilities = _object(summary["capabilities"], "Readiness corpus capabilities")
+        for key, expected in (
+            ("precomputed_intents", True),
+            ("intent_confidence", True),
+            ("citation_sentences", False),
+        ):
+            if capabilities.get(key) is not expected:
+                raise VerificationError("Readiness corpus evidence capabilities are inconsistent")
+    if "index" in summary:
+        _object(summary["index"], "Readiness index summary")
+    return summary
+
+
+def require_summary_match(summary: dict[str, Any], manifest: dict[str, Any]) -> None:
+    """Match every provided summary field against a separately validated full run manifest."""
+    for key, value in summary.items():
+        if key not in manifest or manifest[key] != value:
+            raise VerificationError(
+                f"Readiness corpus {key} disagrees with the persisted run manifest"
+            )
+
+
 def job_counts(result: dict[str, Any]) -> dict[str, int]:
     """Read measured fields explicitly; absence never turns into a synthetic zero."""
     retrieval = _object(result.get("retrieval_counts"), "Retrieval counts")
@@ -709,8 +759,8 @@ def verify_deployment(
         code, body = client.request("/health/ready")
         evidence["readiness"] = require_ready(code, json.loads(body))
         preflight = evidence["readiness"].get("corpus")
-        if preflight:
-            evidence["corpus"] = validate_provenance(preflight)
+        if preflight is not None:
+            preflight = validate_readiness_corpus(preflight)
         evidence["frontend_home"] = _page(client, "/")
         service = blob_service_from_environment() if verify_blob_storage else None
         for index, question in enumerate(chosen):
@@ -806,6 +856,8 @@ def verify_deployment(
                     database=corpus_database,
                 )
             )
+            if preflight is not None:
+                require_summary_match(preflight, case["corpus"])
             if evidence.get("corpus") is not None and evidence["corpus"] != case["corpus"]:
                 raise VerificationError("Acceptance cases used different corpus snapshots")
             evidence["corpus"] = case.pop("corpus")

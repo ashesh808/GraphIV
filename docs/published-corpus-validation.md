@@ -1,14 +1,31 @@
 # Published corpus rollout and validation
 
-Status as of 2026-11-02: **dataset access verified; full-corpus build in progress**. GraphIV is not yet research-ready. No demonstration reports, empty corpora, or mocked research runs count as validation.
+Status as of 2026-11-02: **full published corpus built, quality gate passed, and snapshot activated; final report acceptance still pending**. Two initial real browser jobs were superseded without completing after a citation-access slowdown was diagnosed and the API revision replaced. The corrected v4 image was deployed around 18:35 UTC; at 18:45 UTC it was warming the full corpus and research readiness returned 503. Two fresh browser jobs are required after readiness recovers. No completed report, persistence, or end-to-end pass is claimed. No demonstration reports, empty corpora, or mocked research runs count as validation.
 
 ## Source and access
 
-The requested [GraphIV release](https://huggingface.co/datasets/kkuroma/GraphIV/tree/GraphIV-2026-10-01) resolves to commit `cc781313c13b9cbd08110c97eb84b7e1a62180e1`. Its published inventory contains 7 paper, 4 citation, and 1 topic Parquet shards, totaling 6,486,435,579 bytes. Authenticated reads of all 12 actual Parquet footers confirm 3,165,827 papers, 74,764,672 citation occurrences, and 3,165,827 topic rows. These are **verified source counts**, not successful import measurements. The bounded footer audit read only 1,841,027 bytes locally; the full source is downloaded on Azure.
+The requested [GraphIV release](https://huggingface.co/datasets/kkuroma/GraphIV/tree/GraphIV-2026-10-01) resolves to commit `cc781313c13b9cbd08110c97eb84b7e1a62180e1`. Its published inventory contains 7 paper, 4 citation, and 1 topic Parquet shards, totaling 6,486,435,579 bytes. Authenticated reads of all 12 actual Parquet footers confirm 3,165,827 papers, 74,764,672 citation occurrences, and 3,165,827 topic rows. The bounded footer audit read only 1,841,027 bytes locally; the full source was downloaded and imported on Azure. The [footer audit](validation/2026-11-02/published-parquet-footers.json), [column statistics](validation/2026-11-02/published-parquet-statistics.json), and [published manifest](validation/2026-11-02/published-corpus-manifest.json) retain the source and import evidence separately.
 
 Dataset access was restored on 2026-11-02 after local Hugging Face login. The pinned paper shard returned HTTP 200. The existing offline worker receives the read credential through a secret-scoped Key Vault reference; no credential value is stored in Terraform state or source. All 6,486,435,579 source bytes downloaded and passed their published checksums and actual Arrow-schema/count validation on Azure.
 
 The first build stopped at database initialization because POSIX advisory locking on this Azure Files mount returned `database is locked`. A direct mount check confirmed that SQLite's `unix-dotfile` writer locking works. Private staging writers now use that supported locking mechanism; completed snapshots open read-only with `immutable=1`. Snapshots remain content-verified and are never changed underneath readers. This uses the existing filesystem and backend, without an infrastructure change. See [SQLite locking backends](https://www.sqlite.org/vfs.html) and [immutable read semantics](https://www.sqlite.org/uri.html).
+
+The completed snapshot `graphiv-2026-10-01-nomic-sq8` records these actual import measurements:
+
+| Imported data | Recorded count |
+| --- | ---: |
+| Papers and embedded vectors | 3,165,827 each |
+| Citation occurrences | 74,764,672 |
+| Rows with precomputed intent labels | 74,764,672 |
+| Rows with original confidence scores | 74,764,672 |
+| Published citation sentences | 0 |
+| Unresolved citation targets | 0 |
+| Distinct resolved graph pairs | 38,931,148 |
+| Topic rows / topic names | 3,165,827 / 4,368 |
+
+Occurrence counts and distinct graph-pair counts describe different representations. The importer preserves every occurrence in SQLite while deduplicating pairs for GraphExport. These counts come from the completed manifest, not from a small fixture or a source-only estimate.
+
+The successful offline execution completed import and inactive publication in 5,589.898 seconds (93 minutes 10 seconds), reporting peak process RSS of 3,960,127,488 bytes (3.69 GiB). The [build receipt](validation/2026-11-02/build-receipt.json) and [monitor observations](validation/2026-11-02/build-monitor.jsonl) retain the actual completion event and sampled Azure metrics. The maximum of those recorded container-memory samples was 7,360,626,688 bytes; samples do not establish the execution's absolute memory peak.
 
 ## Implemented behavior
 
@@ -21,11 +38,52 @@ The first build stopped at database initialization because POSIX advisory lockin
 
 ## Memory and storage
 
-The full original FlatIP payload would require 9,725,420,544 bytes (9.06 GiB), exceeding the 8 GiB Consumption limit before the encoder or graph loads. The replacement is an IVF/SQ8 candidate index with 1,024 lists, initial `nprobe = 128`, and fourfold candidate oversampling. Its estimated vector-code/ID payload is 2,456,681,752 bytes (2.29 GiB), plus centroids and bookkeeping. Final similarity scores are recalculated using the original float16 vectors in SQLite; approximation affects candidate recall, not the cosine formula.
+The full original FlatIP payload would require 9,725,420,544 bytes (9.06 GiB), exceeding the 8 GiB Consumption limit before the encoder or graph loads. The built IVF/SQ8 candidate index has 1,024 lists, `nprobe = 128`, fourfold candidate oversampling, and 65,536 training vectors. Its actual file size is 2,459,842,000 bytes (2.29 GiB). Final similarity scores are recalculated using the original float16 vectors in SQLite; approximation affects candidate recall, not the cosine formula. Recorded training and index-add times were 498.881 and 318.034 seconds respectively; these are index stages, not total build or research-job latency.
 
-The API image is `graphiv-api:published-corpus-v3`; the offline image is `graphiv-index-builder:published-corpus-v3`, both in the existing Azure registry. The existing API is configured for 4 CPU / 8 GiB. A 100 GiB Azure Files cache in the existing storage account is mounted using managed identity because the source, metadata, vectors, and model exceed Consumption ephemeral storage. The optional offline build job uses the same cache and has no idle replicas. Azure Blob Storage remains the publication/report store and the single Python backend remains the research service.
+| Published artifact | Actual bytes |
+| --- | ---: |
+| `metadata.sqlite` | 21,999,063,040 |
+| `index.faiss` | 2,459,842,000 |
+| `graph.npz` | 263,982,055 |
 
-Full-corpus peak memory, recall, and latency are **unmeasured** until the complete corpus has built. Startup integrity scans and very selective historical filters can cause substantial disk I/O. The actual quality gate must pass before activation; publishing a built snapshot alone does not change the active manifest.
+The current API image is `graphiv-api:published-corpus-v4`, digest `sha256:443efc84704d6b07a61ec6dabe25465d3991623074ebb889577f10f71fc41490`, deployed as revision `0000006` around 18:35 UTC on 2026-11-02. The offline image remains `graphiv-index-builder:published-corpus-v3`, in the same existing Azure registry. The existing API is configured for 4 CPU / 8 GiB. A 100 GiB Azure Files cache in the existing storage account is mounted using managed identity because the source, metadata, vectors, and model exceed Consumption ephemeral storage. The optional offline build job uses the same cache and has no idle replicas. Azure Blob Storage remains the publication/report store and the single Python backend remains the research service.
+
+The full-corpus quality run passed inside the actual cgroup v1 8,589,934,592-byte limit. Peak process RSS after document checks was 4,507,381,760 bytes (4.20 GiB); the cgroup's recorded peak was 7,485,149,184 bytes (6.97 GiB), including filesystem cache. Sampled anonymous and file-cache peaks were 3,289,214,976 and 5,421,195,264 bytes; they occurred independently and must not be added as simultaneous usage. The observed `oom_kill` and `failcnt` deltas were zero. Cgroup v2-only counters were unavailable, not measured as zero. These are quality-run measurements, not peak memory for a completed research job. Raw v1 paths, values, and parsed telemetry are retained in the [quality receipt](validation/2026-11-02/quality-receipt.json).
+
+## Full-corpus quality gate
+
+The [recorded quality run](validation/2026-11-02/quality-status.json) finished successfully on 2026-11-02. It compared ANN candidates against an exact baseline over the original corpus vectors using [13 real query cases](validation/2026-11-02/quality-queries.jsonl), including historical-date and blocked-ID filters. The required minimum recall@200 was 0.98 for every query. The complete [receipt](validation/2026-11-02/quality-receipt.json) records the following results:
+
+| `nprobe` | Minimum recall@200 | Mean recall@200 | Maximum absolute cosine-score error | Result |
+| ---: | ---: | ---: | ---: | --- |
+| **128, activated configuration** | **0.995** | **0.9992307692** | **0.0** | Passed |
+| 256 | 0.995 | 0.9996153846 | 0.0 | Passed |
+| 512 | 1.0 | 1.0 | 0.0 | Passed |
+
+At `nprobe = 128`, individual retrieval calls ranged from 4.6738 to 278.9837 seconds; the median was 10.2086 seconds. The `graph-learning-before-2017` case, capped at 2016-12-31, took **278.9837 seconds**, despite passing recall. This selective historical filter is a demonstrated latency limitation. These numbers describe the retrieval benchmark calls, not complete research requests or a general response-time guarantee.
+
+The same run re-encoded 16 sampled published documents with the pinned original Nomic encoder and `search_document: Title: <title>\nAbstract: <abstract>` formatting, then compared them to their stored original vectors. Minimum cosine was **0.9994056364**, mean cosine was **0.9998808114**, exceeding the required 0.999 for all 16 samples. This establishes compatibility for the tested sample; it is not a re-encoding audit of every published document. The model revision, code revision, sample IDs, and individual cosines are retained in `document_space` in the receipt.
+
+The quality run took 2,024.87 seconds, including the exact baseline and document checks. Cold-start latency has **not** been validly measured: the local monotonic interval overlapped Mac sleep and is excluded. No 120-second cold-start claim is supported.
+
+## Activation
+
+The snapshot was published inactive until the recorded quality gate passed. The [activation review](validation/2026-11-02/activation/review.json) records an explicit activation, all three artifact sizes/checksums, a completed active-alias write, and matching readback. The active `metadata/manifest.json` SHA-256 is `619c453798eab8335b0cd70fae3c915a73ed30e167efb2581b1be4bb67b644d4`, matching the reviewed [candidate manifest](validation/2026-11-02/activation/candidate-manifest.json). The reviewed quality-receipt SHA-256 is `7f5e8a693abb8fde10920e0200146530e0b5663f3ae30d6a3e203eace2c5d82f`, matching the adjacent [receipt copy](validation/2026-11-02/activation/quality-receipt.json).
+
+The [rollback record](validation/2026-11-02/activation/rollback.json) states that no previous active alias existed. After activation, the v3 API reached research readiness with the pinned full corpus and Nomic identity. The v4 access-path correction leaves this corpus and manifest unchanged; its warmup was still pending at 18:45 UTC. Readiness and activation do not establish that a complete research report has succeeded; that acceptance remains below.
+
+## Initial research attempts and citation-access correction
+
+The [initial browser submission record](validation/2026-11-02/initial-slow-attempts/browser-submissions.json) confirms two real Survey/Standard submissions through the visible Vercel form:
+
+- Linear-attention/SSM job [`7b9e8fe3ddc0446883560cf0cc12f970`](validation/2026-11-02/initial-slow-attempts/7b9e8fe3ddc0446883560cf0cc12f970.json) was created at 18:06:49 UTC. It performed BoundedField retrieval and 13 actual LLM grading calls by 18:14:11 UTC, then remained in mining for more than 20 minutes before intervention. Its saved status was `running`, stage `mining`, with no result.
+- RAG-grounding job [`d7017486257442b2b5f502724f54ab60`](validation/2026-11-02/initial-slow-attempts/d7017486257442b2b5f502724f54ab60.json) was created at 18:11:49 UTC and remained queued behind the first job, with no result.
+
+The [read-only citation-access probe](validation/2026-11-02/citation-access-probe.json) against the full immutable SQLite corpus identified an induced-edge query access problem. SQLite selected the incoming `citations_target` index, causing large fanout for highly cited target papers even when both endpoints were restricted to a small set. The three-head default query was interrupted after **30.213 seconds** and returned no completed result or row count. A `citations_source` query over the expanded 33-node set completed in **1.708 seconds**, returning **461 labelled citation occurrences**, all without sentence text. The probe overlapped the initial research job; its timings describe citation access, not completed research latency, and the interrupted query is not a measured speedup baseline.
+
+The source-only correction changes the SQLite adapter's `edges` and `edge_records` methods to select `INDEXED BY citations_source`. Explicit `ORDER BY target_id,intent,citation_id` preserves the original occurrence ordering. Twelve parity cases and 94 targeted tests passed. The successor query, original confidence filtering, BoundedField/LeyLine equations, recipes, and stored corpus artifacts were not changed. The fix was included in the v4 image above; it does not establish that the complete research workflow now finishes within a measured time.
+
+Replacing the revision ended the old process-local jobs. The verifier, which reused those submitted IDs, [failed on HTTP 404](validation/2026-11-02/initial-slow-attempts/verifier/verification.json) after replacement; its [worker status](validation/2026-11-02/initial-slow-attempts/verifier/worker-status.json) finished at 18:35:30 UTC. The captured job records remain `running`/`queued` observations from before replacement, not successful or terminal reports. Both attempts are superseded and neither counts as completed acceptance. Their browser inputs and failed verifier receipts are retained for traceability. Final verification must use two fresh jobs on the corrected revision.
 
 ## Measurements obtained
 
@@ -34,7 +92,7 @@ Full-corpus peak memory, recall, and latency are **unmeasured** until the comple
 | Azure Files read/write | Passed; mounted capacity 107,374,182,400 bytes |
 | Official Nomic weights downloaded to persistent cache | Passed; immutable revision `1066b6599d099fbb93dfcb64f9c37a7c9e503e85` |
 | Real Nomic CPU forward pass on Azure | Passed; 768 dimensions, vector norm 1.000000052 |
-| First download + load + one query | 59.63 seconds |
+| Encoder-only first download + load + one query | 59.63 seconds; excludes corpus startup and research |
 | Encoder probe peak process RSS | 1,990,705,152 bytes; separate probe process, not a research-job measurement |
 | Persistent cache after API revision replacement | Passed; the original marker and model cache survived |
 | Two warm Nomic query encodings | 1.171 and 0.699 seconds; encoder-only checks, not corpus retrieval |
@@ -42,26 +100,28 @@ Full-corpus peak memory, recall, and latency are **unmeasured** until the comple
 | Gateway LLM request from the deployed API | Passed; `google/gemini-3.1-flash-lite` |
 | Published Parquet access | Passed with authorized Hugging Face login |
 | Full source download + checksum/schema/count checks | Passed; 211.067 seconds, peak RSS 1,400,971,264 bytes |
-| Full corpus import and activation | Build retry after mount-locking correction; activation pending |
-| Full corpus ANN recall / document-vector compatibility | Not executed |
+| Full corpus import and activation | Passed; completed manifest and explicit activation/readback records linked above |
+| Full corpus ANN recall / document-vector compatibility | Passed; 13 retrieval cases and 16 original-vector document checks |
+| Citation-access diagnostic | Source-index query: 461 occurrences across 33 nodes in 1.708 seconds; default three-head query interrupted at 30.213 seconds |
+| Initial real research attempts | Incomplete and superseded after revision replacement; verifier received HTTP 404 |
+| Actual research-report latency / peak memory | Pending two fresh completed jobs on v4 |
+| Full cold-start latency | Not validly measured; local timing excluded because it overlapped Mac sleep |
 
-Production frontend commit `a9a6ab0` is live at `https://graphiv.vercel.app`. A real browser submission reached the Azure API and displayed its research-not-ready response; it created no research report. The real acceptance command also exited with FAILED before submitting jobs because `/health/ready` returned 503. Thus neither required research query has executed.
+Before corpus activation, a real production-browser submission reached the Azure API and displayed its research-not-ready response; it created no report. The initial preflight command likewise exited FAILED before submitting jobs because `/health/ready` returned 503. After activation, the two browser jobs described above were accepted but did not complete before revision replacement. Their incomplete attempts and failed verification are not successful report evidence. At 18:45 UTC the corrected revision was still warming; completed fresh reports, Blob verification, and interactive report inspection remain pending.
 
-The model probe verifies the encoder itself; it does not prove compatibility with the published corpus vectors or full deployment memory capacity.
+Encoder-only probes, the full-corpus quality gate, and real research jobs are separate measurements. The document-vector and cgroup measurements above supersede the earlier lack of full-corpus evidence, while completed research-job measurements are still required.
 
 ## Required real research acceptance
 
 | Research question | Papers / citations / lineages / successors | Latency / peak memory | Result |
 | --- | --- | --- | --- |
-| Linear attention versus selective state-space models, including their research lineages | Unmeasured | Unmeasured | Pending corpus build |
-| Evidence grounding and citation faithfulness in retrieval-augmented generation, including follow-up papers | Unmeasured | Unmeasured | Pending corpus build |
+| Linear attention versus selective state-space models, including their research lineages | Pending fresh report verification | Pending fresh job measurements | Initial mining attempt superseded; fresh v4 job pending |
+| Evidence grounding and citation faithfulness in retrieval-augmented generation, including follow-up papers | Pending fresh report verification | Pending fresh job measurements | Initial queued attempt superseded; fresh v4 job pending |
 
 Remaining acceptance steps:
 
-1. Run the cloud Parquet build and publish an inactive snapshot. Inspect its exact source/import counts, intent/confidence counts, source hashes, elapsed time, and peak RSS.
-2. Run `offline.index_build.benchmark` on the complete snapshot using `offline/index_build/validation_queries.jsonl`. Require at least 98% recall@200 for every supplied query, exact cosine agreement, and at least 0.999 cosine between 16 original published vectors and the original document encoder. Inspect actual full-corpus memory and latency. If settings change, rerun against the final saved index configuration.
-3. Explicitly activate the verified snapshot, restart the API, and require research readiness with the pinned full corpus and Nomic identity.
-4. Run `offline.index_build.verify_deployment --verify-blob` for both real questions. The command rejects incomplete provenance, empty results, absent lineages/successors, missing measurements, missing report artifacts, fabricated citation sentences, and paper metadata that disagrees with the deployed corpus. It independently SHA-checks persisted Blob payloads when requested.
-5. Submit real questions from [graphiv.vercel.app](https://graphiv.vercel.app), observe progress, open completed reports, and inspect their papers and citation graph. Record browser verification separately; an HTTP script does not establish browser interaction.
+1. Require research readiness on v4, then submit and complete both distinct questions as fresh jobs from [graphiv.vercel.app](https://graphiv.vercel.app). Observe progress, open their completed reports, and inspect actual papers, authors, research lineages, follow-up papers, graph intent predictions/confidence, and the missing-citation-sentence qualification.
+2. Validate those fresh jobs with `offline.index_build.verify_deployment --verify-blob`, reusing their new job IDs rather than submitting duplicates or using the superseded IDs. Require full source provenance, nonempty retrieval, mined/persisted lineages and successors, measured latency/memory, five saved report artifacts, no fabricated citation sentences, and paper metadata matching the deployed corpus. Independently verify persisted Blob payload hashes.
+3. Record browser interaction separately from HTTP/artifact verification, and fill the pending table with the real counts, job measurements, report links, and receipts. Reload the library and reopen both saved reports to verify the reading path after completion.
 
-The offline package [README](../offline/index_build/README.md) contains build, quality, publication, and acceptance commands. Replace this pending status with actual receipts after those steps succeed.
+The offline package [README](../offline/index_build/README.md) contains build, quality, publication, and acceptance commands. The existing activation and quality receipts establish only their respective checks; replace the pending research acceptance rows after the actual jobs and report checks succeed.

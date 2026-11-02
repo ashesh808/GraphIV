@@ -296,10 +296,13 @@ class SQLiteCorpus:
 
     def edges(self, arxiv_ids: list[str]) -> list[EdgeRow]:
         """Read labeled occurrences with both ends inside the requested set."""
+        # Bound outgoing source ranges, retaining the old target-index occurrence order.
         return self._rows(
-            "SELECT source_id, target_id, intent, sentence FROM citations WHERE stage = 1 "
+            "SELECT source_id, target_id, intent, sentence "
+            "FROM citations INDEXED BY citations_source WHERE stage = 1 "
             "AND source_id IN (SELECT value FROM json_each(?)) "
-            "AND target_id IN (SELECT value FROM json_each(?)) AND target_id IS NOT NULL",
+            "AND target_id IN (SELECT value FROM json_each(?)) AND target_id IS NOT NULL "
+            "ORDER BY target_id,intent,citation_id",
             (_ids(arxiv_ids), _ids(arxiv_ids)),
         )
 
@@ -307,10 +310,13 @@ class SQLiteCorpus:
         self, arxiv_ids: list[str]
     ) -> list[tuple[str, str, str | None, str | None, float | None]]:
         """Preserve per-occurrence confidence alongside the precomputed intent label."""
+        # LeyLine walks depend on edge order, so index choice must not reorder occurrences.
         return self._rows(
             "SELECT source_id,target_id,intent,sentence,intent_score FROM citations "
-            "WHERE stage=1 AND source_id IN (SELECT value FROM json_each(?)) "
-            "AND target_id IN (SELECT value FROM json_each(?)) AND target_id IS NOT NULL",
+            "INDEXED BY citations_source WHERE stage=1 "
+            "AND source_id IN (SELECT value FROM json_each(?)) "
+            "AND target_id IN (SELECT value FROM json_each(?)) AND target_id IS NOT NULL "
+            "ORDER BY target_id,intent,citation_id",
             (_ids(arxiv_ids), _ids(arxiv_ids)),
         )
 

@@ -1,0 +1,269 @@
+{
+  "repository": "kkuroma/GraphIV",
+  "revision": "GraphIV-2026-10-01",
+  "commit": "cc781313c13b9cbd08110c97eb84b7e1a62180e1",
+  "method": "authenticated bounded HTTP Range Parquet footer reads; no full-file download",
+  "files": [
+    {
+      "name": "citations/citations-00000.parquet",
+      "size": 217818354,
+      "rows": 20000000,
+      "row_groups": 400,
+      "range_bytes_read": 346238,
+      "range_requests": 2,
+      "fields": {
+        "source_id": "string",
+        "target_id": "string",
+        "section": "string",
+        "resolved_by": "string",
+        "intent": "string",
+        "intent_score": "float"
+      },
+      "sha256": "78f450718844a1b5f14062da9a2cae2a06c5cae539706e2810a73f410c0e4f4e"
+    },
+    {
+      "name": "citations/citations-00001.parquet",
+      "size": 212712975,
+      "rows": 20000000,
+      "row_groups": 400,
+      "range_bytes_read": 347618,
+      "range_requests": 2,
+      "fields": {
+        "source_id": "string",
+        "target_id": "string",
+        "section": "string",
+        "resolved_by": "string",
+        "intent": "string",
+        "intent_score": "float"
+      },
+      "sha256": "ef77fc090441e20089a1cea7cf5e85130d7d9e6f568066166fca626f13a3704a"
+    },
+    {
+      "name": "citations/citations-00002.parquet",
+      "size": 210183969,
+      "rows": 20000000,
+      "row_groups": 400,
+      "range_bytes_read": 346978,
+      "range_requests": 2,
+      "fields": {
+        "source_id": "string",
+        "target_id": "string",
+        "section": "string",
+        "resolved_by": "string",
+        "intent": "string",
+        "intent_score": "float"
+      },
+      "sha256": "ecb4d7d71ec1f8f3090388bea9792bc3a0102046d835f3882d071edecf898131"
+    },
+    {
+      "name": "citations/citations-00003.parquet",
+      "size": 155798201,
+      "rows": 14764672,
+      "row_groups": 296,
+      "range_bytes_read": 275905,
+      "range_requests": 2,
+      "fields": {
+        "source_id": "string",
+        "target_id": "string",
+        "section": "string",
+        "resolved_by": "string",
+        "intent": "string",
+        "intent_score": "float"
+      },
+      "sha256": "3ad1dcb92d1f1e4f74c5cf39b4d750b4775aa193c5651de3c6114013c9424d95"
+    },
+    {
+      "name": "papers/papers-00000.parquet",
+      "size": 865934175,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "04710cb87ad91d21decaf16c5e6674a08f50b2136c3d358e360fee2030524d72"
+    },
+    {
+      "name": "papers/papers-00001.parquet",
+      "size": 888335450,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "6785199c225938b30e2010b5e76236dbafc771264a00738c03b41b492882a073"
+    },
+    {
+      "name": "papers/papers-00002.parquet",
+      "size": 910169306,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "b1d134a9ee655cca2cf164b7bcc617ae61e9e34cb0cf28e33c01f6870e537316"
+    },
+    {
+      "name": "papers/papers-00003.parquet",
+      "size": 928768492,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "73d0d7edacba293693996972e6be975d74cdca025466f808f70917dca87a1812"
+    },
+    {
+      "name": "papers/papers-00004.parquet",
+      "size": 899737612,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "a4a109efe8ae1b032be4ad9a8181247badeaeff450decc4662bd40db9e56b1ac"
+    },
+    {
+      "name": "papers/papers-00005.parquet",
+      "size": 902765554,
+      "rows": 500000,
+      "row_groups": 10,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "d0832a81953d3482a6944dd01899ed823593361d2e573629119f6b34b58b5b52"
+    },
+    {
+      "name": "papers/papers-00006.parquet",
+      "size": 268161467,
+      "rows": 165827,
+      "row_groups": 4,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "title": "string",
+        "abstract": "string",
+        "date": "date32[day]",
+        "primary_category": "string",
+        "authors": "string",
+        "surnames": "list<element: string>",
+        "latest_version": "string",
+        "doi": "string",
+        "journal_ref": "string",
+        "survey_probability": "float",
+        "embedding": "fixed_size_list<element: halffloat>[768]"
+      },
+      "valid_embedding": true,
+      "sha256": "da90f107051e1ac6a029bc730eb5202672cbf240ca62272eb204f4e39f71ca95"
+    },
+    {
+      "name": "topics/topics-00000.parquet",
+      "size": 26050024,
+      "rows": 3165827,
+      "row_groups": 64,
+      "range_bytes_read": 65536,
+      "range_requests": 1,
+      "fields": {
+        "arxiv_id": "string",
+        "level_0": "int16",
+        "level_1": "int16",
+        "level_2": "int16",
+        "name_0": "string",
+        "name_1": "string",
+        "name_2": "string"
+      },
+      "sha256": "ccdd7057d23930570412c4eb881e7fed939508e1b158d454832d773bbb4d2526"
+    }
+  ],
+  "counts": {
+    "papers": 3165827,
+    "citations": 74764672,
+    "topics": 3165827
+  },
+  "total_range_bytes_read": 1841027,
+  "total_source_bytes": 6486435579
+}

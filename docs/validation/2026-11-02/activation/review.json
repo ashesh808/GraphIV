@@ -1,0 +1,36 @@
+{
+  "status": "activated",
+  "execute_requested": true,
+  "activated": true,
+  "write_attempted": true,
+  "write_completed": true,
+  "metadata_container": "metadata",
+  "active_alias": "manifest.json",
+  "snapshot_id": "graphiv-2026-10-01-nomic-sq8",
+  "manifest_blob": "snapshots/graphiv-2026-10-01-nomic-sq8/manifest.json",
+  "manifest_sha256": "619c453798eab8335b0cd70fae3c915a73ed30e167efb2581b1be4bb67b644d4",
+  "quality_receipt_sha256": "7f5e8a693abb8fde10920e0200146530e0b5663f3ae30d6a3e203eace2c5d82f",
+  "previous_exists": false,
+  "previous_sha256": null,
+  "artifacts": {
+    "vectors": {
+      "container": "vector-indexes",
+      "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/index.faiss",
+      "bytes": 2459842000,
+      "sha256": "0bb98e8cb020f283a6b452fec043d237f7a0955f5b3a74e251cd35aef2008dd2"
+    },
+    "metadata": {
+      "container": "metadata",
+      "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/metadata.sqlite",
+      "bytes": 21999063040,
+      "sha256": "1eed88cf8a0bbd79d5b6a1325cc0932e951eff7bc268ac63b5a0f02134b6e16c"
+    },
+    "graph": {
+      "container": "citation-graphs",
+      "blob": "snapshots/graphiv-2026-10-01-nomic-sq8/graph.npz",
+      "bytes": 263982055,
+      "sha256": "06fd6df673736b3ef4f1fc17951032528a89307c51d232c4d8ffd0358dbd4c30"
+    }
+  },
+  "readback_sha256": "619c453798eab8335b0cd70fae3c915a73ed30e167efb2581b1be4bb67b644d4"
+}
