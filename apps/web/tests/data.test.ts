@@ -6,14 +6,38 @@ import { loadLibrary, loadRun, normalizeRun, normalizeSummary, validSlug } from 
 function isolateApi(t: TestContext, url?: string): void {
   const previousFetch = globalThis.fetch;
   const previousUrl = process.env.GRAPHIV_API_URL;
+  const previousToken = process.env.GRAPHIV_API_TOKEN;
+  delete process.env.GRAPHIV_API_TOKEN;
   if (url === undefined) delete process.env.GRAPHIV_API_URL;
   else process.env.GRAPHIV_API_URL = url;
   t.after(() => {
     globalThis.fetch = previousFetch;
     if (previousUrl === undefined) delete process.env.GRAPHIV_API_URL;
     else process.env.GRAPHIV_API_URL = previousUrl;
+    if (previousToken === undefined) delete process.env.GRAPHIV_API_TOKEN;
+    else process.env.GRAPHIV_API_TOKEN = previousToken;
   });
 }
+
+test("backend credentials are sent only as a server request header", { concurrency: false }, async (t) => {
+  isolateApi(t, "https://library.example");
+  process.env.GRAPHIV_API_TOKEN = "server-only-test-token";
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, "https://library.example/api/runs");
+    assert.equal(new Headers(options?.headers).get("Authorization"), "Bearer server-only-test-token");
+    return Response.json([]);
+  };
+  const result = await loadLibrary();
+  assert.equal(result.status, "connected");
+  assert.equal(JSON.stringify(result).includes("server-only-test-token"), false);
+});
+
+test("a configured backend token disables implicit example fallback", { concurrency: false }, async (t) => {
+  isolateApi(t);
+  process.env.GRAPHIV_API_TOKEN = "server-only-test-token";
+  globalThis.fetch = unavailable;
+  assert.equal((await loadLibrary()).status, "error");
+});
 
 function unavailable(): Promise<Response> {
   return Promise.reject(new TypeError("The server could not be reached"));

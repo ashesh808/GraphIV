@@ -10,18 +10,23 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import threading
 from dataclasses import dataclass, field
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from src.core.config import load_config
 from src.core.embed import embed
 from src.core.llm import Gemma
 from src.core.parse_graph_export import GraphExport, load_graph_export
 from src.core.paths import RUNTIME_CONFIG
+from src.core.runtime import runtime_config
 from src.core.schema import Grade, Paper
+from src.storage.artifacts import Snapshot, load_snapshot
+from src.storage.blobs import BlobNotFoundError, blob_service_from_environment
+from src.storage.corpus import CorpusSource
+from src.storage.runs import BlobReportStore, LocalReportStore, ReportStore
 
 LOG = logging.getLogger(__name__)
 
@@ -43,7 +48,7 @@ class Handles:
     The store, the graph, the endpoints and the model, all of which outlive every call
     """
 
-    dsn: str
+    dsn: CorpusSource
     endpoints: dict[str, str]
     graph: GraphExport
     model: Gemma
@@ -52,6 +57,7 @@ class Handles:
     pdfs: Path
     runs: Path
     fetch: bool = False
+    report_store: ReportStore | None = None
 
     def embed(self, text: str) -> list[float]:
         """
@@ -63,7 +69,10 @@ class Handles:
         Returns:
             The unit normalized vector.
         """
-        return embed(self.endpoints["EMBED_API"], self.endpoints["EMBED_NAME"], text)
+        options = {}
+        if self.endpoints.get("EMBED_API_KEY"):
+            options["api_key"] = self.endpoints["EMBED_API_KEY"]
+        return embed(self.endpoints["EMBED_API"], self.endpoints["EMBED_NAME"], text, **options)
 
     def recipe(self, mode: str) -> Path:
         """
@@ -158,7 +167,7 @@ def serving(config_path: str | Path = CONFIG) -> Serving:
     Returns:
         The settings.
     """
-    config: dict[str, Any] = load_config(config_path)
+    config: dict[str, Any] = runtime_config(config_path)
     block = dict(config["serve"])
     return Serving(
         host=str(block["HOST"]),
@@ -183,24 +192,135 @@ def load(config_path: str | Path = CONFIG) -> Handles:
     Returns:
         The handles.
     """
-    config: dict[str, Any] = load_config(config_path)
+    config: dict[str, Any] = runtime_config(config_path)
     endpoints = {k: str(v) for k, v in config["endpoints"].items()}
     block = dict(config["serve"])
     settings = serving(config_path)
-    graph = load_graph_export(str(config["dataset"]["GRAPH_PATH"]))
+    backend = config["storage"]["BACKEND"]
+    dsn: CorpusSource = str(config["database"]["PG_DEST"])
+    graph_path = config["dataset"]["GRAPH_PATH"]
+    if backend in {"sqlite", "azure"}:
+        from src.storage.sqlite import SQLiteCorpus
+
+        snapshot = _snapshot(config_path) if backend == "azure" else None
+        database = snapshot.database if snapshot else Path(config["storage"]["METADATA_PATH"])
+        index = snapshot.index if snapshot else config["storage"].get("INDEX_PATH")
+        dsn = SQLiteCorpus(
+            database, Path(index) if index else None,
+            embedding_dimension=snapshot.embedding_dimension if snapshot else None,
+        )
+        if snapshot:
+            graph_path = snapshot.graph
+            if snapshot.embedding_model and endpoints["EMBED_NAME"] != snapshot.embedding_model:
+                raise ValueError("Embedding model must match the published corpus snapshot")
+    graph = load_graph_export(str(graph_path))
+    options: dict[str, Any] = {}
+    if os.environ.get("GRAPHIV_RUNTIME") == "azure" or backend == "azure":
+        options.update(reasoning_effort=None, raise_on_error=True)
+    if endpoints.get("LLM_API_KEY"):
+        options["api_key"] = endpoints["LLM_API_KEY"]
     handles = Handles(
-        dsn=str(config["database"]["PG_DEST"]),
+        dsn=dsn,
         endpoints=endpoints,
         graph=graph,
-        model=Gemma(endpoints["LLM_API"], endpoints["LLM_NAME"], str(block["CACHE_PATH"])),
+        model=Gemma(
+            endpoints["LLM_API"], endpoints["LLM_NAME"], str(block["CACHE_PATH"]), **options
+        ),
         recipes=Path(str(block["RECIPE_PATH"])),
         html=settings.html,
         pdfs=settings.pdfs,
         runs=settings.runs,
         fetch=settings.fetch,
+        report_store=report_store(config_path),
     )
     LOG.info("loaded %d papers", graph.n_papers)
     return handles
+
+
+@lru_cache(maxsize=1)
+def _blob_service() -> Any:
+    return blob_service_from_environment()
+
+
+@lru_cache(maxsize=1)
+def report_store(config_path: str | Path = CONFIG) -> ReportStore:
+    """Construct report persistence without downloading a corpus or making a request."""
+    config = runtime_config(config_path)
+    if config["storage"]["REPORT_BACKEND"] == "azure":
+        return BlobReportStore(
+            _blob_service(), os.environ.get("GRAPHIV_REPORTS_CONTAINER", "reports"),
+            Path(config["serve"]["RUNS_PATH"]),
+        )
+    return LocalReportStore(Path(config["serve"]["RUNS_PATH"]))
+
+
+@lru_cache(maxsize=1)
+def _snapshot(config_path: str | Path = CONFIG) -> Snapshot:
+    config = runtime_config(config_path)
+    return load_snapshot(
+        _blob_service(), os.environ.get("GRAPHIV_METADATA_CONTAINER", "metadata"),
+        os.environ.get("GRAPHIV_MANIFEST_BLOB", "manifest.json"),
+        Path(config["storage"]["CACHE_PATH"]),
+    )
+
+
+_PREPARE_LOCK = threading.Lock()
+_PREPARATION: dict[str, Any] = {"complete": False, "reason": "Corpus preparation is pending"}
+
+
+def prepare_runtime() -> None:
+    """Download and validate deployment artifacts in the background, without model requests."""
+    with _PREPARE_LOCK:
+        try:
+            config = runtime_config(CONFIG)
+            _ = report_store()
+            if config["storage"]["BACKEND"] == "azure":
+                _ = _snapshot()
+            missing = _configuration_reasons(config)
+            if missing:
+                _PREPARATION.update(complete=False, reason="; ".join(missing))
+                return
+            handles = load()
+            if isinstance(handles.dsn, str):
+                import psycopg
+
+                with psycopg.connect(handles.dsn, connect_timeout=10) as connection:
+                    _ = connection.execute("SELECT 1").fetchone()
+            _PREPARATION.update(complete=True, reason="")
+        except BlobNotFoundError:
+            _PREPARATION.update(
+                complete=False,
+                reason="Corpus manifest or a referenced artifact has not been published",
+            )
+        except Exception as error:  # noqa: BLE001 -- background health must survive bad configuration
+            # Exceptions can contain provider URLs, tokens or DSNs; expose only their type.
+            LOG.warning("Runtime preparation failed (%s)", type(error).__name__)
+            _PREPARATION.update(
+                complete=False, reason=f"Corpus preparation failed ({type(error).__name__})"
+            )
+
+
+def _configuration_reasons(config: dict[str, Any]) -> list[str]:
+    reasons = []
+    if config["storage"]["BACKEND"] == "postgres" and not config["database"].get("PG_DEST"):
+        reasons.append("PostgreSQL DSN is not configured")
+    for prefix, label in (("LLM", "LLM"), ("EMBED", "Embedding")):
+        if not config["endpoints"].get(f"{prefix}_API"):
+            reasons.append(f"{label} endpoint is not configured")
+        if not config["endpoints"].get(f"{prefix}_NAME"):
+            reasons.append(f"{label} model is not configured")
+    return reasons
+
+
+def runtime_status() -> dict[str, Any]:
+    """Cheap readiness; no credential material, downloads or remote model requests."""
+    config = runtime_config(CONFIG)
+    reasons = _configuration_reasons(config)
+    if not _PREPARATION["complete"] and _PREPARATION["reason"]:
+        reason = str(_PREPARATION["reason"])
+        if reason not in reasons:
+            reasons.append(reason)
+    return {"ready": not reasons, "storage": config["storage"]["BACKEND"], "reasons": reasons}
 
 
 def make_id(*parts: str) -> str:

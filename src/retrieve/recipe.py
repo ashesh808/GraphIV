@@ -18,6 +18,7 @@ from src.retrieve.cosine import CosineRetriever
 from src.retrieve.expand import AncestorExpander, FrontierExpander
 from src.retrieve.query import PaperQuery
 from src.retrieve.scorer import GraphScorer, Weights
+from src.storage.corpus import CorpusSource
 
 LOG = logging.getLogger(__name__)
 
@@ -52,7 +53,10 @@ def build_weights(block: dict[str, Any]) -> Weights:
 
 
 def build_pipeline(
-    recipe: dict[str, Any], graph: GraphExport, pg_dest: str, blocked: list[str] | None = None
+    recipe: dict[str, Any],
+    graph: GraphExport,
+    pg_dest: CorpusSource,
+    blocked: list[str] | None = None,
 ) -> PaperQuery:
     """
     Assembles the components a recipe names, in the order it names them
@@ -63,7 +67,7 @@ def build_pipeline(
     Args:
         recipe: A parsed recipe.
         graph: The citation graph export.
-        pg_dest: libpq connection string.
+        pg_dest: A libpq connection string or corpus adapter.
         blocked: Papers the query must never return.
 
     Returns:

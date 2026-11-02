@@ -3,15 +3,19 @@ project_name    = "graphiv"
 environment     = "dev"
 location        = "westus2"
 
-# First apply provisions infrastructure without starting an incompatible/missing image.
+# First apply provisions infrastructure without starting an missing image.
 api_image_tag = null
 
-# After publishing a Blob-capable image and populating the Key Vault secret:
+# After publishing a tested image and populating graphiv-api-token in Key Vault:
 # api_image_tag = "git-0123456789ab"
 # llm_api_url   = "https://your-llm-provider.example/v1"
 # llm_model     = "your-summary-model"
+# llm_api_key_secret_name = "llm-api-key"
+# embedding_api_url = "https://your-embedding-provider.example/v1"
+# embedding_model = "model-matching-the-corpus-snapshot"
+# embedding_api_key_secret_name = "embedding-api-key"
 
-# The frontend library/find_runs also need report read/list access once Blob integration exists.
+# The frontend library/find_runs also need report read/list access for Blob-backed report reads.
 allow_report_reads = false
 
 # Optional object ID for the offline artifact-uploading pipeline.

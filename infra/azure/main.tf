@@ -94,11 +94,40 @@ resource "azurerm_log_analytics_workspace" "api" {
   tags                = local.tags
 }
 
-resource "azurerm_container_app_environment" "api" {
-  name                       = "cae-${local.base_name}"
-  resource_group_name        = azurerm_resource_group.main.name
-  location                   = azurerm_resource_group.main.location
-  logs_destination           = "log-analytics"
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.api.id
-  tags                       = local.tags
+resource "azapi_resource" "environment" {
+  type      = "Microsoft.App/managedEnvironments@2026-07-01"
+  name      = "cae-${local.base_name}"
+  parent_id = azurerm_resource_group.main.id
+  location  = azurerm_resource_group.main.location
+  tags      = local.tags
+
+  # AzAPI 2.13's embedded catalog stops at 2026-01-01 for this resource.
+  # The published 2026-07-01 ARM schema adds the environmentMode field we need.
+  schema_validation_enabled = false
+
+  # AzureRM 5.12 has no environmentMode argument. Explicitly select the full
+  # Workload Profiles mode: Express environments reject Key Vault references.
+  body = {
+    properties = {
+      environmentMode     = "WorkloadProfiles"
+      publicNetworkAccess = "Enabled"
+      workloadProfiles = [{
+        name                = "Consumption"
+        workloadProfileType = "Consumption"
+      }]
+      appLogsConfiguration = {
+        destination = "log-analytics"
+        logAnalyticsConfiguration = {
+          customerId = azurerm_log_analytics_workspace.api.workspace_id
+          sharedKey  = azurerm_log_analytics_workspace.api.primary_shared_key
+        }
+      }
+    }
+  }
+
+  response_export_values = [
+    "properties.defaultDomain",
+    "properties.provisioningState",
+    "properties.environmentMode",
+  ]
 }

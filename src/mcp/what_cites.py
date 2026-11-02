@@ -8,17 +8,8 @@ from __future__ import annotations
 
 import json
 
-import psycopg
-
 from src.mcp.state import Handles
-
-EDGES = """
-SELECT c.source_id, c.intent, c.sentence, p.date, p.title
-FROM citations c JOIN papers p ON p.arxiv_id = c.source_id
-WHERE c.stage = 1 AND c.target_id = %s AND c.intent = ANY(%s) AND c.intent_score >= %s
-  AND (%s::date IS NULL OR p.date >= %s)
-ORDER BY p.date DESC LIMIT %s
-"""
+from src.storage.corpus import open_corpus
 
 STANCE = ("extends", "critiques", "compares")
 MIN_SCORE = 0.60
@@ -48,10 +39,9 @@ def what_cites(
     """
     wanted = [i for i in (intents or []) if i] or list(STANCE)
     floor = since or None
-    with psycopg.connect(handles.dsn) as conn:
-        rows = conn.execute(
-            EDGES, (arxiv_id, wanted, MIN_SCORE, floor, floor, max(1, min(MAX_LIMIT, limit)))
-        ).fetchall()
+    rows = open_corpus(handles.dsn).citing_papers(
+        arxiv_id, wanted, MIN_SCORE, floor, max(1, min(MAX_LIMIT, limit))
+    )
     return json.dumps(
         [
             {

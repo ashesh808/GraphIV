@@ -122,14 +122,14 @@ variable "api_environment" {
     condition = alltrue([
       for name in keys(var.api_environment) :
       can(regex("^[A-Z_][A-Z0-9_]*$", name)) &&
-      !contains(["AZURE_CLIENT_ID", "PYTHONUNBUFFERED", "GRAPHIV_STORAGE_ACCOUNT_URL", "GRAPHIV_VECTOR_CONTAINER", "GRAPHIV_GRAPH_CONTAINER", "GRAPHIV_METADATA_CONTAINER", "GRAPHIV_REPORTS_CONTAINER", "GRAPHIV_CACHE_PATH", "GRAPHIV_LLM_API_URL", "GRAPHIV_LLM_MODEL", "GRAPHIV_LLM_API_KEY", "GRAPHIV_ALLOWED_HOSTS", "GRAPHIV_ARXIV_BASE_URL"], name)
+      !contains(["AZURE_CLIENT_ID", "PYTHONUNBUFFERED", "GRAPHIV_STORAGE_ACCOUNT_URL", "GRAPHIV_VECTOR_CONTAINER", "GRAPHIV_GRAPH_CONTAINER", "GRAPHIV_METADATA_CONTAINER", "GRAPHIV_REPORTS_CONTAINER", "GRAPHIV_CACHE_PATH", "GRAPHIV_LLM_API_URL", "GRAPHIV_LLM_MODEL", "GRAPHIV_LLM_API_KEY", "GRAPHIV_EMBED_API_URL", "GRAPHIV_EMBED_MODEL", "GRAPHIV_EMBED_API_KEY", "GRAPHIV_RUNTIME", "GRAPHIV_STORAGE_BACKEND", "GRAPHIV_API_TOKEN", "GRAPHIV_REQUIRE_AUTH", "GRAPHIV_ALLOWED_HOSTS", "GRAPHIV_ARXIV_BASE_URL"], name)
     ])
     error_message = "Environment variable names must be uppercase identifiers and must not replace reserved infrastructure/credential settings."
   }
 }
 
 variable "llm_api_url" {
-  description = "External LLM API base URL. Required when api_image_tag activates the API."
+  description = "External LLM API base URL. Omit to serve saved reports while research remains unready."
   type        = string
   default     = null
   nullable    = true
@@ -141,7 +141,7 @@ variable "llm_api_url" {
 }
 
 variable "llm_model" {
-  description = "Model identifier understood by the external LLM API. Required when activating the API."
+  description = "Model identifier understood by the external LLM API. Needed for research readiness."
   type        = string
   default     = null
   nullable    = true
@@ -155,11 +155,56 @@ variable "llm_model" {
 variable "llm_api_key_secret_name" {
   description = "Name of a secret populated out-of-band in the created Key Vault. Null omits API-key injection for endpoints that do not need it. Terraform never reads the secret value."
   type        = string
-  default     = "llm-api-key"
+  default     = null
   nullable    = true
 
   validation {
     condition     = var.llm_api_key_secret_name == null ? true : can(regex("^[A-Za-z0-9-]{1,127}$", var.llm_api_key_secret_name))
+    error_message = "Use null or a valid Key Vault secret name."
+  }
+}
+
+variable "api_token_secret_name" {
+  description = "Key Vault secret containing the API bearer token. Populate outside Terraform before activating the API."
+  type        = string
+  default     = "graphiv-api-token"
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9-]{1,127}$", var.api_token_secret_name))
+    error_message = "Use a valid Key Vault secret name."
+  }
+}
+
+variable "embedding_api_url" {
+  description = "Independent OpenAI-compatible embedding API URL; the model must match the published snapshot."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.embedding_api_url == null ? true : can(regex("^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?(/[^?#[:space:]]*)?$", var.embedding_api_url))
+    error_message = "embedding_api_url must be null or an HTTPS base URL without credentials, query or fragment."
+  }
+}
+
+variable "embedding_model" {
+  description = "Embedding model identifier; must match the artifact manifest."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.embedding_model == null ? true : length(trimspace(var.embedding_model)) > 0
+    error_message = "embedding_model must be null or a nonempty identifier."
+  }
+}
+
+variable "embedding_api_key_secret_name" {
+  description = "Optional independent embedding credential in Key Vault. Never implicitly reuses the LLM credential."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.embedding_api_key_secret_name == null ? true : can(regex("^[A-Za-z0-9-]{1,127}$", var.embedding_api_key_secret_name))
     error_message = "Use null or a valid Key Vault secret name."
   }
 }

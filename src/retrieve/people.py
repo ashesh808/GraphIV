@@ -12,20 +12,7 @@ import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 
-import psycopg
-
-CANDIDATES = """
-SELECT arxiv_id, authors FROM papers
-WHERE %s = ANY(surnames) AND authors ILIKE %s AND stage >= 3
-"""
-REFERENCES = """
-SELECT DISTINCT source_id, target_id FROM citations
-WHERE source_id = ANY(%s) AND target_id IS NOT NULL
-"""
-TOPICS = "SELECT arxiv_id, level_0, level_1 FROM topic_tree WHERE arxiv_id = ANY(%s) AND stage = 1"
-TOPIC_NAMES = """
-SELECT level_0, level_1, name FROM topic_names WHERE level_2 IS NULL AND level_1 IS NOT NULL
-"""
+from src.storage.corpus import CorpusSource, open_corpus
 
 SPLIT = re.compile(r",\s*|\s+and\s+")
 # a paper sharing nothing with what is known stays near 0.05
@@ -178,28 +165,28 @@ def sigmoid(logit: float) -> float:
     return 1.0 / (1.0 + math.exp(-min(max(logit, -30.0), 30.0)))
 
 
-def find(dsn: str, person: Person) -> Found:
+def find(dsn: CorpusSource, person: Person) -> Found:
     """
     One person's papers, every paper listing the name kept where the propagation clears the bar
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         person: Who.
 
     Returns:
         How many papers the name matched and which were kept, newest id order kept by the store.
     """
     surname = person.name.split()[-1]
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(CANDIDATES, (surname, f"%{person.name}%")).fetchall()
-        coauthors = {
-            str(a): {x for x in authors(str(s)) if x != person.name}
-            for a, s in rows
-            if person.name in authors(str(s))
-        }
-        references: dict[str, set[str]] = defaultdict(set)
-        for source, target in conn.execute(REFERENCES, (list(coauthors),)):
-            references[str(source)].add(str(target))
+    corpus = open_corpus(dsn)
+    rows = corpus.author_candidates(surname, f"%{person.name}%")
+    coauthors = {
+        str(a): {x for x in authors(str(s)) if x != person.name}
+        for a, s in rows
+        if person.name in authors(str(s))
+    }
+    references: dict[str, set[str]] = defaultdict(set)
+    for source, target in corpus.references(list(coauthors)):
+        references[str(source)].add(str(target))
     known = {k for k in person.known if k in coauthors}
     if not known:
         return Found(person, len(coauthors))
@@ -207,19 +194,18 @@ def find(dsn: str, person: Person) -> Found:
     return Found(person, len(coauthors), [p for p in coauthors if prob[p] >= THRESHOLD])
 
 
-def topics(dsn: str, arxiv_ids: list[str]) -> dict[tuple[int, int], list[str]]:
+def topics(dsn: CorpusSource, arxiv_ids: list[str]) -> dict[tuple[int, int], list[str]]:
     """
     Papers grouped by their parent topic in the tree, the unplaced ones under one key of their own
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_ids: The papers.
 
     Returns:
         (level_0, level_1) to the papers under it, in the order given.
     """
-    with psycopg.connect(dsn) as conn:
-        placed = {str(a): (int(l0), int(l1)) for a, l0, l1 in conn.execute(TOPICS, (arxiv_ids,))}
+    placed = {str(a): (int(l0), int(l1)) for a, l0, l1 in open_corpus(dsn).topics(arxiv_ids)}
     return group(arxiv_ids, placed)
 
 
@@ -242,18 +228,17 @@ def group(
     return dict(out)
 
 
-def topic_names(dsn: str) -> dict[tuple[int, int], str]:
+def topic_names(dsn: CorpusSource) -> dict[tuple[int, int], str]:
     """
     The tree's own name for every parent topic
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
 
     Returns:
         (level_0, level_1) to its name.
     """
-    with psycopg.connect(dsn) as conn:
-        return {(int(a), int(b)): str(n) for a, b, n in conn.execute(TOPIC_NAMES)}
+    return {(int(a), int(b)): str(n) for a, b, n in open_corpus(dsn).topic_names()}
 
 
 def best_topic(

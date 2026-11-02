@@ -15,11 +15,8 @@ from numpy.typing import NDArray
 
 from src.core.parse_graph_export import GraphExport
 from src.core.schema import Paper, Query
-
-FETCH = """
-SELECT arxiv_id, title, abstract, date, 1 - (embed_full <=> %s::halfvec)
-FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
-"""
+from src.storage.corpus import CorpusSource, open_corpus
+from src.storage.postgres import PostgresCorpus
 
 
 def get_expansion_targets(papers: list[Paper], top_k: int) -> list[Paper]:
@@ -38,7 +35,7 @@ def get_expansion_targets(papers: list[Paper], top_k: int) -> list[Paper]:
 
 
 def fetch_papers(
-    conn: psycopg.Connection, query: Query, arxiv_ids: list[str], cutoff: date | None
+    conn: CorpusSource | psycopg.Connection, query: Query, arxiv_ids: list[str], cutoff: date | None
 ) -> list[Paper]:
     """
     Reads every column a Paper needs for a list of ids, in one round trip
@@ -46,7 +43,7 @@ def fetch_papers(
     Title and abstract ride along free, since the row has to be read for the date anyway.
 
     Args:
-        conn: An open connection.
+        conn: A corpus adapter, legacy DSN, or caller-owned PostgreSQL connection.
         query: The embedded question, whose vector fills the cosine.
         arxiv_ids: The papers to read.
         cutoff: The latest date a paper may carry, or None for no cap.
@@ -56,8 +53,12 @@ def fetch_papers(
     """
     if not arxiv_ids:
         return []
-    vector = "[" + ",".join(f"{x:.6f}" for x in query.emb) + "]"
-    rows = conn.execute(FETCH, (vector, arxiv_ids)).fetchall()
+    corpus = (
+        PostgresCorpus(connection=conn)
+        if isinstance(conn, psycopg.Connection)
+        else open_corpus(conn)
+    )
+    rows = corpus.papers(query.emb, arxiv_ids)
     return [
         Paper(
             arxiv_id=str(a),
@@ -79,14 +80,14 @@ class _Expander:
     forward: bool
 
     def __init__(
-        self, graph: GraphExport, pg_dest: str, *, top_k: int = 200, hop_limit: int = 20000
+        self, graph: GraphExport, pg_dest: CorpusSource, *, top_k: int = 200, hop_limit: int = 20000
     ) -> None:
         """
         Holds the export and the connection string, since one expander serves every query
 
         Args:
             graph: The citation graph export.
-            pg_dest: libpq connection string, used once per call.
+            pg_dest: A libpq connection string or corpus adapter.
             top_k: How many of the pool to hop from.
             hop_limit: The most neighbors to keep.
         """
@@ -133,8 +134,7 @@ class _Expander:
         wanted = self.get_neighbor_ids(papers)[: limit if limit is not None else self.hop_limit]
         if not wanted:
             return papers
-        with psycopg.connect(self.pg_dest) as conn:
-            found = fetch_papers(conn, query, wanted, query.max_date)
+        found = fetch_papers(open_corpus(self.pg_dest), query, wanted, query.max_date)
         return papers + found
 
 

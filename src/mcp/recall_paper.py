@@ -12,12 +12,11 @@ import logging
 from datetime import date
 from typing import Any
 
-import psycopg
-
 from src.core import llm
 from src.core.schema import Paper, Query
 from src.mcp.state import Handles
 from src.retrieve.cosine import CosineRetriever
+from src.storage.corpus import open_corpus
 
 LOG = logging.getLogger(__name__)
 
@@ -27,7 +26,6 @@ PICKS = 8
 MAX_LIMIT = 50
 ABSTRACT_CHARS = 400
 REPLY_CHARS = 700
-DETAILS = "SELECT arxiv_id, abstract, authors FROM papers WHERE arxiv_id = ANY(%s)"
 
 GUESS = """Someone is looking for papers they describe below. Write the abstract such a paper most
 likely has, in the style of an arXiv abstract, about 120 words.
@@ -128,11 +126,10 @@ def recall_paper(
     text = str((guessed or {}).get("abstract") or description)
     pool = interleave(nearest(handles, text, cap), nearest(handles, description, cap))
     pool = [p for p in pool if floor is None or p.date >= floor]
-    with psycopg.connect(handles.dsn) as conn:
-        meta = {
-            str(a): (" ".join(str(ab or "").split()), str(au or ""))
-            for a, ab, au in conn.execute(DETAILS, ([p.arxiv_id for p in pool],)).fetchall()
-        }
+    meta = {
+        str(a): (" ".join(str(ab or "").split()), str(au or ""))
+        for a, ab, au in open_corpus(handles.dsn).abstract_authors([p.arxiv_id for p in pool])
+    }
     if author:
         pool = [p for p in pool if author.lower() in meta.get(p.arxiv_id, ("", ""))[1].lower()]
     head = pool[:READ]

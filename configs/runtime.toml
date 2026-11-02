@@ -3,6 +3,15 @@
 [database]
 PG_DEST = "host=../.pg port=5433 dbname=arxivkg"
 
+# postgres keeps the existing local store. sqlite reads an immutable local export;
+# azure downloads the same export from a versioned Blob manifest using managed identity.
+# GRAPHIV_STORAGE_BACKEND overrides BACKEND at deployment time.
+[storage]
+BACKEND = "postgres"
+METADATA_PATH = "../data/runtime/metadata.sqlite"
+INDEX_PATH = "../data/runtime/index.faiss"
+CACHE_PATH = "../data/cache/snapshots"
+
 [source]
 SOURCE_URL = "https://www.kaggle.com/api/v1/datasets/download/Cornell-University/arxiv"
 SOURCE_PATH = "../data/arxiv.json"

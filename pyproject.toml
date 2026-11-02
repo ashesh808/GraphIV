@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "A knowledge graph over all of arXiv, and a grounded literature-review endpoint on top of it"
 requires-python = ">=3.13"
 dependencies = [
+    "azure-identity",
+    "azure-storage-blob",
+    "faiss-cpu",
     "mcp>=1.28.1",
     "numpy>=2.4.5",
     "psycopg[binary]>=3.3.4",

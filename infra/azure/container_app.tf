@@ -1,7 +1,6 @@
 locals {
   api_enabled = var.api_image_tag != null
 
-  # Contract for the Blob-capable image; the current Postgres/local-file runtime does not consume these yet.
   api_environment = merge(var.api_environment, {
     AZURE_CLIENT_ID             = azurerm_user_assigned_identity.api.client_id
     PYTHONUNBUFFERED            = "1"
@@ -11,11 +10,27 @@ locals {
     GRAPHIV_METADATA_CONTAINER  = local.containers.metadata
     GRAPHIV_REPORTS_CONTAINER   = local.containers.reports
     GRAPHIV_CACHE_PATH          = "/var/lib/graphiv/cache"
-    GRAPHIV_LLM_API_URL         = coalesce(var.llm_api_url, "not-configured")
-    GRAPHIV_LLM_MODEL           = coalesce(var.llm_model, "not-configured")
-    GRAPHIV_ALLOWED_HOSTS       = "${local.api_name}.${azurerm_container_app_environment.api.default_domain}"
+    GRAPHIV_RUNTIME             = "azure"
+    GRAPHIV_STORAGE_BACKEND     = "azure"
+    GRAPHIV_ALLOWED_HOSTS       = "${local.api_name}.${azapi_resource.environment.output.properties.defaultDomain}"
     GRAPHIV_ARXIV_BASE_URL      = "https://arxiv.org"
-  })
+    }, { for name, value in {
+      GRAPHIV_LLM_API_URL   = var.llm_api_url
+      GRAPHIV_LLM_MODEL     = var.llm_model
+      GRAPHIV_EMBED_API_URL = var.embedding_api_url
+      GRAPHIV_EMBED_MODEL   = var.embedding_model
+    } : name => value if value != null }
+  )
+
+  api_secrets = merge(
+    { "api-token" = { env = "GRAPHIV_API_TOKEN", name = var.api_token_secret_name } },
+    var.llm_api_key_secret_name == null ? {} : {
+      "llm-api-key" = { env = "GRAPHIV_LLM_API_KEY", name = var.llm_api_key_secret_name }
+    },
+    var.embedding_api_key_secret_name == null ? {} : {
+      "embedding-api-key" = { env = "GRAPHIV_EMBED_API_KEY", name = var.embedding_api_key_secret_name }
+    },
+  )
 }
 
 resource "azurerm_container_app" "api" {
@@ -23,8 +38,9 @@ resource "azurerm_container_app" "api" {
 
   name                         = local.api_name
   resource_group_name          = azurerm_resource_group.main.name
-  container_app_environment_id = azurerm_container_app_environment.api.id
+  container_app_environment_id = azapi_resource.environment.id
   revision_mode                = "Single"
+  workload_profile_name        = "Consumption"
   tags                         = local.tags
 
   identity {
@@ -38,11 +54,11 @@ resource "azurerm_container_app" "api" {
   }
 
   dynamic "secret" {
-    for_each = var.llm_api_key_secret_name == null ? [] : [var.llm_api_key_secret_name]
+    for_each = local.api_secrets
     content {
-      name                = "llm-api-key"
+      name                = secret.key
       identity            = azurerm_user_assigned_identity.api.id
-      key_vault_secret_id = "${azurerm_key_vault.api.vault_uri}secrets/${secret.value}"
+      key_vault_secret_id = "${azurerm_key_vault.api.vault_uri}secrets/${secret.value.name}"
     }
   }
 
@@ -79,23 +95,26 @@ resource "azurerm_container_app" "api" {
       }
 
       dynamic "env" {
-        for_each = var.llm_api_key_secret_name == null ? [] : ["llm-api-key"]
+        for_each = local.api_secrets
         content {
-          name        = "GRAPHIV_LLM_API_KEY"
-          secret_name = env.value
+          name        = env.value.env
+          secret_name = env.key
         }
       }
 
-      # The existing server has no /health endpoint. These only prove that the listener is up.
+      # Serving saved reports is available before the research corpus/models are configured.
+      # /health/ready reports research readiness separately; routing checks the HTTP listener.
       startup_probe {
-        transport               = "TCP"
+        transport               = "HTTP"
+        path                    = "/health/live"
         port                    = 8000
         interval_seconds        = 5
         failure_count_threshold = 120
         timeout                 = 3
       }
       readiness_probe {
-        transport               = "TCP"
+        transport               = "HTTP"
+        path                    = "/health/live"
         port                    = 8000
         interval_seconds        = 10
         failure_count_threshold = 3
@@ -103,7 +122,8 @@ resource "azurerm_container_app" "api" {
         timeout                 = 3
       }
       liveness_probe {
-        transport               = "TCP"
+        transport               = "HTTP"
+        path                    = "/health/live"
         port                    = 8000
         interval_seconds        = 30
         failure_count_threshold = 3
@@ -119,13 +139,6 @@ resource "azurerm_container_app" "api" {
     volume {
       name         = "cache"
       storage_type = "EmptyDir"
-    }
-  }
-
-  lifecycle {
-    precondition {
-      condition     = var.llm_api_url != null && var.llm_model != null
-      error_message = "Set llm_api_url and llm_model before supplying api_image_tag."
     }
   }
 

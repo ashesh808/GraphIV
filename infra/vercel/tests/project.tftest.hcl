@@ -1,11 +1,28 @@
 mock_provider "vercel" {}
 
 variables {
-  backend_url = "https://graphiv-api.example.com/"
+  backend_url       = "https://graphiv-api.example.com/"
+  api_token         = "test-only-api-token-with-32-characters-minimum"
+  api_token_version = 1
+  project_name      = "graphiv"
+  git_repo          = "ashesh808/GraphIV"
+  production_branch = "main"
+  team              = null
 }
 
 run "frontend_project" {
   command = plan
+
+  assert {
+    condition = (
+      vercel_project_environment_variable.api_token.key == "GRAPHIV_API_TOKEN" &&
+      vercel_project_environment_variable.api_token.sensitive == true &&
+      vercel_project_environment_variable.api_token.target == toset(["production", "preview", "development"]) &&
+      vercel_project_environment_variable.api_token.value_wo_version == 1 &&
+      vercel_project_environment_variable.api_token.value == null
+    )
+    error_message = "The backend token must be a server-only secret using the write-only provider field."
+  }
 
   assert {
     condition = (
@@ -110,4 +127,24 @@ run "reject_api_path" {
     backend_url = "https://graphiv-api.example.com/api"
   }
   expect_failures = [var.backend_url]
+}
+
+run "reject_short_api_token" {
+  command = plan
+  variables {
+    api_token = "too-short"
+  }
+  expect_failures = [var.api_token]
+}
+
+run "rotate_api_token" {
+  command = plan
+  variables {
+    api_token         = "test-only-replacement-api-token-over-32-characters"
+    api_token_version = 2
+  }
+  assert {
+    condition     = vercel_project_environment_variable.api_token.value_wo_version == 2
+    error_message = "Rotating a token must set the write-only value version."
+  }
 }

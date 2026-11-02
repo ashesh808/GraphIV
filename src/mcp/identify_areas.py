@@ -13,12 +13,11 @@ import logging
 from itertools import combinations
 from typing import Any
 
-import psycopg
-
 from src.core import llm
 from src.mcp.state import Area, Handles, keep_area
 from src.miner.store import mean_vector, read_vectors
 from src.retrieve import people as persons
+from src.storage.corpus import open_corpus
 
 LOG = logging.getLogger(__name__)
 
@@ -85,8 +84,6 @@ MERGE_FLOOR = 0.60
 MERGE_UP_TO = 30
 ID_CHARS = 10
 
-DETAILS = "SELECT arxiv_id, title, abstract, date FROM papers WHERE arxiv_id = ANY(%s)"
-
 
 def anchor(area: str, methods: list[str]) -> str:
     """
@@ -152,11 +149,10 @@ def split_papers(handles: Handles, arxiv_ids: list[str], scope: str) -> dict[str
         The areas with their papers, and how many papers fell outside the scope.
     """
     ids = list(dict.fromkeys(arxiv_ids))[:MAX_PAPERS]
-    with psycopg.connect(handles.dsn) as conn:
-        meta = {
-            str(a): (" ".join(str(t or "").split()), " ".join(str(ab or "").split()), str(d))
-            for a, t, ab, d in conn.execute(DETAILS, (ids,)).fetchall()
-        }
+    meta = {
+        str(a): (" ".join(str(t or "").split()), " ".join(str(ab or "").split()), str(d))
+        for a, t, ab, d in open_corpus(handles.dsn).paper_details(ids)
+    }
     ids = [a for a in ids if a in meta]
     if not ids:
         return {"error": "none of these papers is in the corpus"}
@@ -268,11 +264,10 @@ def split_people(handles: Handles, people: list[dict[str, Any]]) -> dict[str, An
         return {"error": str(error)}
     if not union:
         return {"error": "none of the known papers lists its person as an author", "people": told}
-    with psycopg.connect(handles.dsn) as conn:
-        meta = {
-            str(a): (" ".join(str(t or "").split()), str(d))
-            for a, t, _, d in conn.execute(DETAILS, (union,)).fetchall()
-        }
+    meta = {
+        str(a): (" ".join(str(t or "").split()), str(d))
+        for a, t, _, d in open_corpus(handles.dsn).paper_details(union)
+    }
     groups = sorted(persons.topics(handles.dsn, union).items(), key=lambda kv: -len(kv[1]))
     tree = persons.topic_names(handles.dsn)
     body = "\n\n".join(

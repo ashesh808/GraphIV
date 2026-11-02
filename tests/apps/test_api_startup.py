@@ -8,16 +8,16 @@ def test_frontend_bind_override_does_not_open_the_corpus(monkeypatch) -> None:
     settings = serving()
     observed = {}
 
-    def run(page, transport):
-        observed.update(host=page.settings.host, port=page.settings.port, transport=transport)
+    def run(app, *, host, port, access_log):
+        observed.update(host=host, port=port, access_log=access_log)
 
     def unexpected_load():
         raise AssertionError("The legacy frontend must not load the corpus")
 
-    monkeypatch.setattr(server.FastMCP, "run", run)
+    monkeypatch.setattr(server.uvicorn, "run", run)
     monkeypatch.setattr(server, "load", unexpected_load)
     server.run(http=True, role="frontend", host="0.0.0.0", port=8000)
 
-    assert observed == {"host": "0.0.0.0", "port": 8000, "transport": "streamable-http"}
+    assert observed == {"host": "0.0.0.0", "port": 8000, "access_log": False}
     assert serving() is settings
     assert (settings.host, settings.frontend_port) == ("127.0.0.1", 6969)

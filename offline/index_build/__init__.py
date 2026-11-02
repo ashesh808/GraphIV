@@ -1,1 +1,1 @@
-"""Reserved for offline construction of runtime indexes."""
+"""Build and publish immutable SQLite, FAISS, and citation-graph corpus snapshots."""

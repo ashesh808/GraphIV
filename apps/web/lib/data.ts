@@ -162,11 +162,12 @@ class ConnectionError extends Error {}
 
 async function request(path: string): Promise<Response> {
   const base = apiConfiguration();
+  const token = process.env.GRAPHIV_API_TOKEN?.trim();
   try {
     return await fetch(`${base}${path}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
-      headers: { Accept: "application/json" },
+      headers: { Accept: "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     });
   } catch {
     throw new ConnectionError("The research library could not be reached");
@@ -174,7 +175,7 @@ async function request(path: string): Promise<Response> {
 }
 
 function allowExamples(error: unknown): boolean {
-  return !process.env.GRAPHIV_API_URL?.trim() && error instanceof ConnectionError;
+  return !process.env.GRAPHIV_API_URL?.trim() && !process.env.GRAPHIV_API_TOKEN?.trim() && error instanceof ConnectionError;
 }
 
 export async function loadLibrary(): Promise<LibraryResult> {

@@ -74,7 +74,10 @@ def one_run(handles: Handles, slug: str) -> str:
     Returns:
         The document and the papers as json, or an error when no run carries that name.
     """
-    found = read_one(handles.runs, slug)
+    found = (
+        handles.report_store.read_run(slug)
+        if handles.report_store else read_one(handles.runs, slug)
+    )
     if found is None:
         return json.dumps({"error": f"no run named {slug}"})
     papers = found.get("papers")
@@ -106,7 +109,7 @@ def find_runs(handles: Handles, question: str = "", slug: str = "", limit: int =
     """
     if slug:
         return one_run(handles, slug)
-    runs = read_runs(handles.runs)
+    runs = handles.report_store.list_runs() if handles.report_store else read_runs(handles.runs)
     if not runs:
         return json.dumps([])
     kept = max(1, min(MAX_LIMIT, limit))

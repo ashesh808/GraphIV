@@ -11,12 +11,11 @@ import logging
 import re
 from typing import Any
 
-import psycopg
-
 from src.mcp.state import Handles
 from src.report.fulltext import FullText
 from src.report.fulltext import read_paper as read_html
 from src.report.table import Column, Design, extract
+from src.storage.corpus import open_corpus
 
 LOG = logging.getLogger(__name__)
 
@@ -27,7 +26,6 @@ PASSAGES = 12
 PASSAGE_CHARS = (40, 600)
 SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z(\[])")
 WORDS = re.compile(r"[a-z][a-z0-9-]{2,}")
-DETAILS = "SELECT arxiv_id, title, abstract, date FROM papers WHERE arxiv_id = ANY(%s)"
 
 
 def keywords(want: str | list[str]) -> list[str]:
@@ -156,11 +154,10 @@ def read_paper(
     """
     if not arxiv_ids:
         return json.dumps({"error": "name at least one arxiv_id"})
-    with psycopg.connect(handles.dsn) as conn:
-        meta = {
-            str(r[0]): (str(r[1] or ""), str(r[2] or ""), str(r[3]))
-            for r in conn.execute(DETAILS, (arxiv_ids,)).fetchall()
-        }
+    meta = {
+        str(r[0]): (str(r[1] or ""), str(r[2] or ""), str(r[3]))
+        for r in open_corpus(handles.dsn).paper_details(arxiv_ids)
+    }
 
     papers: list[FullText] = []
     missing: list[str] = []

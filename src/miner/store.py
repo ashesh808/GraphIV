@@ -1,5 +1,5 @@
 """
-Every statement this package sends to the store, so no other module opens a connection
+The corpus reads mining needs, converted to the paper and citation objects it consumes
 
 An edge is read induced on one set of papers, since a bridge only counts when both ends are held
 """
@@ -10,58 +10,12 @@ import logging
 import math
 from collections import defaultdict
 from datetime import date
-from typing import Any
-
-import psycopg
+from typing import Any, cast
 
 from src.core.schema import Edge, Paper
+from src.storage.corpus import CorpusSource, open_corpus
 
 LOG = logging.getLogger(__name__)
-
-EDGES = """
-SELECT source_id, target_id, intent, sentence
-FROM citations
-WHERE stage = 1 AND source_id = ANY(%s) AND target_id = ANY(%s) AND target_id IS NOT NULL
-"""
-
-COSINES = """
-SELECT arxiv_id, 1 - (embed_full <=> %s::halfvec)
-FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
-"""
-
-SUCCESSORS = """
-SELECT c.source_id, c.target_id, c.intent, c.sentence, p.date, p.title, p.abstract,
-       1 - (p.embed_full <=> %s::halfvec)
-FROM citations c JOIN papers p ON p.arxiv_id = c.source_id
-WHERE c.stage = 1 AND c.target_id = ANY(%s) AND c.intent = ANY(%s)
-  AND c.intent_score >= %s AND p.date > %s AND p.date <= %s AND p.stage >= 3
-"""
-
-PAPERS = """
-SELECT arxiv_id, title, abstract, date, 1 - (embed_full <=> %s::halfvec)
-FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
-"""
-
-SEED = """
-SELECT arxiv_id, title, abstract, date, embed_full::vector::real[]
-FROM papers WHERE arxiv_id = %s AND stage >= 3
-"""
-
-VECTORS = """
-SELECT arxiv_id, embed_full::vector::real[] FROM papers WHERE arxiv_id = ANY(%s) AND stage >= 3
-"""
-
-RECORDS = """
-SELECT p.arxiv_id, p.title, p.abstract, p.date, p.primary_category, p.authors,
-       t.level_0, t.level_1, t.level_2, g.name, m.name, l.name
-FROM papers p
-LEFT JOIN topic_tree t ON t.arxiv_id = p.arxiv_id AND t.stage = 1
-LEFT JOIN topic_names g ON g.level_0 = t.level_0 AND g.level_1 IS NULL
-LEFT JOIN topic_names m ON m.level_0 = t.level_0 AND m.level_1 = t.level_1 AND m.level_2 IS NULL
-LEFT JOIN topic_names l
-  ON l.level_0 = t.level_0 AND l.level_1 = t.level_1 AND l.level_2 = t.level_2
-WHERE p.arxiv_id = ANY(%s)
-"""
 
 
 def as_vector(values: list[float]) -> str:
@@ -77,12 +31,12 @@ def as_vector(values: list[float]) -> str:
     return "[" + ",".join(f"{x:.6f}" for x in values) + "]"
 
 
-def read_edges(dsn: str, arxiv_ids: list[str]) -> list[Edge]:
+def read_edges(dsn: CorpusSource, arxiv_ids: list[str]) -> list[Edge]:
     """
     Every labeled citation with both ends inside a named set
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_ids: The papers the subgraph is induced on.
 
     Returns:
@@ -90,20 +44,19 @@ def read_edges(dsn: str, arxiv_ids: list[str]) -> list[Edge]:
     """
     if not arxiv_ids:
         return []
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(EDGES, (arxiv_ids, arxiv_ids)).fetchall()
+    rows = open_corpus(dsn).edges(arxiv_ids)
     return [
         Edge(source=str(s), target=str(t), intent=str(i or "background"), sentence=str(sent or ""))
         for s, t, i, sent in rows
     ]
 
 
-def read_cosines(dsn: str, vector: list[float], arxiv_ids: list[str]) -> dict[str, float]:
+def read_cosines(dsn: CorpusSource, vector: list[float], arxiv_ids: list[str]) -> dict[str, float]:
     """
     Cosine of every named paper against one vector, in one round trip
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         vector: What to measure against.
         arxiv_ids: The papers.
 
@@ -112,17 +65,16 @@ def read_cosines(dsn: str, vector: list[float], arxiv_ids: list[str]) -> dict[st
     """
     if not arxiv_ids:
         return {}
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(COSINES, (as_vector(vector), arxiv_ids)).fetchall()
+    rows = open_corpus(dsn).cosines(vector, arxiv_ids)
     return {str(a): float(c) for a, c in rows}
 
 
-def read_papers(dsn: str, vector: list[float], arxiv_ids: list[str]) -> list[Paper]:
+def read_papers(dsn: CorpusSource, vector: list[float], arxiv_ids: list[str]) -> list[Paper]:
     """
     Every column a Paper needs for a list of ids
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         vector: The question embedding, which fills the cosine.
         arxiv_ids: The papers.
 
@@ -131,8 +83,7 @@ def read_papers(dsn: str, vector: list[float], arxiv_ids: list[str]) -> list[Pap
     """
     if not arxiv_ids:
         return []
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(PAPERS, (as_vector(vector), arxiv_ids)).fetchall()
+    rows = open_corpus(dsn).papers(vector, arxiv_ids)
     return [
         Paper(
             arxiv_id=str(a),
@@ -145,19 +96,18 @@ def read_papers(dsn: str, vector: list[float], arxiv_ids: list[str]) -> list[Pap
     ]
 
 
-def read_seed(dsn: str, arxiv_id: str) -> tuple[Paper, list[float]] | None:
+def read_seed(dsn: CorpusSource, arxiv_id: str) -> tuple[Paper, list[float]] | None:
     """
     One paper and its stored vector, which is what a search seeded on that paper sends
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_id: The paper.
 
     Returns:
         The paper at a cosine of 1 and its vector, or None when the store holds no vector for it.
     """
-    with psycopg.connect(dsn) as conn:
-        row = conn.execute(SEED, (arxiv_id,)).fetchone()
+    row = open_corpus(dsn).seed(arxiv_id)
     if row is None:
         return None
     a, t, abstract, when, vector = row
@@ -167,19 +117,18 @@ def read_seed(dsn: str, arxiv_id: str) -> tuple[Paper, list[float]] | None:
     return paper, [float(x) for x in vector]
 
 
-def read_vectors(dsn: str, arxiv_ids: list[str]) -> dict[str, list[float]]:
+def read_vectors(dsn: CorpusSource, arxiv_ids: list[str]) -> dict[str, list[float]]:
     """
     The stored vectors of several papers
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_ids: The papers.
 
     Returns:
         Each embedded paper's vector, keyed by its id.
     """
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(VECTORS, (arxiv_ids,)).fetchall()
+    rows = open_corpus(dsn).vectors(arxiv_ids)
     return {str(a): [float(x) for x in vector] for a, vector in rows}
 
 
@@ -201,7 +150,7 @@ def mean_vector(vectors: list[list[float]]) -> list[float]:
 
 
 def read_successors(
-    dsn: str,
+    dsn: CorpusSource,
     vector: list[float],
     arxiv_ids: list[str],
     since: date,
@@ -216,7 +165,7 @@ def read_successors(
     its own is missed.
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         vector: The question embedding, which holds a successor to what was asked.
         arxiv_ids: The set being cited.
         since: The earliest a successor may be dated.
@@ -229,11 +178,7 @@ def read_successors(
     """
     if not arxiv_ids:
         return {}
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(
-            SUCCESSORS,
-            (as_vector(vector), arxiv_ids, list(intents), floor, since, until),
-        ).fetchall()
+    rows = open_corpus(dsn).successors(vector, arxiv_ids, since, until, intents, floor)
 
     targets: dict[str, dict[str, str]] = defaultdict(dict)
     sentences: dict[str, list[str]] = defaultdict(list)
@@ -253,12 +198,12 @@ def read_successors(
     return {key: (papers[key], held, sentences[key]) for key, held in targets.items()}
 
 
-def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, Any]]:
+def read_records(dsn: CorpusSource, arxiv_ids: list[str]) -> dict[str, dict[str, Any]]:
     """
     The columns a reader sees but a ranking never needs, which is what the dashboard shows
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_ids: The papers.
 
     Returns:
@@ -267,8 +212,7 @@ def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, Any]]:
     """
     if not arxiv_ids:
         return {}
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(RECORDS, (arxiv_ids,)).fetchall()
+    rows = open_corpus(dsn).records(arxiv_ids)
     return {
         str(a): {
             "title": " ".join(str(t or "").split()),
@@ -277,7 +221,7 @@ def read_records(dsn: str, arxiv_ids: list[str]) -> dict[str, dict[str, Any]]:
             "category": str(c or ""),
             "authors": " ".join(str(w or "").split()),
             "topic": [] if l0 is None else [str(g or ""), str(m or ""), str(f or "")],
-            "topic_id": [] if l0 is None else [int(l0), int(l1), int(l2)],
+            "topic_id": [] if l0 is None else [int(l0), int(cast(int, l1)), int(cast(int, l2))],
         }
         for a, t, b, d, c, w, l0, l1, l2, g, m, f in rows
     }

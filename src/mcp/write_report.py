@@ -622,6 +622,9 @@ def write_report(
         ),
         encoding="utf-8",
     )
+    report_store = getattr(handles, "report_store", None)
+    if report_store is not None:
+        report_store.save_directory(where)
     if end:
         reset()
     LOG.info("wrote %s, %d papers, %d characters", where, len(papers), len(body))

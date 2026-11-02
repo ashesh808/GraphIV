@@ -1,19 +1,32 @@
 # Azure Terraform
 
 This root defines GraphIV's backend infrastructure. The frontend project is managed
-separately in [`infra/vercel`](../vercel/README.md). No cloud resources have been applied.
+separately in [`infra/vercel`](../vercel/README.md).
 
 With `api_image_tag = null`, the bootstrap creates a resource group, Storage Account,
 four private Blob containers, Azure Container Registry, Key Vault, Log Analytics,
 Container Apps environment, user-assigned managed identity, and scoped role assignments.
 Supplying an image tag adds one externally reachable HTTPS Container App.
 
-**The current Docker image is not compatible with this storage architecture.**
-[`src/mcp/state.py`](../../src/mcp/state.py) still loads a local GraphExport and PostgreSQL
-connection. Report storage is local, Blob adapters are unfinished, and
-[`apps/api/orchestration.py`](../../apps/api/orchestration.py) is a stub. The current
-LLM and embedding clients send no authentication header and do not consume the new
-Azure environment variables. Terraform does not migrate this runtime implicitly.
+The environment is managed by `azapi_resource.environment` using ARM API
+`2026-07-01`, explicitly setting `environmentMode = "WorkloadProfiles"` and the
+`Consumption` workload profile. AzureRM 5.12 does not expose that mode field.
+AzAPI 2.13's embedded schema does not yet include this published API version, so
+embedded validation is disabled only for the managed-environment resource; mock
+tests assert the required mode and profile fields.
+Express mode cannot use the Key Vault secret references required here; see the
+[Express limitations](https://learn.microsoft.com/en-us/azure/container-apps/express-overview#not-supported)
+and [managed-environment API schema](https://learn.microsoft.com/en-us/azure/templates/microsoft.app/2026-07-01/managedenvironments).
+The environment keeps the same `cae-<project>-<environment>` name. Existing state
+bindings under `azurerm_container_app_environment.api` must be migrated/imported
+to `azapi_resource.environment` by the operator, rather than managing the same
+Azure resource through both Terraform addresses. Mode conversion is not assumed
+to happen automatically; verify the real environment mode before activation.
+
+The runtime supports PostgreSQL and Azure Blob-backed immutable SQLite/FAISS/GraphExport
+snapshots through the same corpus interface. Report reads and writes persist to Blob.
+See [storage and snapshot publishing](../../docs/storage.md). Retrieval and LeyLine
+algorithms are shared unchanged between adapters.
 
 ## Prerequisites and state
 
@@ -37,7 +50,7 @@ done
 Registration requires the provider's `/register/action` permission. See
 [resource-provider registration](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types).
 
-Terraform handles secret names and Key Vault URIs, never the LLM credential value.
+Terraform handles secret names and Key Vault URIs, never API, LLM, or embedding credential values.
 Provider-computed sensitive properties can still enter Terraform state. For shared use,
 configure the supplied [`backend.tf.example`](backend.tf.example) and
 [`backend.hcl.example`](backend.hcl.example) against a separately provisioned state
@@ -59,7 +72,8 @@ files stay outside version control; the provider lock file is committed.
 
 ## Bootstrap and activate
 
-The following is an operator procedure, not a deployment already performed.
+The API can serve the report library before corpus/model configuration is complete.
+`/health/live` tests HTTP serving; `/health/ready` reports research readiness.
 
 1. Copy [`terraform.tfvars.example`](terraform.tfvars.example), set the subscription and
    naming inputs, and keep `api_image_tag = null`. Initialize your chosen state backend,
@@ -72,7 +86,7 @@ The following is an operator procedure, not a deployment already performed.
    terraform apply bootstrap.tfplan
    ```
 
-2. Build and test an image implementing the [contract below](#compatible-image-contract),
+2. Build and test the runtime image using `docker buildx build --platform linux/amd64 --load -f apps/api/Dockerfile -t graphiv-api:tested .` from the repository root,
    then publish it to the created registry as `graphiv-api:<tag>`. The image publisher
    needs its own ACR push permission; the API identity receives pull permission only.
 
@@ -81,11 +95,13 @@ The following is an operator procedure, not a deployment already performed.
    registry_host="$(terraform output -raw registry_login_server)"
    image_tag="replace-with-tested-tag"
    az acr login --name "$registry_name"
-   docker tag your-compatible-image:tested "${registry_host}/graphiv-api:${image_tag}"
+   docker tag graphiv-api:tested "${registry_host}/graphiv-api:${image_tag}"
    docker push "${registry_host}/graphiv-api:${image_tag}"
    ```
 
-3. Populate the configured LLM secret outside Terraform. Bootstrap grants the deploying
+3. Generate a strong API bearer token outside Terraform and store it as
+   `api_token_secret_name` (default `graphiv-api-token`). Also populate independent
+   LLM/embedding secrets when their providers require them. Bootstrap grants the deploying
    identity **Key Vault Secrets Officer**. Supply the credential from a file so it does
    not become a shell-history argument:
 
@@ -97,18 +113,22 @@ The following is an operator procedure, not a deployment already performed.
      --output none
    ```
 
-   Use the name selected by `llm_api_key_secret_name`. Set that variable to null only
-   when the external endpoint needs no API key. The app references a Key Vault URI
+   Use the names selected by `llm_api_key_secret_name` and
+   `embedding_api_key_secret_name`. Both default to null, omitting model credentials
+   until endpoints are configured. Never reuse a key across unrelated providers. The app references a Key Vault URI
    through its managed identity; see
    [Container Apps secret references](https://learn.microsoft.com/en-us/azure/container-apps/manage-secrets).
 
-4. Set `api_image_tag`, `llm_api_url`, and `llm_model`, then review and apply a new plan.
+4. Set `api_image_tag`, then review and apply a new plan. For research, publish a
+   corpus manifest and set `llm_api_url`, `llm_model`, `embedding_api_url`, and
+   `embedding_model` (must match the snapshot).
    Enable `allow_report_reads = true` if the compatible image serves the library or
    `find_runs`; the default report permission is write-only. Size `api_resources` for
    the downloaded indexes and temporary storage.
 
 5. Once the backend works, read `terraform output -raw backend_url` and put that origin
-   into `backend_url` in the [Vercel root](../vercel/README.md). It must be reachable
+   into `backend_url` in the [Vercel root](../vercel/README.md). Supply the same API
+   token via the Vercel root's ephemeral `api_token` variable. It must be reachable
    from Vercel and expose the web app's read endpoints. The default command uses
    `--role both` to serve MCP and library routes; `api` alone omits the library.
 
@@ -139,13 +159,16 @@ Containers reject anonymous access, account-key authentication is disabled, and 
 access uses Microsoft Entra roles. The Storage endpoint remains publicly reachable;
 this root does not create a private network endpoint.
 
-## Compatible image contract
+## Runtime settings
 
-[`container_app.tf`](container_app.tf) supplies the following settings for a future
-Blob-capable image. The current runtime does not consume this contract.
+[`container_app.tf`](container_app.tf) supplies these settings to the runtime:
 
 | Environment variable | Meaning |
 | --- | --- |
+| `GRAPHIV_RUNTIME`, `GRAPHIV_STORAGE_BACKEND` | `azure`; activates managed identity and snapshot adapters |
+| `GRAPHIV_API_TOKEN` | Key Vault-backed bearer token shared with the Next.js server |
+| `GRAPHIV_EMBED_API_URL`, `GRAPHIV_EMBED_MODEL` | Independent embedding endpoint and snapshot-compatible model |
+| `GRAPHIV_EMBED_API_KEY` | Optional independent embedding credential from Key Vault |
 | `AZURE_CLIENT_ID` | User-assigned identity client ID; select it through the Azure identity SDK |
 | `GRAPHIV_STORAGE_ACCOUNT_URL` | Blob service endpoint |
 | `GRAPHIV_VECTOR_CONTAINER` | `vector-indexes` |
@@ -158,17 +181,17 @@ Blob-capable image. The current runtime does not consume this contract.
 | `GRAPHIV_ALLOWED_HOSTS` | Container App hostname |
 | `GRAPHIV_ARXIV_BASE_URL` | `https://arxiv.org` |
 
-The image must authenticate to Blob through the
+The image authenticates to Blob through the
 [user-assigned managed identity](https://learn.microsoft.com/en-us/azure/container-apps/managed-identity),
-load indexes/metadata, implement authenticated LLM and embedding calls, and upload
-report artifacts to Blob. The mounted `/var/lib/graphiv` volume is replica-scoped
+downloads verified indexes/metadata, authenticates external model calls, and uploads
+completed report artifacts to Blob. The mounted `/var/lib/graphiv` volume is replica-scoped
 `EmptyDir`, suitable for a rebuildable index cache, not persistent reports. Its contents
 disappear when the replica is replaced; see
 [Container Apps storage lifetimes](https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts).
 
-Ingress is public HTTPS on port 8000. The image must protect authenticated/write APIs
-before activation; Terraform does not add application authentication. Probes only
-check TCP reachability, not dataset readiness. Minimum and maximum replicas are both
+Ingress is public HTTPS on port 8000. Every route except `/health/live` and
+`/health/ready` requires the API bearer token. Startup, liveness, and traffic probes
+check `/health/live` so saved reports remain accessible while research is unready. Minimum and maximum replicas are both
 one because MCP rankings and sessions remain process-local. A restart or revision
 replacement still loses that state; single-replica settings do not make sessions durable.
 External LLM endpoints and arXiv require no resources in this Terraform root.

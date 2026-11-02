@@ -10,11 +10,14 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import math
 import re
 import urllib.error
 import urllib.request
+from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from urllib.parse import urlsplit
 
 LOG = logging.getLogger(__name__)
 
@@ -27,7 +30,18 @@ class Gemma:
     An OpenAI-compatible endpoint that remembers what it said
     """
 
-    def __init__(self, api: str, model: str, cache: str | Path) -> None:
+    def __init__(
+        self,
+        api: str,
+        model: str,
+        cache: str | Path,
+        *,
+        api_key: str | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float = 600,
+        reasoning_effort: str | None = "none",
+        raise_on_error: bool = False,
+    ) -> None:
         """
         Holds the endpoint and the directory a completion is written into
 
@@ -35,10 +49,34 @@ class Gemma:
             api: The OpenAI-compatible base url.
             model: Which model to ask.
             cache: Directory the completions are written into.
+            api_key: Optional bearer credential for the external endpoint.
+            headers: Additional headers required by the configured provider.
+            timeout: Timeout in seconds for one request.
+            reasoning_effort: Legacy router option; None omits it for standard providers.
+            raise_on_error: Surface service failures instead of returning an empty answer.
         """
         self.api = api.rstrip("/")
         self.model = model
         self.cache = Path(cache)
+        if not math.isfinite(timeout) or timeout <= 0:
+            raise ValueError("LLM request timeout must be positive")
+        endpoint = urlsplit(self.api)
+        if endpoint.username or endpoint.password:
+            raise ValueError("LLM credentials must be supplied as request headers")
+        if (
+            (api_key or headers)
+            and endpoint.scheme != "https"
+            and not (
+                endpoint.scheme == "http" and endpoint.hostname in {"localhost", "127.0.0.1", "::1"}
+            )
+        ):
+            raise ValueError("Authenticated LLM services require HTTPS outside localhost")
+        self.timeout = timeout
+        self.reasoning_effort = reasoning_effort
+        self.raise_on_error = raise_on_error
+        self.headers = {"Content-Type": "application/json", **dict(headers or {})}
+        if api_key:
+            self.headers["Authorization"] = f"Bearer {api_key}"
         self.cache.mkdir(parents=True, exist_ok=True)
 
     def get_cache_path(self, prompt: str, max_tokens: int) -> Path:
@@ -73,24 +111,34 @@ class Gemma:
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": max_tokens,
             "temperature": 0.0,
-            "reasoning_effort": "none",
         }
+        if self.reasoning_effort is not None:
+            body["reasoning_effort"] = self.reasoning_effort
         request = urllib.request.Request(
             f"{self.api}/chat/completions",
             data=json.dumps(body).encode(),
-            headers={"Content-Type": "application/json"},
+            headers=self.headers,
         )
+        failure = "LLM service returned no answer"
         for _ in range(ATTEMPTS):
             try:
-                with urllib.request.urlopen(request, timeout=600) as response:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
                     payload = json.load(response)
                 choice = payload["choices"][0]
                 reply = str(choice["message"]["content"] or "")
-            except (urllib.error.URLError, TimeoutError, OSError, KeyError, ValueError):
+            except urllib.error.HTTPError as error:
+                failure = f"LLM service returned HTTP {error.code}"
+                if error.code in (400, 401, 403, 404):
+                    break
+                continue
+            except (urllib.error.URLError, TimeoutError, OSError, KeyError, ValueError, IndexError):
+                failure = "LLM service could not return a valid completion"
                 continue
             if reply.strip():
                 return reply, choice.get("finish_reason") == "length"
         LOG.warning("the router returned nothing after %d attempts", ATTEMPTS)
+        if self.raise_on_error:
+            raise RuntimeError(failure)
         return "", False
 
     def ask(self, prompt: str, max_tokens: int = 512) -> str:

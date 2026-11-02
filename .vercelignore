@@ -1,0 +1,26 @@
+# Vercel builds only apps/web; Python data, local settings, and Terraform stay local.
+/.git
+/.vscode
+/.venv
+/.pg
+/data
+/src
+/offline
+/research
+/legacy
+/tests
+/docs
+/infra
+/configs
+/retrieval_recipes
+/scratchpad
+/scripts
+/apps/api
+/DESIGN.md
+**/__pycache__
+**/node_modules
+**/.next
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+!**/.env.example

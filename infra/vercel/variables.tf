@@ -12,6 +12,31 @@ variable "backend_url" {
   }
 }
 
+variable "api_token" {
+  type        = string
+  sensitive   = true
+  ephemeral   = true
+  nullable    = false
+  description = "Server-only bearer token matching the Azure backend; supplied ephemerally through TF_VAR_api_token or a secret manager."
+
+  validation {
+    condition     = length(var.api_token) >= 32 && !can(regex("[[:space:]]", var.api_token))
+    error_message = "api_token must contain at least 32 characters and no whitespace."
+  }
+}
+
+variable "api_token_version" {
+  type        = number
+  default     = 1
+  nullable    = false
+  description = "Increase this positive integer whenever api_token changes to update Vercel's write-only value."
+
+  validation {
+    condition     = var.api_token_version >= 1 && floor(var.api_token_version) == var.api_token_version
+    error_message = "api_token_version must be a positive integer."
+  }
+}
+
 variable "project_name" {
   type        = string
   default     = "graphiv"

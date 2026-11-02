@@ -21,3 +21,13 @@ resource "vercel_project_environment_variable" "backend_url" {
   sensitive = false
   comment   = "HTTPS origin of the GraphIV backend, read by the Next.js server."
 }
+
+resource "vercel_project_environment_variable" "api_token" {
+  project_id       = vercel_project.web.id
+  key              = "GRAPHIV_API_TOKEN"
+  value_wo         = var.api_token
+  value_wo_version = var.api_token_version
+  target           = ["production", "preview", "development"]
+  sensitive        = true
+  comment          = "Server-only bearer credential matching the GraphIV backend."
+}

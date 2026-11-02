@@ -10,4 +10,5 @@ benchmarks.md    SurveyMatch, FrontierMatch and ConsensusMatch: how a case is bu
 supplement.md    the Topic Queries behind LeyLine's Unseen Newcomer evaluation
 preprocess.md    the build: what to supply, what to run in what order, how to check it landed
 restore.md       skip the build, restore the published dump and serve from it
+storage.md       PostgreSQL and immutable SQLite/FAISS corpora, Azure snapshots, and durable reports
 ```

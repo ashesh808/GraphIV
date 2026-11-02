@@ -50,14 +50,9 @@ mock_provider "azurerm" {
 
   mock_resource "azurerm_log_analytics_workspace" {
     defaults = {
-      id = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.OperationalInsights/workspaces/log-graphiv-dev"
-    }
-  }
-
-  mock_resource "azurerm_container_app_environment" {
-    defaults = {
-      id             = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.App/managedEnvironments/cae-graphiv-dev"
-      default_domain = "graphiv-test.westus2.azurecontainerapps.io"
+      id                 = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.OperationalInsights/workspaces/log-graphiv-dev"
+      workspace_id       = "99999999-9999-4999-8999-999999999999"
+      primary_shared_key = "mock-workspace-key"
     }
   }
 
@@ -66,6 +61,25 @@ mock_provider "azurerm" {
       id = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.App/containerApps/ca-graphiv-dev-api"
       ingress = {
         fqdn = "ca-graphiv-dev-api.graphiv-test.westus2.azurecontainerapps.io"
+      }
+    }
+  }
+}
+
+mock_provider "azapi" {
+  override_during = plan
+}
+
+override_resource {
+  override_during = plan
+  target          = azapi_resource.environment
+  values = {
+    id = "/subscriptions/11111111-1111-4111-8111-111111111111/resourceGroups/rg-graphiv-dev/providers/Microsoft.App/managedEnvironments/cae-graphiv-dev"
+    output = {
+      properties = {
+        defaultDomain     = "graphiv-test.westus2.azurecontainerapps.io"
+        provisioningState = "Succeeded"
+        environmentMode   = "WorkloadProfiles"
       }
     }
   }
@@ -134,11 +148,27 @@ override_resource {
 }
 
 variables {
-  subscription_id = "11111111-1111-4111-8111-111111111111"
+  environment            = "dev"
+  allow_report_reads     = false
+  publisher_principal_id = null
+  subscription_id        = "11111111-1111-4111-8111-111111111111"
+  api_image_tag          = null
 }
 
 run "default_provisions_private_storage_without_starting_an_image" {
   command = plan
+
+  assert {
+    condition = (
+      azapi_resource.environment.type == "Microsoft.App/managedEnvironments@2026-07-01" &&
+      azapi_resource.environment.body.properties.environmentMode == "WorkloadProfiles" &&
+      one(azapi_resource.environment.body.properties.workloadProfiles).name == "Consumption" &&
+      one(azapi_resource.environment.body.properties.workloadProfiles).workloadProfileType == "Consumption" &&
+      azapi_resource.environment.body.properties.appLogsConfiguration.destination == "log-analytics" &&
+      azapi_resource.environment.body.properties.appLogsConfiguration.logAnalyticsConfiguration.customerId == azurerm_log_analytics_workspace.api.workspace_id
+    )
+    error_message = "The environment must explicitly select WorkloadProfiles mode with Consumption compute and workspace logging; Express cannot resolve Key Vault secrets."
+  }
 
   assert {
     condition     = length(azurerm_container_app.api) == 0 && output.backend_url == null && output.mcp_url == null
@@ -251,11 +281,15 @@ run "offline_publisher_cannot_access_reports" {
 run "compatible_image_activates_a_single_replica_api_with_secret_references" {
   command = plan
   variables {
-    api_image_tag   = "runtime-verified"
-    llm_api_url     = "https://models.example.test/v1"
-    llm_model       = "review-model"
-    api_resources   = { cpu = 2, memory = "4Gi" }
-    api_environment = { GRAPHIV_LOG_LEVEL = "info" }
+    api_image_tag                 = "runtime-verified"
+    llm_api_url                   = "https://models.example.test/v1"
+    llm_model                     = "review-model"
+    llm_api_key_secret_name       = "llm-api-key"
+    embedding_api_url             = "https://embeddings.example.test/v1"
+    embedding_model               = "matching-embedding-model"
+    embedding_api_key_secret_name = "embedding-api-key"
+    api_resources                 = { cpu = 2, memory = "4Gi" }
+    api_environment               = { GRAPHIV_LOG_LEVEL = "info" }
   }
 
   assert {
@@ -301,9 +335,9 @@ run "compatible_image_activates_a_single_replica_api_with_secret_references" {
 
   assert {
     condition = (
-      one(azurerm_container_app.api[0].secret).key_vault_secret_id == "${azurerm_key_vault.api.vault_uri}secrets/llm-api-key" &&
-      one(azurerm_container_app.api[0].secret).identity == azurerm_user_assigned_identity.api.id &&
-      one(azurerm_container_app.api[0].secret).value == null &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "llm-api-key"]).key_vault_secret_id == "${azurerm_key_vault.api.vault_uri}secrets/llm-api-key" &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "llm-api-key"]).identity == azurerm_user_assigned_identity.api.id &&
+      one([for secret in azurerm_container_app.api[0].secret : secret if secret.name == "llm-api-key"]).value == null &&
       one([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_LLM_API_KEY"]).secret_name == "llm-api-key" &&
       one([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_LLM_API_KEY"]).value == null &&
       azurerm_role_assignment.secret_reader.scope == azurerm_key_vault.api.id &&
@@ -325,7 +359,7 @@ run "compatible_image_activates_a_single_replica_api_with_secret_references" {
       GRAPHIV_LLM_MODEL           = "review-model"
       GRAPHIV_LOG_LEVEL           = "info"
       GRAPHIV_ARXIV_BASE_URL      = "https://arxiv.org"
-      GRAPHIV_ALLOWED_HOSTS       = "ca-graphiv-dev-api.${azurerm_container_app_environment.api.default_domain}"
+      GRAPHIV_ALLOWED_HOSTS       = "ca-graphiv-dev-api.${azapi_resource.environment.output.properties.defaultDomain}"
       } : try(one([for env in azurerm_container_app.api[0].template[0].container[0].env : env.value if env.name == name]) == value, false)
     ])
     error_message = "The app must receive its concrete identity, artifact locations, LLM endpoint, allowed host and extra non-secret environment."
@@ -351,7 +385,8 @@ run "keyless_llm_endpoint_omits_the_secret_reference" {
 
   assert {
     condition = (
-      length(azurerm_container_app.api[0].secret) == 0 &&
+      length(azurerm_container_app.api[0].secret) == 1 &&
+      one(azurerm_container_app.api[0].secret).name == "api-token" &&
       length([for env in azurerm_container_app.api[0].template[0].container[0].env : env if env.name == "GRAPHIV_LLM_API_KEY"]) == 0 &&
       output.llm_api_key_secret_uri == null
     )
@@ -359,10 +394,20 @@ run "keyless_llm_endpoint_omits_the_secret_reference" {
   }
 }
 
-run "activation_without_llm_configuration_is_rejected" {
+run "saved_reports_start_before_research_configuration" {
   command = plan
   variables { api_image_tag = "runtime-verified" }
-  expect_failures = [azurerm_container_app.api]
+  assert {
+    condition = length(azurerm_container_app.api) == 1 && length([
+      for env in azurerm_container_app.api[0].template[0].container[0].env : env
+      if env.name == "GRAPHIV_LLM_API_URL" || env.name == "GRAPHIV_EMBED_API_URL"
+    ]) == 0
+    error_message = "Absent research services must not turn into fabricated endpoints."
+  }
+  assert {
+    condition     = one(azurerm_container_app.api[0].secret).name == "api-token" && one(azurerm_container_app.api[0].secret).value == null
+    error_message = "The API token must use a Key Vault reference, never a plaintext value."
+  }
 }
 
 run "invalid_consumption_resource_pair_is_rejected" {

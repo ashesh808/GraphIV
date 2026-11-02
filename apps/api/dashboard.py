@@ -6,6 +6,7 @@ A run's facts come out of its own run.json, so listing the library reads no repo
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from pathlib import Path
 
@@ -15,7 +16,8 @@ from starlette.responses import FileResponse, JSONResponse, Response
 
 from src.core.fetch import pdf_file
 from src.core.paths import PROJECT_ROOT
-from src.storage.runs import FILES, known, read_one, read_runs
+from src.storage.blobs import BlobStorageError
+from src.storage.runs import LocalReportStore, ReportStore
 
 LOG = logging.getLogger(__name__)
 
@@ -28,7 +30,13 @@ TYPES = {
 }
 
 
-def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
+def mount(
+    mcp: FastMCP,
+    root: Path,
+    pdfs: Path,
+    fetch: bool = False,
+    report_store: ReportStore | None = None,
+) -> None:
     """
     Registers the dashboard on the http transport, which serves nothing that writes
 
@@ -37,7 +45,9 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
         root: The directory runs are written to.
         pdfs: The pdf store, which the reading panel shows a paper out of.
         fetch: Whether a paper the store never had may be fetched from arXiv.
+        report_store: Durable report persistence, with local files as the default.
     """
+    reports = report_store if report_store is not None else LocalReportStore(root)
 
     @mcp.custom_route("/api/runs", methods=["GET"])
     async def listing(request: Request) -> Response:
@@ -51,7 +61,11 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
             The rows as json.
         """
         _ = request
-        return JSONResponse(read_runs(root))
+        try:
+            found = await asyncio.to_thread(reports.list_runs)
+        except (BlobStorageError, OSError, ValueError):
+            return JSONResponse({"error": "report storage unavailable"}, status_code=503)
+        return JSONResponse(found)
 
     @mcp.custom_route("/api/runs/{slug}", methods=["GET"])
     async def one(request: Request) -> Response:
@@ -64,7 +78,12 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
         Returns:
             The run as json, or a 404.
         """
-        found = read_one(root, str(request.path_params.get("slug", "")))
+        try:
+            found = await asyncio.to_thread(
+                reports.read_run, str(request.path_params.get("slug", ""))
+            )
+        except (BlobStorageError, OSError, ValueError):
+            return JSONResponse({"error": "report storage unavailable"}, status_code=503)
         if found is None:
             return JSONResponse({"error": "no such run"}, status_code=404)
         return JSONResponse(found)
@@ -152,8 +171,11 @@ def mount(mcp: FastMCP, root: Path, pdfs: Path, fetch: bool = False) -> None:
         """
         slug = str(request.path_params.get("slug", ""))
         name = str(request.path_params.get("name", ""))
-        found = root / slug / name
-        if not known(root, slug) or name not in FILES or not found.is_file():
+        try:
+            found = await asyncio.to_thread(reports.file_path, slug, name)
+        except (BlobStorageError, OSError, ValueError):
+            return JSONResponse({"error": "report storage unavailable"}, status_code=503)
+        if found is None:
             return JSONResponse({"error": "no such file"}, status_code=404)
         return FileResponse(found)
 

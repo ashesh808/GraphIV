@@ -12,15 +12,19 @@ starting an API. Publish a compatible backend image, populate its external LLM c
 in Key Vault, and then enable the Container App. Pass the resulting backend origin into
 the separate Vercel root. LLM services and arXiv are external services, not Terraform resources.
 
-The current Python runtime still uses PostgreSQL and local graph/report files. Its Blob
-adapters and orchestration are unfinished, and it does not consume the new Azure environment
-contract. The existing Docker image alone cannot run this architecture. Follow the
-[Azure compatibility requirements](azure/README.md#compatible-image-contract) before activation.
+The Python runtime supports local PostgreSQL and Azure-backed immutable FAISS/SQLite/graph
+snapshots, with Blob-persisted report artifacts. It consumes the deployment environment
+contract, authenticates backend and external-model requests, and runs serialized research
+jobs. Health endpoints remain available while corpus preparation is pending. Publish a
+coherent corpus manifest and configure matching embedding/LLM endpoints before expecting
+research readiness; an empty library remains empty. See the
+[runtime contract](azure/README.md#runtime-settings).
 The existing Nix deployment remains in [`legacy/nix`](../legacy/nix/README.md).
 
-Use Terraform 1.12 or newer to work with both roots; Vercel alone supports 1.7 or newer.
+Use Terraform 1.12 or newer for both roots, including ephemeral write-only credentials.
 Each root has its own lock file and state. Azure includes examples for an existing
-Microsoft Entra-authenticated state backend. No cloud deployment has been run.
+Microsoft Entra-authenticated state backend. The procedures below describe configuration
+and checks; deployed URLs and readiness should be verified separately.
 
 Local validation uses mocked providers without cloud credentials:
 

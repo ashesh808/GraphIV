@@ -6,5 +6,9 @@ production_branch = "main"
 # Replace this placeholder with the backend_url output from infra/azure.
 backend_url = "https://graphiv-api.example.com"
 
+# Supply api_token through TF_VAR_api_token from your secret manager, not this file.
+# It must match GRAPHIV_API_TOKEN on the backend. Increment on every rotation.
+api_token_version = 1
+
 # Optional: use the authorized Vercel team slug or ID instead of the default scope.
 # team = null

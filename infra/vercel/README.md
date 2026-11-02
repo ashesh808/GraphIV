@@ -1,7 +1,7 @@
 # Vercel frontend project
 
 This Terraform root manages the Next.js project in [`apps/web`](../../apps/web/README.md)
-and its server-side `GRAPHIV_API_URL` setting. The backend and storage belong to the
+and its server-side `GRAPHIV_API_URL` and bearer credential settings. The backend and storage belong to the
 separate [`infra/azure`](../azure/README.md) root. Pass Azure's `backend_url` output
 here; the two roots do not share Terraform state.
 
@@ -12,12 +12,19 @@ Merge the frontend commit into that branch before enabling builds, or set this v
 to the branch containing `apps/web`, such as `ashesh/refactor-deployment-frontend`.
 Build commands remain under Vercel's framework detection and Git integration.
 
-Install Terraform 1.7 or newer. The provider is constrained to Vercel `5.24.x`, with
+Install Terraform 1.12 or newer. The provider is constrained to Vercel `5.24.x`, with
 the selected version and checksums recorded in `.terraform.lock.hcl`.
 Before planning against an account, install the
 [Vercel GitHub app](https://vercel.com/docs/git/vercel-for-github) and authorize the
 repository. Supply an authorized token through `VERCEL_API_TOKEN`; it is read by
 the provider rather than stored as a Terraform variable.
+
+Supply the backend's matching `api_token` through `TF_VAR_api_token` using your secret
+manager. This is a different credential from `VERCEL_API_TOKEN`. It becomes the
+server-only `GRAPHIV_API_TOKEN` environment variable through a write-only provider
+argument; the input is ephemeral and its value is not saved in Terraform plan/state
+files. Keep it available during both plan and apply. Increase `api_token_version`
+whenever the token changes, then redeploy the frontend to pick up the new credential.
 
 ```sh
 cd infra/vercel
@@ -25,6 +32,7 @@ terraform init
 cp terraform.tfvars.example terraform.tfvars
 # Replace backend_url with the externally reachable Azure backend origin.
 # Set VERCEL_API_TOKEN in your shell using your usual credential workflow.
+# Set TF_VAR_api_token to the backend's bearer token through the same secure workflow.
 terraform plan -out=tfplan
 ```
 
@@ -34,7 +42,7 @@ The optional `team` value accepts a Vercel team slug or ID; omit it for the toke
 default scope. The backend origin is set for production, preview, and development.
 It uses the server-only `GRAPHIV_API_URL` key, with no `NEXT_PUBLIC_` prefix.
 
-This root configures the project and environment variable; it does not upload
+This root configures the project and environment variables; it does not upload
 builds or create deployment resources. Subsequent Git pushes drive Vercel builds.
 Find actual production and preview URLs in the Vercel dashboard after successful
 deployments. Custom domains and deployment-protection settings are not managed here.

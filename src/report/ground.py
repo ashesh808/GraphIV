@@ -10,11 +10,10 @@ from __future__ import annotations
 import logging
 import re
 
-import psycopg
+from src.storage.corpus import CorpusSource, open_corpus
 
 LOG = logging.getLogger(__name__)
 
-EXISTS = "SELECT arxiv_id FROM papers WHERE arxiv_id = ANY(%s)"
 
 # modern ids, legacy prefixed ids, and the bare legacy form, which is almost always invented
 ID = r"([a-z][a-z.\-]+/\d{7}|\d{4}\.\d{4,5}|\d{7})"
@@ -123,12 +122,12 @@ def read_ids(text: str) -> set[str]:
     return {m.group(1).lower() for m in FOUND.finditer(text)}
 
 
-def exist(dsn: str, arxiv_ids: list[str]) -> set[str]:
+def exist(dsn: CorpusSource, arxiv_ids: list[str]) -> set[str]:
     """
     Which of a list of ids the corpus actually holds
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         arxiv_ids: The ids to check.
 
     Returns:
@@ -136,8 +135,7 @@ def exist(dsn: str, arxiv_ids: list[str]) -> set[str]:
     """
     if not arxiv_ids:
         return set()
-    with psycopg.connect(dsn) as conn:
-        rows = conn.execute(EXISTS, (arxiv_ids,)).fetchall()
+    rows = open_corpus(dsn).existing_ids(arxiv_ids)
     return {str(r[0]).lower() for r in rows}
 
 
@@ -209,12 +207,12 @@ def linkify(text: str) -> str:
     return "".join(out)
 
 
-def check(dsn: str, text: str, allowed: set[str]) -> Grounded:
+def check(dsn: CorpusSource, text: str, allowed: set[str]) -> Grounded:
     """
     Corrects the typos, keeps what exists and cuts what does not
 
     Args:
-        dsn: libpq connection string.
+        dsn: A libpq connection string or corpus adapter.
         text: The draft.
         allowed: The ids the writer was given.
 

@@ -7,16 +7,27 @@ The docstrings here are what the calling model reads, so they say when to call a
 
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
 import os
-from collections.abc import Callable
+import secrets
+from collections.abc import AsyncIterator, Callable
+from contextlib import asynccontextmanager
 from dataclasses import replace
+from functools import wraps
 from typing import Any
 
+import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
+from pydantic import ValidationError
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from apps.api.dashboard import mount
+from apps.api.orchestration import RUNTIME_LOCK, Coordinator, ResearchRequest, safe_error
 from src.mcp import find_runs as finding
 from src.mcp import identify_areas as splitting
 from src.mcp import mine as mining
@@ -28,12 +39,14 @@ from src.mcp import search_papers as searching
 from src.mcp import what_cites as citing
 from src.mcp import write_report as writing
 from src.mcp.state import Serving, load, serving
+from src.storage.runs import ReportStore
 
 LOG = logging.getLogger(__name__)
 
 # the public vhost reaches this, so an instance set read only registers nothing that writes a file
 READONLY = os.environ.get("GRAPHIV_READONLY") == "1"
 mcp = FastMCP("graphiv")
+_TOOL_BODIES: list[tuple[Callable[..., str], bool]] = []
 
 
 def tool(writes: bool = False) -> Callable[[Callable[..., str]], Callable[..., str]]:
@@ -48,7 +61,16 @@ def tool(writes: bool = False) -> Callable[[Callable[..., str]], Callable[..., s
     """
 
     def register(body: Callable[..., str]) -> Callable[..., str]:
-        return body if READONLY and writes else mcp.tool()(body)
+        @wraps(body)
+        def serialized(*args: Any, **kwargs: Any) -> str:
+            with RUNTIME_LOCK:
+                try:
+                    return body(*args, **kwargs)
+                except Exception as error:  # noqa: BLE001 - redact errors at the transport boundary
+                    raise RuntimeError(safe_error(error)) from None
+
+        _TOOL_BODIES.append((serialized, writes))
+        return serialized if READONLY and writes else mcp.tool()(serialized)
 
     return register
 
@@ -285,6 +307,205 @@ def find_runs(question: str = "", slug: str = "", limit: int = 10) -> str:
     return finding.find_runs(load(), question, slug, limit)
 
 
+class BearerTokenMiddleware:
+    """Protect every application route while preserving the MCP ASGI lifespan."""
+
+    def __init__(self, app: ASGIApp, *, token: str, required: bool) -> None:
+        self.app = app
+        self.token = token.encode()
+        self.required = required
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """Authenticate HTTP requests without intercepting ASGI lifespan events."""
+        if scope["type"] != "http" or scope.get("path") in ("/health/live", "/health/ready"):
+            await self.app(scope, receive, send)
+            return
+        if not self.token and self.required:
+            await JSONResponse({"error": "API authentication is not configured"}, status_code=503)(
+                scope, receive, send
+            )
+            return
+        if self.token:
+            header = next(
+                (value for name, value in scope["headers"] if name.lower() == b"authorization"), b""
+            )
+            scheme, _, credential = header.partition(b" ")
+            if scheme.lower() != b"bearer" or not secrets.compare_digest(credential, self.token):
+                await JSONResponse(
+                    {"error": "A valid bearer token is required"},
+                    status_code=401,
+                    headers={"WWW-Authenticate": "Bearer"},
+                )(scope, receive, send)
+                return
+        await self.app(scope, receive, send)
+
+
+def _runtime_status() -> dict[str, Any]:
+    from src.mcp import state
+
+    return state.runtime_status()
+
+
+def _threaded_tool(
+    body: Callable[..., str], readiness: Callable[[], dict[str, Any]]
+) -> Callable[..., Any]:
+    """Keep synchronous corpus/model calls and lock waits off the HTTP event loop."""
+
+    @wraps(body)
+    async def invoke(*args: Any, **kwargs: Any) -> str:
+        status = readiness()
+        if not status["ready"]:
+            reasons = "; ".join(str(reason) for reason in status.get("reasons", []))
+            raise RuntimeError(f"Research runtime is not ready: {reasons}")
+        return await asyncio.to_thread(body, *args, **kwargs)
+
+    return invoke
+
+
+def build_http_app(
+    settings: Serving,
+    role: str = "both",
+    *,
+    status_callback: Callable[[], dict[str, Any]] | None = None,
+    coordinator: Coordinator | None = None,
+    report_store: ReportStore | None = None,
+) -> Any:
+    """Build a lazy HTTP runtime: health and saved reports do not load the corpus."""
+    engine = FastMCP("graphiv-dashboard" if role == "frontend" else "graphiv")
+    secure(engine, settings)
+    engine.settings.port = settings.frontend_port if role == "frontend" else settings.api_port
+    if role != "api":
+        if report_store is None:
+            from src.mcp import state
+
+            accessor = getattr(state, "report_store", None)
+            report_store = accessor() if accessor else None
+        mount(
+            engine,
+            settings.runs,
+            settings.pdfs,
+            settings.fetch if role != "frontend" else False,
+            report_store=report_store,
+        )
+
+    token = os.environ.get("GRAPHIV_API_TOKEN", "").strip()
+    required = (
+        os.environ.get("GRAPHIV_RUNTIME") == "azure"
+        or os.environ.get("GRAPHIV_REQUIRE_AUTH") == "1"
+        or settings.host not in ("127.0.0.1", "localhost", "::1")
+    )
+    jobs = coordinator or Coordinator()
+    status_callback = status_callback or (
+        (lambda: {"ready": True, "reasons": [], "scope": "saved-reports"})
+        if role == "frontend"
+        else _runtime_status
+    )
+
+    def readiness() -> dict[str, Any]:
+        try:
+            status = dict(status_callback())
+        except Exception as error:  # noqa: BLE001 - health checks must return sanitized failures
+            status = {"ready": False, "reasons": [safe_error(error)]}
+        reasons = list(status.get("reasons") or [])
+        if required and not token:
+            reasons.append("API authentication is not configured")
+        status["reasons"] = reasons
+        status["ready"] = bool(status.get("ready")) and not reasons
+        return status
+
+    if role != "frontend":
+        for body, writes in _TOOL_BODIES:
+            if not READONLY or not writes:
+                engine.add_tool(_threaded_tool(body, readiness))
+
+    @engine.custom_route("/health/live", methods=["GET"])
+    async def live(request: Request) -> JSONResponse:
+        return JSONResponse({"status": "alive"})
+
+    @engine.custom_route("/health/ready", methods=["GET"])
+    async def ready(request: Request) -> JSONResponse:
+        status = readiness()
+        return JSONResponse(status, status_code=200 if status["ready"] else 503)
+
+    if role != "frontend":
+
+        @engine.custom_route("/api/research", methods=["POST"])
+        async def research(request: Request) -> JSONResponse:
+            if READONLY:
+                return JSONResponse({"error": "This instance is read only"}, status_code=403)
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 65536:
+                    return JSONResponse({"error": "Research request is too large"}, status_code=413)
+            try:
+                asked = ResearchRequest.model_validate(json.loads(body))
+            except (ValueError, UnicodeError, ValidationError):
+                return JSONResponse(
+                    {
+                        "error": (
+                            "Pass a question (1–4000 characters), a supported mode, "
+                            "and quick/standard/deep effort"
+                        )
+                    },
+                    status_code=422,
+                )
+            status = readiness()
+            if not status["ready"]:
+                return JSONResponse(
+                    {"error": "Research runtime is not ready", "reasons": status["reasons"]},
+                    status_code=503,
+                )
+            try:
+                job = jobs.submit(asked)
+            except OverflowError as error:
+                return JSONResponse(
+                    {"error": str(error)}, status_code=429, headers={"Retry-After": "30"}
+                )
+            return JSONResponse(job | {"status_url": f"/api/jobs/{job['id']}"}, status_code=202)
+
+        @engine.custom_route("/api/jobs/{job_id}", methods=["GET"])
+        async def job_status(request: Request) -> JSONResponse:
+            job = jobs.get(str(request.path_params["job_id"]))
+            return JSONResponse(
+                job if job else {"error": "No such research job"}, status_code=200 if job else 404
+            )
+
+    app = engine.streamable_http_app()
+    original_lifespan = app.router.lifespan_context
+
+    @asynccontextmanager
+    async def lifespan(application: Any) -> AsyncIterator[None]:
+        from src.mcp import state
+
+        prepare = getattr(state, "prepare_runtime", None) if role != "frontend" else None
+
+        async def prepare_background() -> None:
+            if not callable(prepare):
+                return
+            try:
+                await asyncio.to_thread(prepare)
+            except Exception as error:  # noqa: BLE001 - startup preparation cannot stop HTTP health
+                LOG.warning("Runtime preparation failed: %s", safe_error(error))
+
+        prepare_task = asyncio.create_task(prepare_background()) if prepare else None
+        async with original_lifespan(application):
+            try:
+                yield
+            finally:
+                jobs.close()
+                if prepare_task:
+                    prepare_task.cancel()
+                    try:
+                        await prepare_task
+                    except asyncio.CancelledError:
+                        pass
+
+    app.router.lifespan_context = lifespan
+    app.add_middleware(BearerTokenMiddleware, token=token, required=required)
+    return app
+
+
 def run(
     http: bool = False,
     role: str = "both",
@@ -317,27 +538,10 @@ def run(
         _ = load()
         mcp.run()
         return
-    if role == "frontend":
-        page = FastMCP("graphiv-dashboard")
-        secure(page, settings)
-        page.settings.port = settings.frontend_port
-        mount(page, settings.runs, settings.pdfs)
-        LOG.info("serving the dashboard on %s:%d", page.settings.host, page.settings.port)
-        page.run(transport="streamable-http")
-        return
-    secure(mcp, settings)
-    mcp.settings.port = settings.api_port
-    if role != "api":
-        mount(mcp, settings.runs, settings.pdfs, settings.fetch)
-    _ = load()
-    LOG.info(
-        "serving %d tools on %s:%d, read only %s",
-        len(mcp._tool_manager.list_tools()),
-        mcp.settings.host,
-        mcp.settings.port,
-        READONLY,
-    )
-    mcp.run(transport="streamable-http")
+    app = build_http_app(settings, role)
+    selected_port = settings.frontend_port if role == "frontend" else settings.api_port
+    LOG.info("serving %s on %s:%d, read only %s", role, settings.host, selected_port, READONLY)
+    uvicorn.run(app, host=settings.host, port=selected_port, access_log=False)
 
 
 def secure(server: FastMCP, settings: Serving) -> None:

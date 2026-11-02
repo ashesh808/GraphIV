@@ -21,4 +21,4 @@ COPY configs/runtime.toml ./configs/runtime.toml
 RUN uv sync --frozen --no-dev --no-editable
 
 EXPOSE 8000
-CMD ["graphiv-serve", "--http", "--role", "api", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["graphiv-serve", "--http", "--role", "both", "--host", "0.0.0.0", "--port", "8000"]
