@@ -21,7 +21,7 @@ A request for the actual pinned `papers/papers-00000.parquet` returned HTTP 401 
 
 The full original FlatIP payload would require 9,725,420,544 bytes (9.06 GiB), exceeding the 8 GiB Consumption limit before the encoder or graph loads. The replacement is an IVF/SQ8 candidate index with 1,024 lists, initial `nprobe = 128`, and fourfold candidate oversampling. Its estimated vector-code/ID payload is 2,456,681,752 bytes (2.29 GiB), plus centroids and bookkeeping. Final similarity scores are recalculated using the original float16 vectors in SQLite; approximation affects candidate recall, not the cosine formula.
 
-The existing API is configured for 4 CPU / 8 GiB. A 100 GiB Azure Files cache in the existing storage account is mounted using managed identity because the source, metadata, vectors, and model exceed Consumption ephemeral storage. The optional offline build job uses the same cache and has no idle replicas. Azure Blob Storage remains the publication/report store and the single Python backend remains the research service.
+The API image is `graphiv-api:published-corpus-v2`; the offline image is `graphiv-index-builder:published-corpus-v2`, both in the existing Azure registry. The existing API is configured for 4 CPU / 8 GiB. A 100 GiB Azure Files cache in the existing storage account is mounted using managed identity because the source, metadata, vectors, and model exceed Consumption ephemeral storage. The optional offline build job uses the same cache and has no idle replicas. Azure Blob Storage remains the publication/report store and the single Python backend remains the research service.
 
 Full-corpus peak memory, recall, and latency are **unmeasured** until the gated source is available. Startup integrity scans and very selective historical filters can cause substantial disk I/O. The actual quality gate must pass before activation; publishing a built snapshot alone does not change the active manifest.
 
@@ -34,9 +34,15 @@ Full-corpus peak memory, recall, and latency are **unmeasured** until the gated 
 | Real Nomic CPU forward pass on Azure | Passed; 768 dimensions, vector norm 1.000000052 |
 | First download + load + one query | 59.63 seconds |
 | Encoder probe peak process RSS | 1,990,705,152 bytes; separate probe process, not a research-job measurement |
+| Persistent cache after API revision replacement | Passed; the original marker and model cache survived |
+| Two warm Nomic query encodings | 1.171 and 0.699 seconds; encoder-only checks, not corpus retrieval |
+| Native Torch + FAISS interoperability on deployed Linux | Passed; small library interoperability check, not corpus recall validation |
+| Gateway LLM request from the deployed API | Passed; `google/gemini-3.1-flash-lite` |
 | Published Parquet access | Blocked: HTTP 401 `GatedRepo` |
 | Full corpus import and activation | Not executed |
 | Full corpus ANN recall / document-vector compatibility | Not executed |
+
+Production frontend commit `a9a6ab0` is live at `https://graphiv.vercel.app`. A real browser submission reached the Azure API and displayed its research-not-ready response; it created no research report. The real acceptance command also exited with FAILED before submitting jobs because `/health/ready` returned 503. Thus neither required research query has executed.
 
 The model probe verifies the encoder itself; it does not prove compatibility with the inaccessible published vectors or full deployment memory capacity.
 
